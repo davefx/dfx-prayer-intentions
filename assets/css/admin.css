@@ -214,3 +214,24 @@
 		left: 0;
 	}
 }
+
+.dfxpray-tabs {
+	margin-bottom: 16px;
+}
+
+.dfxpray-tab-count {
+	display: inline-block;
+	min-width: 18px;
+	padding: 0 5px;
+	margin-left: 4px;
+	border-radius: 9px;
+	background: #d63638;
+	color: #fff;
+	font-size: 11px;
+	line-height: 18px;
+	text-align: center;
+}
+
+.dfxpray-section-title {
+	margin-top: 32px;
+}

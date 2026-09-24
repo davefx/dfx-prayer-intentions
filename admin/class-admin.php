@@ -10,27 +10,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Menu, screens and group switcher. Every screen shows only the active group,
- * and every query goes through DFXPRAY_Permissions.
+ * Menu and screens. The menu holds "Groups", "Global settings" (for
+ * administrators) and one entry per group the user may manage; each group's
+ * page carries its tasks as tabs. The group always comes from the URL, and
+ * every query goes through DFXPRAY_Permissions.
  */
 final class DFXPRAY_Admin {
 
 	use DFXPRAY_Singleton;
 
 	/**
-	 * Screens: slug => [title, capability scope, view].
+	 * Slug prefix of a group's page: dfxpray-group-<id>.
 	 */
-	private const PAGES = array(
-		'dfxpray'            => array( 'home', 'leader' ),
-		'dfxpray-moderation' => array( 'moderation', 'leader' ),
-		'dfxpray-intentions' => array( 'intentions', 'leader' ),
-		'dfxpray-reviews'    => array( 'reviews', 'leader' ),
-		'dfxpray-index'      => array( 'index', 'leader' ),
-		'dfxpray-digest'     => array( 'digest', 'leader' ),
-		'dfxpray-settings'   => array( 'settings', 'leader' ),
-		'dfxpray-log'        => array( 'log', 'leader' ),
-		'dfxpray-groups'     => array( 'groups', 'admin' ),
-		'dfxpray-global'     => array( 'global', 'admin' ),
+	private const GROUP_PAGE = 'dfxpray-group-';
+
+	/**
+	 * Tabs of a group's page, mapped to their views, in display order.
+	 */
+	private const TABS = array(
+		'moderation' => 'moderation',
+		'intentions' => 'intentions',
+		'reviews'    => 'reviews',
+		'index'      => 'index',
+		'digest'     => 'digest',
+		'settings'   => 'settings',
+		'log'        => 'log',
 	);
 
 	/**
@@ -38,7 +42,6 @@ final class DFXPRAY_Admin {
 	 */
 	public function register_hooks(): void {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
-		add_action( 'admin_init', array( $this, 'handle_group_switch' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'login_redirect', array( $this, 'login_redirect' ), 10, 3 );
 		add_action( 'load-index.php', array( $this, 'maybe_redirect_dashboard' ) );
@@ -49,49 +52,48 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * Menu and submenus.
+	 * Menu: Groups, Global settings, then one entry per group.
 	 */
 	public function register_menu(): void {
-		$cap      = DFXPRAY_Installer::CAPABILITY;
-		$callback = array( $this, 'render_current' );
-		$pending  = 0;
+		$cap         = DFXPRAY_Installer::CAPABILITY;
+		$callback    = array( $this, 'render_current' );
+		$permissions = DFXPRAY_Permissions::get_instance();
+		$groups      = DFXPRAY_Groups::get_instance();
+		$intentions  = DFXPRAY_Intentions::get_instance();
+		$group_ids   = $permissions->group_ids_for_user();
+		$pending     = array();
 
-		foreach ( DFXPRAY_Permissions::get_instance()->group_ids_for_user() as $group_id ) {
-			$pending += DFXPRAY_Intentions::get_instance()->counts( $group_id )['pending'];
+		foreach ( $group_ids as $group_id ) {
+			$pending[ $group_id ] = $intentions->counts( $group_id )['pending'];
 		}
 
-		$bubble = $pending ? ' <span class="awaiting-mod count-' . $pending . '"><span class="pending-count">' . number_format_i18n( $pending ) . '</span></span>' : '';
+		add_menu_page( __( 'Prayer intentions', 'dfx-prayer-intentions' ), __( 'Prayer intentions', 'dfx-prayer-intentions' ) . $this->bubble( array_sum( $pending ) ), $cap, 'dfxpray', $callback, 'dashicons-heart', 26 );
+		add_submenu_page( 'dfxpray', __( 'Groups', 'dfx-prayer-intentions' ), __( 'Groups', 'dfx-prayer-intentions' ), $cap, 'dfxpray', $callback );
 
-		add_menu_page( __( 'Prayer intentions', 'dfx-prayer-intentions' ), __( 'Prayer intentions', 'dfx-prayer-intentions' ) . $bubble, $cap, 'dfxpray', $callback, 'dashicons-heart', 26 );
+		if ( $permissions->is_admin() ) {
+			add_submenu_page( 'dfxpray', __( 'Global settings', 'dfx-prayer-intentions' ), __( 'Global settings', 'dfx-prayer-intentions' ), 'manage_options', 'dfxpray-global', $callback );
+		}
 
-		$titles = $this->titles();
-		foreach ( self::PAGES as $slug => $page ) {
-			if ( 'admin' === $page[1] && ! DFXPRAY_Permissions::get_instance()->is_admin() ) {
-				continue;
-			}
-
-			$menu_title = 'dfxpray-moderation' === $slug ? $titles[ $slug ] . $bubble : $titles[ $slug ];
-			add_submenu_page( 'dfxpray', $titles[ $slug ], $menu_title, 'admin' === $page[1] ? 'manage_options' : $cap, $slug, $callback );
+		foreach ( $group_ids as $group_id ) {
+			$name = $groups->get( $group_id )['name'];
+			add_submenu_page( 'dfxpray', $name, esc_html( $name ) . $this->bubble( $pending[ $group_id ] ), $cap, self::GROUP_PAGE . $group_id, $callback );
 		}
 	}
 
 	/**
-	 * Screen titles.
+	 * Tab titles of a group's page.
 	 *
 	 * @return array<string, string>
 	 */
-	public function titles(): array {
+	public function tab_titles(): array {
 		return array(
-			'dfxpray'            => __( 'Home', 'dfx-prayer-intentions' ),
-			'dfxpray-moderation' => __( 'Moderation', 'dfx-prayer-intentions' ),
-			'dfxpray-intentions' => __( 'Intentions', 'dfx-prayer-intentions' ),
-			'dfxpray-reviews'    => __( 'Reviews', 'dfx-prayer-intentions' ),
-			'dfxpray-index'      => __( 'Index', 'dfx-prayer-intentions' ),
-			'dfxpray-digest'     => __( 'Daily digest', 'dfx-prayer-intentions' ),
-			'dfxpray-settings'   => __( 'Group settings', 'dfx-prayer-intentions' ),
-			'dfxpray-log'        => __( 'Activity', 'dfx-prayer-intentions' ),
-			'dfxpray-groups'     => __( 'Groups', 'dfx-prayer-intentions' ),
-			'dfxpray-global'     => __( 'Global settings', 'dfx-prayer-intentions' ),
+			'moderation' => __( 'Moderation', 'dfx-prayer-intentions' ),
+			'intentions' => __( 'Intentions', 'dfx-prayer-intentions' ),
+			'reviews'    => __( 'Reviews', 'dfx-prayer-intentions' ),
+			'index'      => __( 'Index', 'dfx-prayer-intentions' ),
+			'digest'     => __( 'Daily digest', 'dfx-prayer-intentions' ),
+			'settings'   => __( 'Group settings', 'dfx-prayer-intentions' ),
+			'log'        => __( 'Activity', 'dfx-prayer-intentions' ),
 		);
 	}
 
@@ -109,7 +111,15 @@ final class DFXPRAY_Admin {
 	 * @param string $page Page slug.
 	 */
 	public function render( string $page ): void {
-		$this->render_screen( $page );
+		echo '<div class="wrap dfxpray-wrap">';
+
+		if ( str_starts_with( $page, self::GROUP_PAGE ) ) {
+			$this->render_group_page( (int) substr( $page, strlen( self::GROUP_PAGE ) ) );
+		} else {
+			$this->render_page( $page );
+		}
+
+		echo '</div>';
 		$this->render_footer();
 	}
 
@@ -130,50 +140,78 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * Render a screen, with the common header.
+	 * The groups page or the global settings.
 	 *
 	 * @param string $page Page slug.
 	 */
-	private function render_screen( string $page ): void {
+	private function render_page( string $page ): void {
 		$permissions = DFXPRAY_Permissions::get_instance();
-		$definition  = self::PAGES[ $page ] ?? null;
+		$pages       = array(
+			'dfxpray'        => array( __( 'Groups', 'dfx-prayer-intentions' ), 'groups', false ),
+			'dfxpray-global' => array( __( 'Global settings', 'dfx-prayer-intentions' ), 'global', true ),
+		);
 
-		echo '<div class="wrap dfxpray-wrap">';
-		echo '<h1>' . esc_html( $this->titles()[ $page ] ?? __( 'Prayer intentions', 'dfx-prayer-intentions' ) ) . '</h1>';
+		echo '<h1>' . esc_html( $pages[ $page ][0] ?? __( 'Prayer intentions', 'dfx-prayer-intentions' ) ) . '</h1>';
 
-		if ( ! $definition || ! $permissions->can_access_panel() || ( 'admin' === $definition[1] && ! $permissions->is_admin() ) ) {
+		if ( ! isset( $pages[ $page ] ) || ! $permissions->can_access_panel() || ( $pages[ $page ][2] && ! $permissions->is_admin() ) ) {
 			$this->forbidden();
-			echo '</div>';
 			return;
 		}
 
 		$this->render_notices();
+		$this->view( $pages[ $page ][1] );
+	}
 
-		$group_id = $permissions->get_active_group();
-		if ( 'leader' === $definition[1] && 'dfxpray' !== $page ) {
-			if ( ! $group_id ) {
-				echo '<div class="notice notice-info inline"><p>' . esc_html__( 'You are not assigned to any group yet. Ask the site administrator.', 'dfx-prayer-intentions' ) . '</p></div></div>';
-				return;
-			}
-			$this->view(
-				'group-switcher',
-				array(
-					'page'   => $page,
-					'active' => $group_id,
-				)
-			);
+	/**
+	 * A group's page: its name, the tabs, and the chosen tab.
+	 *
+	 * @param int $group_id Group ID.
+	 */
+	private function render_group_page( int $group_id ): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Navigation only.
+		$tab   = sanitize_key( wp_unslash( $_GET['tab'] ?? 'moderation' ) );
+		$group = DFXPRAY_Groups::get_instance()->get( $group_id );
+
+		if ( ! $group || ! isset( self::TABS[ $tab ] ) || ! DFXPRAY_Permissions::get_instance()->can_manage_group( $group_id ) ) {
+			echo '<h1>' . esc_html__( 'Prayer intentions', 'dfx-prayer-intentions' ) . '</h1>';
+			$this->forbidden();
+			return;
 		}
 
-		$this->view(
-			$definition[0],
-			array(
-				'group_id' => $group_id,
-				'group'    => $group_id ? DFXPRAY_Groups::get_instance()->get( $group_id ) : null,
-				'page'     => $page,
-			)
+		echo '<h1>' . esc_html( $group['name'] ) . '</h1>';
+		$this->render_notices();
+
+		$counts = DFXPRAY_Intentions::get_instance()->counts( $group_id );
+		$badges = array(
+			'moderation' => $counts['pending'],
+			'reviews'    => $counts['review'],
 		);
 
-		echo '</div>';
+		echo '<nav class="nav-tab-wrapper dfxpray-tabs" aria-label="' . esc_attr__( 'Group sections', 'dfx-prayer-intentions' ) . '">';
+		foreach ( $this->tab_titles() as $key => $title ) {
+			$class = 'nav-tab' . ( $key === $tab ? ' nav-tab-active' : '' );
+			$count = empty( $badges[ $key ] ) ? '' : ' <span class="dfxpray-tab-count">' . esc_html( number_format_i18n( $badges[ $key ] ) ) . '</span>';
+			echo '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $this->group_url( $group_id, $key ) ) . '"' . ( $key === $tab ? ' aria-current="page"' : '' ) . '>' . esc_html( $title ) . $count . '</a>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $count is escaped above.
+		}
+		echo '</nav>';
+
+		$this->view(
+			self::TABS[ $tab ],
+			array(
+				'group_id' => $group_id,
+				'group'    => $group,
+				'tab'      => $tab,
+			)
+		);
+	}
+
+	/**
+	 * Menu badge.
+	 *
+	 * @param int $count Count.
+	 */
+	private function bubble( int $count ): string {
+		return $count ? ' <span class="awaiting-mod count-' . $count . '"><span class="pending-count">' . number_format_i18n( $count ) . '</span></span>' : '';
 	}
 
 	/**
@@ -202,13 +240,26 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * Switch the active group from the ?group= argument (a display preference).
+	 * URL of a tab of a group's page.
+	 *
+	 * @param int    $group_id Group ID.
+	 * @param string $tab      Tab.
+	 * @param array  $args     Extra arguments.
 	 */
-	public function handle_group_switch(): void {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only changes which of the user's own groups is displayed.
-		if ( isset( $_GET['group'] ) ) {
-			DFXPRAY_Permissions::get_instance()->set_active_group( absint( $_GET['group'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		}
+	public function group_url( int $group_id, string $tab = 'moderation', array $args = array() ): string {
+		return $this->url( self::GROUP_PAGE . $group_id, array_merge( array( 'tab' => $tab ), $args ) );
+	}
+
+	/**
+	 * Where a panel user starts: their group's page when they have only one,
+	 * the groups page otherwise.
+	 *
+	 * @param int|null $user_id User ID; defaults to the current user.
+	 */
+	public function landing_url( ?int $user_id = null ): string {
+		$groups = DFXPRAY_Permissions::get_instance()->group_ids_for_user( $user_id );
+
+		return 1 === count( $groups ) ? admin_url( 'admin.php?page=' . self::GROUP_PAGE . $groups[0] ) : admin_url( 'admin.php?page=dfxpray' );
 	}
 
 	/**
@@ -305,7 +356,7 @@ final class DFXPRAY_Admin {
 	 */
 	public function login_redirect( $redirect_to, $requested, $user ) {
 		if ( $user instanceof WP_User && DFXPRAY_Permissions::get_instance()->is_panel_only_user( $user->ID ) ) {
-			return admin_url( 'admin.php?page=dfxpray' );
+			return $this->landing_url( $user->ID );
 		}
 
 		return $redirect_to;
@@ -317,7 +368,7 @@ final class DFXPRAY_Admin {
 	 * @return string|null Panel URL for leaders; null for everyone else.
 	 */
 	public function dashboard_redirect(): ?string {
-		return DFXPRAY_Permissions::get_instance()->is_panel_only_user() ? admin_url( 'admin.php?page=dfxpray' ) : null;
+		return DFXPRAY_Permissions::get_instance()->is_panel_only_user() ? $this->landing_url() : null;
 	}
 
 	/**

@@ -11,16 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Decides who may see and manage what. Every panel query is filtered through
- * the groups returned here.
+ * the groups returned here; the group always comes from the URL.
  */
 final class DFXPRAY_Permissions {
 
 	use DFXPRAY_Singleton;
-
-	/**
-	 * User meta key remembering the active group in the panel.
-	 */
-	private const ACTIVE_GROUP_META = 'dfxpray_active_group';
 
 	/**
 	 * Whether the user is a WordPress administrator for the plugin's purposes.
@@ -80,44 +75,6 @@ final class DFXPRAY_Permissions {
 		}
 
 		return in_array( $group_id, $this->group_ids_for_user( $user_id ), true );
-	}
-
-	/**
-	 * The group the user is working on in the panel.
-	 *
-	 * @param int|null $user_id User ID; defaults to the current user.
-	 * @return int Group ID, or 0 when the user has no groups.
-	 */
-	public function get_active_group( ?int $user_id = null ): int {
-		$user_id = $user_id ?? get_current_user_id();
-		$groups  = $this->group_ids_for_user( $user_id );
-
-		if ( ! $groups ) {
-			return 0;
-		}
-
-		$stored = (int) get_user_meta( $user_id, self::ACTIVE_GROUP_META, true );
-
-		return in_array( $stored, $groups, true ) ? $stored : $groups[0];
-	}
-
-	/**
-	 * Switch the user's active group.
-	 *
-	 * @param int      $group_id Group ID.
-	 * @param int|null $user_id  User ID; defaults to the current user.
-	 * @return bool Whether the switch happened.
-	 */
-	public function set_active_group( int $group_id, ?int $user_id = null ): bool {
-		$user_id = $user_id ?? get_current_user_id();
-
-		if ( ! in_array( $group_id, $this->group_ids_for_user( $user_id ), true ) ) {
-			return false;
-		}
-
-		update_user_meta( $user_id, self::ACTIVE_GROUP_META, $group_id );
-
-		return true;
 	}
 
 	/**

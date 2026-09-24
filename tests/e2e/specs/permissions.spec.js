@@ -1,7 +1,7 @@
 /**
  * Leaders only ever see and touch their own groups.
  */
-const { test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
 
 let mine;
 let other;
@@ -16,7 +16,7 @@ test( 'a leader cannot open another group’s intention by changing the URL', as
 	const foreign = createIntention( other.id, { body: 'Secreto de San José' } );
 	await login( page, 'leader1' );
 
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ foreign }` );
+	await page.goto( groupUrl( mine.id, 'intentions', { view: 'edit', id: foreign } ) );
 
 	await expect( page.getByText( 'You are not allowed to see this.' ) ).toBeVisible();
 	await expect( page.locator( 'body' ) ).not.toContainText( 'Secreto de San José' );
@@ -26,7 +26,7 @@ test( 'a forged request against another group’s intention is refused', async (
 	createIntention( mine.id, {}, 'form' );
 	const foreign = createIntention( other.id, {}, 'form' );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-moderation' );
+	await page.goto( groupUrl( mine.id, 'moderation' ) );
 
 	// Reuse a genuine approve form, pointed at the other group's intention.
 	const form = page.locator( 'form.dfxpray-approve' );
@@ -42,19 +42,22 @@ test( 'leaders only see their own groups, and have no other WordPress permission
 	createIntention( other.id, { body: 'Of the other group' }, 'form' );
 	await login( page, 'leader1' );
 
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
 	await expect( page.locator( '.dfxpray-card h2' ) ).toHaveText( [ 'Santa Marta' ] );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-moderation' );
+	await expect( page.getByText( 'Manage groups' ) ).toHaveCount( 0 );
+	await page.goto( groupUrl( mine.id, 'moderation' ) );
 	await expect( page.locator( 'body' ) ).not.toContainText( 'Of the other group' );
-	await expect( page.locator( '.dfxpray-group-switcher' ) ).toHaveCount( 0 );
 
-	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'Groups' );
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Santa Marta' ] );
+	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'San José' );
+	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'Global settings' );
 	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'Posts' );
 	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'Dashboard' );
 
 	await page.goto( '/wp-admin/' );
-	expect( page.url() ).toContain( 'admin.php?page=dfxpray' );
+	expect( page.url() ).toContain( `admin.php?page=dfxpray-group-${ mine.id }` );
 
-	for ( const url of [ '/wp-admin/admin.php?page=dfxpray-groups', '/wp-admin/edit.php', '/wp-admin/users.php', '/wp-admin/options-general.php' ] ) {
+	for ( const url of [ groupUrl( other.id, 'moderation' ), '/wp-admin/admin.php?page=dfxpray-global', '/wp-admin/edit.php', '/wp-admin/users.php', '/wp-admin/options-general.php' ] ) {
 		await page.goto( url );
 		await expect( page.locator( 'body' ), url ).toContainText( /not allowed/ );
 	}
@@ -75,21 +78,28 @@ test( 'leaders can change their own password from their profile', async ( { page
 	php( "wp_set_password( 'leader1', get_user_by( 'login', 'leader1' )->ID ); echo 'null';" );
 } );
 
-test( 'a leader of two groups switches between them', async ( { page } ) => {
+test( 'a leader of two groups reaches each from its own menu entry, and always knows which one', async ( { page } ) => {
 	php( `DFXPRAY_Groups::get_instance()->set_leaders( ${ other.id }, array( get_user_by( 'login', 'leader1' )->ID, get_user_by( 'login', 'leader2' )->ID ) ); echo 'null';` );
 	createIntention( mine.id, { body: 'Pending in Santa Marta' }, 'form' );
 	createIntention( other.id, { body: 'Pending in San José' }, 'form' );
 	await login( page, 'leader1' );
 
+	expect( page.url() ).toContain( 'admin.php?page=dfxpray' );
 	await expect( page.locator( '.dfxpray-card h2' ) ).toHaveText( [ 'San José', 'Santa Marta' ] );
+	const submenu = page.locator( '#toplevel_page_dfxpray .wp-submenu a' );
+	await expect( submenu ).toHaveText( [ 'Groups', 'San José 1', 'Santa Marta 1' ] );
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-moderation' );
-	const switcher = page.getByLabel( 'Group:' );
-	await switcher.selectOption( { label: 'San José' } );
+	await submenu.filter( { hasText: 'San José' } ).click();
+	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'San José' );
 	await expect( page.locator( 'body' ) ).toContainText( 'Pending in San José' );
 	await expect( page.locator( 'body' ) ).not.toContainText( 'Pending in Santa Marta' );
 
-	await page.getByLabel( 'Group:' ).selectOption( { label: 'Santa Marta' } );
+	await page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Group settings' } ).click();
+	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'San José' );
+	await expect( page.locator( 'body' ) ).toContainText( other.slug );
+
+	await submenu.filter( { hasText: 'Santa Marta' } ).click();
+	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Santa Marta' );
 	await expect( page.locator( 'body' ) ).toContainText( 'Pending in Santa Marta' );
 } );
 
@@ -97,7 +107,7 @@ test( 'an intention moves between two groups led by the same leader', async ( { 
 	php( `DFXPRAY_Groups::get_instance()->set_leaders( ${ other.id }, array( get_user_by( 'login', 'leader1' )->ID ) ); echo 'null';` );
 	const id = createIntention( mine.id );
 	await login( page, 'leader1' );
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ id }` );
+	await page.goto( groupUrl( mine.id, 'intentions', { view: 'edit', id: id } ) );
 
 	await page.getByLabel( 'Move to' ).selectOption( { label: 'San José' } );
 	await page.getByRole( 'button', { name: 'Move', exact: true } ).click();

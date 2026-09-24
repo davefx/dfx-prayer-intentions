@@ -76,16 +76,27 @@ final class DFXPRAY_Admin_Actions {
 
 		$return = (string) ( $request['dfxpray_return'] ?? wp_get_referer() );
 		if ( $result['ok'] && 'save_intention' === $action && empty( $request['intention_id'] ) && ! empty( $result['id'] ) ) {
-			$return = DFXPRAY_Admin::get_instance()->url(
-				'dfxpray-intentions',
+			$return = DFXPRAY_Admin::get_instance()->group_url(
+				(int) $request['group_id'],
+				'intentions',
 				array(
 					'view' => 'edit',
 					'id'   => $result['id'],
 				)
 			);
 		}
+		if ( $result['ok'] && 'transfer' === $action ) {
+			$return = DFXPRAY_Admin::get_instance()->group_url(
+				(int) $request['group_id'],
+				'intentions',
+				array(
+					'view' => 'edit',
+					'id'   => (int) $request['intention_id'],
+				)
+			);
+		}
 		if ( $result['ok'] && 'delete_group' === $action ) {
-			$return = DFXPRAY_Admin::get_instance()->url( 'dfxpray-groups' );
+			$return = DFXPRAY_Admin::get_instance()->url( 'dfxpray' );
 		}
 
 		wp_safe_redirect( wp_validate_redirect( $return, DFXPRAY_Admin::get_instance()->url( 'dfxpray' ) ) );

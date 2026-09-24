@@ -47,7 +47,8 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | --- | --- |
 | Business rule (lifecycle, discretion, validation) | the service in `includes/` (`DFXPRAY_Intentions`, `DFXPRAY_Lifecycle`, `DFXPRAY_Discretion`…) |
 | Anything a leader does in the panel | a `do_<action>()` in `admin/class-admin-actions.php`, registered in `ACTIONS` with its permission scope; the view only renders a form through `DFXPRAY_Admin::form_open()` |
-| A panel screen | `admin/views/<name>.php`, registered in `DFXPRAY_Admin::PAGES` |
+| A task on a group (moderation, index…) | a tab: `admin/views/<name>.php`, registered in `DFXPRAY_Admin::TABS` and `tab_titles()`; link to it with `DFXPRAY_Admin::group_url( $group_id, $tab )` |
+| A site-wide screen | `DFXPRAY_Admin::render_page()` and `register_menu()`; the menu only holds "Groups", "Global settings" and one entry per group |
 | Text shared with the group (index, digest, alerts) | `DFXPRAY_Formatter`, `DFXPRAY_Index_Composer`, `DFXPRAY_Digest_Composer`, templates in `templates/` |
 | A setting | default and type in `DFXPRAY_Settings::defaults()`; add to `GLOBAL_ONLY` if leaders must not override it; field in `DFXPRAY_Admin::setting_fields()` and `setting_sections()` |
 | A delivery channel | a class implementing `DFXPRAY_Channel`, added in `DFXPRAY_Channels::all()` (third parties use the `dfxpray_channels` filter) |
@@ -56,7 +57,9 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 
 ## Invariants the tests guard
 
-- **No data crosses groups.** Every panel query is scoped to a group the
+- **No data crosses groups, and the group is always explicit.** A group's
+  work lives on its own page (`page=dfxpray-group-<id>&tab=…`); there is no
+  implicit "current group". Every panel query is scoped to a group the
   current user may manage (`DFXPRAY_Permissions`). Every action checks the
   group of its target, including second targets (merge, transfer). Add the
   new action to the IDOR data provider in `AdminActionsTest`.

@@ -67,7 +67,6 @@ final class DFXPRAY_Installer {
 		}
 
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'dfxpray\\_%' OR option_name LIKE '\\_transient\\_dfxpray\\_%' OR option_name LIKE '\\_transient\\_timeout\\_dfxpray\\_%'" ); // phpcs:ignore WordPress.DB
-		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key = 'dfxpray_active_group'" ); // phpcs:ignore WordPress.DB
 		wp_cache_flush();
 
 		remove_role( self::ROLE );

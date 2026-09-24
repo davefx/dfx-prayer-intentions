@@ -49,7 +49,7 @@ $dfxpray_from   = (int) array_search( $dfxpray_v['discretion'], array_keys( $dfx
 $dfxpray_open   = in_array( $dfxpray_v['status'], array( 'active', 'review' ), true );
 $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxpray_intention['group_id'] ?? $group_id ) );
 ?>
-<p><a href="<?php echo esc_url( $dfxpray_admin->url( 'dfxpray-intentions' ) ); ?>">&larr; <?php esc_html_e( 'Back to the list', 'dfx-prayer-intentions' ); ?></a></p>
+<p><a href="<?php echo esc_url( $dfxpray_admin->group_url( $group_id, 'intentions' ) ); ?>">&larr; <?php esc_html_e( 'Back to the list', 'dfx-prayer-intentions' ); ?></a></p>
 
 <div class="dfxpray-columns">
 	<div class="dfxpray-main">

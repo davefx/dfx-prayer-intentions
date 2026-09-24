@@ -103,33 +103,6 @@ class PermissionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * The active group is remembered per user and must be one of theirs.
-	 */
-	public function test_active_group(): void {
-		$groups = DFXPRAY_Groups::get_instance();
-		$c      = $groups->create( array( 'name' => 'C' ) );
-		$groups->set_leaders( $c, array( $this->leader ) );
-		$permissions = DFXPRAY_Permissions::get_instance();
-
-		$this->assertSame( $this->a, $permissions->get_active_group( $this->leader ) );
-
-		$this->assertTrue( $permissions->set_active_group( $c, $this->leader ) );
-		$this->assertSame( $c, $permissions->get_active_group( $this->leader ) );
-
-		$this->assertFalse( $permissions->set_active_group( $this->b, $this->leader ) );
-		$this->assertSame( $c, $permissions->get_active_group( $this->leader ) );
-	}
-
-	/**
-	 * A user with no groups has no active group.
-	 */
-	public function test_no_groups_means_no_active_group(): void {
-		$lonely = self::factory()->user->create( array( 'role' => 'dfxpray_leader' ) );
-
-		$this->assertSame( 0, DFXPRAY_Permissions::get_instance()->get_active_group( $lonely ) );
-	}
-
-	/**
 	 * The administrator grants the panel capability to other roles, and takes it back.
 	 */
 	public function test_panel_roles(): void {

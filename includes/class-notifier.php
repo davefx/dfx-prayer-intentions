@@ -50,13 +50,7 @@ final class DFXPRAY_Notifier {
 			return array();
 		}
 
-		$url   = add_query_arg(
-			array(
-				'page'  => 'dfxpray-moderation',
-				'group' => $group['id'],
-			),
-			admin_url( 'admin.php' )
-		);
+		$url   = DFXPRAY_Admin::get_instance()->group_url( $group['id'], 'moderation' );
 		$types = DFXPRAY_Lifecycle::get_instance()->types();
 		$who   = $intention['beneficiary_is_requester']
 			? $intention['requester_name']

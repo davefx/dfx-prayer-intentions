@@ -1,7 +1,7 @@
 /**
  * A site in Spanish, the plugin's base language.
  */
-const { test, expect, resetData, createGroup, createIntention, login, freeze, wp } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, freeze, wp } = require( '../helpers' );
 
 test.beforeAll( () => wp( [ 'site', 'switch-language', 'es_ES' ] ) );
 test.afterAll( () => wp( [ 'site', 'switch-language', 'en_US' ] ) );
@@ -29,8 +29,9 @@ test( 'the index reads like the specification', async ( { page } ) => {
 	createIntention( group.id, { requester_name: 'Javier Pérez', beneficiary_name: 'Antonio Pérez', relationship: 'padre de', type: 'deceased', reference_date: '2026-09-20', summary: 'por su eterno descanso' } );
 
 	await login( page, 'leader1' );
-	await expect( page.getByRole( 'heading', { name: 'Inicio' } ) ).toBeVisible();
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-index' );
+	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderación', 'Intenciones', 'Revisiones', 'Índice', 'Resumen diario', 'Ajustes del grupo', 'Actividad' ] );
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ).first() ).toHaveText( 'Grupos' );
+	await page.goto( groupUrl( group.id, 'index' ) );
 
 	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue(
 		[

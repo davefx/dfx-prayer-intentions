@@ -82,7 +82,7 @@ class DigestComposerTest extends DFXPRAY_Test_Case {
 
 		$this->assertStringContainsString( '*Leaders only*', $digest['leaders'] );
 		$this->assertStringContainsString( 'Pending moderation: 1', $digest['leaders'] );
-		$this->assertStringContainsString( admin_url( 'admin.php?page=dfxpray-moderation' ), $digest['leaders'] );
+		$this->assertStringContainsString( admin_url( 'admin.php?page=dfxpray-group-' . $this->group . '&tab=moderation' ), $digest['leaders'] );
 		$this->assertFalse( $digest['is_empty'] );
 	}
 

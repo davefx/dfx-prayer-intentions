@@ -68,35 +68,107 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Render a tab of a group's page (the leader's own group by default).
+	 *
+	 * @param string   $tab   Tab.
+	 * @param array    $query Query arguments.
+	 * @param int|null $group Group ID.
+	 */
+	private function tab( string $tab, array $query = array(), ?int $group = null ): string {
+		return $this->render( 'dfxpray-group-' . ( $group ?? $this->mine ), array_merge( array( 'tab' => $tab ), $query ) );
+	}
+
+	/**
 	 * Menu entries and who sees them.
 	 */
 	public function test_menu(): void {
 		global $submenu, $menu;
+		$second  = $this->make_group( 'Second', array( $this->leader ) );
 		$menu    = array();
 		$submenu = array();
 
 		DFXPRAY_Admin::get_instance()->register_menu();
 
-		$slugs = array_column( $submenu['dfxpray'], 2 );
-		foreach ( array( 'dfxpray', 'dfxpray-moderation', 'dfxpray-intentions', 'dfxpray-reviews', 'dfxpray-index', 'dfxpray-digest', 'dfxpray-settings', 'dfxpray-log' ) as $slug ) {
-			$this->assertContains( $slug, $slugs );
-		}
-		$this->assertNotContains( 'dfxpray-groups', $slugs );
-		$this->assertNotContains( 'dfxpray-global', $slugs );
+		$this->assertSame(
+			array( 'dfxpray', 'dfxpray-group-' . $this->mine, 'dfxpray-group-' . $second ),
+			array_column( $submenu['dfxpray'], 2 )
+		);
+		$this->assertSame( array( 'Groups', 'Mine', 'Second' ), array_map( 'wp_strip_all_tags', array_column( $submenu['dfxpray'], 0 ) ) );
 
 		$menu    = array();
 		$submenu = array();
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		DFXPRAY_Admin::get_instance()->register_menu();
-		$slugs = array_column( $submenu['dfxpray'], 2 );
-		$this->assertContains( 'dfxpray-groups', $slugs );
-		$this->assertContains( 'dfxpray-global', $slugs );
+		$this->assertSame(
+			array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $this->mine, 'dfxpray-group-' . $this->other, 'dfxpray-group-' . $second ),
+			array_column( $submenu['dfxpray'], 2 )
+		);
 	}
 
 	/**
-	 * Home shows counters for each of the user's groups only.
+	 * Each group entry shows its own pending count.
 	 */
-	public function test_home_counters(): void {
+	public function test_menu_pending_bubble_per_group(): void {
+		global $submenu, $menu;
+		$this->make_pending( $this->mine );
+		$this->make_pending( $this->mine );
+		$menu    = array();
+		$submenu = array();
+
+		DFXPRAY_Admin::get_instance()->register_menu();
+
+		$entry = array_values( array_filter( $submenu['dfxpray'], fn( $item ) => 'dfxpray-group-' . $this->mine === $item[2] ) )[0];
+		$this->assertStringContainsString( 'awaiting-mod', $entry[0] );
+		$this->assertStringContainsString( '>2<', $entry[0] );
+	}
+
+	/**
+	 * A group's page: its name, and one tab per task, each linked to the group.
+	 */
+	public function test_group_page_tabs(): void {
+		$html = $this->tab( 'moderation' );
+
+		$this->assertStringContainsString( '<h1>Mine</h1>', $html );
+		foreach ( array( 'moderation', 'intentions', 'reviews', 'index', 'digest', 'settings', 'log' ) as $tab ) {
+			$this->assertStringContainsString( 'page=dfxpray-group-' . $this->mine . '&#038;tab=' . $tab, $html );
+		}
+		$this->assertMatchesRegularExpression( '/nav-tab nav-tab-active"[^>]*>Moderation/', $html );
+	}
+
+	/**
+	 * Without a tab, a group's page opens on moderation.
+	 */
+	public function test_group_page_defaults_to_moderation(): void {
+		$this->make_pending( $this->mine, array( 'body' => 'Waiting text' ) );
+
+		$this->assertStringContainsString( 'Waiting text', $this->render( 'dfxpray-group-' . $this->mine ) );
+	}
+
+	/**
+	 * Another group's page is refused, whatever the tab.
+	 */
+	public function test_other_group_page_refused(): void {
+		$this->make_pending( $this->other, array( 'body' => 'Foreign pending text' ) );
+
+		foreach ( array( 'moderation', 'intentions', 'settings' ) as $tab ) {
+			$html = $this->tab( $tab, array(), $this->other );
+			$this->assertStringContainsString( 'not allowed', $html );
+			$this->assertStringNotContainsString( 'Foreign pending text', $html );
+			$this->assertStringNotContainsString( 'nav-tab', $html );
+		}
+	}
+
+	/**
+	 * Unknown tabs are refused.
+	 */
+	public function test_unknown_tab(): void {
+		$this->assertStringContainsString( 'not allowed', $this->tab( 'secrets' ) );
+	}
+
+	/**
+	 * The groups page shows counters for each of the user's groups only.
+	 */
+	public function test_groups_page_counters(): void {
 		$this->make_pending( $this->mine );
 		$this->make_pending( $this->other );
 
@@ -105,6 +177,8 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$this->assertStringContainsString( 'Mine', $html );
 		$this->assertStringNotContainsString( 'Other', $html );
 		$this->assertMatchesRegularExpression( '/data-count="pending"[^>]*>\s*1\s*</', $html );
+		$this->assertStringContainsString( 'page=dfxpray-group-' . $this->mine . '&#038;tab=moderation', $html );
+		$this->assertStringNotContainsString( 'name="leaders[]"', $html, 'Group management is for administrators.' );
 	}
 
 	/**
@@ -114,7 +188,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$this->make_pending( $this->mine, array( 'body' => 'My pending text' ) );
 		$this->make_pending( $this->other, array( 'body' => 'Foreign pending text' ) );
 
-		$html = $this->render( 'dfxpray-moderation' );
+		$html = $this->tab( 'moderation' );
 
 		$this->assertStringContainsString( 'My pending text', $html );
 		$this->assertStringNotContainsString( 'Foreign pending text', $html );
@@ -128,7 +202,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	public function test_detail_of_foreign_intention_refused(): void {
 		$foreign = $this->make_active( $this->other, array( 'body' => 'Foreign secret' ) );
 
-		$html = $this->render( 'dfxpray-intentions', array( 'view' => 'edit', 'id' => $foreign ) );
+		$html = $this->tab( 'intentions', array( 'view' => 'edit', 'id' => $foreign ) );
 
 		$this->assertStringNotContainsString( 'Foreign secret', $html );
 		$this->assertStringContainsString( 'not allowed', $html );
@@ -142,7 +216,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		DFXPRAY_Updates::get_instance()->add( $id, 'An update', true );
 		DFXPRAY_Comments::get_instance()->add( $id, 'A comment', 'call' );
 
-		$html = $this->render( 'dfxpray-intentions', array( 'view' => 'edit', 'id' => $id ) );
+		$html = $this->tab( 'intentions', array( 'view' => 'edit', 'id' => $id ) );
 
 		foreach ( array( 'Full text', '600 000 000', 'An update', 'A comment', 'value="add_comment"', 'value="add_update"', 'value="set_priority"', 'value="postpone"', 'value="ack_sent"', 'value="close"' ) as $needle ) {
 			$this->assertStringContainsString( $needle, $html );
@@ -157,7 +231,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$this->make_group( 'Second', array( $this->leader ) );
 		$id = $this->make_active( $this->mine );
 
-		$this->assertStringContainsString( 'value="transfer"', $this->render( 'dfxpray-intentions', array( 'view' => 'edit', 'id' => $id ) ) );
+		$this->assertStringContainsString( 'value="transfer"', $this->tab( 'intentions', array( 'view' => 'edit', 'id' => $id ) ) );
 	}
 
 	/**
@@ -167,7 +241,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$this->make_active( $this->mine, array( 'beneficiary_name' => 'Carmencita' ) );
 		$this->make_active( $this->mine, array( 'beneficiary_name' => 'Pablito' ) );
 
-		$html = $this->render( 'dfxpray-intentions', array( 's' => 'pabl' ) );
+		$html = $this->tab( 'intentions', array( 's' => 'pabl' ) );
 
 		$this->assertStringContainsString( 'Pablito', $html );
 		$this->assertStringNotContainsString( 'Carmencita', $html );
@@ -179,7 +253,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	public function test_index_screen(): void {
 		$this->make_active( $this->mine, array( 'summary' => 'Visible summary' ) );
 
-		$html = $this->render( 'dfxpray-index' );
+		$html = $this->tab( 'index' );
 
 		$this->assertStringContainsString( 'Visible summary', $html );
 		$this->assertStringContainsString( 'data-dfxpray-copy', $html );
@@ -188,7 +262,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		for ( $i = 0; $i < 60; $i++ ) {
 			$this->make_active( $this->mine, array( 'summary' => str_repeat( 'x', 90 ) ) );
 		}
-		$this->assertStringContainsString( '4,000', $this->render( 'dfxpray-index' ) );
+		$this->assertStringContainsString( '4,000', $this->tab( 'index' ) );
 	}
 
 	/**
@@ -197,7 +271,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	public function test_digest_screen(): void {
 		DFXPRAY_Scheduler::get_instance()->maybe_send_digest( $this->mine, true );
 
-		$html = $this->render( 'dfxpray-digest' );
+		$html = $this->tab( 'digest' );
 
 		$this->assertStringContainsString( 'Prayer digest', $html );
 		$this->assertSame( 2, substr_count( $html, 'data-dfxpray-copy' ) );
@@ -209,7 +283,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	public function test_settings_screen(): void {
 		$group = DFXPRAY_Groups::get_instance()->get( $this->mine );
 
-		$html = $this->render( 'dfxpray-settings' );
+		$html = $this->tab( 'settings' );
 
 		$this->assertStringContainsString( $group['slug'], $html );
 		$this->assertStringContainsString( 'name="settings[digest_time]"', $html );
@@ -221,7 +295,6 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	 * Admin screens refuse leaders.
 	 */
 	public function test_admin_screens_refuse_leaders(): void {
-		$this->assertStringContainsString( 'not allowed', $this->render( 'dfxpray-groups' ) );
 		$this->assertStringContainsString( 'not allowed', $this->render( 'dfxpray-global' ) );
 	}
 
@@ -231,7 +304,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	public function test_admin_screens(): void {
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 
-		$groups = $this->render( 'dfxpray-groups' );
+		$groups = $this->render( 'dfxpray' );
 		$this->assertStringContainsString( 'Mine', $groups );
 		$this->assertStringContainsString( 'Other', $groups );
 		$this->assertStringContainsString( 'name="leaders[]"', $groups );
@@ -242,38 +315,15 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * With a single group, no selector; with several, a selector.
-	 */
-	public function test_group_selector(): void {
-		$this->assertStringNotContainsString( 'dfxpray-group-switcher', $this->render( 'dfxpray-moderation' ) );
-
-		$this->make_group( 'Second', array( $this->leader ) );
-		$this->assertStringContainsString( 'dfxpray-group-switcher', $this->render( 'dfxpray-moderation' ) );
-	}
-
-	/**
-	 * The group query argument switches the active group, only to own groups.
-	 */
-	public function test_group_switch_by_query(): void {
-		$second = $this->make_group( 'Second', array( $this->leader ) );
-		$admin  = DFXPRAY_Admin::get_instance();
-
-		$_GET = array( 'group' => (string) $second );
-		$admin->handle_group_switch();
-		$this->assertSame( $second, DFXPRAY_Permissions::get_instance()->get_active_group() );
-
-		$_GET = array( 'group' => (string) $this->other );
-		$admin->handle_group_switch();
-		$this->assertSame( $second, DFXPRAY_Permissions::get_instance()->get_active_group() );
-	}
-
-	/**
 	 * Leaders land on the panel after logging in.
 	 */
 	public function test_login_redirect(): void {
 		$user = get_userdata( $this->leader );
 
-		$this->assertSame( admin_url( 'admin.php?page=dfxpray' ), apply_filters( 'login_redirect', admin_url(), '', $user ) );
+		$this->assertSame( admin_url( 'admin.php?page=dfxpray-group-' . $this->mine ), apply_filters( 'login_redirect', admin_url(), '', $user ), 'A single group: straight to it.' );
+
+		$this->make_group( 'Second', array( $this->leader ) );
+		$this->assertSame( admin_url( 'admin.php?page=dfxpray' ), apply_filters( 'login_redirect', admin_url(), '', $user ), 'Several groups: the groups page.' );
 
 		$subscriber = get_userdata( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
 		$this->assertSame( admin_url(), apply_filters( 'login_redirect', admin_url(), '', $subscriber ) );
@@ -286,7 +336,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		global $menu;
 		$admin = DFXPRAY_Admin::get_instance();
 
-		$this->assertSame( admin_url( 'admin.php?page=dfxpray' ), $admin->dashboard_redirect() );
+		$this->assertSame( admin_url( 'admin.php?page=dfxpray-group-' . $this->mine ), $admin->dashboard_redirect() );
 
 		$menu = array( 2 => array( 'Dashboard', 'read', 'index.php' ) );
 		$admin->hide_dashboard();
@@ -316,9 +366,15 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	 * @return array
 	 */
 	public function provide_pages(): array {
-		$pages = array( 'dfxpray', 'dfxpray-moderation', 'dfxpray-intentions', 'dfxpray-reviews', 'dfxpray-index', 'dfxpray-digest', 'dfxpray-settings', 'dfxpray-log', 'dfxpray-groups', 'dfxpray-global' );
+		$pages = array(
+			'groups' => array( 'dfxpray', '' ),
+			'global' => array( 'dfxpray-global', '' ),
+		);
+		foreach ( array( 'moderation', 'intentions', 'reviews', 'index', 'digest', 'settings', 'log' ) as $tab ) {
+			$pages[ $tab ] = array( 'group', $tab );
+		}
 
-		return array_combine( $pages, array_map( static fn( $p ) => array( $p ), $pages ) );
+		return $pages;
 	}
 
 	/**
@@ -326,10 +382,11 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	 *
 	 * @dataProvider provide_pages
 	 *
-	 * @param string $page Page slug.
+	 * @param string $page Page slug, or "group" for the leader's group.
+	 * @param string $tab  Tab of the group page.
 	 */
-	public function test_footer_on_every_screen( string $page ): void {
-		$html = $this->render( $page );
+	public function test_footer_on_every_screen( string $page, string $tab ): void {
+		$html = 'group' === $page ? $this->tab( $tab ) : $this->render( $page );
 
 		$this->assertStringContainsString( 'class="dfxpray-plugin-footer"', $html );
 		$this->assertStringContainsString( 'Prayer intentions management features provided via <strong>DFX Prayer Intentions</strong> plugin by <a href="https://davefx.com/en/wordpress-plugins/">David Marín Carreño</a>. A.M.D.G.', $html );

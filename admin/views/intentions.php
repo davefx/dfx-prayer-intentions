@@ -39,10 +39,11 @@ $dfxpray_filters   = array(
 
 $dfxpray_rows = DFXPRAY_Intentions::get_instance()->query( $group_id, array_filter( $dfxpray_filters ) );
 ?>
-<p><a class="page-title-action" href="<?php echo esc_url( $dfxpray_admin->url( 'dfxpray-intentions', array( 'view' => 'new' ) ) ); ?>"><?php esc_html_e( 'Add intention', 'dfx-prayer-intentions' ); ?></a></p>
+<p><a class="page-title-action" href="<?php echo esc_url( $dfxpray_admin->group_url( $group_id, 'intentions', array( 'view' => 'new' ) ) ); ?>"><?php esc_html_e( 'Add intention', 'dfx-prayer-intentions' ); ?></a></p>
 
 <form method="get" class="dfxpray-filters">
-	<input type="hidden" name="page" value="dfxpray-intentions">
+	<input type="hidden" name="page" value="<?php echo esc_attr( 'dfxpray-group-' . $group_id ); ?>">
+	<input type="hidden" name="tab" value="intentions">
 	<select name="status" aria-label="<?php esc_attr_e( 'Status', 'dfx-prayer-intentions' ); ?>">
 		<option value=""><?php esc_html_e( 'All statuses', 'dfx-prayer-intentions' ); ?></option>
 		<?php foreach ( $dfxpray_lifecycle->statuses() as $dfxpray_key => $dfxpray_label ) : ?>

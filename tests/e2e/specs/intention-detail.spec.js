@@ -1,7 +1,7 @@
 /**
  * The intention screen: comments, updates, quick actions and manual creation.
  */
-const { test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
 
 let group;
 
@@ -13,7 +13,7 @@ test.beforeEach( () => {
 test( 'comments are shared among leaders, signed when edited, and can become updates', async ( { page, browser } ) => {
 	const id = createIntention( group.id );
 	await login( page, 'leader1' );
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ id }` );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
 	await page.getByLabel( 'New comment' ).fill( 'Llamé a Luis, sigue ingresada.' );
 	await page.getByLabel( 'Type' ).first().selectOption( 'call' );
@@ -22,7 +22,7 @@ test( 'comments are shared among leaders, signed when edited, and can become upd
 
 	const other = await browser.newPage();
 	await login( other, 'leader2' );
-	await other.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ id }` );
+	await other.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 	await other.getByText( 'Edit', { exact: true } ).click();
 	await other.getByLabel( 'Comment', { exact: true } ).fill( 'Llamé a Luis: ya está en casa.' );
 	await other.getByRole( 'button', { name: 'Save', exact: true } ).click();
@@ -38,7 +38,7 @@ test( 'comments are shared among leaders, signed when edited, and can become upd
 test( 'quick actions: priority, acknowledgement, postponement', async ( { page } ) => {
 	const id = createIntention( group.id, { summary: 'quimioterapia' } );
 	await login( page, 'leader1' );
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ id }` );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
 	await page.getByRole( 'button', { name: 'Mark as high priority' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( '❗ Carmen, madre de Luis: quimioterapia' );
@@ -55,7 +55,7 @@ test( 'quick actions: priority, acknowledgement, postponement', async ( { page }
 test( 'visible names cannot reveal more than the discretion level allows', async ( { page } ) => {
 	const id = createIntention( group.id, { beneficiary_name: 'David Marín', summary: 'su operación' } );
 	await login( page, 'leader1' );
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ id }` );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
 	await page.getByLabel( 'Visible name of the beneficiary' ).fill( 'Nuestro hermano David Marín' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
@@ -71,7 +71,7 @@ test( 'visible names cannot reveal more than the discretion level allows', async
 
 test( 'a leader adds an intention by hand, with a key date', async ( { page } ) => {
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-intentions' );
+	await page.goto( groupUrl( group.id, 'intentions' ) );
 	await page.getByRole( 'link', { name: 'Add intention' } ).click();
 
 	await page.getByRole( 'textbox', { name: 'Requester', exact: true } ).fill( 'Javier Pérez' );
@@ -96,7 +96,7 @@ test( 'a leader adds an intention by hand, with a key date', async ( { page } ) 
 test( 'closing as answered adds a linked thanksgiving to the index', async ( { page } ) => {
 	const id = createIntention( group.id, { summary: 'busca trabajo', beneficiary_name: 'Pablo', relationship: '', type: 'ongoing' } );
 	await login( page, 'leader1' );
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ id }` );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
 	await page.getByLabel( 'Close as' ).selectOption( 'answered' );
 	await page.getByLabel( 'Answered: add a thanksgiving' ).check();
@@ -104,7 +104,7 @@ test( 'closing as answered adds a linked thanksgiving to the index', async ( { p
 	await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention closed.' );
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-index' );
+	await page.goto( groupUrl( group.id, 'index' ) );
 	const index = page.locator( '#dfxpray-index-text' );
 	await expect( index ).toHaveValue( /\*Thanksgiving\*\n• Pablo: por el trabajo encontrado/ );
 	await expect( index ).not.toHaveValue( /busca trabajo/ );
@@ -114,7 +114,7 @@ test( 'the list filters by kind, status and name', async ( { page } ) => {
 	createIntention( group.id, { beneficiary_name: 'Carmencita' } );
 	createIntention( group.id, { beneficiary_name: 'Pablito', type: 'event', reference_date: '2030-01-01' } );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-intentions' );
+	await page.goto( groupUrl( group.id, 'intentions' ) );
 
 	await page.getByLabel( 'Kind' ).selectOption( 'event' );
 	await page.getByRole( 'button', { name: 'Filter' } ).click();

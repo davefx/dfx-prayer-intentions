@@ -318,12 +318,12 @@ final class DFXPRAY_Digest_Composer {
 
 		if ( $counts['pending'] ) {
 			/* translators: 1: number of pending intentions, 2: link to the panel. */
-			$lines[] = sprintf( __( 'Pending moderation: %1$d – %2$s', 'dfx-prayer-intentions' ), $counts['pending'], $this->panel_url( 'dfxpray-moderation', $group_id ) );
+			$lines[] = sprintf( __( 'Pending moderation: %1$d – %2$s', 'dfx-prayer-intentions' ), $counts['pending'], DFXPRAY_Admin::get_instance()->group_url( $group_id, 'moderation' ) );
 		}
 
 		if ( $counts['review'] ) {
 			/* translators: 1: number of intentions in review, 2: link to the panel. */
-			$lines[] = sprintf( __( 'Reviews due: %1$d – %2$s', 'dfx-prayer-intentions' ), $counts['review'], $this->panel_url( 'dfxpray-reviews', $group_id ) );
+			$lines[] = sprintf( __( 'Reviews due: %1$d – %2$s', 'dfx-prayer-intentions' ), $counts['review'], DFXPRAY_Admin::get_instance()->group_url( $group_id, 'reviews' ) );
 		}
 
 		if ( DFXPRAY_Settings::get_instance()->get( 'digest_include_comments', $group_id ) ) {
@@ -338,21 +338,5 @@ final class DFXPRAY_Digest_Composer {
 		}
 
 		return $lines;
-	}
-
-	/**
-	 * Link to a panel screen of a group.
-	 *
-	 * @param string $page     Admin page slug.
-	 * @param int    $group_id Group ID.
-	 */
-	private function panel_url( string $page, int $group_id ): string {
-		return add_query_arg(
-			array(
-				'page'  => $page,
-				'group' => $group_id,
-			),
-			admin_url( 'admin.php' )
-		);
 	}
 }

@@ -2,7 +2,7 @@
  * Time-driven behaviour, with the plugin clock frozen: reviews, the daily
  * digest, hour alerts and delivery channels.
  */
-const { test, expect, resetData, createGroup, createIntention, login, freeze, tick, mails, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, freeze, tick, mails, php } = require( '../helpers' );
 
 let group;
 
@@ -20,11 +20,11 @@ test( 'due intentions go to review and stay in the index until a leader decides'
 	tick();
 	await login( page, 'leader1' );
 
-	await expect( page.locator( '[data-count="review"]' ) ).toHaveText( '1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-index' );
+	await expect( page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Reviews' } ) ).toHaveText( 'Reviews 1' );
+	await page.goto( groupUrl( group.id, 'index' ) );
 	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /examen de Pablo/ );
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-reviews' );
+	await page.goto( groupUrl( group.id, 'reviews' ) );
 	await page.getByRole( 'button', { name: 'Still current' } ).click();
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention kept active.' );
 	await expect( page.getByText( 'No reviews due.' ) ).toBeVisible();
@@ -48,7 +48,7 @@ test( 'the daily digest goes out at its time, once, and is kept in the panel', a
 	expect( digests[ 0 ].subject ).toContain( 'Prayer digest' );
 
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-digest' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
 	await expect( page.getByText( /Generated and sent on/ ) ).toBeVisible();
 	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /\*Today\*\n• 9:30 – Carmen, madre de Luis: operación/ );
 	await expect( page.locator( '#dfxpray-digest-shareable' ) ).not.toHaveValue( /Leaders only/ );
@@ -60,7 +60,7 @@ test( 'hour alerts, enabled from the group settings, go out before the event', a
 	createIntention( group.id, { type: 'event', reference_date: '2026-09-24', reference_time: '09:30', summary: 'operación', beneficiary_name: 'Carmen' } );
 
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-settings' );
+	await page.goto( groupUrl( group.id, 'settings' ) );
 	await page.locator( 'input[type="checkbox"][name="settings[channels][email][alerts]"]' ).check();
 	await page.getByLabel( 'Daily digest at' ).fill( '23:00' );
 	await page.getByRole( 'button', { name: 'Save settings' } ).click();
@@ -73,7 +73,7 @@ test( 'hour alerts, enabled from the group settings, go out before the event', a
 	expect( alerts ).toHaveLength( 1 );
 	expect( alerts[ 0 ].message ).toContain( 'At 9:30: Carmen, madre de Luis: operación. United in prayer.' );
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-digest' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
 	await expect( page.getByRole( 'heading', { name: 'Recent hour alerts' } ) ).toBeVisible();
 	await expect( page.locator( '#dfxpray-alert-0' ) ).toHaveValue( /At 9:30/ );
 } );
@@ -83,7 +83,7 @@ test( 'a late-night digest tells the group about tonight’s events, which get n
 	createIntention( group.id, { type: 'event', reference_date: '2026-09-25', reference_time: '06:30', summary: 'operación', beneficiary_name: 'Carmen' } );
 
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-settings' );
+	await page.goto( groupUrl( group.id, 'settings' ) );
 	await page.locator( 'input[type="checkbox"][name="settings[channels][email][alerts]"]' ).check();
 	await page.getByLabel( 'Daily digest at' ).fill( '23:30' );
 	await page.getByRole( 'button', { name: 'Save settings' } ).click();
@@ -101,7 +101,7 @@ test( 'a late-night digest tells the group about tonight’s events, which get n
 
 test( 'Telegram and webhook channels are configured per group and can be tested', async ( { page } ) => {
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-settings' );
+	await page.goto( groupUrl( group.id, 'settings' ) );
 
 	await page.getByLabel( 'Bot token' ).fill( '123:ABC' );
 	await page.getByLabel( 'Chat ID' ).fill( '-100555' );
@@ -120,14 +120,14 @@ test( 'Telegram and webhook channels are configured per group and can be tested'
 	expect( http.map( ( r ) => r.url ) ).toEqual( [ 'https://api.telegram.org/bot123:ABC/sendMessage', 'https://hooks.example.org/prayer' ] );
 	expect( JSON.parse( http[ 1 ].body ).event ).toBe( 'test' );
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-log' );
+	await page.goto( groupUrl( group.id, 'log' ) );
 	await expect( page.locator( '.dfxpray-table' ) ).toContainText( 'Delivered · webhook · test' );
 } );
 
 test( 'the digest can be generated and sent on demand', async ( { page } ) => {
 	createIntention( group.id, { summary: 'recién llegada' } );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-digest' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
 	await expect( page.getByText( /Preview: today’s digest has not been sent yet/ ) ).toBeVisible();
 
 	await page.getByRole( 'button', { name: 'Generate and send now' } ).click();

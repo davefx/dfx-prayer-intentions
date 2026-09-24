@@ -1,13 +1,13 @@
 /**
  * The site administrator manages groups, leaders and global settings.
  */
-const { test, expect, resetData, createGroup, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, login, php } = require( '../helpers' );
 
 test.beforeEach( () => resetData() );
 
 test( 'the administrator creates a group, assigns a leader, and the leader sees it', async ( { page, browser } ) => {
 	await login( page, 'admin' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-groups' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
 
 	const create = page.locator( '.dfxpray-card', { hasText: 'New group' } );
 	await create.getByLabel( 'Name' ).fill( 'Grupo San José' );
@@ -20,9 +20,11 @@ test( 'the administrator creates a group, assigns a leader, and the leader sees 
 	const url = ( await card.locator( 'code' ).textContent() ).trim();
 	expect( url ).toMatch( /\/prayer-requests-[a-z0-9]{8}\/$/ );
 
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings', 'Grupo San José' ] );
+
 	const leader = await browser.newPage();
 	await login( leader, 'leader1' );
-	await expect( leader.locator( '.dfxpray-card h2' ) ).toHaveText( [ 'Grupo San José' ] );
+	await expect( leader.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Grupo San José' );
 	await leader.close();
 
 	const form = await page.request.get( url );
@@ -32,7 +34,7 @@ test( 'the administrator creates a group, assigns a leader, and the leader sees 
 test( 'archiving a group closes its form; restoring opens it again', async ( { page } ) => {
 	const group = createGroup( 'Santa Marta' );
 	await login( page, 'admin' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-groups' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
 
 	await page.locator( '.dfxpray-group', { hasText: 'Santa Marta' } ).getByRole( 'button', { name: 'Archive' } ).click();
 	expect( ( await page.request.get( `/${ group.slug }/` ) ).status() ).toBe( 404 );
@@ -44,7 +46,7 @@ test( 'archiving a group closes its form; restoring opens it again', async ( { p
 test( 'deleting a group asks first and removes everything', async ( { page } ) => {
 	createGroup( 'Santa Marta' );
 	await login( page, 'admin' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-groups' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
 
 	const del = page.locator( '.dfxpray-group', { hasText: 'Santa Marta' } ).getByRole( 'button', { name: /Delete group/ } );
 	page.once( 'dialog', ( dialog ) => dialog.dismiss() );
@@ -60,7 +62,7 @@ test( 'deleting a group asks first and removes everything', async ( { page } ) =
 test( 'a new address can be generated; the old one stops working', async ( { page } ) => {
 	const group = createGroup( 'Santa Marta', [ 'leader1' ] );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-settings' );
+	await page.goto( groupUrl( group.id, 'settings' ) );
 	await expect( page.locator( 'body' ) ).toContainText( group.slug );
 
 	page.once( 'dialog', ( dialog ) => dialog.accept() );
@@ -84,7 +86,7 @@ test( 'global settings apply to groups unless a group overrides them', async ( {
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Settings saved.' );
 	await expect( page.getByLabel( /Delete closed and discarded intentions after/ ) ).toHaveValue( '60' );
 
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-settings&group=${ group.id }` );
+	await page.goto( groupUrl( group.id, 'settings' ) );
 	await expect( page.getByLabel( 'Deceased: days after the death' ) ).toHaveValue( '40' );
 	await expect( page.getByLabel( /Delete closed and discarded/ ) ).toHaveCount( 0 );
 } );

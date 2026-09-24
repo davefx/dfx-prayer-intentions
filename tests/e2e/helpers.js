@@ -41,7 +41,6 @@ function resetData() {
 		foreach ( DFXPRAY_Installer::get_instance()->get_table_names() as $t ) { $wpdb->query( "TRUNCATE TABLE {$t}" ); }
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'dfxpray\\\\_%' AND option_name NOT IN ('dfxpray_db_version')" );
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '\\\\_transient%dfxpray%'" );
-		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key = 'dfxpray_active_group'" );
 		wp_cache_flush();`,
 	] );
 }
@@ -92,7 +91,7 @@ function freeze( local ) {
 	if ( local ) {
 		wp( [ 'option', 'update', 'dfxpray_frozen_now', local ] );
 	} else {
-		wp( [ 'option', 'delete', 'dfxpray_frozen_now' ] );
+		wp( [ 'eval', "delete_option( 'dfxpray_frozen_now' );" ] );
 	}
 }
 
@@ -152,4 +151,17 @@ const test = base.test.extend( {
 	],
 } );
 
-module.exports = { test, expect: base.expect, wp, php, resetData, createGroup, createIntention, freeze, tick, mails, login };
+/**
+ * Panel URL of a tab of a group's page.
+ *
+ * @param {number} groupId Group.
+ * @param {string} tab     Tab.
+ * @param {Object} args    Extra query arguments.
+ * @return {string} URL path.
+ */
+function groupUrl( groupId, tab = 'moderation', args = {} ) {
+	const query = new URLSearchParams( { page: `dfxpray-group-${ groupId }`, tab, ...args } );
+	return `/wp-admin/admin.php?${ query }`;
+}
+
+module.exports = { groupUrl, test, expect: base.expect, wp, php, resetData, createGroup, createIntention, freeze, tick, mails, login };

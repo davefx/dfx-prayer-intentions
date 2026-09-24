@@ -1,7 +1,7 @@
 /**
  * A leader moderates requests and shares the index.
  */
-const { test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
 
 let group;
 
@@ -10,15 +10,27 @@ test.beforeEach( () => {
 	group = createGroup( 'Santa Marta', [ 'leader1', 'leader2' ] );
 } );
 
-test( 'leaders land on their panel after logging in, with their counters', async ( { page } ) => {
+test( 'a leader of a single group lands on that group, with its tabs and counters', async ( { page } ) => {
 	createIntention( group.id, { body: 'Pending one' }, 'form' );
 
 	await login( page, 'leader1' );
 
-	expect( page.url() ).toContain( 'admin.php?page=dfxpray' );
-	await expect( page.getByRole( 'heading', { name: 'Santa Marta' } ) ).toBeVisible();
-	await expect( page.locator( '[data-count="pending"]' ) ).toHaveText( '1' );
+	expect( page.url() ).toContain( `admin.php?page=dfxpray-group-${ group.id }` );
+	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Santa Marta' );
+	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderation 1', 'Intentions', 'Reviews', 'Index', 'Daily digest', 'Group settings', 'Activity' ] );
+	await expect( page.locator( '.dfxpray-tabs .nav-tab-active' ) ).toHaveText( /Moderation/ );
+	await expect( page.getByText( 'Pending one' ) ).toBeVisible();
+
+	const submenu = page.locator( '#toplevel_page_dfxpray .wp-submenu a' );
+	await expect( submenu ).toHaveText( [ 'Groups', 'Santa Marta 1' ] );
 	await expect( page.locator( '#adminmenu .awaiting-mod' ).first() ).toHaveText( '1' );
+
+	await page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Index' } ).click();
+	expect( page.url() ).toContain( `page=dfxpray-group-${ group.id }&tab=index` );
+	await expect( page.locator( '#dfxpray-index-text' ) ).toBeVisible();
+
+	await submenu.filter( { hasText: 'Groups' } ).click();
+	await expect( page.locator( '[data-count="pending"]' ) ).toHaveText( '1' );
 
 	const footer = page.locator( '.dfxpray-plugin-footer' );
 	await expect( footer ).toBeVisible();
@@ -35,7 +47,7 @@ test( 'leaders land on their panel after logging in, with their counters', async
 test( 'approving with a summary activates the intention and puts it in the index', async ( { page, context } ) => {
 	createIntention( group.id, { body: 'Mi madre está enferma, rezad por ella.', discretion: 'first_name' }, 'form' );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-moderation' );
+	await page.goto( groupUrl( group.id, 'moderation' ) );
 
 	const item = page.locator( '.dfxpray-moderation-item' );
 	await expect( item ).toContainText( 'Mi madre está enferma' );
@@ -48,7 +60,7 @@ test( 'approving with a summary activates the intention and puts it in the index
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention approved.' );
 	await expect( page.getByText( 'Nothing waiting for moderation.' ) ).toBeVisible();
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-index' );
+	await page.goto( groupUrl( group.id, 'index' ) );
 	const index = page.locator( '#dfxpray-index-text' );
 	await expect( index ).toHaveValue( /\*The sick and difficult situations\*\n• Carmen, madre de Luis: por su salud/ );
 	await expect( index ).not.toHaveValue( /enferma/ );
@@ -63,7 +75,7 @@ test( 'approving with a summary activates the intention and puts it in the index
 test( 'approving without a summary is refused', async ( { page } ) => {
 	const id = createIntention( group.id, {}, 'form' );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-moderation' );
+	await page.goto( groupUrl( group.id, 'moderation' ) );
 
 	await page.locator( '.dfxpray-moderation-item' ).getByLabel( 'Summary for the index' ).evaluate( ( input ) => input.removeAttribute( 'required' ) );
 	await page.getByRole( 'button', { name: 'Approve' } ).click();
@@ -77,7 +89,7 @@ test( 'spam is discarded and duplicates are merged into the existing intention',
 	const spam = createIntention( group.id, { body: 'Cheap watches' }, 'form' );
 	const duplicate = createIntention( group.id, { body: 'Same again', requester_name: 'Ana Pérez' }, 'form' );
 	await login( page, 'leader1' );
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-moderation' );
+	await page.goto( groupUrl( group.id, 'moderation' ) );
 
 	const spamCard = page.locator( '.dfxpray-moderation-item', { hasText: 'Cheap watches' } );
 	await spamCard.getByRole( 'button', { name: 'Discard' } ).click();
@@ -91,7 +103,7 @@ test( 'spam is discarded and duplicates are merged into the existing intention',
 	const statuses = php( `$i = DFXPRAY_Intentions::get_instance(); echo wp_json_encode( array( $i->get( ${ spam } )['status'], $i->get( ${ duplicate } )['close_reason'] ) );` );
 	expect( statuses ).toEqual( [ 'discarded', 'duplicate' ] );
 
-	await page.goto( `/wp-admin/admin.php?page=dfxpray-intentions&view=edit&id=${ existing }` );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: existing } ) );
 	await expect( page.locator( '.dfxpray-timeline' ).last() ).toContainText( 'Merged duplicate request from Ana Pérez' );
 } );
 
@@ -101,7 +113,7 @@ test( 'the index warns when it is too long for one message', async ( { page } ) 
 	}
 	await login( page, 'leader1' );
 
-	await page.goto( '/wp-admin/admin.php?page=dfxpray-index' );
+	await page.goto( groupUrl( group.id, 'index' ) );
 
 	await expect( page.locator( '.notice-warning' ) ).toContainText( 'over 4,000' );
 } );

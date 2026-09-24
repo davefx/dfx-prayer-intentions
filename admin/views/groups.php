@@ -1,6 +1,8 @@
 <?php
 /**
- * Groups (administrators): create, edit, assign leaders, archive, delete.
+ * Groups: a card per group the user may manage, with its counters and links
+ * to its tabs; below, for administrators, group management (create, edit,
+ * assign leaders, archive, delete).
  *
  * @package DFXPRAY
  */
@@ -9,7 +11,58 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$dfxpray_admin      = DFXPRAY_Admin::get_instance();
+$dfxpray_admin = DFXPRAY_Admin::get_instance();
+$dfxpray_ids   = DFXPRAY_Permissions::get_instance()->group_ids_for_user();
+$dfxpray_label = array(
+	'pending'  => __( 'Pending', 'dfx-prayer-intentions' ),
+	'review'   => __( 'In review', 'dfx-prayer-intentions' ),
+	'today'    => __( 'Events today', 'dfx-prayer-intentions' ),
+	'tomorrow' => __( 'Events tomorrow', 'dfx-prayer-intentions' ),
+);
+$dfxpray_link  = array(
+	'pending'  => 'moderation',
+	'review'   => 'reviews',
+	'today'    => 'intentions',
+	'tomorrow' => 'intentions',
+);
+
+if ( ! $dfxpray_ids ) {
+	echo '<div class="notice notice-info inline"><p>' . esc_html__( 'You are not assigned to any group yet. Ask the site administrator.', 'dfx-prayer-intentions' ) . '</p></div>';
+}
+?>
+<div class="dfxpray-cards">
+	<?php foreach ( $dfxpray_ids as $dfxpray_id ) : ?>
+		<?php
+		$dfxpray_g      = DFXPRAY_Groups::get_instance()->get( $dfxpray_id );
+		$dfxpray_counts = DFXPRAY_Intentions::get_instance()->counts( $dfxpray_id );
+		?>
+		<section class="dfxpray-card dfxpray-group-card">
+			<h2><a href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id ) ); ?>"><?php echo esc_html( $dfxpray_g['name'] ); ?></a></h2>
+			<ul class="dfxpray-counters">
+				<?php foreach ( $dfxpray_counts as $dfxpray_key => $dfxpray_value ) : ?>
+					<li>
+						<a href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, $dfxpray_link[ $dfxpray_key ] ) ); ?>">
+							<span class="dfxpray-count" data-count="<?php echo esc_attr( $dfxpray_key ); ?>"><?php echo esc_html( number_format_i18n( $dfxpray_value ) ); ?></span>
+							<span class="dfxpray-count-label"><?php echo esc_html( $dfxpray_label[ $dfxpray_key ] ); ?></span>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<p>
+				<a class="button" href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, 'index' ) ); ?>"><?php esc_html_e( 'Index', 'dfx-prayer-intentions' ); ?></a>
+				<a class="button" href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, 'digest' ) ); ?>"><?php esc_html_e( 'Daily digest', 'dfx-prayer-intentions' ); ?></a>
+				<a class="button" href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, 'intentions', array( 'view' => 'new' ) ) ); ?>"><?php esc_html_e( 'Add intention', 'dfx-prayer-intentions' ); ?></a>
+			</p>
+		</section>
+	<?php endforeach; ?>
+</div>
+<?php
+if ( ! DFXPRAY_Permissions::get_instance()->is_admin() ) {
+	return;
+}
+?>
+<h2 class="dfxpray-section-title"><?php esc_html_e( 'Manage groups', 'dfx-prayer-intentions' ); ?></h2>
+<?php
 $dfxpray_groups     = DFXPRAY_Groups::get_instance();
 $dfxpray_candidates = get_users(
 	array(
