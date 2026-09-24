@@ -1,0 +1,22 @@
+# Development tooling. None of it ships: the plugin has no runtime
+# dependencies and no build step.
+.git
+.gitignore
+.distignore
+.phpunit.cache
+.phpunit.result.cache
+composer.json
+composer.lock
+package.json
+package-lock.json
+node_modules
+phpunit.xml.dist
+phpcs.xml.dist
+playwright.config.js
+tests
+vendor
+bin
+dist
+README.md
+AGENTS.md
+CLAUDE.md

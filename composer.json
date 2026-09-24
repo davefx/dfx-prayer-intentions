@@ -1,0 +1,43 @@
+{
+    "name": "davefx/dfx-prayer-intentions",
+    "description": "Collect, moderate and share the prayer intentions of small intercession groups.",
+    "type": "wordpress-plugin",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "David Marín Carreño",
+            "homepage": "https://davefx.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpunit/phpunit": "^9.6",
+        "squizlabs/php_codesniffer": "^3.10",
+        "wp-coding-standards/wpcs": "^3.1",
+        "yoast/phpunit-polyfills": "^2.0 || ^3.0"
+    },
+    "scripts": {
+        "db:start": "tests/bin/start-db.sh",
+        "db:stop": "tests/bin/start-db.sh stop",
+        "install-tests": "tests/bin/install.sh",
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration",
+        "test:e2e": "npx playwright test",
+        "lint": "phpcs",
+        "lint:fix": "phpcbf"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "8.1"
+        }
+    }
+}

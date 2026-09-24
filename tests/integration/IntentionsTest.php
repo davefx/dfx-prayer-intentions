@@ -1,0 +1,518 @@
+<?php
+/**
+ * Tests for the intentions service.
+ *
+ * @package DFXPRAY
+ */
+
+/**
+ * Intentions behaviour.
+ */
+class IntentionsTest extends DFXPRAY_Test_Case {
+
+	use DFXPRAY_Intention_Factory;
+
+	/**
+	 * Service under test.
+	 *
+	 * @var DFXPRAY_Intentions
+	 */
+	private DFXPRAY_Intentions $intentions;
+
+	/**
+	 * A group.
+	 *
+	 * @var int
+	 */
+	private int $group;
+
+	/**
+	 * A leader of the group.
+	 *
+	 * @var int
+	 */
+	private int $leader;
+
+	/**
+	 * Set up.
+	 */
+	public function set_up(): void {
+		parent::set_up();
+		update_option( 'timezone_string', 'Europe/Madrid' );
+		$this->freeze_time( '2026-09-24 10:00' );
+		$this->intentions = DFXPRAY_Intentions::get_instance();
+		$this->leader     = self::factory()->user->create( array( 'role' => 'dfxpray_leader' ) );
+		$this->group      = $this->make_group( 'A', array( $this->leader ) );
+		wp_set_current_user( $this->leader );
+	}
+
+	/**
+	 * Form submissions enter as pending, with first-name discretion by default.
+	 */
+	public function test_form_submission_is_pending(): void {
+		$data = $this->form_data();
+		unset( $data['discretion'] );
+
+		$intention = $this->intentions->get( $this->make_pending( $this->group, $data ) );
+
+		$this->assertSame( 'pending', $intention['status'] );
+		$this->assertSame( 'form', $intention['source'] );
+		$this->assertSame( 'first_name', $intention['discretion'] );
+		$this->assertSame( 'normal', $intention['priority'] );
+		$this->assertSame( $this->group, $intention['group_id'] );
+		$this->assertSame( '', $intention['summary'] );
+		$this->assertNull( $intention['next_review'] );
+		$this->assertFalse( $intention['ack_sent'] );
+	}
+
+	/**
+	 * The form cannot set leader-only fields.
+	 */
+	public function test_form_cannot_set_leader_fields(): void {
+		$id = $this->make_pending(
+			$this->group,
+			array(
+				'summary'                => 'Injected',
+				'priority'               => 'high',
+				'requester_display_name' => 'X',
+			)
+		);
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( '', $intention['summary'] );
+		$this->assertSame( 'normal', $intention['priority'] );
+		$this->assertSame( '', $intention['requester_display_name'] );
+	}
+
+	/**
+	 * Manual creation is active at once, with a review date.
+	 */
+	public function test_manual_creation_is_active(): void {
+		$intention = $this->intentions->get( $this->make_active( $this->group ) );
+
+		$this->assertSame( 'active', $intention['status'] );
+		$this->assertSame( 'manual', $intention['source'] );
+		$this->assertSame( '2026-10-24', $intention['next_review'] );
+		$this->assertSame( '2026-09-24 10:00:00', $intention['activated_at'] );
+	}
+
+	/**
+	 * Manual creation needs a summary.
+	 */
+	public function test_manual_creation_requires_summary(): void {
+		$result = $this->intentions->create( $this->group, $this->form_data(), 'manual' );
+
+		$this->assertWPError( $result );
+		$this->assertSame( 'dfxpray_summary_required', $result->get_error_code() );
+	}
+
+	/**
+	 * Required fields.
+	 *
+	 * @return array
+	 */
+	public function provide_invalid_data(): array {
+		return array(
+			'no requester'          => array( array( 'requester_name' => '' ), 'dfxpray_requester_required' ),
+			'no beneficiary'        => array( array( 'beneficiary_name' => '' ), 'dfxpray_beneficiary_required' ),
+			'no text'               => array( array( 'body' => ' ' ), 'dfxpray_body_required' ),
+			'bad type'              => array( array( 'type' => 'party' ), 'dfxpray_type_invalid' ),
+			'event without date'    => array( array( 'type' => 'event' ), 'dfxpray_date_required' ),
+			'deceased without date' => array( array( 'type' => 'deceased' ), 'dfxpray_date_required' ),
+			'bad date'              => array( array( 'type' => 'event', 'reference_date' => '2026-02-31' ), 'dfxpray_date_invalid' ),
+			'bad time'              => array( array( 'type' => 'event', 'reference_date' => '2026-09-28', 'reference_time' => '9h' ), 'dfxpray_time_invalid' ),
+			'bad discretion'        => array( array( 'discretion' => 'public' ), 'dfxpray_discretion_invalid' ),
+			'long summary'          => array( array( 'summary' => str_repeat( 'a', 101 ) ), 'dfxpray_summary_too_long' ),
+		);
+	}
+
+	/**
+	 * Invalid data is refused with a precise error.
+	 *
+	 * @dataProvider provide_invalid_data
+	 *
+	 * @param array  $overrides Overrides.
+	 * @param string $code      Expected error code.
+	 */
+	public function test_validation( array $overrides, string $code ): void {
+		$result = $this->intentions->create( $this->group, $this->form_data( $overrides ), 'manual' );
+
+		$this->assertWPError( $result );
+		$this->assertSame( $code, $result->get_error_code() );
+	}
+
+	/**
+	 * "For me" copies the requester into the beneficiary.
+	 */
+	public function test_for_myself(): void {
+		$id = $this->make_pending(
+			$this->group,
+			array(
+				'beneficiary_is_requester' => '1',
+				'beneficiary_name'         => '',
+				'relationship'             => 'ignored',
+			)
+		);
+
+		$intention = $this->intentions->get( $id );
+		$this->assertTrue( $intention['beneficiary_is_requester'] );
+		$this->assertSame( 'Luis Gómez', $intention['beneficiary_name'] );
+		$this->assertSame( '', $intention['relationship'] );
+	}
+
+	/**
+	 * A time is kept only for events.
+	 */
+	public function test_time_only_for_events(): void {
+		$event    = $this->make_pending( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-28', 'reference_time' => '09:30' ) );
+		$deceased = $this->make_pending( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-09-20', 'reference_time' => '09:30' ) );
+
+		$this->assertSame( '09:30', $this->intentions->get( $event )['reference_time'] );
+		$this->assertNull( $this->intentions->get( $deceased )['reference_time'] );
+	}
+
+	/**
+	 * Key dates are stored as a sorted list and invalid ones dropped.
+	 */
+	public function test_key_dates(): void {
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-09-20',
+				'key_dates'      => array(
+					array( 'date' => '2026-10-20', 'label' => 'Misa de mes' ),
+					array( 'date' => '2026-09-22', 'time' => '17:00', 'label' => 'Funeral' ),
+					array( 'date' => 'nope', 'label' => 'Bad' ),
+					array( 'date' => '2026-09-23', 'label' => '' ),
+				),
+			)
+		);
+
+		$this->assertSame(
+			array(
+				array( 'date' => '2026-09-22', 'time' => '17:00', 'label' => 'Funeral' ),
+				array( 'date' => '2026-10-20', 'time' => '', 'label' => 'Misa de mes' ),
+			),
+			$this->intentions->get( $id )['key_dates']
+		);
+	}
+
+	/**
+	 * Approving needs a summary and activates the intention.
+	 */
+	public function test_approve(): void {
+		$id = $this->make_pending( $this->group );
+
+		$this->assertWPError( $this->intentions->approve( $id ) );
+		$this->assertTrue( $this->intentions->approve( $id, array( 'summary' => 'Por su salud' ) ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'active', $intention['status'] );
+		$this->assertSame( 'Por su salud', $intention['summary'] );
+		$this->assertSame( '2026-10-24', $intention['next_review'] );
+		$this->assertSame( 'intention_approved', DFXPRAY_Log::get_instance()->for_intention( $id )[0]['action'] );
+		$this->assertSame( $this->leader, DFXPRAY_Log::get_instance()->for_intention( $id )[0]['user_id'] );
+	}
+
+	/**
+	 * Approving an already active intention is refused.
+	 */
+	public function test_approve_twice_is_refused(): void {
+		$id = $this->make_active( $this->group );
+
+		$this->assertWPError( $this->intentions->approve( $id, array( 'summary' => 'x' ) ) );
+	}
+
+	/**
+	 * Discarding a pending intention.
+	 */
+	public function test_discard(): void {
+		$id = $this->make_pending( $this->group );
+
+		$this->assertTrue( $this->intentions->discard( $id, 'spam' ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'discarded', $intention['status'] );
+		$this->assertSame( 'spam', $intention['close_reason'] );
+		$this->assertSame( '2026-09-24 10:00:00', $intention['closed_at'] );
+	}
+
+	/**
+	 * Merging a duplicate keeps its text as a comment on the existing intention.
+	 */
+	public function test_merge_duplicate(): void {
+		$existing  = $this->make_active( $this->group );
+		$duplicate = $this->make_pending( $this->group, array( 'body' => 'Same request again.', 'requester_name' => 'Ana' ) );
+
+		$this->assertTrue( $this->intentions->merge( $duplicate, $existing ) );
+
+		$merged = $this->intentions->get( $duplicate );
+		$this->assertSame( 'discarded', $merged['status'] );
+		$this->assertSame( 'duplicate', $merged['close_reason'] );
+		$this->assertSame( $existing, $merged['linked_id'] );
+
+		$comments = DFXPRAY_Comments::get_instance()->for_intention( $existing );
+		$this->assertCount( 1, $comments );
+		$this->assertStringContainsString( 'Same request again.', $comments[0]['body'] );
+		$this->assertStringContainsString( 'Ana', $comments[0]['body'] );
+	}
+
+	/**
+	 * Merging across groups is refused.
+	 */
+	public function test_merge_across_groups_is_refused(): void {
+		$other     = $this->make_group( 'B', array( $this->leader ) );
+		$existing  = $this->make_active( $other );
+		$duplicate = $this->make_pending( $this->group );
+
+		$this->assertWPError( $this->intentions->merge( $duplicate, $existing ) );
+	}
+
+	/**
+	 * Due intentions move to review; others stay.
+	 */
+	public function test_process_due_moves_to_review(): void {
+		$due      = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-22' ) );
+		$not_due  = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-23' ) );
+		$pending  = $this->make_pending( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+
+		$this->assertSame( 1, $this->intentions->process_due() );
+
+		$this->assertSame( 'review', $this->intentions->get( $due )['status'] );
+		$this->assertSame( 'active', $this->intentions->get( $not_due )['status'] );
+		$this->assertSame( 'pending', $this->intentions->get( $pending )['status'] );
+		$this->assertSame( 0, DFXPRAY_Log::get_instance()->for_intention( $due )[0]['user_id'] );
+	}
+
+	/**
+	 * "Still current" reactivates with a new review date.
+	 */
+	public function test_keep_active(): void {
+		$id = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$this->intentions->process_due();
+
+		$this->assertTrue( $this->intentions->keep_active( $id ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'active', $intention['status'] );
+		$this->assertSame( '2026-10-24', $intention['next_review'] );
+	}
+
+	/**
+	 * Closing records the reason.
+	 */
+	public function test_close_with_reason(): void {
+		$id = $this->make_active( $this->group );
+
+		$this->assertWPError( $this->intentions->close( $id, 'bored' ) );
+		$this->assertTrue( $this->intentions->close( $id, 'withdrawn' ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'closed', $intention['status'] );
+		$this->assertSame( 'withdrawn', $intention['close_reason'] );
+		$this->assertSame( '2026-09-24 10:00:00', $intention['closed_at'] );
+	}
+
+	/**
+	 * Closing as answered can spawn a linked thanksgiving.
+	 */
+	public function test_close_answered_spawns_thanksgiving(): void {
+		$id = $this->make_active( $this->group, array( 'discretion' => 'initials', 'summary' => 'Busca trabajo' ) );
+
+		$new_id = $this->intentions->close( $id, 'answered', true, 'Por el trabajo encontrado' );
+
+		$this->assertIsInt( $new_id );
+		$thanks = $this->intentions->get( $new_id );
+		$this->assertSame( 'thanksgiving', $thanks['type'] );
+		$this->assertSame( 'active', $thanks['status'] );
+		$this->assertSame( 'Por el trabajo encontrado', $thanks['summary'] );
+		$this->assertSame( $id, $thanks['linked_id'] );
+		$this->assertSame( 'initials', $thanks['discretion'] );
+		$this->assertSame( '2026-09-24', $thanks['reference_date'] );
+		$this->assertSame( '2026-10-01', $thanks['next_review'] );
+		$this->assertSame( $new_id, $this->intentions->get( $id )['linked_id'] );
+	}
+
+	/**
+	 * A deceased intention cannot spawn a thanksgiving.
+	 */
+	public function test_deceased_cannot_spawn_thanksgiving(): void {
+		$id = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-09-20' ) );
+
+		$this->assertTrue( $this->intentions->close( $id, 'expired', true ) );
+	}
+
+	/**
+	 * Closed intentions cannot be reopened.
+	 */
+	public function test_closed_is_final(): void {
+		$id = $this->make_active( $this->group );
+		$this->intentions->close( $id, 'answered' );
+
+		$this->assertWPError( $this->intentions->keep_active( $id ) );
+		$this->assertWPError( $this->intentions->close( $id, 'answered' ) );
+	}
+
+	/**
+	 * Leaders can harden discretion but not relax it.
+	 */
+	public function test_update_discretion_hardening(): void {
+		$id = $this->make_active( $this->group, array( 'discretion' => 'initials' ) );
+
+		$this->assertWPError( $this->intentions->update( $id, array( 'discretion' => 'first_name' ) ) );
+		$this->assertTrue( $this->intentions->update( $id, array( 'discretion' => 'anonymous' ) ) );
+		$this->assertSame( 'anonymous', $this->intentions->get( $id )['discretion'] );
+	}
+
+	/**
+	 * Visible names are validated against the level and logged.
+	 */
+	public function test_update_visible_names(): void {
+		$id = $this->make_active( $this->group, array( 'beneficiary_name' => 'David Marín' ) );
+
+		$this->assertWPError( $this->intentions->update( $id, array( 'beneficiary_display_name' => 'Nuestro hermano David Marín' ) ) );
+		$this->assertTrue( $this->intentions->update( $id, array( 'beneficiary_display_name' => 'Nuestro hermano David' ) ) );
+
+		$this->assertSame( 'Nuestro hermano David', $this->intentions->get( $id )['beneficiary_display_name'] );
+
+		$entry = DFXPRAY_Log::get_instance()->for_intention( $id )[0];
+		$this->assertSame( 'visible_name_changed', $entry['action'] );
+		$this->assertSame( 'beneficiary', $entry['details']['person'] );
+		$this->assertSame( '', $entry['details']['old'] );
+		$this->assertSame( 'Nuestro hermano David', $entry['details']['new'] );
+	}
+
+	/**
+	 * Visible names are rechecked when the level hardens.
+	 */
+	public function test_visible_names_cleared_when_level_hides_names(): void {
+		$id = $this->make_active( $this->group, array( 'beneficiary_name' => 'David Marín' ) );
+		$this->intentions->update( $id, array( 'beneficiary_display_name' => 'Hermano David' ) );
+
+		$this->intentions->update( $id, array( 'discretion' => 'initials' ) );
+
+		$this->assertSame( '', $this->intentions->get( $id )['beneficiary_display_name'] );
+	}
+
+	/**
+	 * Changing the date of an active event recomputes the review date.
+	 */
+	public function test_update_date_recomputes_review(): void {
+		$id = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-28' ) );
+
+		$this->intentions->update( $id, array( 'reference_date' => '2026-10-05' ) );
+
+		$this->assertSame( '2026-10-07', $this->intentions->get( $id )['next_review'] );
+	}
+
+	/**
+	 * Priority, postponement and acknowledgement.
+	 */
+	public function test_quick_actions(): void {
+		$id = $this->make_active( $this->group );
+
+		$this->assertTrue( $this->intentions->set_priority( $id, 'high' ) );
+		$this->assertWPError( $this->intentions->set_priority( $id, 'urgent' ) );
+		$this->assertTrue( $this->intentions->postpone( $id, '2026-12-01' ) );
+		$this->assertWPError( $this->intentions->postpone( $id, '2026-09-01' ) );
+		$this->assertTrue( $this->intentions->mark_ack_sent( $id ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'high', $intention['priority'] );
+		$this->assertSame( '2026-12-01', $intention['next_review'] );
+		$this->assertTrue( $intention['ack_sent'] );
+
+		$comments = DFXPRAY_Comments::get_instance()->for_intention( $id );
+		$this->assertCount( 1, $comments );
+		$this->assertSame( 'contact', $comments[0]['type'] );
+		$this->assertSame( $this->leader, $comments[0]['author_id'] );
+	}
+
+	/**
+	 * Marking the acknowledgement twice adds a single comment.
+	 */
+	public function test_ack_is_idempotent(): void {
+		$id = $this->make_active( $this->group );
+
+		$this->intentions->mark_ack_sent( $id );
+		$this->intentions->mark_ack_sent( $id );
+
+		$this->assertCount( 1, DFXPRAY_Comments::get_instance()->for_intention( $id ) );
+	}
+
+	/**
+	 * Transfer requires managing both groups and is logged in both.
+	 */
+	public function test_transfer(): void {
+		$b  = $this->make_group( 'B', array( $this->leader ) );
+		$c  = $this->make_group( 'C' );
+		$id = $this->make_active( $this->group );
+
+		$this->assertWPError( $this->intentions->transfer( $id, $c ) );
+		$this->assertTrue( $this->intentions->transfer( $id, $b ) );
+
+		$this->assertSame( $b, $this->intentions->get( $id )['group_id'] );
+		$this->assertCount( 1, DFXPRAY_Log::get_instance()->for_group( $this->group, array( 'intention_transferred_out' ) ) );
+		$this->assertCount( 1, DFXPRAY_Log::get_instance()->for_group( $b, array( 'intention_transferred_in' ) ) );
+	}
+
+	/**
+	 * Listing filters.
+	 */
+	public function test_query_filters(): void {
+		$a = $this->make_active( $this->group, array( 'beneficiary_name' => 'Carmen' ) );
+		$b = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-30', 'beneficiary_name' => 'Pablo' ) );
+		$this->intentions->set_priority( $b, 'high' );
+		$c     = $this->make_pending( $this->group );
+		$other = $this->make_active( $this->make_group( 'B' ) );
+
+		$ids = fn( $args ) => array_column( $this->intentions->query( $this->group, $args ), 'id' );
+
+		$this->assertEqualsCanonicalizing( array( $a, $b, $c ), $ids( array() ) );
+		$this->assertSame( array( $c ), $ids( array( 'status' => 'pending' ) ) );
+		$this->assertSame( array( $b ), $ids( array( 'type' => 'event' ) ) );
+		$this->assertSame( array( $b ), $ids( array( 'priority' => 'high' ) ) );
+		$this->assertSame( array( $b ), $ids( array( 'search' => 'pab' ) ) );
+		$this->assertSame( array( $b ), $ids( array( 'date_from' => '2026-09-29' ) ) );
+		$this->assertNotContains( $other, $ids( array() ) );
+	}
+
+	/**
+	 * Home counters.
+	 */
+	public function test_counts(): void {
+		$this->make_pending( $this->group );
+		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-24' ) );
+		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25' ) );
+		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25' ) );
+		$due = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$this->intentions->process_due();
+
+		$this->assertSame(
+			array(
+				'pending'  => 1,
+				'review'   => 1,
+				'today'    => 1,
+				'tomorrow' => 2,
+			),
+			$this->intentions->counts( $this->group )
+		);
+	}
+
+	/**
+	 * Deleting cascades to updates, comments and log.
+	 */
+	public function test_delete_cascades(): void {
+		$id = $this->make_active( $this->group );
+		DFXPRAY_Updates::get_instance()->add( $id, 'Update' );
+		DFXPRAY_Comments::get_instance()->add( $id, 'Comment' );
+
+		$this->intentions->delete( array( $id ) );
+
+		$this->assertNull( $this->intentions->get( $id ) );
+		$this->assertSame( array(), DFXPRAY_Updates::get_instance()->for_intention( $id ) );
+		$this->assertSame( array(), DFXPRAY_Comments::get_instance()->for_intention( $id ) );
+		$this->assertSame( array(), DFXPRAY_Log::get_instance()->for_intention( $id ) );
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "dfxpray/form",
+	"version": "26.09.24",
+	"title": "Prayer request form",
+	"category": "widgets",
+	"icon": "heart",
+	"description": "Public form where anyone can send a prayer intention to a group.",
+	"keywords": [ "prayer", "intention", "request" ],
+	"textdomain": "dfx-prayer-intentions",
+	"attributes": {
+		"groupId": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"editorScript": "file:./editor.js"
+}

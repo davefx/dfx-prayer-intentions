@@ -1,0 +1,13 @@
+{
+  "name": "dfx-prayer-intentions",
+  "private": true,
+  "description": "End-to-end tests for DFX Prayer Intentions.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "e2e:setup": "tests/e2e/bin/setup-site.sh",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

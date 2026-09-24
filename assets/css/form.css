@@ -1,0 +1,93 @@
+.dfxpray-form {
+	max-width: 40rem;
+	margin: 0 auto;
+}
+
+.dfxpray-form__step {
+	border: 0;
+	margin: 0 0 1.5rem;
+	padding: 0;
+}
+
+.dfxpray-form__step legend {
+	font-weight: 700;
+	font-size: 1.1em;
+	margin-bottom: 0.5rem;
+}
+
+.dfxpray-form label {
+	display: block;
+	margin-bottom: 0.25rem;
+}
+
+.dfxpray-form input[type="text"],
+.dfxpray-form input[type="date"],
+.dfxpray-form input[type="time"],
+.dfxpray-form textarea {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.5rem;
+	font: inherit;
+}
+
+.dfxpray-form small {
+	display: block;
+	opacity: 0.75;
+	margin-top: 0.25rem;
+}
+
+.dfxpray-form__choice,
+.dfxpray-form__inline {
+	display: flex !important;
+	gap: 0.5rem;
+	align-items: baseline;
+	margin: 0.35rem 0;
+}
+
+.dfxpray-form__choice small {
+	display: inline;
+}
+
+.dfxpray-form__trap {
+	position: absolute !important;
+	left: -9999px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.dfxpray-form__error {
+	border-left: 4px solid #b32d2e;
+	background: #fcf0f1;
+	color: #1e1e1e;
+	padding: 0.75rem 1rem;
+}
+
+.dfxpray-form--sent p {
+	border-left: 4px solid #00a32a;
+	background: #edfaef;
+	color: #1e1e1e;
+	padding: 1rem;
+}
+
+.dfxpray-form__submit {
+	padding: 0.75rem 1.5rem;
+	font: inherit;
+	cursor: pointer;
+}
+
+.dfxpray-form [hidden] {
+	display: none !important;
+}
+
+.dfxpray-page {
+	margin: 0;
+	padding: 1rem;
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	line-height: 1.5;
+}
+
+.dfxpray-page__main {
+	max-width: 40rem;
+	margin: 0 auto;
+}

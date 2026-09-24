@@ -1,0 +1,1823 @@
+# Copyright (C) 2026 David Marín Carreño
+# This file is distributed under the GPL v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.09.24\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-24T10:50:07+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: dfx-prayer-intentions\n"
+
+#. Plugin Name of the plugin
+#: dfx-prayer-intentions.php
+msgid "DFX Prayer Intentions – Prayer Requests for Small Groups"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: dfx-prayer-intentions.php
+msgid "https://github.com/davefx/dfx-prayer-intentions"
+msgstr ""
+
+#. Description of the plugin
+#: dfx-prayer-intentions.php
+msgid "Collect, moderate and share the prayer intentions of small intercession groups: public request form, lifecycle by type, WhatsApp-ready index and daily digest."
+msgstr ""
+
+#. Author of the plugin
+#: dfx-prayer-intentions.php
+msgid "David Marín Carreño"
+msgstr ""
+
+#. Author URI of the plugin
+#: dfx-prayer-intentions.php
+msgid "https://davefx.com"
+msgstr ""
+
+#: admin/class-admin-actions.php:104
+msgid "Unknown action."
+msgstr ""
+
+#: admin/class-admin-actions.php:108
+msgid "The link has expired. Please try again."
+msgstr ""
+
+#: admin/class-admin-actions.php:112
+msgid "You are not allowed to do that."
+msgstr ""
+
+#: admin/class-admin-actions.php:426
+msgid "The group does not exist."
+msgstr ""
+
+#: admin/class-admin-actions.php:540
+msgid "Intention approved."
+msgstr ""
+
+#: admin/class-admin-actions.php:541
+msgid "Intention discarded."
+msgstr ""
+
+#: admin/class-admin-actions.php:542
+msgid "Duplicate merged."
+msgstr ""
+
+#: admin/class-admin-actions.php:543
+msgid "Intention saved."
+msgstr ""
+
+#: admin/class-admin-actions.php:544
+msgid "Comment added."
+msgstr ""
+
+#: admin/class-admin-actions.php:545
+msgid "Comment updated."
+msgstr ""
+
+#: admin/class-admin-actions.php:546
+msgid "Comment deleted."
+msgstr ""
+
+#: admin/class-admin-actions.php:547
+msgid "Comment turned into an update."
+msgstr ""
+
+#: admin/class-admin-actions.php:548
+msgid "Update added."
+msgstr ""
+
+#: admin/class-admin-actions.php:549
+msgid "Priority changed."
+msgstr ""
+
+#: admin/class-admin-actions.php:550
+msgid "Review postponed."
+msgstr ""
+
+#: admin/class-admin-actions.php:551
+msgid "Acknowledgement marked as sent."
+msgstr ""
+
+#: admin/class-admin-actions.php:552
+msgid "Intention moved to the other group."
+msgstr ""
+
+#: admin/class-admin-actions.php:553
+msgid "Intention kept active."
+msgstr ""
+
+#: admin/class-admin-actions.php:554
+msgid "Intention closed."
+msgstr ""
+
+#: admin/class-admin-actions.php:555
+#: admin/class-admin-actions.php:563
+msgid "Settings saved."
+msgstr ""
+
+#: admin/class-admin-actions.php:556
+msgid "The form has a new address. The old one no longer works."
+msgstr ""
+
+#: admin/class-admin-actions.php:557
+msgid "Test message sent."
+msgstr ""
+
+#: admin/class-admin-actions.php:558
+msgid "Digest generated and sent."
+msgstr ""
+
+#: admin/class-admin-actions.php:559
+msgid "Group saved."
+msgstr ""
+
+#: admin/class-admin-actions.php:560
+msgid "Group archived."
+msgstr ""
+
+#: admin/class-admin-actions.php:561
+msgid "Group restored."
+msgstr ""
+
+#: admin/class-admin-actions.php:562
+msgid "Group deleted."
+msgstr ""
+
+#: admin/class-admin-actions.php:566
+msgid "Done."
+msgstr ""
+
+#: admin/class-admin.php:65
+#: admin/class-admin.php:116
+#: includes/class-privacy.php:48
+#: includes/class-privacy.php:63
+#: includes/class-privacy.php:108
+msgid "Prayer intentions"
+msgstr ""
+
+#: admin/class-admin.php:85
+msgid "Home"
+msgstr ""
+
+#: admin/class-admin.php:86
+msgid "Moderation"
+msgstr ""
+
+#: admin/class-admin.php:87
+msgid "Intentions"
+msgstr ""
+
+#: admin/class-admin.php:88
+msgid "Reviews"
+msgstr ""
+
+#: admin/class-admin.php:89
+#: admin/views/home.php:54
+#: admin/views/index.php:40
+msgid "Index"
+msgstr ""
+
+#: admin/class-admin.php:90
+#: admin/views/home.php:55
+#: admin/views/settings.php:25
+msgid "Daily digest"
+msgstr ""
+
+#: admin/class-admin.php:91
+msgid "Group settings"
+msgstr ""
+
+#: admin/class-admin.php:92
+msgid "Activity"
+msgstr ""
+
+#: admin/class-admin.php:93
+msgid "Groups"
+msgstr ""
+
+#: admin/class-admin.php:94
+msgid "Global settings"
+msgstr ""
+
+#: admin/class-admin.php:129
+#: admin/views/home.php:28
+msgid "You are not assigned to any group yet. Ask the site administrator."
+msgstr ""
+
+#: admin/class-admin.php:175
+msgid "You are not allowed to see this."
+msgstr ""
+
+#: admin/class-admin.php:265
+msgid "Copied!"
+msgstr ""
+
+#: admin/class-admin.php:266
+#: admin/views/partials/copy-box.php:20
+msgid "Copy"
+msgstr ""
+
+#: admin/class-admin.php:267
+msgid "This cannot be undone. Continue?"
+msgstr ""
+
+#: admin/class-admin.php:333
+msgid "Prayer leader"
+msgstr ""
+
+#: admin/class-admin.php:346
+msgid "One-off events: days after the date"
+msgstr ""
+
+#: admin/class-admin.php:347
+msgid "After that, the intention goes to review."
+msgstr ""
+
+#: admin/class-admin.php:351
+msgid "Deceased: days after the death"
+msgstr ""
+
+#: admin/class-admin.php:355
+msgid "Ongoing situations: review every (days)"
+msgstr ""
+
+#: admin/class-admin.php:359
+msgid "Thanksgiving: days"
+msgstr ""
+
+#: admin/class-admin.php:363
+msgid "“Still current”: days until the next review"
+msgstr ""
+
+#: admin/class-admin.php:367
+msgid "Digest: recently departed during (days)"
+msgstr ""
+
+#: admin/class-admin.php:371
+msgid "Message after sending the form"
+msgstr ""
+
+#: admin/class-admin.php:375
+msgid "Index header"
+msgstr ""
+
+#: admin/class-admin.php:376
+#: admin/class-admin.php:390
+msgid "{date} is replaced with the date."
+msgstr ""
+
+#: admin/class-admin.php:380
+msgid "Index footer"
+msgstr ""
+
+#: admin/class-admin.php:381
+msgid "For example, a short prayer."
+msgstr ""
+
+#: admin/class-admin.php:385
+msgid "Emojis in the index sections"
+msgstr ""
+
+#: admin/class-admin.php:389
+msgid "Digest header"
+msgstr ""
+
+#: admin/class-admin.php:394
+msgid "Digest footer"
+msgstr ""
+
+#: admin/class-admin.php:398
+msgid "Include recent internal comments in the leaders’ digest"
+msgstr ""
+
+#: admin/class-admin.php:402
+msgid "Daily digest at"
+msgstr ""
+
+#: admin/class-admin.php:406
+msgid "When there is nothing new"
+msgstr ""
+
+#: admin/class-admin.php:408
+msgid "Send a short version"
+msgstr ""
+
+#: admin/class-admin.php:409
+msgid "Send nothing"
+msgstr ""
+
+#: admin/class-admin.php:414
+msgid "Hour alerts: minutes before"
+msgstr ""
+
+#: admin/class-admin.php:418
+msgid "Second alert at the exact time"
+msgstr ""
+
+#: admin/class-admin.php:422
+msgid "Quiet hours from"
+msgstr ""
+
+#: admin/class-admin.php:423
+msgid "Alerts are never sent in quiet hours. The digest before them lists those events; if none did, an early alert goes out just before quiet hours begin."
+msgstr ""
+
+#: admin/class-admin.php:427
+msgid "Quiet hours until"
+msgstr ""
+
+#: admin/class-admin.php:431
+msgid "Delete closed and discarded intentions after (days)"
+msgstr ""
+
+#: admin/class-admin.php:432
+msgid "Including their updates, comments and history."
+msgstr ""
+
+#: admin/class-admin.php:436
+msgid "Beginning of the form addresses"
+msgstr ""
+
+#: admin/class-admin.php:437
+msgid "Applies to new addresses. A random part is always added."
+msgstr ""
+
+#: admin/class-admin.php:441
+msgid "Maximum requests per hour from one connection"
+msgstr ""
+
+#: admin/class-admin.php:445
+msgid "Cloudflare Turnstile site key"
+msgstr ""
+
+#: admin/class-admin.php:446
+msgid "Optional. Leave both keys empty to disable it."
+msgstr ""
+
+#: admin/class-admin.php:450
+msgid "Cloudflare Turnstile secret key"
+msgstr ""
+
+#: admin/class-admin.php:454
+msgid "Delete all data when the plugin is uninstalled"
+msgstr ""
+
+#: admin/class-admin.php:467
+msgid "Deadlines"
+msgstr ""
+
+#: admin/class-admin.php:468
+msgid "Texts"
+msgstr ""
+
+#: admin/class-admin.php:469
+msgid "Schedules"
+msgstr ""
+
+#: admin/class-admin.php:475
+msgid "Data and protection"
+msgstr ""
+
+#: admin/class-admin.php:491
+msgid "Request received from the form"
+msgstr ""
+
+#: admin/class-admin.php:492
+msgid "Intention added"
+msgstr ""
+
+#: admin/class-admin.php:493
+msgid "Approved"
+msgstr ""
+
+#: admin/class-admin.php:494
+#: includes/class-lifecycle.php:55
+msgid "Discarded"
+msgstr ""
+
+#: admin/class-admin.php:495
+msgid "Duplicate merged into it"
+msgstr ""
+
+#: admin/class-admin.php:496
+msgid "Edited"
+msgstr ""
+
+#: admin/class-admin.php:497
+msgid "Visible name changed"
+msgstr ""
+
+#: admin/class-admin.php:498
+msgid "Review date reached"
+msgstr ""
+
+#: admin/class-admin.php:499
+msgid "Kept active"
+msgstr ""
+
+#: admin/class-admin.php:500
+#: includes/class-lifecycle.php:54
+msgid "Closed"
+msgstr ""
+
+#: admin/class-admin.php:501
+#: admin/views/intention-edit.php:64
+#: admin/views/intention-edit.php:303
+msgid "Acknowledgement sent"
+msgstr ""
+
+#: admin/class-admin.php:502
+msgid "Moved to another group"
+msgstr ""
+
+#: admin/class-admin.php:503
+msgid "Received from another group"
+msgstr ""
+
+#: admin/class-admin.php:504
+msgid "Update added"
+msgstr ""
+
+#: admin/class-admin.php:505
+msgid "Comment added"
+msgstr ""
+
+#: admin/class-admin.php:506
+msgid "Comment edited"
+msgstr ""
+
+#: admin/class-admin.php:507
+msgid "Comment deleted"
+msgstr ""
+
+#: admin/class-admin.php:508
+msgid "Comment turned into an update"
+msgstr ""
+
+#: admin/class-admin.php:509
+msgid "Delivered"
+msgstr ""
+
+#: admin/class-admin.php:510
+msgid "Delivery failed"
+msgstr ""
+
+#: admin/class-admin.php:511
+msgid "Group created"
+msgstr ""
+
+#: admin/class-admin.php:512
+msgid "Group edited"
+msgstr ""
+
+#: admin/class-admin.php:513
+msgid "Group archived"
+msgstr ""
+
+#: admin/class-admin.php:514
+msgid "Group restored"
+msgstr ""
+
+#: admin/class-admin.php:515
+msgid "Leaders changed"
+msgstr ""
+
+#: admin/class-admin.php:516
+msgid "New form address"
+msgstr ""
+
+#: admin/class-admin.php:517
+msgid "Settings saved"
+msgstr ""
+
+#: admin/class-admin.php:518
+msgid "Global settings saved"
+msgstr ""
+
+#: admin/class-admin.php:532
+#: admin/views/moderation.php:64
+msgid "Spam"
+msgstr ""
+
+#: admin/class-admin.php:533
+#: admin/views/moderation.php:65
+msgid "Duplicate"
+msgstr ""
+
+#. translators: %s: date and time.
+#: admin/views/digest.php:25
+#, php-format
+msgid "Generated and sent on %s."
+msgstr ""
+
+#. translators: %s: time of day.
+#: admin/views/digest.php:28
+#, php-format
+msgid "Preview: today’s digest has not been sent yet. It goes out every day at %s."
+msgstr ""
+
+#: admin/views/digest.php:34
+msgid "Generate and send now"
+msgstr ""
+
+#: admin/views/digest.php:39
+#: admin/views/digest.php:48
+msgid "Shareable version"
+msgstr ""
+
+#: admin/views/digest.php:42
+msgid "Nothing to share today."
+msgstr ""
+
+#: admin/views/digest.php:57
+#: admin/views/digest.php:66
+msgid "Leaders’ version"
+msgstr ""
+
+#: admin/views/digest.php:60
+msgid "Nothing for the leaders today."
+msgstr ""
+
+#: admin/views/digest.php:78
+msgid "Recent hour alerts"
+msgstr ""
+
+#: admin/views/digest.php:86
+msgid "Hour alert"
+msgstr ""
+
+#: admin/views/global.php:15
+msgid "These values apply to every group. Leaders can override deadlines, templates, schedules and channels for their own group."
+msgstr ""
+
+#: admin/views/global.php:16
+msgid "Punctuality: WordPress runs scheduled tasks only when someone visits the site. For the digest and hour alerts to go out on time, set a real system cron that calls wp-cron.php every five minutes."
+msgstr ""
+
+#: admin/views/global.php:18
+msgid "Access to the panel"
+msgstr ""
+
+#: admin/views/global.php:19
+msgid "Administrators and users with the “Prayer leader” role always have access. Other roles can be given access too; their users still only see the groups they are assigned to."
+msgstr ""
+
+#: admin/views/global.php:36
+#: admin/views/settings.php:106
+msgid "Save settings"
+msgstr ""
+
+#: admin/views/group-switcher.php:22
+msgid "Group:"
+msgstr ""
+
+#: admin/views/group-switcher.php:29
+msgid "Switch"
+msgstr ""
+
+#: admin/views/groups.php:25
+msgid "Name"
+msgstr ""
+
+#: admin/views/groups.php:26
+msgid "Internal description"
+msgstr ""
+
+#: admin/views/groups.php:28
+msgid "Leaders"
+msgstr ""
+
+#: admin/views/groups.php:30
+msgid "No users can lead groups yet. Give someone the “Prayer leader” role first."
+msgstr ""
+
+#: admin/views/groups.php:36
+msgid "Save group"
+msgstr ""
+
+#: admin/views/groups.php:36
+msgid "Create group"
+msgstr ""
+
+#: admin/views/groups.php:41
+msgid "Each group is independent: its own leaders, form, index and digest. No data crosses from one group to another."
+msgstr ""
+
+#: admin/views/groups.php:48
+msgid "Archived"
+msgstr ""
+
+#: admin/views/groups.php:56
+msgid "Archive"
+msgstr ""
+
+#: admin/views/groups.php:60
+msgid "Restore"
+msgstr ""
+
+#: admin/views/groups.php:64
+msgid "Delete group and all its intentions"
+msgstr ""
+
+#: admin/views/groups.php:71
+msgid "New group"
+msgstr ""
+
+#: admin/views/home.php:15
+#: includes/class-lifecycle.php:51
+msgid "Pending"
+msgstr ""
+
+#: admin/views/home.php:16
+#: includes/class-lifecycle.php:53
+msgid "In review"
+msgstr ""
+
+#: admin/views/home.php:17
+msgid "Events today"
+msgstr ""
+
+#: admin/views/home.php:18
+msgid "Events tomorrow"
+msgstr ""
+
+#: admin/views/home.php:30
+msgid "Create the first group"
+msgstr ""
+
+#: admin/views/home.php:68
+#: admin/views/intention-edit.php:183
+#: admin/views/intentions.php:42
+msgid "Add intention"
+msgstr ""
+
+#: admin/views/index.php:18
+msgid "Active and in-review intentions, formatted for WhatsApp. Copy it and paste it into the group."
+msgstr ""
+
+#. translators: 1: length, 2: limit.
+#: admin/views/index.php:26
+#, php-format
+msgid "The index is %1$s characters long, over %2$s: it may be too long to read comfortably in one message."
+msgstr ""
+
+#. translators: %s: number of characters.
+#: admin/views/index.php:49
+#, php-format
+msgid "%s characters"
+msgstr ""
+
+#: admin/views/intention-edit.php:52
+msgid "Back to the list"
+msgstr ""
+
+#: admin/views/intention-edit.php:62
+msgid "From the form"
+msgstr ""
+
+#: admin/views/intention-edit.php:62
+msgid "Added by a leader"
+msgstr ""
+
+#: admin/views/intention-edit.php:67
+msgid "In the index:"
+msgstr ""
+
+#: admin/views/intention-edit.php:84
+#: admin/views/intentions.php:73
+#: admin/views/partials/intention-facts.php:18
+msgid "Requester"
+msgstr ""
+
+#: admin/views/intention-edit.php:87
+msgid "Email or phone"
+msgstr ""
+
+#: admin/views/intention-edit.php:87
+#: includes/class-comments.php:27
+#: includes/class-privacy.php:93
+msgid "Contact"
+msgstr ""
+
+#: admin/views/intention-edit.php:91
+#: includes/class-privacy.php:94
+msgid "Beneficiary"
+msgstr ""
+
+#: admin/views/intention-edit.php:93
+msgid "The requester themselves"
+msgstr ""
+
+#: admin/views/intention-edit.php:95
+msgid "Relationship, e.g. mother of"
+msgstr ""
+
+#: admin/views/intention-edit.php:95
+#: includes/class-privacy.php:95
+msgid "Relationship"
+msgstr ""
+
+#: admin/views/intention-edit.php:99
+#: admin/views/intentions.php:52
+#: admin/views/intentions.php:74
+#: admin/views/partials/intention-facts.php:28
+#: includes/class-privacy.php:96
+msgid "Kind"
+msgstr ""
+
+#: admin/views/intention-edit.php:106
+msgid "Reference date"
+msgstr ""
+
+#: admin/views/intention-edit.php:107
+msgid "Time (events only)"
+msgstr ""
+
+#: admin/views/intention-edit.php:108
+msgid "Remember the anniversary (deceased)"
+msgstr ""
+
+#: admin/views/intention-edit.php:112
+msgid "Key dates"
+msgstr ""
+
+#: admin/views/intention-edit.php:128
+#: admin/views/intentions.php:75
+#: includes/class-privacy.php:97
+#: templates/form.php:92
+msgid "Date"
+msgstr ""
+
+#: admin/views/intention-edit.php:129
+msgid "Time"
+msgstr ""
+
+#: admin/views/intention-edit.php:130
+msgid "Funeral, month’s mind Mass, appointment…"
+msgstr ""
+
+#: admin/views/intention-edit.php:130
+msgid "Label"
+msgstr ""
+
+#: admin/views/intention-edit.php:134
+msgid "Add another date"
+msgstr ""
+
+#: admin/views/intention-edit.php:138
+msgid "Full text"
+msgstr ""
+
+#: admin/views/intention-edit.php:140
+msgid "Never published. Only leaders read it."
+msgstr ""
+
+#: admin/views/intention-edit.php:143
+#: admin/views/moderation.php:37
+msgid "Summary for the index"
+msgstr ""
+
+#: admin/views/intention-edit.php:147
+#: admin/views/moderation.php:43
+#: admin/views/partials/intention-facts.php:35
+#: includes/class-privacy.php:100
+msgid "Discretion"
+msgstr ""
+
+#: admin/views/intention-edit.php:155
+msgid "It can be made stricter than the requester chose, never more open."
+msgstr ""
+
+#: admin/views/intention-edit.php:160
+msgid "Visible names"
+msgstr ""
+
+#: admin/views/intention-edit.php:162
+msgid "Requester, as shown"
+msgstr ""
+
+#: admin/views/intention-edit.php:162
+msgid "Visible name of the requester"
+msgstr ""
+
+#: admin/views/intention-edit.php:163
+msgid "Beneficiary, as shown"
+msgstr ""
+
+#: admin/views/intention-edit.php:163
+msgid "Visible name of the beneficiary"
+msgstr ""
+
+#: admin/views/intention-edit.php:164
+msgid "Only used with full name or first name, and never revealing more than the level allows. Example: “Our brother David”."
+msgstr ""
+
+#: admin/views/intention-edit.php:168
+#: admin/views/intentions.php:58
+#: admin/views/moderation.php:51
+msgid "Priority"
+msgstr ""
+
+#: admin/views/intention-edit.php:171
+#: admin/views/intentions.php:61
+#: admin/views/moderation.php:53
+msgid "Normal"
+msgstr ""
+
+#: admin/views/intention-edit.php:172
+#: admin/views/intentions.php:60
+#: admin/views/moderation.php:54
+msgid "High"
+msgstr ""
+
+#: admin/views/intention-edit.php:178
+#: admin/views/intentions.php:77
+msgid "Next review"
+msgstr ""
+
+#: admin/views/intention-edit.php:183
+msgid "Save changes"
+msgstr ""
+
+#: admin/views/intention-edit.php:187
+#: includes/class-privacy.php:103
+msgid "Updates"
+msgstr ""
+
+#: admin/views/intention-edit.php:189
+msgid "New update"
+msgstr ""
+
+#: admin/views/intention-edit.php:189
+msgid "The operation went well, still in hospital…"
+msgstr ""
+
+#: admin/views/intention-edit.php:190
+msgid "Show as news in the daily digest"
+msgstr ""
+
+#: admin/views/intention-edit.php:191
+msgid "Add update"
+msgstr ""
+
+#: admin/views/intention-edit.php:196
+msgid "news"
+msgstr ""
+
+#: admin/views/intention-edit.php:202
+msgid "Internal comments"
+msgstr ""
+
+#: admin/views/intention-edit.php:203
+msgid "Only leaders see these. They never appear in the index or the shareable digest."
+msgstr ""
+
+#: admin/views/intention-edit.php:206
+msgid "New comment"
+msgstr ""
+
+#: admin/views/intention-edit.php:207
+#: admin/views/intention-edit.php:239
+msgid "Type"
+msgstr ""
+
+#: admin/views/intention-edit.php:208
+#: admin/views/intention-edit.php:240
+msgid "— Type —"
+msgstr ""
+
+#: admin/views/intention-edit.php:213
+msgid "Add comment"
+msgstr ""
+
+#. translators: 1: user, 2: date.
+#: admin/views/intention-edit.php:226
+#, php-format
+msgid "edited by %1$s on %2$s"
+msgstr ""
+
+#: admin/views/intention-edit.php:236
+msgid "Edit"
+msgstr ""
+
+#: admin/views/intention-edit.php:238
+msgid "Comment"
+msgstr ""
+
+#: admin/views/intention-edit.php:245
+msgid "Save"
+msgstr ""
+
+#: admin/views/intention-edit.php:258
+msgid "Turn into an update"
+msgstr ""
+
+#: admin/views/intention-edit.php:261
+msgid "Delete"
+msgstr ""
+
+#: admin/views/intention-edit.php:268
+msgid "History"
+msgstr ""
+
+#: admin/views/intention-edit.php:276
+msgid "Quick actions"
+msgstr ""
+
+#: admin/views/intention-edit.php:287
+msgid "Back to normal priority"
+msgstr ""
+
+#: admin/views/intention-edit.php:287
+msgid "Mark as high priority"
+msgstr ""
+
+#: admin/views/intention-edit.php:292
+#: admin/views/reviews.php:43
+msgid "Still current"
+msgstr ""
+
+#: admin/views/intention-edit.php:297
+msgid "Postpone review to"
+msgstr ""
+
+#: admin/views/intention-edit.php:298
+msgid "Postpone"
+msgstr ""
+
+#: admin/views/intention-edit.php:309
+msgid "Move to"
+msgstr ""
+
+#: admin/views/intention-edit.php:316
+msgid "Move"
+msgstr ""
+
+#: admin/views/intentions.php:46
+#: admin/views/intentions.php:76
+#: includes/class-privacy.php:101
+msgid "Status"
+msgstr ""
+
+#: admin/views/intentions.php:47
+msgid "All statuses"
+msgstr ""
+
+#: admin/views/intentions.php:53
+msgid "All kinds"
+msgstr ""
+
+#: admin/views/intentions.php:59
+msgid "Any priority"
+msgstr ""
+
+#: admin/views/intentions.php:63
+msgid "From"
+msgstr ""
+
+#: admin/views/intentions.php:64
+msgid "To"
+msgstr ""
+
+#: admin/views/intentions.php:65
+msgid "Search by name"
+msgstr ""
+
+#: admin/views/intentions.php:66
+msgid "Filter"
+msgstr ""
+
+#: admin/views/intentions.php:72
+#: admin/views/partials/intention-facts.php:20
+msgid "For"
+msgstr ""
+
+#: admin/views/intentions.php:82
+msgid "No intentions found."
+msgstr ""
+
+#: admin/views/log.php:19
+msgid "Everything"
+msgstr ""
+
+#: admin/views/log.php:20
+msgid "Failed deliveries"
+msgstr ""
+
+#: admin/views/moderation.php:21
+msgid "Nothing waiting for moderation."
+msgstr ""
+
+#: admin/views/moderation.php:39
+msgid "Up to 100 characters. This is the only text the group will see."
+msgstr ""
+
+#: admin/views/moderation.php:58
+msgid "Approve"
+msgstr ""
+
+#: admin/views/moderation.php:63
+msgid "Reason"
+msgstr ""
+
+#: admin/views/moderation.php:67
+msgid "Discard"
+msgstr ""
+
+#: admin/views/moderation.php:72
+msgid "Existing intention"
+msgstr ""
+
+#: admin/views/moderation.php:77
+msgid "Merge as duplicate"
+msgstr ""
+
+#: admin/views/partials/close-form.php:16
+msgid "Close as"
+msgstr ""
+
+#: admin/views/partials/close-form.php:24
+msgid "Answered: add a thanksgiving"
+msgstr ""
+
+#: admin/views/partials/close-form.php:25
+msgid "Summary of the thanksgiving"
+msgstr ""
+
+#: admin/views/partials/close-form.php:27
+msgid "Close"
+msgstr ""
+
+#: admin/views/partials/intention-facts.php:24
+msgid "Themselves"
+msgstr ""
+
+#: admin/views/partials/log-table.php:15
+msgid "Nothing recorded yet."
+msgstr ""
+
+#: admin/views/partials/log-table.php:22
+msgid "When"
+msgstr ""
+
+#: admin/views/partials/log-table.php:23
+msgid "Who"
+msgstr ""
+
+#: admin/views/partials/log-table.php:24
+msgid "What"
+msgstr ""
+
+#: admin/views/partials/log-table.php:32
+msgid "System"
+msgstr ""
+
+#: admin/views/reviews.php:18
+msgid "No reviews due."
+msgstr ""
+
+#: admin/views/reviews.php:22
+msgid "These intentions reached their review date. They still appear in the index until you decide."
+msgstr ""
+
+#: admin/views/settings.php:21
+msgid "Shareable version (discretion applied)"
+msgstr ""
+
+#: admin/views/settings.php:22
+msgid "Leaders’ version (only for a private chat of leaders)"
+msgstr ""
+
+#: admin/views/settings.php:26
+msgid "Hour alerts"
+msgstr ""
+
+#: admin/views/settings.php:27
+msgid "New requests (without the text, except by email)"
+msgstr ""
+
+#: admin/views/settings.php:30
+msgid "Public form"
+msgstr ""
+
+#: admin/views/settings.php:32
+msgid "Share this address only with the people who should send requests. It is not indexed by search engines."
+msgstr ""
+
+#. translators: %s: shortcode.
+#: admin/views/settings.php:38
+#, php-format
+msgid "You can also place the form on any page with the “Prayer request form” block or the shortcode %s."
+msgstr ""
+
+#: admin/views/settings.php:42
+msgid "Generate a new address"
+msgstr ""
+
+#: admin/views/settings.php:43
+msgid "The current address will stop working."
+msgstr ""
+
+#: admin/views/settings.php:57
+msgid "Channels"
+msgstr ""
+
+#: admin/views/settings.php:58
+msgid "The panel always shows the index and the digest with a Copy button for WhatsApp. These channels deliver them automatically."
+msgstr ""
+
+#: admin/views/settings.php:77
+msgid "Recipients"
+msgstr ""
+
+#: admin/views/settings.php:78
+msgid "Empty: every leader of the group"
+msgstr ""
+
+#: admin/views/settings.php:82
+msgid "Bot token"
+msgstr ""
+
+#: admin/views/settings.php:83
+msgid "Chat ID"
+msgstr ""
+
+#: admin/views/settings.php:87
+msgid "URL"
+msgstr ""
+
+#: admin/views/settings.php:88
+msgid "Signing secret"
+msgstr ""
+
+#: admin/views/settings.php:89
+msgid "Requests carry an X-DFXPray-Signature header: sha256= followed by the HMAC-SHA256 of the body."
+msgstr ""
+
+#: admin/views/settings.php:94
+msgid "Version sent"
+msgstr ""
+
+#: admin/views/settings.php:109
+msgid "Test the channels"
+msgstr ""
+
+#. translators: %s: channel name.
+#: admin/views/settings.php:124
+#, php-format
+msgid "Send a test by %s"
+msgstr ""
+
+#: admin/views/settings.php:141
+msgid "Reset this group to the global settings"
+msgstr ""
+
+#: includes/channels/class-channel-email.php:39
+msgid "Email"
+msgstr ""
+
+#: includes/channels/class-channel-email.php:73
+msgid "The group has no leaders with an email address."
+msgstr ""
+
+#: includes/channels/class-channel-email.php:84
+msgid "WordPress could not send the email."
+msgstr ""
+
+#: includes/channels/class-channel-telegram.php:35
+msgid "Telegram"
+msgstr ""
+
+#. translators: 1: HTTP status, 2: Telegram's description.
+#: includes/channels/class-channel-telegram.php:93
+#, php-format
+msgid "Telegram answered %1$d: %2$s"
+msgstr ""
+
+#: includes/channels/class-channel-webhook.php:47
+msgid "Webhook"
+msgstr ""
+
+#. translators: %d: HTTP status.
+#: includes/channels/class-channel-webhook.php:130
+#, php-format
+msgid "The webhook answered with status %d."
+msgstr ""
+
+#: includes/class-channels.php:116
+msgid "The channel is not configured yet."
+msgstr ""
+
+#: includes/class-channels.php:119
+msgid "🙏 This is a test message from DFX Prayer Intentions. If you can read it, the channel works."
+msgstr ""
+
+#: includes/class-channels.php:121
+msgid "Test message"
+msgstr ""
+
+#: includes/class-channels.php:166
+msgid "Unknown error"
+msgstr ""
+
+#: includes/class-comments.php:28
+msgid "Call"
+msgstr ""
+
+#: includes/class-comments.php:29
+msgid "Visit"
+msgstr ""
+
+#: includes/class-comments.php:30
+msgid "Note"
+msgstr ""
+
+#: includes/class-comments.php:49
+#: includes/class-comments.php:106
+msgid "The comment is empty."
+msgstr ""
+
+#: includes/class-comments.php:53
+#: includes/class-intentions.php:942
+#: includes/class-updates.php:38
+msgid "The intention does not exist."
+msgstr ""
+
+#: includes/class-comments.php:102
+#: includes/class-comments.php:166
+msgid "The comment does not exist."
+msgstr ""
+
+#: includes/class-digest-composer.php:64
+msgid "Nothing new today. Let us keep praying for all our intentions."
+msgstr ""
+
+#: includes/class-digest-composer.php:103
+msgid "Today"
+msgstr ""
+
+#: includes/class-digest-composer.php:104
+msgid "Without an hour alert"
+msgstr ""
+
+#: includes/class-digest-composer.php:105
+msgid "News"
+msgstr ""
+
+#: includes/class-digest-composer.php:106
+msgid "High priority"
+msgstr ""
+
+#: includes/class-digest-composer.php:107
+msgid "Tomorrow"
+msgstr ""
+
+#: includes/class-digest-composer.php:108
+msgid "Recently departed"
+msgstr ""
+
+#: includes/class-digest-composer.php:109
+msgid "Leaders only"
+msgstr ""
+
+#. translators: 1: key date label (funeral, appointment…), 2: person.
+#: includes/class-digest-composer.php:195
+#, php-format
+msgctxt "key date label and person"
+msgid "%1$s: %2$s"
+msgstr ""
+
+#. translators: %s: person.
+#: includes/class-digest-composer.php:205
+#, php-format
+msgid "Anniversary: %s"
+msgstr ""
+
+#. translators: 1: number of pending intentions, 2: link to the panel.
+#: includes/class-digest-composer.php:321
+#, php-format
+msgid "Pending moderation: %1$d – %2$s"
+msgstr ""
+
+#. translators: 1: number of intentions in review, 2: link to the panel.
+#: includes/class-digest-composer.php:326
+#, php-format
+msgid "Reviews due: %1$d – %2$s"
+msgstr ""
+
+#: includes/class-discretion.php:34
+msgid "Full name"
+msgstr ""
+
+#: includes/class-discretion.php:35
+msgid "First name"
+msgstr ""
+
+#: includes/class-discretion.php:36
+msgid "Initials"
+msgstr ""
+
+#: includes/class-discretion.php:37
+msgid "Anonymous"
+msgstr ""
+
+#: includes/class-discretion.php:68
+#: includes/class-intentions.php:728
+msgid "Unknown discretion level."
+msgstr ""
+
+#: includes/class-discretion.php:74
+msgid "The discretion level can be made stricter, never more open."
+msgstr ""
+
+#: includes/class-discretion.php:135
+msgid "With “first name” discretion, the visible name cannot include surnames."
+msgstr ""
+
+#: includes/class-form.php:100
+#: includes/class-form.php:409
+msgid "This form is not available."
+msgstr ""
+
+#: includes/class-form.php:300
+msgid "a moment in particular"
+msgstr ""
+
+#: includes/class-form.php:301
+msgid "an operation, an interview, an exam…"
+msgstr ""
+
+#: includes/class-form.php:302
+msgid "When is it?"
+msgstr ""
+
+#: includes/class-form.php:305
+msgid "a death"
+msgstr ""
+
+#: includes/class-form.php:306
+msgid "for the eternal rest of someone who has died"
+msgstr ""
+
+#: includes/class-form.php:307
+msgid "When did they pass away?"
+msgstr ""
+
+#: includes/class-form.php:310
+msgid "a situation that goes on"
+msgstr ""
+
+#: includes/class-form.php:311
+msgid "an illness, family, work, money…"
+msgstr ""
+
+#: includes/class-form.php:315
+msgid "giving thanks"
+msgstr ""
+
+#: includes/class-form.php:316
+msgid "for a grace received"
+msgstr ""
+
+#: includes/class-form.php:410
+msgid "The form expired. Please send it again."
+msgstr ""
+
+#: includes/class-form.php:411
+msgid "Too many requests from your connection. Please try again later."
+msgstr ""
+
+#: includes/class-form.php:412
+msgid "We could not verify that you are a person. Please try again."
+msgstr ""
+
+#: includes/class-form.php:413
+msgid "Please accept the privacy policy to send your request."
+msgstr ""
+
+#: includes/class-form.php:416
+msgid "Please check the form and try again."
+msgstr ""
+
+#. translators: PHP date format for day and month in the index, see https://www.php.net/manual/datetime.format.php
+#: includes/class-formatter.php:27
+msgctxt "short date format"
+msgid "d/m"
+msgstr ""
+
+#. translators: PHP time format for event times, see https://www.php.net/manual/datetime.format.php
+#: includes/class-formatter.php:37
+msgctxt "event time format"
+msgid "G:i"
+msgstr ""
+
+#: includes/class-formatter.php:54
+msgid "today"
+msgstr ""
+
+#: includes/class-formatter.php:56
+msgid "tomorrow"
+msgstr ""
+
+#. translators: PHP date format for a day within the next week, e.g. "Monday 28".
+#: includes/class-formatter.php:59
+msgctxt "weekday and day format"
+msgid "l j"
+msgstr ""
+
+#: includes/class-formatter.php:73
+msgid "A private intention"
+msgstr ""
+
+#. translators: 1: person (or "A private intention"), 2: summary or update.
+#: includes/class-formatter.php:90
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: includes/class-groups.php:35
+#: includes/class-groups.php:120
+msgid "The group needs a name."
+msgstr ""
+
+#: includes/class-index-composer.php:83
+msgid "There are no active intentions."
+msgstr ""
+
+#: includes/class-index-composer.php:104
+msgid "Upcoming events"
+msgstr ""
+
+#: includes/class-index-composer.php:105
+msgid "For our departed"
+msgstr ""
+
+#: includes/class-index-composer.php:106
+msgid "The sick and difficult situations"
+msgstr ""
+
+#: includes/class-index-composer.php:107
+#: includes/class-lifecycle.php:40
+msgid "Thanksgiving"
+msgstr ""
+
+#: includes/class-intentions.php:290
+msgid "Only intentions of the same group can be merged."
+msgstr ""
+
+#. translators: 1: requester name and contact, 2: request text.
+#: includes/class-intentions.php:305
+#, php-format
+msgid ""
+"Merged duplicate request from %1$s:\n"
+"%2$s"
+msgstr ""
+
+#: includes/class-intentions.php:387
+msgid "Choose why the intention is being closed."
+msgstr ""
+
+#: includes/class-intentions.php:447
+#: includes/class-intentions.php:791
+msgid "Unknown priority."
+msgstr ""
+
+#: includes/class-intentions.php:462
+msgid "Choose a future date."
+msgstr ""
+
+#: includes/class-intentions.php:485
+msgid "Acknowledgement sent to the requester."
+msgstr ""
+
+#: includes/class-intentions.php:512
+msgid "You can only move intentions between groups you lead."
+msgstr ""
+
+#: includes/class-intentions.php:744
+msgid "Please tell us your name."
+msgstr ""
+
+#: includes/class-intentions.php:748
+msgid "Please tell us who we should pray for."
+msgstr ""
+
+#: includes/class-intentions.php:752
+msgid "Please write your intention."
+msgstr ""
+
+#: includes/class-intentions.php:756
+msgid "Please choose the kind of intention."
+msgstr ""
+
+#: includes/class-intentions.php:760
+msgid "Please tell us the date."
+msgstr ""
+
+#: includes/class-intentions.php:764
+#: includes/class-intentions.php:795
+msgid "The date is not valid."
+msgstr ""
+
+#: includes/class-intentions.php:773
+msgid "The time is not valid."
+msgstr ""
+
+#. translators: %d: maximum number of characters.
+#: includes/class-intentions.php:786
+#, php-format
+msgid "The summary cannot be longer than %d characters."
+msgstr ""
+
+#: includes/class-intentions.php:949
+msgid "That change is not possible in the intention’s current state."
+msgstr ""
+
+#: includes/class-intentions.php:956
+msgid "Write the summary for the index before activating the intention."
+msgstr ""
+
+#: includes/class-lifecycle.php:37
+msgid "One-off event"
+msgstr ""
+
+#: includes/class-lifecycle.php:38
+msgid "Deceased"
+msgstr ""
+
+#: includes/class-lifecycle.php:39
+msgid "Ongoing situation"
+msgstr ""
+
+#: includes/class-lifecycle.php:52
+msgid "Active"
+msgstr ""
+
+#: includes/class-lifecycle.php:66
+msgid "Answered"
+msgstr ""
+
+#: includes/class-lifecycle.php:67
+msgid "Expired"
+msgstr ""
+
+#: includes/class-lifecycle.php:68
+msgid "Withdrawn by the requester"
+msgstr ""
+
+#. translators: 1: beneficiary, 2: requester.
+#: includes/class-notifier.php:64
+#, php-format
+msgid "%1$s (asked by %2$s)"
+msgstr ""
+
+#. translators: %s: group name.
+#: includes/class-notifier.php:70
+#, php-format
+msgid "*New prayer request* in %s"
+msgstr ""
+
+#. translators: %s: link to the moderation screen.
+#: includes/class-notifier.php:74
+#, php-format
+msgid "Moderate it: %s"
+msgstr ""
+
+#. translators: %s: group name.
+#: includes/class-notifier.php:83
+#, php-format
+msgid "New prayer request in %s"
+msgstr ""
+
+#. translators: 1: group name, 2: link to the moderation screen.
+#: includes/class-notifier.php:86
+#, php-format
+msgid "A new prayer request is waiting for moderation in %1$s: %2$s"
+msgstr ""
+
+#. translators: %s: group name.
+#: includes/class-notifier.php:106
+#, php-format
+msgid "Prayer digest – %s"
+msgstr ""
+
+#. translators: 1: when (e.g. "tomorrow, 6:30"), 2: person and summary.
+#: includes/class-notifier.php:126
+#, php-format
+msgid "No alert during quiet hours – %1$s: %2$s. Let us pray at that moment."
+msgstr ""
+
+#. translators: %s: person and summary.
+#: includes/class-notifier.php:134
+#, php-format
+msgid "Right now: %s. United in prayer."
+msgstr ""
+
+#. translators: 1: time, 2: person and summary.
+#: includes/class-notifier.php:138
+#, php-format
+msgid "At %1$s: %2$s. United in prayer."
+msgstr ""
+
+#: includes/class-notifier.php:153
+msgid "Prayer alert"
+msgstr ""
+
+#: includes/class-plugin.php:56
+msgid "Every five minutes"
+msgstr ""
+
+#: includes/class-privacy.php:91
+#: blocks/form/editor.js:28
+msgid "Group"
+msgstr ""
+
+#: includes/class-privacy.php:92
+#: templates/form.php:52
+msgid "Your name"
+msgstr ""
+
+#: includes/class-privacy.php:98
+msgid "Intention"
+msgstr ""
+
+#: includes/class-privacy.php:99
+msgid "Summary"
+msgstr ""
+
+#: includes/class-privacy.php:102
+msgid "Sent on"
+msgstr ""
+
+#: includes/class-privacy.php:152
+msgid "DFX Prayer Intentions"
+msgstr ""
+
+#: includes/class-privacy.php:165
+msgid "When you send a prayer request through our form, we collect your name, optionally a way to contact you, the name of the person you ask us to pray for, your relationship with them and the text of your intention. This may include information about health or religious beliefs, which are special categories of personal data."
+msgstr ""
+
+#: includes/class-privacy.php:166
+msgid "Only the leaders of the prayer group you write to can read your request. They share with the group a short summary written by them, showing the names only as you chose (full name, first name, initials or anonymous). The full text is never shared."
+msgstr ""
+
+#. translators: %d: number of days.
+#: includes/class-privacy.php:168
+#, php-format
+msgid "Closed or discarded requests are deleted automatically %d days after being closed, together with their updates and notes."
+msgstr ""
+
+#: includes/class-privacy.php:169
+msgid "You can ask for a copy of your data or for its erasure at any time, using the contact you gave in the form."
+msgstr ""
+
+#: includes/class-settings.php:84
+msgctxt "Base of the public form URL"
+msgid "prayer-requests"
+msgstr ""
+
+#: includes/class-settings.php:99
+msgid "Thank you. We have received your request and will pray for it."
+msgstr ""
+
+#. translators: {date} is replaced with the day and month.
+#: includes/class-settings.php:101
+msgid "🙏 *Active intentions* – {date}"
+msgstr ""
+
+#. translators: {date} is replaced with the day and month.
+#: includes/class-settings.php:105
+msgid "🙏 *Prayer digest* – {date}"
+msgstr ""
+
+#: includes/class-updates.php:34
+msgid "The update is empty."
+msgstr ""
+
+#: templates/form-page.php:23
+msgid "Prayer request"
+msgstr ""
+
+#: templates/form-page.php:29
+msgid "Tell us your prayer intention. The group leaders will read it and we will pray for it together."
+msgstr ""
+
+#: templates/form.php:45
+msgid "Leave this field empty"
+msgstr ""
+
+#: templates/form.php:50
+msgid "About you"
+msgstr ""
+
+#: templates/form.php:56
+msgid "A way to contact you (optional)"
+msgstr ""
+
+#: templates/form.php:58
+msgid "Email or phone. Only the group leaders will see it."
+msgstr ""
+
+#: templates/form.php:63
+msgid "Who are we praying for?"
+msgstr ""
+
+#: templates/form.php:67
+msgid "For me"
+msgstr ""
+
+#: templates/form.php:72
+msgid "Their name"
+msgstr ""
+
+#: templates/form.php:76
+msgid "Their relationship to you"
+msgstr ""
+
+#: templates/form.php:77
+msgid "e.g. mother of, friend of"
+msgstr ""
+
+#: templates/form.php:83
+msgid "What is it about?"
+msgstr ""
+
+#: templates/form.php:96
+msgid "Time (optional)"
+msgstr ""
+
+#: templates/form.php:98
+msgid "If you know what time it is, we will pray at that moment."
+msgstr ""
+
+#: templates/form.php:104
+msgid "Your intention"
+msgstr ""
+
+#: templates/form.php:106
+msgid "There is no need to include diagnoses or surnames: the leaders will write a short, discreet summary for the group."
+msgstr ""
+
+#: templates/form.php:110
+msgid "How should the names appear to the group?"
+msgstr ""
+
+#. translators: %s: link to the privacy policy.
+#: templates/form.php:131
+#, php-format
+msgid "I agree that the leaders of this group use this information to pray for my intention, as explained in the %s."
+msgstr ""
+
+#: templates/form.php:132
+msgid "privacy policy"
+msgstr ""
+
+#: templates/form.php:135
+msgid "I agree that the leaders of this group use this information to pray for my intention."
+msgstr ""
+
+#: templates/form.php:142
+msgid "Send my request"
+msgstr ""
+
+#: blocks/form/editor.js:17
+msgid "— Choose a group —"
+msgstr ""
+
+#: blocks/form/editor.js:30
+msgid "Requests go to"
+msgstr ""
+
+#: blocks/form/editor.js:39
+msgid "Choose the group that will receive the requests in the block settings."
+msgstr ""
+
+#: blocks/form/block.json
+msgctxt "block title"
+msgid "Prayer request form"
+msgstr ""
+
+#: blocks/form/block.json
+msgctxt "block description"
+msgid "Public form where anyone can send a prayer intention to a group."
+msgstr ""
+
+#: blocks/form/block.json
+msgctxt "block keyword"
+msgid "prayer"
+msgstr ""
+
+#: blocks/form/block.json
+msgctxt "block keyword"
+msgid "intention"
+msgstr ""
+
+#: blocks/form/block.json
+msgctxt "block keyword"
+msgid "request"
+msgstr ""
