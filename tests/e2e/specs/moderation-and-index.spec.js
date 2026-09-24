@@ -19,6 +19,17 @@ test( 'leaders land on their panel after logging in, with their counters', async
 	await expect( page.getByRole( 'heading', { name: 'Santa Marta' } ) ).toBeVisible();
 	await expect( page.locator( '[data-count="pending"]' ) ).toHaveText( '1' );
 	await expect( page.locator( '#adminmenu .awaiting-mod' ).first() ).toHaveText( '1' );
+
+	const footer = page.locator( '.dfxpray-plugin-footer' );
+	await expect( footer ).toBeVisible();
+	await expect( footer ).toContainText( 'provided via DFX Prayer Intentions plugin by David Marín Carreño. A.M.D.G.' );
+	const box = await footer.boundingBox();
+	const viewport = page.viewportSize();
+	expect( Math.round( box.y + box.height ) ).toBe( viewport.height );
+	expect( box.x ).toBeGreaterThanOrEqual( 150 );
+	await page.locator( '#collapse-button' ).click();
+	await expect.poll( async () => ( await footer.boundingBox() ).x ).toBeLessThan( 60 );
+	await page.locator( '#collapse-button' ).click();
 } );
 
 test( 'approving with a summary activates the intention and puts it in the index', async ( { page, context } ) => {

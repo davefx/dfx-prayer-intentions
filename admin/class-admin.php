@@ -104,11 +104,37 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * Render a screen, with the common header.
+	 * Render a screen and the DFX footer.
 	 *
 	 * @param string $page Page slug.
 	 */
 	public function render( string $page ): void {
+		$this->render_screen( $page );
+		$this->render_footer();
+	}
+
+	/**
+	 * The DFX footer shown on every screen of the panel, as in the other DFX plugins.
+	 */
+	public function render_footer(): void {
+		echo '<div class="dfxpray-plugin-footer"><p>';
+		echo wp_kses_post(
+			sprintf(
+				/* translators: 1: plugin name, 2: link to the author. */
+				__( 'Prayer intentions management features provided via %1$s plugin by %2$s. A.M.D.G.', 'dfx-prayer-intentions' ),
+				'<strong>DFX Prayer Intentions</strong>',
+				sprintf( '<a href="%s">David Marín Carreño</a>', esc_url( __( 'https://davefx.com/en/wordpress-plugins/', 'dfx-prayer-intentions' ) ) )
+			)
+		);
+		echo '</p></div>';
+	}
+
+	/**
+	 * Render a screen, with the common header.
+	 *
+	 * @param string $page Page slug.
+	 */
+	private function render_screen( string $page ): void {
 		$permissions = DFXPRAY_Permissions::get_instance();
 		$definition  = self::PAGES[ $page ] ?? null;
 

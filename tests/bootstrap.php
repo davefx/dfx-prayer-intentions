@@ -62,6 +62,7 @@ tests_add_filter(
 require $dfxpray_tests_dir . '/includes/bootstrap.php';
 
 require_once ABSPATH . WPINC . '/pomo/po.php';
+require_once ABSPATH . WPINC . '/pomo/mo.php';
 require_once __DIR__ . '/includes/class-test-case.php';
 require_once __DIR__ . '/includes/trait-intention-factory.php';
 require_once __DIR__ . '/includes/trait-http-capture.php';

@@ -374,6 +374,8 @@ T = {
 "At %1$s: %2$s. United in prayer.": "A las %1$s: %2$s. Unidos en oración.",
 "Prayer alert": "Aviso de oración",
 "Every five minutes": "Cada cinco minutos",
+"Prayer intentions management features provided via %1$s plugin by %2$s. A.M.D.G.": "Funcionalidad de gestión de intenciones de oración proporcionada a través del plugin %1$s por %2$s. A.M.D.G.",
+"https://davefx.com/en/wordpress-plugins/": "https://davefx.com/es/plugins-de-wordpress/",
 "Group": "Grupo",
 "Your name": "Tu nombre",
 "Intention": "Intención",

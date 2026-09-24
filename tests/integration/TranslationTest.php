@@ -143,6 +143,17 @@ class TranslationTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The DFX footer in Spanish, with the Spanish page of the author's site.
+	 */
+	public function test_footer_in_spanish(): void {
+		ob_start();
+		DFXPRAY_Admin::get_instance()->render_footer();
+		$html = (string) ob_get_clean();
+
+		$this->assertStringContainsString( 'Funcionalidad de gestión de intenciones de oración proporcionada a través del plugin <strong>DFX Prayer Intentions</strong> por <a href="https://davefx.com/es/plugins-de-wordpress/">David Marín Carreño</a>. A.M.D.G.', $html );
+	}
+
+	/**
 	 * Every string of the catalogue is translated.
 	 */
 	public function test_catalogue_is_complete(): void {

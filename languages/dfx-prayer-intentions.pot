@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-24T10:50:07+00:00\n"
+"POT-Creation-Date: 2026-09-24T11:05:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -153,7 +153,7 @@ msgid "Done."
 msgstr ""
 
 #: admin/class-admin.php:65
-#: admin/class-admin.php:116
+#: admin/class-admin.php:142
 #: includes/class-privacy.php:48
 #: includes/class-privacy.php:63
 #: includes/class-privacy.php:108
@@ -204,307 +204,317 @@ msgstr ""
 msgid "Global settings"
 msgstr ""
 
-#: admin/class-admin.php:129
+#. translators: 1: plugin name, 2: link to the author.
+#: admin/class-admin.php:124
+#, php-format
+msgid "Prayer intentions management features provided via %1$s plugin by %2$s. A.M.D.G."
+msgstr ""
+
+#: admin/class-admin.php:126
+msgid "https://davefx.com/en/wordpress-plugins/"
+msgstr ""
+
+#: admin/class-admin.php:155
 #: admin/views/home.php:28
 msgid "You are not assigned to any group yet. Ask the site administrator."
 msgstr ""
 
-#: admin/class-admin.php:175
+#: admin/class-admin.php:201
 msgid "You are not allowed to see this."
 msgstr ""
 
-#: admin/class-admin.php:265
+#: admin/class-admin.php:291
 msgid "Copied!"
 msgstr ""
 
-#: admin/class-admin.php:266
+#: admin/class-admin.php:292
 #: admin/views/partials/copy-box.php:20
 msgid "Copy"
 msgstr ""
 
-#: admin/class-admin.php:267
+#: admin/class-admin.php:293
 msgid "This cannot be undone. Continue?"
 msgstr ""
 
-#: admin/class-admin.php:333
+#: admin/class-admin.php:359
 msgid "Prayer leader"
 msgstr ""
 
-#: admin/class-admin.php:346
+#: admin/class-admin.php:372
 msgid "One-off events: days after the date"
 msgstr ""
 
-#: admin/class-admin.php:347
+#: admin/class-admin.php:373
 msgid "After that, the intention goes to review."
 msgstr ""
 
-#: admin/class-admin.php:351
+#: admin/class-admin.php:377
 msgid "Deceased: days after the death"
 msgstr ""
 
-#: admin/class-admin.php:355
+#: admin/class-admin.php:381
 msgid "Ongoing situations: review every (days)"
 msgstr ""
 
-#: admin/class-admin.php:359
+#: admin/class-admin.php:385
 msgid "Thanksgiving: days"
 msgstr ""
 
-#: admin/class-admin.php:363
+#: admin/class-admin.php:389
 msgid "“Still current”: days until the next review"
 msgstr ""
 
-#: admin/class-admin.php:367
+#: admin/class-admin.php:393
 msgid "Digest: recently departed during (days)"
 msgstr ""
 
-#: admin/class-admin.php:371
+#: admin/class-admin.php:397
 msgid "Message after sending the form"
 msgstr ""
 
-#: admin/class-admin.php:375
+#: admin/class-admin.php:401
 msgid "Index header"
 msgstr ""
 
-#: admin/class-admin.php:376
-#: admin/class-admin.php:390
+#: admin/class-admin.php:402
+#: admin/class-admin.php:416
 msgid "{date} is replaced with the date."
 msgstr ""
 
-#: admin/class-admin.php:380
+#: admin/class-admin.php:406
 msgid "Index footer"
 msgstr ""
 
-#: admin/class-admin.php:381
+#: admin/class-admin.php:407
 msgid "For example, a short prayer."
 msgstr ""
 
-#: admin/class-admin.php:385
+#: admin/class-admin.php:411
 msgid "Emojis in the index sections"
 msgstr ""
 
-#: admin/class-admin.php:389
+#: admin/class-admin.php:415
 msgid "Digest header"
 msgstr ""
 
-#: admin/class-admin.php:394
+#: admin/class-admin.php:420
 msgid "Digest footer"
 msgstr ""
 
-#: admin/class-admin.php:398
+#: admin/class-admin.php:424
 msgid "Include recent internal comments in the leaders’ digest"
 msgstr ""
 
-#: admin/class-admin.php:402
+#: admin/class-admin.php:428
 msgid "Daily digest at"
 msgstr ""
 
-#: admin/class-admin.php:406
+#: admin/class-admin.php:432
 msgid "When there is nothing new"
 msgstr ""
 
-#: admin/class-admin.php:408
+#: admin/class-admin.php:434
 msgid "Send a short version"
 msgstr ""
 
-#: admin/class-admin.php:409
+#: admin/class-admin.php:435
 msgid "Send nothing"
 msgstr ""
 
-#: admin/class-admin.php:414
+#: admin/class-admin.php:440
 msgid "Hour alerts: minutes before"
 msgstr ""
 
-#: admin/class-admin.php:418
+#: admin/class-admin.php:444
 msgid "Second alert at the exact time"
 msgstr ""
 
-#: admin/class-admin.php:422
+#: admin/class-admin.php:448
 msgid "Quiet hours from"
 msgstr ""
 
-#: admin/class-admin.php:423
+#: admin/class-admin.php:449
 msgid "Alerts are never sent in quiet hours. The digest before them lists those events; if none did, an early alert goes out just before quiet hours begin."
 msgstr ""
 
-#: admin/class-admin.php:427
+#: admin/class-admin.php:453
 msgid "Quiet hours until"
 msgstr ""
 
-#: admin/class-admin.php:431
+#: admin/class-admin.php:457
 msgid "Delete closed and discarded intentions after (days)"
 msgstr ""
 
-#: admin/class-admin.php:432
+#: admin/class-admin.php:458
 msgid "Including their updates, comments and history."
 msgstr ""
 
-#: admin/class-admin.php:436
+#: admin/class-admin.php:462
 msgid "Beginning of the form addresses"
 msgstr ""
 
-#: admin/class-admin.php:437
+#: admin/class-admin.php:463
 msgid "Applies to new addresses. A random part is always added."
 msgstr ""
 
-#: admin/class-admin.php:441
+#: admin/class-admin.php:467
 msgid "Maximum requests per hour from one connection"
 msgstr ""
 
-#: admin/class-admin.php:445
+#: admin/class-admin.php:471
 msgid "Cloudflare Turnstile site key"
 msgstr ""
 
-#: admin/class-admin.php:446
+#: admin/class-admin.php:472
 msgid "Optional. Leave both keys empty to disable it."
 msgstr ""
 
-#: admin/class-admin.php:450
+#: admin/class-admin.php:476
 msgid "Cloudflare Turnstile secret key"
 msgstr ""
 
-#: admin/class-admin.php:454
+#: admin/class-admin.php:480
 msgid "Delete all data when the plugin is uninstalled"
 msgstr ""
 
-#: admin/class-admin.php:467
+#: admin/class-admin.php:493
 msgid "Deadlines"
 msgstr ""
 
-#: admin/class-admin.php:468
+#: admin/class-admin.php:494
 msgid "Texts"
 msgstr ""
 
-#: admin/class-admin.php:469
+#: admin/class-admin.php:495
 msgid "Schedules"
 msgstr ""
 
-#: admin/class-admin.php:475
+#: admin/class-admin.php:501
 msgid "Data and protection"
 msgstr ""
 
-#: admin/class-admin.php:491
+#: admin/class-admin.php:517
 msgid "Request received from the form"
 msgstr ""
 
-#: admin/class-admin.php:492
+#: admin/class-admin.php:518
 msgid "Intention added"
 msgstr ""
 
-#: admin/class-admin.php:493
+#: admin/class-admin.php:519
 msgid "Approved"
 msgstr ""
 
-#: admin/class-admin.php:494
+#: admin/class-admin.php:520
 #: includes/class-lifecycle.php:55
 msgid "Discarded"
 msgstr ""
 
-#: admin/class-admin.php:495
+#: admin/class-admin.php:521
 msgid "Duplicate merged into it"
 msgstr ""
 
-#: admin/class-admin.php:496
+#: admin/class-admin.php:522
 msgid "Edited"
 msgstr ""
 
-#: admin/class-admin.php:497
+#: admin/class-admin.php:523
 msgid "Visible name changed"
 msgstr ""
 
-#: admin/class-admin.php:498
+#: admin/class-admin.php:524
 msgid "Review date reached"
 msgstr ""
 
-#: admin/class-admin.php:499
+#: admin/class-admin.php:525
 msgid "Kept active"
 msgstr ""
 
-#: admin/class-admin.php:500
+#: admin/class-admin.php:526
 #: includes/class-lifecycle.php:54
 msgid "Closed"
 msgstr ""
 
-#: admin/class-admin.php:501
+#: admin/class-admin.php:527
 #: admin/views/intention-edit.php:64
 #: admin/views/intention-edit.php:303
 msgid "Acknowledgement sent"
 msgstr ""
 
-#: admin/class-admin.php:502
+#: admin/class-admin.php:528
 msgid "Moved to another group"
 msgstr ""
 
-#: admin/class-admin.php:503
+#: admin/class-admin.php:529
 msgid "Received from another group"
 msgstr ""
 
-#: admin/class-admin.php:504
+#: admin/class-admin.php:530
 msgid "Update added"
 msgstr ""
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:531
 msgid "Comment added"
 msgstr ""
 
-#: admin/class-admin.php:506
+#: admin/class-admin.php:532
 msgid "Comment edited"
 msgstr ""
 
-#: admin/class-admin.php:507
+#: admin/class-admin.php:533
 msgid "Comment deleted"
 msgstr ""
 
-#: admin/class-admin.php:508
+#: admin/class-admin.php:534
 msgid "Comment turned into an update"
 msgstr ""
 
-#: admin/class-admin.php:509
+#: admin/class-admin.php:535
 msgid "Delivered"
 msgstr ""
 
-#: admin/class-admin.php:510
+#: admin/class-admin.php:536
 msgid "Delivery failed"
 msgstr ""
 
-#: admin/class-admin.php:511
+#: admin/class-admin.php:537
 msgid "Group created"
 msgstr ""
 
-#: admin/class-admin.php:512
+#: admin/class-admin.php:538
 msgid "Group edited"
 msgstr ""
 
-#: admin/class-admin.php:513
+#: admin/class-admin.php:539
 msgid "Group archived"
 msgstr ""
 
-#: admin/class-admin.php:514
+#: admin/class-admin.php:540
 msgid "Group restored"
 msgstr ""
 
-#: admin/class-admin.php:515
+#: admin/class-admin.php:541
 msgid "Leaders changed"
 msgstr ""
 
-#: admin/class-admin.php:516
+#: admin/class-admin.php:542
 msgid "New form address"
 msgstr ""
 
-#: admin/class-admin.php:517
+#: admin/class-admin.php:543
 msgid "Settings saved"
 msgstr ""
 
-#: admin/class-admin.php:518
+#: admin/class-admin.php:544
 msgid "Global settings saved"
 msgstr ""
 
-#: admin/class-admin.php:532
+#: admin/class-admin.php:558
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr ""
 
-#: admin/class-admin.php:533
+#: admin/class-admin.php:559
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr ""

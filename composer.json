@@ -29,7 +29,9 @@
         "test:integration": "phpunit --testsuite integration",
         "test:e2e": "npx playwright test",
         "lint": "phpcs",
-        "lint:fix": "phpcbf"
+        "lint:fix": "phpcbf",
+        "build": "bin/build-zip.sh",
+        "release": "bin/release.sh"
     },
     "config": {
         "sort-packages": true,
@@ -38,6 +40,11 @@
         },
         "platform": {
             "php": "8.1"
-        }
+        },
+        "process-timeout": 0
+    },
+    "scripts-descriptions": {
+        "build": "Build the installable zip into dist/ (checks versions, compiles translations, lints PHP).",
+        "release": "Lint, run every test suite, then build the zip. Options: --skip-e2e, --skip-matrix."
     }
 }

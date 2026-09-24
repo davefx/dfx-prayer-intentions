@@ -175,3 +175,42 @@
 		grid-template-columns: repeat(2, 1fr);
 	}
 }
+
+/* DFX footer, fixed at the bottom of every panel screen. */
+.dfxpray-wrap {
+	padding-bottom: 48px;
+}
+
+.dfxpray-plugin-footer {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	left: 160px;
+	z-index: 1000;
+	background: #f1f1f1;
+	border-top: 1px solid #ddd;
+	padding: 10px 20px;
+}
+
+.dfxpray-plugin-footer p {
+	margin: 0;
+	color: #666;
+	font-size: 12px;
+	text-align: right;
+}
+
+.folded .dfxpray-plugin-footer {
+	left: 36px;
+}
+
+@media screen and (max-width: 960px) {
+	.auto-fold .dfxpray-plugin-footer {
+		left: 36px;
+	}
+}
+
+@media screen and (max-width: 782px) {
+	.auto-fold .dfxpray-plugin-footer {
+		left: 0;
+	}
+}

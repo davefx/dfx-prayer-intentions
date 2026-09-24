@@ -311,6 +311,31 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Every screen carries the DFX footer, as in the other DFX plugins.
+	 *
+	 * @return array
+	 */
+	public function provide_pages(): array {
+		$pages = array( 'dfxpray', 'dfxpray-moderation', 'dfxpray-intentions', 'dfxpray-reviews', 'dfxpray-index', 'dfxpray-digest', 'dfxpray-settings', 'dfxpray-log', 'dfxpray-groups', 'dfxpray-global' );
+
+		return array_combine( $pages, array_map( static fn( $p ) => array( $p ), $pages ) );
+	}
+
+	/**
+	 * The footer, on every screen, even when access is refused.
+	 *
+	 * @dataProvider provide_pages
+	 *
+	 * @param string $page Page slug.
+	 */
+	public function test_footer_on_every_screen( string $page ): void {
+		$html = $this->render( $page );
+
+		$this->assertStringContainsString( 'class="dfxpray-plugin-footer"', $html );
+		$this->assertStringContainsString( 'Prayer intentions management features provided via <strong>DFX Prayer Intentions</strong> plugin by <a href="https://davefx.com/en/wordpress-plugins/">David Marín Carreño</a>. A.M.D.G.', $html );
+	}
+
+	/**
 	 * The role name is translatable.
 	 */
 	public function test_role_name(): void {
