@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.09.24
+Stable tag: 26.11.14
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.14 =
+* Leaders can set a compound first name (Juan Tomás) for the requester and the beneficiary; with “first name” discretion the index shows it whole.
+* Each group has its own page in the panel, with its tasks as tabs.
 
 = 26.09.24 =
 * First release.
