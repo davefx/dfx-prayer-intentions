@@ -25,6 +25,76 @@ final class DFXPRAY_Discretion {
 	private const PARTICLES = array( 'de', 'del', 'la', 'las', 'los', 'el', 'y', 'e', 'i', 'da', 'das', 'do', 'dos', 'di', 'van', 'von', 'der', 'den', 'du', 'le', 'of', 'the' );
 
 	/**
+	 * Given names that, after a first given name, belong to it ("José
+	 * Antonio", "María del Carmen"). Lower case, without accents. Names that
+	 * are also common surnames (Alonso, Esteban, Vicente, Tomás…) are left
+	 * out: when in doubt a word counts as a surname, so it stays hidden.
+	 */
+	private const COMPOUND_GIVEN_NAMES = array(
+		'agustin',
+		'alberto',
+		'alejandro',
+		'alfonso',
+		'ana',
+		'angel',
+		'angeles',
+		'antonia',
+		'antonio',
+		'asuncion',
+		'auxiliadora',
+		'belen',
+		'carlos',
+		'carmen',
+		'concepcion',
+		'consuelo',
+		'cristina',
+		'dolores',
+		'eduardo',
+		'elena',
+		'emilio',
+		'enrique',
+		'eugenia',
+		'felipe',
+		'felix',
+		'fernando',
+		'francisco',
+		'gabriel',
+		'ignacio',
+		'inmaculada',
+		'ines',
+		'isabel',
+		'javier',
+		'jesus',
+		'joaquin',
+		'jose',
+		'josefa',
+		'juan',
+		'lucia',
+		'luis',
+		'luisa',
+		'manuel',
+		'mari',
+		'maria',
+		'mariano',
+		'mercedes',
+		'miguel',
+		'montserrat',
+		'nieves',
+		'paloma',
+		'pablo',
+		'pedro',
+		'pilar',
+		'rafael',
+		'ramon',
+		'ricardo',
+		'rocio',
+		'rosa',
+		'soledad',
+		'teresa',
+		'victoria',
+	);
+
+	/**
 	 * Levels, from the most open to the most discreet.
 	 *
 	 * @return array<string, string> Level => label.
@@ -94,7 +164,7 @@ final class DFXPRAY_Discretion {
 				return '' !== $visible_name ? $visible_name : implode( ' ', $tokens );
 
 			case 'first_name':
-				return '' !== $visible_name ? $visible_name : ( $tokens[0] ?? '' );
+				return '' !== $visible_name ? $visible_name : implode( ' ', array_slice( $tokens, 0, $this->first_name_length( $tokens ) ) );
 
 			case 'initials':
 				$initials = array();
@@ -114,8 +184,8 @@ final class DFXPRAY_Discretion {
 	/**
 	 * Check that a visible name reveals no more than the level allows.
 	 *
-	 * With "first name", no word of the original name other than the first
-	 * one may appear in the visible name.
+	 * With "first name", no word of the original name after the first name
+	 * (which may be compound) may appear in the visible name.
 	 *
 	 * @param string $name         Original name.
 	 * @param string $level        Level.
@@ -127,7 +197,8 @@ final class DFXPRAY_Discretion {
 			return true;
 		}
 
-		$surnames = array_slice( $this->normalized_words( $name ), 1 );
+		$tokens   = $this->tokens( $name );
+		$surnames = $this->normalized_words( implode( ' ', array_slice( $tokens, $this->first_name_length( $tokens ) ) ) );
 		$surnames = array_diff( $surnames, self::PARTICLES );
 		$found    = array_intersect( $this->normalized_words( $visible_name ), $surnames );
 
@@ -164,6 +235,29 @@ final class DFXPRAY_Discretion {
 		}
 
 		return $beneficiary . ', ' . $relationship . ' ' . $requester;
+	}
+
+	/**
+	 * How many words of a name make up its first name: the first word, plus
+	 * any following given names of a compound one, with the particles that
+	 * join them ("María del Carmen").
+	 *
+	 * @param string[] $tokens Words of the name.
+	 */
+	private function first_name_length( array $tokens ): int {
+		$length = min( 1, count( $tokens ) );
+
+		for ( $i = 1, $count = count( $tokens ); $i < $count; $i++ ) {
+			$word = implode( '', $this->normalized_words( $tokens[ $i ] ) );
+
+			if ( in_array( $word, self::COMPOUND_GIVEN_NAMES, true ) ) {
+				$length = $i + 1;
+			} elseif ( ! in_array( $word, self::PARTICLES, true ) ) {
+				break;
+			}
+		}
+
+		return $length;
 	}
 
 	/**

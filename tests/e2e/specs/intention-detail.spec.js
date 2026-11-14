@@ -69,6 +69,18 @@ test( 'visible names cannot reveal more than the discretion level allows', async
 	await expect( page.getByLabel( 'Discretion', { exact: true } ).locator( 'option' ) ).toHaveText( [ 'First name', 'Initials', 'Anonymous' ] );
 } );
 
+test( 'compound first names appear whole, without surnames', async ( { page } ) => {
+	const id = createIntention( group.id, { requester_name: 'Luis Carlos Pérez de la Cuadra', beneficiary_name: 'José Antonio Ruiz', relationship: 'tío de', summary: 'su operación' } );
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
+
+	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'José Antonio, tío de Luis Carlos: su operación' );
+
+	await page.getByLabel( 'Visible name of the beneficiary' ).fill( 'Nuestro tío José Antonio' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Nuestro tío José Antonio, tío de Luis Carlos: su operación' );
+} );
+
 test( 'a leader adds an intention by hand, with a key date', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions' ) );

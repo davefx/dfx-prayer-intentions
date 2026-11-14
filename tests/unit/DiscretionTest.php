@@ -43,6 +43,51 @@ class DiscretionTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Compound first names and the names that must not be taken for one.
+	 *
+	 * @return array
+	 */
+	public function provide_compound_first_names(): array {
+		return array(
+			'two given names'          => array( 'José Antonio García', 'José Antonio' ),
+			'no surname written'       => array( 'Juan Pablo', 'Juan Pablo' ),
+			'abbreviated María'        => array( 'Mª Soledad', 'Mª Soledad' ),
+			'familiar form'            => array( 'José Mari', 'José Mari' ),
+			'many surnames'            => array( 'Luis Carlos Pérez de la Cuadra', 'Luis Carlos' ),
+			'joined by a particle'     => array( 'María del Carmen Ruiz', 'María del Carmen' ),
+			'unaccented'               => array( 'Jose Luis Noarbe', 'Jose Luis' ),
+			'three given names'        => array( 'María José Antonia Ruiz', 'María José Antonia' ),
+			'surname that is a name'   => array( 'Titón Alonso', 'Titón' ),
+			'surname after a name'     => array( 'Marta Esteban', 'Marta' ),
+			'particle, then a surname' => array( 'María de la Cruz Pérez', 'María' ),
+			'single word'              => array( 'Argeme', 'Argeme' ),
+		);
+	}
+
+	/**
+	 * With "first name", a compound first name appears whole and no surname
+	 * comes with it.
+	 *
+	 * @dataProvider provide_compound_first_names
+	 *
+	 * @param string $name     Original name.
+	 * @param string $expected Expected first name.
+	 */
+	public function test_compound_first_name( string $name, string $expected ): void {
+		$this->assertSame( $expected, $this->discretion->format_name( $name, 'first_name' ) );
+	}
+
+	/**
+	 * A visible name may repeat a whole compound first name, never a surname.
+	 */
+	public function test_visible_name_may_carry_a_compound_first_name(): void {
+		$this->assertTrue( $this->discretion->validate_visible_name( 'José Antonio García', 'first_name', 'Nuestro hermano José Antonio' ) );
+		$this->assertTrue( $this->discretion->validate_visible_name( 'Mª Soledad', 'first_name', 'Mª Soledad' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_visible_name( 'José Antonio García', 'first_name', 'José Antonio García' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_visible_name( 'Titón Alonso', 'first_name', 'Titón Alonso' ) );
+	}
+
+	/**
 	 * Each level shows the name as the specification's table says.
 	 *
 	 * @dataProvider provide_levels

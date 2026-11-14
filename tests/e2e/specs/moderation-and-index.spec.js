@@ -115,5 +115,5 @@ test( 'the index warns when it is too long for one message', async ( { page } ) 
 
 	await page.goto( groupUrl( group.id, 'index' ) );
 
-	await expect( page.locator( '.notice-warning' ) ).toContainText( 'over 4,000' );
+	await expect( page.locator( '.notice-warning:not(.update-nag)' ) ).toContainText( 'over 4,000' );
 } );

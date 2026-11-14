@@ -116,7 +116,7 @@ class DigestComposerTest extends DFXPRAY_Test_Case {
 		$this->freeze_time( '2026-09-24 07:00' );
 		$digest = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group );
 
-		$this->assertStringContainsString( 'Anniversary: Abuela, madre de Luis', $digest['shareable'] );
+		$this->assertStringContainsString( 'Anniversary: Abuela Pilar, madre de Luis', $digest['shareable'] );
 	}
 
 	/**
