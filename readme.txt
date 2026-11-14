@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.16
+Stable tag: 26.11.17
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.17 =
+* An installable app for leaders (PWA) at /<url_base>-app/: today’s message ready to share, follow-up of intentions, a quick form to add one, moderation and reviews. It works without connection with the last saved message and lists, and sends changes when the connection comes back.
 
 = 26.11.16 =
 * A closed intention can be reopened from its screen, keeping its history (for intentions closed by mistake). Discarded requests stay final.
