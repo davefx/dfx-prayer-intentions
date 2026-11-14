@@ -75,6 +75,7 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 				'summary'                => 'Injected',
 				'priority'               => 'high',
 				'requester_display_name' => 'X',
+				'requester_first_name'   => 'Luis',
 			)
 		);
 
@@ -82,6 +83,7 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( '', $intention['summary'] );
 		$this->assertSame( 'normal', $intention['priority'] );
 		$this->assertSame( '', $intention['requester_display_name'] );
+		$this->assertSame( '', $intention['requester_first_name'] );
 	}
 
 	/**
@@ -318,7 +320,15 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * Closing as answered can spawn a linked thanksgiving.
 	 */
 	public function test_close_answered_spawns_thanksgiving(): void {
-		$id = $this->make_active( $this->group, array( 'discretion' => 'initials', 'summary' => 'Busca trabajo' ) );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'discretion'             => 'initials',
+				'summary'                => 'Busca trabajo',
+				'beneficiary_name'       => 'Juan Tomás Rubio',
+				'beneficiary_first_name' => 'Juan Tomás',
+			)
+		);
 
 		$new_id = $this->intentions->close( $id, 'answered', true, 'Por el trabajo encontrado' );
 
@@ -329,6 +339,7 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'Por el trabajo encontrado', $thanks['summary'] );
 		$this->assertSame( $id, $thanks['linked_id'] );
 		$this->assertSame( 'initials', $thanks['discretion'] );
+		$this->assertSame( 'Juan Tomás', $thanks['beneficiary_first_name'] );
 		$this->assertSame( '2026-09-24', $thanks['reference_date'] );
 		$this->assertSame( '2026-10-01', $thanks['next_review'] );
 		$this->assertSame( $new_id, $this->intentions->get( $id )['linked_id'] );
@@ -381,6 +392,41 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'beneficiary', $entry['details']['person'] );
 		$this->assertSame( '', $entry['details']['old'] );
 		$this->assertSame( 'Nuestro hermano David', $entry['details']['new'] );
+	}
+
+	/**
+	 * Leaders set a compound first name by hand; it must open the name.
+	 */
+	public function test_update_first_names(): void {
+		$id = $this->make_active( $this->group, array( 'beneficiary_name' => 'Juan Tomás Rubio' ) );
+
+		$error = $this->intentions->update( $id, array( 'beneficiary_first_name' => 'Tomás' ) );
+		$this->assertWPError( $error );
+		$this->assertSame( 'dfxpray_first_name_invalid', $error->get_error_code() );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'beneficiary_first_name' => 'Juan Tomás' ) ) );
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'Juan Tomás', $intention['beneficiary_first_name'] );
+		$this->assertStringStartsWith( 'Juan Tomás, ', DFXPRAY_Discretion::get_instance()->describe( $intention ) );
+
+		$this->assertWPError( $this->intentions->update( $id, array( 'beneficiary_name' => 'Pedro Rubio' ) ) );
+	}
+
+	/**
+	 * Praying for oneself shares the requester's first name.
+	 */
+	public function test_for_myself_shares_the_first_name(): void {
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'requester_name'           => 'Juan Tomás Rubio',
+				'requester_first_name'     => 'Juan Tomás',
+				'beneficiary_is_requester' => '1',
+				'beneficiary_name'         => '',
+			)
+		);
+
+		$this->assertSame( 'Juan Tomás', $this->intentions->get( $id )['beneficiary_first_name'] );
 	}
 
 	/**

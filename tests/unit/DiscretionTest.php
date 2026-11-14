@@ -43,51 +43,6 @@ class DiscretionTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Compound first names and the names that must not be taken for one.
-	 *
-	 * @return array
-	 */
-	public function provide_compound_first_names(): array {
-		return array(
-			'two given names'          => array( 'José Antonio García', 'José Antonio' ),
-			'no surname written'       => array( 'Juan Pablo', 'Juan Pablo' ),
-			'abbreviated María'        => array( 'Mª Soledad', 'Mª Soledad' ),
-			'familiar form'            => array( 'José Mari', 'José Mari' ),
-			'many surnames'            => array( 'Luis Carlos Pérez de la Cuadra', 'Luis Carlos' ),
-			'joined by a particle'     => array( 'María del Carmen Ruiz', 'María del Carmen' ),
-			'unaccented'               => array( 'Jose Luis Noarbe', 'Jose Luis' ),
-			'three given names'        => array( 'María José Antonia Ruiz', 'María José Antonia' ),
-			'surname that is a name'   => array( 'Titón Alonso', 'Titón' ),
-			'surname after a name'     => array( 'Marta Esteban', 'Marta' ),
-			'particle, then a surname' => array( 'María de la Cruz Pérez', 'María' ),
-			'single word'              => array( 'Argeme', 'Argeme' ),
-		);
-	}
-
-	/**
-	 * With "first name", a compound first name appears whole and no surname
-	 * comes with it.
-	 *
-	 * @dataProvider provide_compound_first_names
-	 *
-	 * @param string $name     Original name.
-	 * @param string $expected Expected first name.
-	 */
-	public function test_compound_first_name( string $name, string $expected ): void {
-		$this->assertSame( $expected, $this->discretion->format_name( $name, 'first_name' ) );
-	}
-
-	/**
-	 * A visible name may repeat a whole compound first name, never a surname.
-	 */
-	public function test_visible_name_may_carry_a_compound_first_name(): void {
-		$this->assertTrue( $this->discretion->validate_visible_name( 'José Antonio García', 'first_name', 'Nuestro hermano José Antonio' ) );
-		$this->assertTrue( $this->discretion->validate_visible_name( 'Mª Soledad', 'first_name', 'Mª Soledad' ) );
-		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_visible_name( 'José Antonio García', 'first_name', 'José Antonio García' ) );
-		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_visible_name( 'Titón Alonso', 'first_name', 'Titón Alonso' ) );
-	}
-
-	/**
 	 * Each level shows the name as the specification's table says.
 	 *
 	 * @dataProvider provide_levels
@@ -98,6 +53,60 @@ class DiscretionTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_format_name( string $level, string $name, ?string $expected ): void {
 		$this->assertSame( $expected, $this->discretion->format_name( $name, $level ) );
+	}
+
+	/**
+	 * A first name set by hand replaces the first word; nothing is guessed.
+	 */
+	public function test_first_name_set_by_hand(): void {
+		$this->assertSame( 'Juan Tomás', $this->discretion->format_name( 'Juan Tomás Rubio', 'first_name', '', 'Juan Tomás' ) );
+		$this->assertSame( 'Juan', $this->discretion->format_name( 'Juan Tomás Rubio', 'first_name' ) );
+		$this->assertSame( 'Titón', $this->discretion->format_name( 'Titón Alonso', 'first_name' ) );
+		$this->assertSame( 'Juan Tomás Rubio', $this->discretion->format_name( 'Juan Tomás Rubio', 'full_name', '', 'Juan Tomás' ) );
+		$this->assertSame( 'J. T. R.', $this->discretion->format_name( 'Juan Tomás Rubio', 'initials', '', 'Juan Tomás' ) );
+		$this->assertSame( 'Nuestro hermano Juan', $this->discretion->format_name( 'Juan Tomás Rubio', 'first_name', 'Nuestro hermano Juan', 'Juan Tomás' ) );
+	}
+
+	/**
+	 * The first name set by hand must be the first words of the name.
+	 */
+	public function test_first_name_must_open_the_name(): void {
+		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Juan Tomás' ) );
+		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'juan  tomas' ) );
+		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Pablo', 'Juan Pablo' ) );
+		$this->assertTrue( $this->discretion->validate_first_name( 'Mª Soledad', 'Mª Soledad' ) );
+		$this->assertTrue( $this->discretion->validate_first_name( 'Titón Alonso', '' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Tomás' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Juan Rubio' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Juan Tomás Rubio Pérez' ) );
+	}
+
+	/**
+	 * A visible name may repeat the first name set by hand, never a surname.
+	 */
+	public function test_visible_name_may_carry_the_first_name_set_by_hand(): void {
+		$this->assertTrue( $this->discretion->validate_visible_name( 'Juan Tomás Rubio', 'first_name', 'Nuestro hermano Juan Tomás', 'Juan Tomás' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_visible_name( 'Juan Tomás Rubio', 'first_name', 'Juan Tomás Rubio', 'Juan Tomás' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_visible_name( 'Juan Tomás Rubio', 'first_name', 'Nuestro hermano Juan Tomás' ) );
+	}
+
+	/**
+	 * The person description uses the first names set by hand.
+	 */
+	public function test_describe_with_first_names_set_by_hand(): void {
+		$intention = array(
+			'requester_name'           => 'Juan Tomás Rubio',
+			'requester_first_name'     => 'Juan Tomás',
+			'beneficiary_name'         => 'José Antonio Ruiz',
+			'beneficiary_first_name'   => 'José Antonio',
+			'beneficiary_is_requester' => false,
+			'relationship'             => 'tío de',
+			'discretion'               => 'first_name',
+			'requester_display_name'   => '',
+			'beneficiary_display_name' => '',
+		);
+
+		$this->assertSame( 'José Antonio, tío de Juan Tomás', $this->discretion->describe( $intention ) );
 	}
 
 	/**

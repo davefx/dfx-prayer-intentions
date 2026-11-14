@@ -43,6 +43,8 @@ final class DFXPRAY_Intentions {
 		'priority',
 		'requester_display_name',
 		'beneficiary_display_name',
+		'requester_first_name',
+		'beneficiary_first_name',
 		'next_review',
 	);
 
@@ -416,6 +418,8 @@ final class DFXPRAY_Intentions {
 				'relationship'             => $current['relationship'],
 				'requester_display_name'   => $current['requester_display_name'],
 				'beneficiary_display_name' => $current['beneficiary_display_name'],
+				'requester_first_name'     => $current['requester_first_name'],
+				'beneficiary_first_name'   => $current['beneficiary_first_name'],
 				'body'                     => $current['body'],
 				'discretion'               => $current['discretion'],
 				'type'                     => 'thanksgiving',
@@ -680,11 +684,13 @@ final class DFXPRAY_Intentions {
 			'discretion'               => 'first_name',
 			'requester_display_name'   => '',
 			'beneficiary_display_name' => '',
+			'requester_first_name'     => '',
+			'beneficiary_first_name'   => '',
 			'priority'                 => 'normal',
 			'next_review'              => null,
 		);
 
-		$texts = array( 'requester_name', 'requester_contact', 'beneficiary_name', 'relationship', 'summary', 'requester_display_name', 'beneficiary_display_name' );
+		$texts = array( 'requester_name', 'requester_contact', 'beneficiary_name', 'relationship', 'summary', 'requester_display_name', 'beneficiary_display_name', 'requester_first_name', 'beneficiary_first_name' );
 		foreach ( $texts as $field ) {
 			if ( array_key_exists( $field, $data ) ) {
 				$r[ $field ] = trim( sanitize_text_field( (string) $data[ $field ] ) );
@@ -733,8 +739,9 @@ final class DFXPRAY_Intentions {
 		}
 
 		if ( $r['beneficiary_is_requester'] ) {
-			$r['beneficiary_name'] = $r['requester_name'];
-			$r['relationship']     = '';
+			$r['beneficiary_name']       = $r['requester_name'];
+			$r['beneficiary_first_name'] = $r['requester_first_name'];
+			$r['relationship']           = '';
 		}
 
 		$r['requester_contact'] = mb_substr( $r['requester_contact'], 0, 191 );
@@ -801,7 +808,10 @@ final class DFXPRAY_Intentions {
 		}
 
 		foreach ( array( 'requester', 'beneficiary' ) as $person ) {
-			$valid = $discretion->validate_visible_name( $r[ $person . '_name' ], $r['discretion'], $r[ $person . '_display_name' ] );
+			$valid = $discretion->validate_first_name( $r[ $person . '_name' ], $r[ $person . '_first_name' ] );
+			if ( ! is_wp_error( $valid ) ) {
+				$valid = $discretion->validate_visible_name( $r[ $person . '_name' ], $r['discretion'], $r[ $person . '_display_name' ], $r[ $person . '_first_name' ] );
+			}
 			if ( is_wp_error( $valid ) ) {
 				return $valid;
 			}
@@ -920,6 +930,8 @@ final class DFXPRAY_Intentions {
 			'discretion'               => $row['discretion'],
 			'requester_display_name'   => $row['requester_display_name'],
 			'beneficiary_display_name' => $row['beneficiary_display_name'],
+			'requester_first_name'     => $row['requester_first_name'],
+			'beneficiary_first_name'   => $row['beneficiary_first_name'],
 			'priority'                 => $row['priority'],
 			'status'                   => $row['status'],
 			'close_reason'             => $row['close_reason'],

@@ -25,76 +25,6 @@ final class DFXPRAY_Discretion {
 	private const PARTICLES = array( 'de', 'del', 'la', 'las', 'los', 'el', 'y', 'e', 'i', 'da', 'das', 'do', 'dos', 'di', 'van', 'von', 'der', 'den', 'du', 'le', 'of', 'the' );
 
 	/**
-	 * Given names that, after a first given name, belong to it ("José
-	 * Antonio", "María del Carmen"). Lower case, without accents. Names that
-	 * are also common surnames (Alonso, Esteban, Vicente, Tomás…) are left
-	 * out: when in doubt a word counts as a surname, so it stays hidden.
-	 */
-	private const COMPOUND_GIVEN_NAMES = array(
-		'agustin',
-		'alberto',
-		'alejandro',
-		'alfonso',
-		'ana',
-		'angel',
-		'angeles',
-		'antonia',
-		'antonio',
-		'asuncion',
-		'auxiliadora',
-		'belen',
-		'carlos',
-		'carmen',
-		'concepcion',
-		'consuelo',
-		'cristina',
-		'dolores',
-		'eduardo',
-		'elena',
-		'emilio',
-		'enrique',
-		'eugenia',
-		'felipe',
-		'felix',
-		'fernando',
-		'francisco',
-		'gabriel',
-		'ignacio',
-		'inmaculada',
-		'ines',
-		'isabel',
-		'javier',
-		'jesus',
-		'joaquin',
-		'jose',
-		'josefa',
-		'juan',
-		'lucia',
-		'luis',
-		'luisa',
-		'manuel',
-		'mari',
-		'maria',
-		'mariano',
-		'mercedes',
-		'miguel',
-		'montserrat',
-		'nieves',
-		'paloma',
-		'pablo',
-		'pedro',
-		'pilar',
-		'rafael',
-		'ramon',
-		'ricardo',
-		'rocio',
-		'rosa',
-		'soledad',
-		'teresa',
-		'victoria',
-	);
-
-	/**
 	 * Levels, from the most open to the most discreet.
 	 *
 	 * @return array<string, string> Level => label.
@@ -153,9 +83,11 @@ final class DFXPRAY_Discretion {
 	 * @param string $name         Original name.
 	 * @param string $level        Level.
 	 * @param string $visible_name Leader-edited visible name; used only for name levels.
+	 * @param string $first_name   First name set by a leader when it is compound
+	 *                             ("Juan Tomás"); empty means the first word.
 	 * @return string|null Null when nothing about the person may appear.
 	 */
-	public function format_name( string $name, string $level, string $visible_name = '' ): ?string {
+	public function format_name( string $name, string $level, string $visible_name = '', string $first_name = '' ): ?string {
 		$visible_name = trim( $visible_name );
 		$tokens       = $this->tokens( $name );
 
@@ -164,7 +96,7 @@ final class DFXPRAY_Discretion {
 				return '' !== $visible_name ? $visible_name : implode( ' ', $tokens );
 
 			case 'first_name':
-				return '' !== $visible_name ? $visible_name : implode( ' ', array_slice( $tokens, 0, $this->first_name_length( $tokens ) ) );
+				return '' !== $visible_name ? $visible_name : implode( ' ', array_slice( $tokens, 0, $this->first_name_length( $name, $first_name ) ) );
 
 			case 'initials':
 				$initials = array();
@@ -184,21 +116,23 @@ final class DFXPRAY_Discretion {
 	/**
 	 * Check that a visible name reveals no more than the level allows.
 	 *
-	 * With "first name", no word of the original name after the first name
-	 * (which may be compound) may appear in the visible name.
+	 * With "first name", no word of the original name after its first name
+	 * (the first word, or the compound one a leader set) may appear in the
+	 * visible name.
 	 *
 	 * @param string $name         Original name.
 	 * @param string $level        Level.
 	 * @param string $visible_name Proposed visible name.
+	 * @param string $first_name   First name set by a leader, if any.
 	 * @return true|WP_Error
 	 */
-	public function validate_visible_name( string $name, string $level, string $visible_name ) {
+	public function validate_visible_name( string $name, string $level, string $visible_name, string $first_name = '' ) {
 		if ( '' === trim( $visible_name ) || 'first_name' !== $level ) {
 			return true;
 		}
 
 		$tokens   = $this->tokens( $name );
-		$surnames = $this->normalized_words( implode( ' ', array_slice( $tokens, $this->first_name_length( $tokens ) ) ) );
+		$surnames = $this->normalized_words( implode( ' ', array_slice( $tokens, $this->first_name_length( $name, $first_name ) ) ) );
 		$surnames = array_diff( $surnames, self::PARTICLES );
 		$found    = array_intersect( $this->normalized_words( $visible_name ), $surnames );
 
@@ -210,6 +144,22 @@ final class DFXPRAY_Discretion {
 	}
 
 	/**
+	 * Check a first name set by a leader: it must be the first words of the
+	 * name. Nothing is guessed; the leader decides how many words it has.
+	 *
+	 * @param string $name       Original name.
+	 * @param string $first_name Proposed first name; empty means the first word.
+	 * @return true|WP_Error
+	 */
+	public function validate_first_name( string $name, string $first_name ) {
+		if ( '' === trim( $first_name ) || $this->prefix_length( $name, $first_name ) > 0 ) {
+			return true;
+		}
+
+		return new WP_Error( 'dfxpray_first_name_invalid', __( 'The first name must be the first words of the name.', 'dfx-prayer-intentions' ) );
+	}
+
+	/**
 	 * The people part of an index line: "Carmen, madre de Luis".
 	 *
 	 * @param array $intention Intention fields.
@@ -217,7 +167,7 @@ final class DFXPRAY_Discretion {
 	 */
 	public function describe( array $intention ): ?string {
 		$level     = $intention['discretion'];
-		$requester = $this->format_name( $intention['requester_name'], $level, $intention['requester_display_name'] ?? '' );
+		$requester = $this->format_name( $intention['requester_name'], $level, $intention['requester_display_name'] ?? '', $intention['requester_first_name'] ?? '' );
 
 		if ( null === $requester ) {
 			return null;
@@ -227,7 +177,7 @@ final class DFXPRAY_Discretion {
 			return $requester;
 		}
 
-		$beneficiary  = (string) $this->format_name( $intention['beneficiary_name'], $level, $intention['beneficiary_display_name'] ?? '' );
+		$beneficiary  = (string) $this->format_name( $intention['beneficiary_name'], $level, $intention['beneficiary_display_name'] ?? '', $intention['beneficiary_first_name'] ?? '' );
 		$relationship = trim( (string) ( $intention['relationship'] ?? '' ) );
 
 		if ( '' === $relationship ) {
@@ -238,26 +188,38 @@ final class DFXPRAY_Discretion {
 	}
 
 	/**
-	 * How many words of a name make up its first name: the first word, plus
-	 * any following given names of a compound one, with the particles that
-	 * join them ("María del Carmen").
+	 * How many words of the name make up its first name: those of the first
+	 * name a leader set, or just the first one.
 	 *
-	 * @param string[] $tokens Words of the name.
+	 * @param string $name       Original name.
+	 * @param string $first_name First name set by a leader, if any.
 	 */
-	private function first_name_length( array $tokens ): int {
-		$length = min( 1, count( $tokens ) );
+	private function first_name_length( string $name, string $first_name ): int {
+		return max( $this->prefix_length( $name, $first_name ), min( 1, count( $this->tokens( $name ) ) ) );
+	}
 
-		for ( $i = 1, $count = count( $tokens ); $i < $count; $i++ ) {
-			$word = implode( '', $this->normalized_words( $tokens[ $i ] ) );
+	/**
+	 * How many leading words of the name spell the given first name, ignoring
+	 * case and accents; 0 when they do not.
+	 *
+	 * @param string $name       Original name.
+	 * @param string $first_name First name.
+	 */
+	private function prefix_length( string $name, string $first_name ): int {
+		$wanted = $this->normalized_words( $first_name );
+		$tokens = $this->tokens( $name );
 
-			if ( in_array( $word, self::COMPOUND_GIVEN_NAMES, true ) ) {
-				$length = $i + 1;
-			} elseif ( ! in_array( $word, self::PARTICLES, true ) ) {
-				break;
+		if ( ! $wanted ) {
+			return 0;
+		}
+
+		for ( $length = 1, $count = count( $tokens ); $length <= $count; $length++ ) {
+			if ( $this->normalized_words( implode( ' ', array_slice( $tokens, 0, $length ) ) ) === $wanted ) {
+				return $length;
 			}
 		}
 
-		return $length;
+		return 0;
 	}
 
 	/**
