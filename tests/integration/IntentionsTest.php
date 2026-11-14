@@ -437,6 +437,34 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Leaders may set the day the intention was asked for (one written down
+	 * later, or brought from another list); never a day still to come.
+	 */
+	public function test_asked_on(): void {
+		$id = $this->make_active( $this->group );
+		$this->assertSame( '2026-09-24 10:00:00', $this->intentions->get( $id )['created_at'] );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'asked_on' => '2026-09-14' ) ) );
+		$this->assertSame( '2026-09-14 10:00:00', $this->intentions->get( $id )['created_at'] );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'asked_on' => '' ) ) );
+		$this->assertSame( '2026-09-14 10:00:00', $this->intentions->get( $id )['created_at'] );
+
+		foreach ( array( '2026-09-25', '2026-02-30', 'ayer' ) as $wrong ) {
+			$error = $this->intentions->update( $id, array( 'asked_on' => $wrong ) );
+			$this->assertWPError( $error, $wrong );
+			$this->assertSame( 'dfxpray_asked_on_invalid', $error->get_error_code() );
+		}
+		$this->assertSame( '2026-09-14 10:00:00', $this->intentions->get( $id )['created_at'] );
+
+		$manual = $this->make_active( $this->group, array( 'asked_on' => '2026-09-01' ) );
+		$this->assertSame( '2026-09-01 10:00:00', $this->intentions->get( $manual )['created_at'] );
+
+		$form = $this->make_pending( $this->group, array_merge( $this->form_data(), array( 'asked_on' => '2026-09-01' ) ) );
+		$this->assertSame( '2026-09-24 10:00:00', $this->intentions->get( $form )['created_at'] );
+	}
+
+	/**
 	 * Praying for oneself shares the requester's first name.
 	 */
 	public function test_for_myself_shares_the_first_name(): void {

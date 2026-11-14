@@ -184,6 +184,13 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row"><label for="dfxpray-asked-on"><?php esc_html_e( 'Date of the request', 'dfx-prayer-intentions' ); ?></label></th>
+					<td>
+						<input type="date" id="dfxpray-asked-on" name="intention[asked_on]" value="<?php echo esc_attr( $dfxpray_is_new ? '' : substr( (string) $dfxpray_v['created_at'], 0, 10 ) ); ?>" max="<?php echo esc_attr( DFXPRAY_Clock::get_instance()->today() ); ?>">
+						<p class="description"><?php esc_html_e( 'The day it was asked for. Leave it empty for today.', 'dfx-prayer-intentions' ); ?></p>
+					</td>
+				</tr>
 				<?php if ( ! $dfxpray_is_new && $dfxpray_open ) : ?>
 					<tr>
 						<th scope="row"><label for="dfxpray-next-review"><?php esc_html_e( 'Next review', 'dfx-prayer-intentions' ); ?></label></th>

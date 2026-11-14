@@ -102,6 +102,11 @@ test( 'every field of an active intention can be edited in the app', async ( { p
 	await expect( page.locator( '.dfx-body' ) ).toHaveText( 'Falleció el sábado.' );
 
 	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.getByLabel( 'Date of the request' ).fill( '2026-09-14' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.dfx-created' ) ).toHaveText( 'Added on Monday, September 14, 2026' );
+
+	await page.getByText( 'Edit', { exact: true } ).click();
 	await page.getByLabel( 'The requester is a member of the group' ).uncheck();
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de Luis Sebastián: descanse en paz' );

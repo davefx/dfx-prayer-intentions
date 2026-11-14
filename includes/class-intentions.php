@@ -78,18 +78,23 @@ final class DFXPRAY_Intentions {
 			return $record;
 		}
 
+		$now      = DFXPRAY_Clock::get_instance()->mysql();
+		$asked_on = $manual ? $this->asked_on( $data, $now ) : $now;
+		if ( is_wp_error( $asked_on ) ) {
+			return $asked_on;
+		}
+
 		if ( $manual && '' === $record['summary'] ) {
 			return $this->summary_required_error();
 		}
 
-		$now    = DFXPRAY_Clock::get_instance()->mysql();
 		$record = array_merge(
 			$record,
 			array(
 				'group_id'   => $group_id,
 				'source'     => $manual ? 'manual' : 'form',
 				'status'     => $manual ? 'active' : 'pending',
-				'created_at' => $now,
+				'created_at' => $asked_on,
 				'updated_at' => $now,
 			)
 		);
@@ -151,6 +156,12 @@ final class DFXPRAY_Intentions {
 		if ( 'pending' !== $current['status'] && '' === $record['summary'] ) {
 			return $this->summary_required_error();
 		}
+
+		$asked_on = $this->asked_on( $data, $current['created_at'] );
+		if ( is_wp_error( $asked_on ) ) {
+			return $asked_on;
+		}
+		$record['created_at'] = $asked_on;
 
 		$dates_changed = $record['type'] !== $current['type'] || $record['reference_date'] !== $current['reference_date'];
 		if ( $dates_changed && in_array( $current['status'], self::LISTABLE_STATUSES, true ) && ! array_key_exists( 'next_review', $data ) ) {
@@ -891,6 +902,29 @@ final class DFXPRAY_Intentions {
 		usort( $clean, static fn( $a, $b ) => strcmp( $a['date'] . $a['time'], $b['date'] . $b['time'] ) );
 
 		return $clean;
+	}
+
+	/**
+	 * The moment an intention was asked for, after a leader's "asked on" date.
+	 *
+	 * The date replaces the day and keeps the time of $current; an empty or
+	 * missing date keeps $current. A day still to come is refused.
+	 *
+	 * @param array  $data    Raw data, maybe with 'asked_on' (Y-m-d).
+	 * @param string $current Current moment (Y-m-d H:i:s).
+	 * @return string|WP_Error
+	 */
+	private function asked_on( array $data, string $current ) {
+		$date = trim( (string) ( $data['asked_on'] ?? '' ) );
+		if ( '' === $date ) {
+			return $current;
+		}
+
+		if ( ! $this->is_valid_date( $date ) || $date > DFXPRAY_Clock::get_instance()->today() ) {
+			return new WP_Error( 'dfxpray_asked_on_invalid', __( 'The date of the request must be a valid day, today or earlier.', 'dfx-prayer-intentions' ) );
+		}
+
+		return $date . substr( $current, 10 );
 	}
 
 	/**

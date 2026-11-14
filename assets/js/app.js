@@ -543,7 +543,7 @@
 			form(
 				( data ) => {
 					const intention = {};
-					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review' ].forEach( ( key ) => {
+					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review', 'asked_on' ].forEach( ( key ) => {
 						if ( data.has( key ) ) {
 							intention[ key ] = data.get( key );
 						}
@@ -582,6 +582,7 @@
 				field( S.discretion, select( 'discretion', allowed, it.discretion ) ),
 				field( S.priority, select( 'priority', { normal: S.normal, high: S.highPriority }, it.priority ) ),
 				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
+				text( 'asked_on', S.askedOn, String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ),
 				h( 'button', { class: 'dfx-button is-primary' }, S.saveChanges )
 			)
 		);
@@ -621,6 +622,7 @@
 				field( S.summary, h( 'input', { name: 'summary', maxlength: 100, required: true } ) ),
 				field( S.fullText, h( 'textarea', { name: 'body', rows: 4, required: true } ), S.neverPublished ),
 				check( S.highPriority, h( 'input', { type: 'checkbox', name: 'priority', value: '1' } ) ),
+				field( S.askedOn, h( 'input', { type: 'date', name: 'asked_on', max: C.today } ), S.askedOnHint ),
 				h( 'button', { class: 'dfx-button is-primary' }, S.addIntention )
 			)
 		);

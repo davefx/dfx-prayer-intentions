@@ -90,6 +90,18 @@ test( 'a leader sets compound first names by hand', async ( { page } ) => {
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Nuestro tío José Antonio, tío de Juan Tomás: su operación' );
 } );
 
+test( 'the date of the request can be corrected', async ( { page } ) => {
+	const id = createIntention( group.id );
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
+
+	await page.getByLabel( 'Date of the request' ).fill( '2026-09-14' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toBeVisible();
+	await expect( page.getByLabel( 'Date of the request' ) ).toHaveValue( '2026-09-14' );
+	expect( php( `echo wp_json_encode( DFXPRAY_Intentions::get_instance()->get( ${ id } )['created_at'] );` ) ).toMatch( /^2026-09-14 / );
+} );
+
 test( 'a leader adds an intention by hand, with a key date', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions' ) );
