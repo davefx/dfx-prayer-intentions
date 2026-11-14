@@ -288,6 +288,31 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The deceased close themselves when their month is over, also those
+	 * already waiting in review; the rest still go to review.
+	 */
+	public function test_deceased_close_themselves(): void {
+		$recent  = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-09-10' ) );
+		$event   = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$waiting = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-08-01' ) );
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'deceased_auto_close' => false ) );
+		$this->intentions->process_due();
+		$this->assertSame( 'review', $this->intentions->get( $waiting )['status'] );
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'deceased_auto_close' => true ) );
+		$due = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-08-20' ) );
+
+		$this->intentions->process_due();
+
+		foreach ( array( $due, $waiting ) as $id ) {
+			$intention = $this->intentions->get( $id );
+			$this->assertSame( 'closed', $intention['status'] );
+			$this->assertSame( 'expired', $intention['close_reason'] );
+		}
+		$this->assertSame( 'active', $this->intentions->get( $recent )['status'] );
+		$this->assertSame( 'review', $this->intentions->get( $event )['status'] );
+	}
+
+	/**
 	 * "Still current" reactivates with a new review date.
 	 */
 	public function test_keep_active(): void {

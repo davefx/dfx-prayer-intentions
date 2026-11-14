@@ -427,6 +427,11 @@ final class DFXPRAY_Admin {
 				'type'  => 'number',
 				'label' => __( 'Deceased: days after the death', 'dfx-prayer-intentions' ),
 			),
+			'deceased_auto_close'      => array(
+				'type'  => 'checkbox',
+				'label' => __( 'Close the deceased when that time is over', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Instead of waiting in review. Those whose anniversary is remembered are kept.', 'dfx-prayer-intentions' ),
+			),
 			'ongoing_review_days'      => array(
 				'type'  => 'number',
 				'label' => __( 'Ongoing situations: review every (days)', 'dfx-prayer-intentions' ),
@@ -554,7 +559,7 @@ final class DFXPRAY_Admin {
 	 */
 	public function setting_sections( string $scope ): array {
 		$sections = array(
-			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'ongoing_review_days', 'thanksgiving_days', 'keep_active_days', 'recent_deceased_days' ),
+			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'keep_active_days', 'recent_deceased_days' ),
 			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);

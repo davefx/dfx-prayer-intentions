@@ -91,6 +91,7 @@ final class DFXPRAY_Settings {
 			// Deadlines.
 			'event_grace_days'         => 2,
 			'deceased_days'            => 30,
+			'deceased_auto_close'      => true,
 			'ongoing_review_days'      => 30,
 			'thanksgiving_days'        => 7,
 			'keep_active_days'         => 30,

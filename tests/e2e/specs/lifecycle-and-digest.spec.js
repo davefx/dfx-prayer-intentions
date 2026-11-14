@@ -30,6 +30,21 @@ test( 'due intentions go to review and stay in the index until a leader decides'
 	await expect( page.getByText( 'No reviews due.' ) ).toBeVisible();
 } );
 
+test( 'the deceased close themselves when their month is over, unless the group turns it off', async ( { page } ) => {
+	freeze( '2026-08-20 10:00' );
+	const id = createIntention( group.id, { type: 'deceased', reference_date: '2026-08-20', summary: 'descanse en paz', beneficiary_name: 'Marta' } );
+	freeze( '2026-09-24 10:00' );
+	tick();
+	await login( page, 'leader1' );
+
+	await page.goto( groupUrl( group.id, 'reviews' ) );
+	await expect( page.getByText( 'No reviews due.' ) ).toBeVisible();
+	expect( php( `echo wp_json_encode( DFXPRAY_Intentions::get_instance()->get( ${ id } )['status'] );` ) ).toBe( 'closed' );
+
+	await page.goto( groupUrl( group.id, 'settings' ) );
+	await expect( page.getByLabel( 'Close the deceased when that time is over' ) ).toBeChecked();
+} );
+
 test( 'the daily digest goes out at its time, once, and is kept in the panel', async ( { page } ) => {
 	freeze( '2026-09-23 12:00' );
 	createIntention( group.id, { type: 'event', reference_date: '2026-09-24', reference_time: '09:30', summary: 'operación', beneficiary_name: 'Carmen' } );

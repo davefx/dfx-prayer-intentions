@@ -69,7 +69,7 @@ final class DFXPRAY_Scheduler {
 
 		$ids = $wpdb->get_col( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
-				"SELECT id FROM %i WHERE status IN ('closed','discarded') AND closed_at IS NOT NULL AND closed_at < %s",
+				"SELECT id FROM %i WHERE status IN ('closed','discarded') AND closed_at IS NOT NULL AND closed_at < %s AND NOT ( type = 'deceased' AND anniversary = 1 )",
 				$table,
 				$cutoff
 			)

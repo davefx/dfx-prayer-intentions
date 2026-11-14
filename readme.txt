@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.22
+Stable tag: 26.11.23
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.23 =
+* The deceased close themselves when their time in the index is over, instead of waiting in review (a group setting, on by default). Those whose anniversary is remembered are kept, and the anniversary still appears in the digest.
 
 = 26.11.22 =
 * The lists of intentions, in the app and in the panel, show the urgent ones first and then the most recent requests.

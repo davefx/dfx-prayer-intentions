@@ -268,6 +268,23 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A closed deceased whose anniversary is remembered is never deleted.
+	 */
+	public function test_retention_keeps_anniversaries(): void {
+		$this->freeze_time( '2026-01-01 10:00' );
+		$remembered = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2025-12-30', 'anniversary' => true ) );
+		$forgotten  = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2025-12-30' ) );
+		DFXPRAY_Intentions::get_instance()->close( $remembered, 'expired' );
+		DFXPRAY_Intentions::get_instance()->close( $forgotten, 'expired' );
+
+		$this->freeze_time( '2026-09-24 03:00' );
+		DFXPRAY_Scheduler::get_instance()->daily();
+
+		$this->assertNotNull( DFXPRAY_Intentions::get_instance()->get( $remembered ) );
+		$this->assertNull( DFXPRAY_Intentions::get_instance()->get( $forgotten ) );
+	}
+
+	/**
 	 * The cron hooks are wired.
 	 */
 	public function test_cron_hooks_registered(): void {

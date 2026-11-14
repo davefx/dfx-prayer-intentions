@@ -331,10 +331,30 @@ final class DFXPRAY_Intentions {
 	/**
 	 * Move every active intention whose review date has arrived to "review".
 	 *
-	 * @return int How many moved.
+	 * The deceased of a group that closes them on its own are closed instead,
+	 * also those already waiting in review.
+	 *
+	 * @return int How many moved or closed.
 	 */
 	public function process_due(): int {
 		global $wpdb;
+
+		$closed   = 0;
+		$settings = DFXPRAY_Settings::get_instance();
+		$deceased = $wpdb->get_results( // phpcs:ignore WordPress.DB
+			$wpdb->prepare(
+				"SELECT id, group_id FROM %i WHERE type = 'deceased' AND status IN ('active','review') AND next_review IS NOT NULL AND next_review <= %s",
+				$this->tables()['intentions'],
+				DFXPRAY_Clock::get_instance()->today()
+			),
+			ARRAY_A
+		);
+
+		foreach ( $deceased as $row ) {
+			if ( $settings->get( 'deceased_auto_close', (int) $row['group_id'] ) && true === $this->close( (int) $row['id'], 'expired' ) ) {
+				++$closed;
+			}
+		}
 
 		$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
@@ -350,7 +370,7 @@ final class DFXPRAY_Intentions {
 			DFXPRAY_Log::get_instance()->add( 'intention_due', (int) $row['group_id'], (int) $row['id'], array(), 0 );
 		}
 
-		return count( $rows );
+		return $closed + count( $rows );
 	}
 
 	/**
@@ -634,6 +654,27 @@ final class DFXPRAY_Intentions {
 	 */
 	public function listable( int $group_id ): array {
 		return $this->query( $group_id, array( 'status' => self::LISTABLE_STATUSES ) );
+	}
+
+	/**
+	 * The deceased of a group whose anniversary is remembered, closed or not.
+	 *
+	 * @param int $group_id Group.
+	 * @return array[]
+	 */
+	public function anniversaries( int $group_id ): array {
+		return array_values(
+			array_filter(
+				$this->query(
+					$group_id,
+					array(
+						'status' => array_merge( self::LISTABLE_STATUSES, array( 'closed' ) ),
+						'type'   => 'deceased',
+					)
+				),
+				static fn( $i ) => $i['anniversary']
+			)
+		);
 	}
 
 	/**

@@ -56,6 +56,8 @@ T = {
 "One-off events: days after the date": "Eventos puntuales: días tras la fecha",
 "After that, the intention goes to review.": "Después, la intención pasa a revisión.",
 "Deceased: days after the death": "Difuntos: días tras el fallecimiento",
+"Close the deceased when that time is over": "Cerrar los difuntos al cumplirse ese plazo",
+"Instead of waiting in review. Those whose anniversary is remembered are kept.": "En lugar de dejarlos en revisión. Se conservan aquellos cuyo aniversario se recuerda.",
 "Ongoing situations: review every (days)": "Situaciones prolongadas: revisar cada (días)",
 "Thanksgiving: days": "Acción de gracias: días",
 "“Still current”: days until the next review": "«Sigue vigente»: días hasta la próxima revisión",

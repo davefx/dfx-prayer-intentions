@@ -37,14 +37,14 @@ final class DFXPRAY_Digest_Composer {
 		$loud       = array_filter( $intentions, static fn( $i ) => ! isset( $silent['keys'][ $i['id'] ] ) );
 
 		$shared = array(
-			'today'    => $this->day_lines( $loud, $today, true, $intentions ),
+			'today'    => $this->day_lines( $loud, $today, DFXPRAY_Intentions::get_instance()->anniversaries( $group_id ), $intentions ),
 			'quiet'    => $silent['lines'],
 			'news'     => $this->news_lines( $group_id, $intentions, $since ),
 			'high'     => array_map(
 				static fn( $i ) => substr( $formatter->line( $i ), strlen( $formatter->priority_mark( $i ) ) ),
 				array_filter( $intentions, static fn( $i ) => 'high' === $i['priority'] )
 			),
-			'tomorrow' => $this->day_lines( $loud, $tomorrow, false, $intentions ),
+			'tomorrow' => $this->day_lines( $loud, $tomorrow, array(), $intentions ),
 			'deceased' => $this->recent_deceased_lines( $intentions, $group_id ),
 		);
 
@@ -169,11 +169,11 @@ final class DFXPRAY_Digest_Composer {
 	 *
 	 * @param array[] $events       Intentions whose events are listed.
 	 * @param string  $date         Y-m-d.
-	 * @param bool    $anniversary  Whether to include anniversaries.
-	 * @param array[] $intentions   All listable intentions, for key dates and anniversaries.
+	 * @param array[] $anniversaries Deceased whose anniversary is remembered (closed too); empty to leave them out.
+	 * @param array[] $intentions    All listable intentions, for key dates.
 	 * @return string[]
 	 */
-	private function day_lines( array $events, string $date, bool $anniversary, array $intentions ): array {
+	private function day_lines( array $events, string $date, array $anniversaries, array $intentions ): array {
 		$formatter = DFXPRAY_Formatter::get_instance();
 		$items     = array();
 
@@ -196,9 +196,10 @@ final class DFXPRAY_Digest_Composer {
 					);
 				}
 			}
+		}
 
-			if ( $anniversary && 'deceased' === $intention['type'] && $intention['anniversary'] && $intention['reference_date']
-				&& substr( $intention['reference_date'], 5 ) === substr( $date, 5 ) && $intention['reference_date'] < $date ) {
+		foreach ( $anniversaries as $intention ) {
+			if ( $intention['reference_date'] && substr( $intention['reference_date'], 5 ) === substr( $date, 5 ) && $intention['reference_date'] < $date ) {
 				$items[] = array(
 					'time' => '',
 					/* translators: %s: person. */

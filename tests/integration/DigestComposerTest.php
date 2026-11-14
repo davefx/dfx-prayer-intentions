@@ -120,6 +120,28 @@ class DigestComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The anniversary is remembered after the intention has closed.
+	 */
+	public function test_anniversary_of_a_closed_intention(): void {
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'             => 'deceased',
+				'reference_date'   => '2025-09-24',
+				'anniversary'      => true,
+				'beneficiary_name' => 'Abuela Pilar',
+				'summary'          => 'descanso',
+			)
+		);
+		DFXPRAY_Intentions::get_instance()->close( $id, 'expired' );
+
+		$this->freeze_time( '2026-09-24 07:00' );
+		$digest = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group );
+
+		$this->assertStringContainsString( 'Anniversary: Abuela, madre de Luis', $digest['shareable'] );
+	}
+
+	/**
 	 * Nothing to tell: short version by default.
 	 */
 	public function test_empty_short_version(): void {
