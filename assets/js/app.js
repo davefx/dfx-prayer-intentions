@@ -390,11 +390,6 @@
 					check( S.asNews, h( 'input', { type: 'checkbox', name: 'is_news', value: '1', checked: true } ) ),
 					h( 'button', { class: 'dfx-button is-primary' }, S.addUpdate )
 				),
-				form(
-					( data ) => act( id, 'save_intention', { group_id: it.group_id, intention: { summary: data.get( 'summary' ) } } ),
-					field( S.summary, h( 'input', { name: 'summary', value: it.summary, maxlength: 100, required: true } ) ),
-					h( 'button', { class: 'dfx-button' }, S.save )
-				),
 				h(
 					'div',
 					{ class: 'dfx-actions' },
@@ -416,6 +411,10 @@
 			);
 		}
 
+		if ( open || 'pending' === it.status ) {
+			blocks.unshift( editForm( it ) );
+		}
+
 		if ( 'closed' === it.status ) {
 			blocks.push( h( 'button', { type: 'button', class: 'dfx-button is-primary', onclick: () => act( id, 'reopen', {} ) }, S.reopen ) );
 		}
@@ -430,6 +429,67 @@
 			blocks,
 			updates.length ? h( 'h2', {}, S.updates ) : null,
 			updates.length ? h( 'ul', { class: 'dfx-timeline' }, updates.map( ( u ) => h( 'li', {}, h( 'small', {}, u.created_at.slice( 0, 16 ) + ( u.author ? ' · ' + u.author : '' ) ), h( 'p', {}, u.body ) ) ) ) : null
+		);
+	}
+
+	/**
+	 * Every field of an intention, as in the panel. Checkboxes send the
+	 * has_* markers so that unticking one saves it as off.
+	 */
+	function editForm( it ) {
+		const levels = Object.keys( C.levels );
+		const allowed = Object.fromEntries( levels.slice( Math.max( 0, levels.indexOf( it.discretion ) ) ).map( ( key ) => [ key, C.levels[ key ] ] ) );
+		const text = ( name, label, value, extra ) => field( label, h( 'input', Object.assign( { name, value: value || '' }, extra || {} ) ) );
+		const box = ( name, label, value ) => check( label, h( 'input', { type: 'checkbox', name, value: '1', checked: !! value } ) );
+
+		return h(
+			'details',
+			{ class: 'dfx-edit' },
+			h( 'summary', {}, S.edit ),
+			form(
+				( data ) => {
+					const intention = {};
+					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review' ].forEach( ( key ) => {
+						if ( data.has( key ) ) {
+							intention[ key ] = data.get( key );
+						}
+					} );
+					[ 'requester_is_member', 'beneficiary_is_requester', 'beneficiary_is_member', 'anniversary' ].forEach( ( key ) => {
+						if ( data.get( key ) ) {
+							intention[ key ] = '1';
+						}
+					} );
+					return act( it.id, 'save_intention', {
+						group_id: it.group_id,
+						has_requester_is_member: 1,
+						has_beneficiary_is_requester: 1,
+						has_beneficiary_is_member: 1,
+						has_anniversary: 1,
+						intention,
+					} );
+				},
+				text( 'requester_name', S.requester, it.requester_name, { required: true } ),
+				text( 'requester_first_name', S.nameToShowRequester, it.requester_first_name ),
+				text( 'requester_display_name', S.visibleRequester, it.requester_display_name ),
+				text( 'requester_contact', S.contact, it.requester_contact ),
+				box( 'requester_is_member', S.requesterIsMember, it.requester_is_member ),
+				box( 'beneficiary_is_requester', S.forThemselves, it.beneficiary_is_requester ),
+				text( 'beneficiary_name', S.beneficiary, it.beneficiary_name ),
+				text( 'beneficiary_first_name', S.nameToShowBeneficiary, it.beneficiary_first_name ),
+				text( 'beneficiary_display_name', S.visibleBeneficiary, it.beneficiary_display_name ),
+				text( 'relationship', S.relationship, it.relationship, { maxlength: 100 } ),
+				box( 'beneficiary_is_member', S.beneficiaryIsMember, it.beneficiary_is_member ),
+				field( S.kind, select( 'type', C.types, it.type ) ),
+				text( 'reference_date', S.referenceDate, it.reference_date, { type: 'date' } ),
+				text( 'reference_time', S.time, it.reference_time, { type: 'time' } ),
+				box( 'anniversary', S.anniversary, it.anniversary ),
+				field( S.fullText, h( 'textarea', { name: 'body', rows: 4, required: true }, it.body ), S.neverPublished ),
+				text( 'summary', S.summary, it.summary, { maxlength: 100, required: 'pending' !== it.status } ),
+				field( S.discretion, select( 'discretion', allowed, it.discretion ) ),
+				field( S.priority, select( 'priority', { normal: S.normal, high: S.highPriority }, it.priority ) ),
+				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
+				h( 'button', { class: 'dfx-button is-primary' }, S.saveChanges )
+			)
 		);
 	}
 

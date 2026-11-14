@@ -156,7 +156,7 @@ final class DFXPRAY_Discretion {
 			return true;
 		}
 
-		return new WP_Error( 'dfxpray_first_name_invalid', __( 'The first name must be the first words of the name.', 'dfx-prayer-intentions' ) );
+		return new WP_Error( 'dfxpray_first_name_invalid', __( 'The name to show must be the first words of the full name.', 'dfx-prayer-intentions' ) );
 	}
 
 	/**

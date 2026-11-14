@@ -76,12 +76,12 @@ test( 'a leader sets compound first names by hand', async ( { page } ) => {
 
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'José, tío de Juan: su operación' );
 
-	await page.getByLabel( 'First name of the beneficiary' ).fill( 'Antonio' );
+	await page.getByLabel( 'Name to show for the beneficiary' ).fill( 'Antonio' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
-	await expect( page.locator( '.notice-error' ) ).toContainText( 'first words of the name' );
+	await expect( page.locator( '.notice-error' ) ).toContainText( 'first words of the full name' );
 
-	await page.getByLabel( 'First name of the beneficiary' ).fill( 'José Antonio' );
-	await page.getByLabel( 'First name of the requester' ).fill( 'Juan Tomás' );
+	await page.getByLabel( 'Name to show for the beneficiary' ).fill( 'José Antonio' );
+	await page.getByLabel( 'Name to show for the requester' ).fill( 'Juan Tomás' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'José Antonio, tío de Juan Tomás: su operación' );
 

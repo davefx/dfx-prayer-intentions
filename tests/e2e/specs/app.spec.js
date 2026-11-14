@@ -76,6 +76,31 @@ test( 'a leader adds an intention and follows it up', async ( { page } ) => {
 	await expect( page.locator( '.dfx-list' ) ).toContainText( 'Marina, esposa de Felipe: problemas de salud' );
 } );
 
+test( 'every field of an active intention can be edited in the app', async ( { page } ) => {
+	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'member_prefix' => 'N.H.' ) ); echo 1;` );
+	createIntention( group.id, { requester_name: 'Luis Sebastián', beneficiary_name: 'Marta', relationship: 'tía de', summary: 'descanse en paz' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'Marta' } ).click();
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía de Luis: descanse en paz' );
+
+	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.getByLabel( 'Name to show for the requester' ).fill( 'Luis Sebastián' );
+	await page.getByLabel( 'The requester is a member of the group' ).check();
+	await page.getByLabel( 'Relationship, e.g. mother of' ).fill( 'tía materna de' );
+	await page.getByLabel( 'Full text' ).fill( 'Falleció el sábado.' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de N.H. Luis Sebastián: descanse en paz' );
+	await expect( page.locator( '.dfx-body' ) ).toHaveText( 'Falleció el sábado.' );
+
+	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.getByLabel( 'The requester is a member of the group' ).uncheck();
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de Luis Sebastián: descanse en paz' );
+} );
+
 test( 'requests from the form are moderated in the app', async ( { page } ) => {
 	createIntention( group.id, { beneficiary_name: 'Pedro', relationship: 'hermano de', summary: '' }, 'form' );
 	await login( page, 'leader1' );
@@ -83,7 +108,7 @@ test( 'requests from the form are moderated in the app', async ( { page } ) => {
 
 	await page.getByRole( 'button', { name: 'Moderation' } ).click();
 	await page.locator( '.dfx-item', { hasText: 'Pedro' } ).click();
-	await page.getByLabel( 'Summary for the index' ).fill( 'busca trabajo' );
+	await page.locator( 'form', { has: page.getByRole( 'button', { name: 'Approve' } ) } ).getByLabel( 'Summary for the index' ).fill( 'busca trabajo' );
 	await page.getByRole( 'button', { name: 'Approve' } ).click();
 
 	await expect( page.getByRole( 'heading', { name: 'Waiting for moderation' } ) ).toBeVisible();
