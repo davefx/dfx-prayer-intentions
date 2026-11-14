@@ -121,6 +121,8 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$current = $this->call( 'list', array( 'group_id' => $this->mine ) );
 		$this->assertSame( array( $active ), array_column( $current['data']['items'], 'id' ) );
 		$this->assertSame( 'Carmen, madre de Luis: por su salud', $current['data']['items'][0]['line'] );
+		$this->assertSame( '2026-09-24 10:00:00', $current['data']['items'][0]['created_at'] );
+		$this->assertSame( 'Luis Gómez', $current['data']['items'][0]['requester'] );
 
 		$this->assertSame( array( $pending ), array_column( $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'pending' ) )['data']['items'], 'id' ) );
 		$this->assertSame( array(), $this->call( 'list', array( 'group_id' => $this->mine, 'q' => 'Pedro' ) )['data']['items'] );

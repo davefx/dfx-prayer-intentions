@@ -167,6 +167,8 @@ final class DFXPRAY_App_API {
 				'type'        => $intention['type'],
 				'priority'    => $intention['priority'],
 				'next_review' => $intention['next_review'],
+				'created_at'  => $intention['created_at'],
+				'requester'   => $intention['requester_name'],
 			);
 		}
 

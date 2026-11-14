@@ -158,6 +158,7 @@ final class DFXPRAY_App {
 			'appUrl'   => $this->url(),
 			'worker'   => $this->url() . 'sw.js',
 			'version'  => DFXPRAY_VERSION,
+			'icon'     => $this->asset( 'images/app-icon-192.png' ),
 			'strings'  => $this->strings(),
 			'types'    => DFXPRAY_Lifecycle::get_instance()->types(),
 			'reasons'  => DFXPRAY_Lifecycle::get_instance()->close_reasons(),
@@ -228,6 +229,8 @@ final class DFXPRAY_App {
 			$this->asset( 'css/app.css' ),
 			$this->asset( 'images/app-icon-192.png' ),
 			$this->asset( 'images/app-icon-512.png' ),
+			$this->asset( 'fonts/IBMPlexSans-Regular.woff2' ),
+			$this->asset( 'fonts/IBMPlexSans-SemiBold.woff2' ),
 		);
 
 		return 'const CACHE = ' . wp_json_encode( 'dfxpray-app-' . DFXPRAY_VERSION ) . ";\n"
@@ -326,6 +329,8 @@ JS;
 			'noGroups'              => __( 'You do not lead any group yet.', 'dfx-prayer-intentions' ),
 			'discardConfirm'        => __( 'Discard this request?', 'dfx-prayer-intentions' ),
 			'edit'                  => __( 'Edit', 'dfx-prayer-intentions' ),
+			'addedOn'               => __( 'Added on', 'dfx-prayer-intentions' ),
+			'requestedBy'           => __( 'Asked by', 'dfx-prayer-intentions' ),
 			'saveChanges'           => __( 'Save changes', 'dfx-prayer-intentions' ),
 			'nameToShowRequester'   => __( 'Name to show for the requester', 'dfx-prayer-intentions' ),
 			'nameToShowBeneficiary' => __( 'Name to show for the beneficiary', 'dfx-prayer-intentions' ),

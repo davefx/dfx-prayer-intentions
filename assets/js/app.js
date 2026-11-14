@@ -79,6 +79,61 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Dates, icons and lines                                              */
+	/* ------------------------------------------------------------------ */
+
+	const LOCALE = document.documentElement.lang || undefined;
+
+	// "2026-11-13 08:30:00" or "2026-11-13", read as a local date.
+	function toDate( value ) {
+		const m = /^(\d{4})-(\d{2})-(\d{2})/.exec( value || '' );
+		return m ? new Date( Number( m[ 1 ] ), Number( m[ 2 ] ) - 1, Number( m[ 3 ] ) ) : null;
+	}
+
+	function formatDate( value, options ) {
+		const date = toDate( value );
+		return date ? new Intl.DateTimeFormat( LOCALE, options ).format( date ) : '';
+	}
+
+	// The calendar leaf of a card: big day, short month.
+	function leaf( value ) {
+		const date = toDate( value );
+		if ( ! date ) {
+			return null;
+		}
+		return h(
+			'span',
+			{ class: 'dfx-leaf', 'aria-label': formatDate( value, { day: 'numeric', month: 'long', year: 'numeric' } ) },
+			h( 'span', { class: 'dfx-leaf-day' }, formatDate( value, { day: 'numeric' } ) ),
+			h( 'span', { class: 'dfx-leaf-month' }, formatDate( value, { month: 'short' } ).replace( '.', '' ) )
+		);
+	}
+
+	const ICONS = {
+		today: 'M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 8a4 4 0 1 0 0 8a4 4 0 1 0 0-8',
+		intentions: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
+		moderation: 'M4 13l2-8h12l2 8M4 13v6h16v-6M4 13h5l1 2h4l1-2h5',
+		add: 'M12 5v14M5 12h14',
+	};
+
+	function icon( name ) {
+		const svg = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
+		svg.setAttribute( 'viewBox', '0 0 24 24' );
+		svg.setAttribute( 'aria-hidden', 'true' );
+		const path = document.createElementNS( 'http://www.w3.org/2000/svg', 'path' );
+		path.setAttribute( 'd', ICONS[ name ] );
+		svg.append( path );
+		return svg;
+	}
+
+	// "❗ Carmen, madre de Luis: quimioterapia" -> person in bold, then the summary.
+	function lineParts( line ) {
+		const text = String( line || '' ).replace( /^❗\s*/, '' );
+		const cut = text.indexOf( ': ' );
+		return -1 === cut ? [ h( 'strong', {}, text ) ] : [ h( 'strong', {}, text.slice( 0, cut ) ), h( 'span', { class: 'dfx-sep' }, ': ' ), h( 'span', { class: 'dfx-summary' }, text.slice( cut + 2 ) ) ];
+	}
+
+	/* ------------------------------------------------------------------ */
 	/* API                                                                 */
 	/* ------------------------------------------------------------------ */
 
@@ -161,7 +216,12 @@
 			} );
 		}
 		const current = state.groups.find( ( g ) => g.id === state.group );
-		return h( 'header', { class: 'dfx-header' }, h( 'h1', {}, S.appName ), groups || ( current ? h( 'span', { class: 'dfx-group' }, current.name ) : null ) );
+		return h(
+			'header',
+			{ class: 'dfx-header' },
+			h( 'img', { class: 'dfx-logo', src: C.icon, alt: '' } ),
+			h( 'div', { class: 'dfx-title' }, h( 'h1', {}, S.appName ), groups || ( current ? h( 'span', { class: 'dfx-group' }, current.name ) : null ) )
+		);
 	}
 
 	function nav() {
@@ -169,7 +229,7 @@
 		return h(
 			'nav',
 			{ class: 'dfx-nav' },
-			Object.entries( tabs ).map( ( [ key, label ] ) => h( 'button', { type: 'button', class: key === state.tab ? 'is-active' : null, 'aria-current': key === state.tab ? 'page' : null, onclick: () => go( key ) }, label ) )
+			Object.entries( tabs ).map( ( [ key, label ] ) => h( 'button', { type: 'button', class: key === state.tab ? 'is-active' : null, 'aria-current': key === state.tab ? 'page' : null, onclick: () => go( key ) }, icon( key ), h( 'span', {}, label ) ) )
 		);
 	}
 
@@ -255,7 +315,7 @@
 				navigator.share ? h( 'button', { type: 'button', class: 'dfx-button is-primary', onclick: () => navigator.share( { text } ).catch( () => {} ) }, S.share ) : null,
 				copy
 			),
-			h( 'pre', { class: 'dfx-message', id: 'dfx-message' }, text )
+			h( 'article', { class: 'dfx-card dfx-paper' }, h( 'pre', { class: 'dfx-message', id: 'dfx-message' }, text ) )
 		);
 	}
 
@@ -270,7 +330,29 @@
 		return h(
 			'ul',
 			{ class: 'dfx-list' },
-			items.map( ( item ) => h( 'li', {}, h( 'button', { type: 'button', class: 'dfx-item', onclick: () => detail( item.id ) }, item.line, h( 'small', {}, C.statuses[ item.status ] || '' ) ) ) )
+			items.map( ( item ) =>
+				h(
+					'li',
+					{},
+					h(
+						'button',
+						{ type: 'button', class: 'dfx-item' + ( 'high' === item.priority ? ' is-urgent' : '' ), onclick: () => detail( item.id ) },
+						leaf( item.created_at ),
+						h(
+							'span',
+							{ class: 'dfx-item-body' },
+							h( 'span', { class: 'dfx-item-line' }, lineParts( item.line ) ),
+							item.requester ? h( 'span', { class: 'dfx-requester' }, S.requestedBy + ' ' + item.requester ) : null,
+							h(
+								'span',
+								{ class: 'dfx-item-meta' },
+								h( 'span', { class: 'dfx-chip is-' + item.status }, C.statuses[ item.status ] || '' ),
+								item.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( item.next_review, { day: 'numeric', month: 'short' } ) ) : null
+							)
+						)
+					)
+				)
+			)
 		);
 	}
 
@@ -423,12 +505,24 @@
 
 		frame(
 			h( 'button', { type: 'button', class: 'dfx-back', onclick: () => go( state.tab ) }, '← ' + S.back ),
-			h( 'h2', { class: 'dfx-line', id: 'dfx-line' }, result.data.line ),
-			h( 'p', { class: 'dfx-muted' }, [ C.statuses[ it.status ], C.types[ it.type ], it.next_review ? S.nextReview + ': ' + it.next_review : null ].filter( Boolean ).join( ' · ' ) ),
-			h( 'details', {}, h( 'summary', {}, S.fullText ), h( 'p', { class: 'dfx-body' }, it.body ), h( 'small', {}, S.neverPublished ) ),
+			h(
+				'section',
+				{ class: 'dfx-hero' + ( 'high' === it.priority ? ' is-urgent' : '' ) },
+				h( 'p', { class: 'dfx-created' }, S.addedOn + ' ' + formatDate( it.created_at, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } ) ),
+				h( 'h2', { class: 'dfx-line', id: 'dfx-line' }, lineParts( result.data.line ) ),
+				h( 'p', { class: 'dfx-requester', id: 'dfx-requester' }, S.requestedBy + ' ' + it.requester_name + ( it.requester_contact ? ' · ' + it.requester_contact : '' ) ),
+				h(
+					'p',
+					{ class: 'dfx-item-meta' },
+					h( 'span', { class: 'dfx-chip is-' + it.status, id: 'dfx-status' }, C.statuses[ it.status ] ),
+					h( 'span', { class: 'dfx-chip' }, C.types[ it.type ] ),
+					it.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( it.next_review, { day: 'numeric', month: 'long' } ) ) : null
+				)
+			),
+			h( 'details', { class: 'dfx-card' }, h( 'summary', {}, S.fullText ), h( 'p', { class: 'dfx-body' }, it.body ), h( 'small', { class: 'dfx-muted' }, S.neverPublished ) ),
 			blocks,
 			updates.length ? h( 'h2', {}, S.updates ) : null,
-			updates.length ? h( 'ul', { class: 'dfx-timeline' }, updates.map( ( u ) => h( 'li', {}, h( 'small', {}, u.created_at.slice( 0, 16 ) + ( u.author ? ' · ' + u.author : '' ) ), h( 'p', {}, u.body ) ) ) ) : null
+			updates.length ? h( 'ul', { class: 'dfx-timeline' }, updates.map( ( u ) => h( 'li', {}, h( 'small', {}, formatDate( u.created_at, { day: 'numeric', month: 'long' } ) + ( u.author ? ' · ' + u.author : '' ) ), h( 'p', {}, u.body ) ) ) ) : null
 		);
 	}
 

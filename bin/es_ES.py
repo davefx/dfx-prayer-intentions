@@ -346,6 +346,8 @@ T = {
 "Prefix for members of the group": "Prefijo para los miembros del grupo",
 "Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix.": "Se escribe delante del nombre de quienes estén marcados como miembros; por ejemplo, «N.H.». Vacío: sin prefijo.",
 "Member of the group": "Miembro del grupo",
+"Added on": "Añadida el",
+"Asked by": "Pide",
 "On your phone: %s (you can add it to the home screen).": "En el móvil: %s (puedes añadirla a la pantalla de inicio).",
 "open the leaders’ app": "abre la app de líderes",
 "The session has expired. Reload the app.": "La sesión ha caducado. Vuelve a cargar la app.",

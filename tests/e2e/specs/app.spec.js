@@ -60,6 +60,9 @@ test( 'a leader adds an intention and follows it up', async ( { page } ) => {
 	await page.getByRole( 'button', { name: 'Add intention' } ).click();
 
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marina, esposa de Felipe: problemas de salud' );
+	await expect( page.locator( '.dfx-created' ) ).toHaveText( /^Added on \w+, \w+ \d{1,2}, \d{4}$/ );
+	await expect( page.locator( '#dfx-requester' ) ).toHaveText( 'Asked by Felipe Arizu' );
+	await expect( page.locator( '.dfx-hero .dfx-review' ) ).toContainText( 'Next review:' );
 
 	await page.getByLabel( 'New update' ).fill( 'Ha empezado un nuevo ciclo.' );
 	await page.getByRole( 'button', { name: 'Add update' } ).click();
@@ -67,13 +70,16 @@ test( 'a leader adds an intention and follows it up', async ( { page } ) => {
 
 	await page.getByLabel( 'Close as' ).selectOption( 'expired' );
 	await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
-	await expect( page.locator( '.dfx-muted' ).first() ).toContainText( 'Closed' );
+	await expect( page.locator( '#dfx-status' ) ).toHaveText( 'Closed' );
 
 	await page.getByRole( 'button', { name: 'Reopen' } ).click();
-	await expect( page.locator( '.dfx-muted' ).first() ).toContainText( 'Active' );
+	await expect( page.locator( '#dfx-status' ) ).toHaveText( 'Active' );
 
 	await page.getByRole( 'button', { name: 'Intentions' } ).click();
-	await expect( page.locator( '.dfx-list' ) ).toContainText( 'Marina, esposa de Felipe: problemas de salud' );
+	const card = page.locator( '.dfx-item', { hasText: 'Marina' } );
+	await expect( card ).toContainText( 'Marina, esposa de Felipe: problemas de salud' );
+	await expect( card.locator( '.dfx-leaf-day' ) ).toHaveText( /^\d{1,2}$/ );
+	await expect( card.locator( '.dfx-requester' ) ).toHaveText( 'Asked by Felipe Arizu' );
 } );
 
 test( 'every field of an active intention can be edited in the app', async ( { page } ) => {
