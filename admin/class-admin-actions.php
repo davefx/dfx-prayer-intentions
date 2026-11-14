@@ -44,6 +44,7 @@ final class DFXPRAY_Admin_Actions {
 		'transfer'             => 'intention',
 		'keep_active'          => 'intention',
 		'close'                => 'intention',
+		'reopen'               => 'intention',
 		'save_group_settings'  => 'group',
 		'regenerate_slug'      => 'group',
 		'test_channel'         => 'group',
@@ -365,6 +366,16 @@ final class DFXPRAY_Admin_Actions {
 	}
 
 	/**
+	 * Reopen a closed intention.
+	 *
+	 * @param array $r Request.
+	 * @return true|WP_Error
+	 */
+	private function do_reopen( array $r ) {
+		return DFXPRAY_Intentions::get_instance()->reopen( (int) $r['intention_id'] );
+	}
+
+	/**
 	 * Save or reset the group's settings.
 	 *
 	 * @param array $r Request.
@@ -563,6 +574,7 @@ final class DFXPRAY_Admin_Actions {
 			'transfer'             => __( 'Intention moved to the other group.', 'dfx-prayer-intentions' ),
 			'keep_active'          => __( 'Intention kept active.', 'dfx-prayer-intentions' ),
 			'close'                => __( 'Intention closed.', 'dfx-prayer-intentions' ),
+			'reopen'               => __( 'Intention reopened.', 'dfx-prayer-intentions' ),
 			'save_group_settings'  => __( 'Settings saved.', 'dfx-prayer-intentions' ),
 			'regenerate_slug'      => __( 'The form has a new address. The old one no longer works.', 'dfx-prayer-intentions' ),
 			'test_channel'         => __( 'Test message sent.', 'dfx-prayer-intentions' ),

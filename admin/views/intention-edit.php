@@ -281,6 +281,18 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 		<?php endif; ?>
 	</div>
 
+	<?php if ( ! $dfxpray_is_new && 'closed' === $dfxpray_v['status'] ) : ?>
+		<aside class="dfxpray-side">
+			<div class="dfxpray-card">
+				<h2><?php esc_html_e( 'Quick actions', 'dfx-prayer-intentions' ); ?></h2>
+				<?php $dfxpray_admin->form_open( 'reopen', array( 'intention_id' => $id ) ); ?>
+					<button type="submit" class="button button-primary"><?php esc_html_e( 'Reopen', 'dfx-prayer-intentions' ); ?></button>
+					<p class="description"><?php esc_html_e( 'If it was closed by mistake: it becomes active again and keeps its history.', 'dfx-prayer-intentions' ); ?></p>
+				</form>
+			</div>
+		</aside>
+	<?php endif; ?>
+
 	<?php if ( ! $dfxpray_is_new && $dfxpray_open ) : ?>
 		<aside class="dfxpray-side">
 			<div class="dfxpray-card">

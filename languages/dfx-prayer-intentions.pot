@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.14\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/proposals-index\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-14T07:45:48+00:00\n"
+"POT-Creation-Date: 2026-11-14T09:22:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -39,116 +39,120 @@ msgstr ""
 msgid "https://davefx.com"
 msgstr ""
 
-#: admin/class-admin-actions.php:115
+#: admin/class-admin-actions.php:116
 msgid "Unknown action."
 msgstr ""
 
-#: admin/class-admin-actions.php:119
+#: admin/class-admin-actions.php:120
 msgid "The link has expired. Please try again."
 msgstr ""
 
-#: admin/class-admin-actions.php:123
+#: admin/class-admin-actions.php:124
 msgid "You are not allowed to do that."
 msgstr ""
 
-#: admin/class-admin-actions.php:437
+#: admin/class-admin-actions.php:448
 msgid "The group does not exist."
 msgstr ""
 
-#: admin/class-admin-actions.php:551
+#: admin/class-admin-actions.php:562
 msgid "Intention approved."
 msgstr ""
 
-#: admin/class-admin-actions.php:552
+#: admin/class-admin-actions.php:563
 msgid "Intention discarded."
 msgstr ""
 
-#: admin/class-admin-actions.php:553
+#: admin/class-admin-actions.php:564
 msgid "Duplicate merged."
 msgstr ""
 
-#: admin/class-admin-actions.php:554
+#: admin/class-admin-actions.php:565
 msgid "Intention saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:555
+#: admin/class-admin-actions.php:566
 msgid "Comment added."
 msgstr ""
 
-#: admin/class-admin-actions.php:556
+#: admin/class-admin-actions.php:567
 msgid "Comment updated."
 msgstr ""
 
-#: admin/class-admin-actions.php:557
+#: admin/class-admin-actions.php:568
 msgid "Comment deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:558
+#: admin/class-admin-actions.php:569
 msgid "Comment turned into an update."
 msgstr ""
 
-#: admin/class-admin-actions.php:559
+#: admin/class-admin-actions.php:570
 msgid "Update added."
 msgstr ""
 
-#: admin/class-admin-actions.php:560
+#: admin/class-admin-actions.php:571
 msgid "Priority changed."
 msgstr ""
 
-#: admin/class-admin-actions.php:561
+#: admin/class-admin-actions.php:572
 msgid "Review postponed."
 msgstr ""
 
-#: admin/class-admin-actions.php:562
+#: admin/class-admin-actions.php:573
 msgid "Acknowledgement marked as sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:563
+#: admin/class-admin-actions.php:574
 msgid "Intention moved to the other group."
 msgstr ""
 
-#: admin/class-admin-actions.php:564
+#: admin/class-admin-actions.php:575
 msgid "Intention kept active."
 msgstr ""
 
-#: admin/class-admin-actions.php:565
+#: admin/class-admin-actions.php:576
 msgid "Intention closed."
 msgstr ""
 
-#: admin/class-admin-actions.php:566
-#: admin/class-admin-actions.php:574
+#: admin/class-admin-actions.php:577
+msgid "Intention reopened."
+msgstr ""
+
+#: admin/class-admin-actions.php:578
+#: admin/class-admin-actions.php:586
 msgid "Settings saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:567
+#: admin/class-admin-actions.php:579
 msgid "The form has a new address. The old one no longer works."
 msgstr ""
 
-#: admin/class-admin-actions.php:568
+#: admin/class-admin-actions.php:580
 msgid "Test message sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:569
+#: admin/class-admin-actions.php:581
 msgid "Digest generated and sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:570
+#: admin/class-admin-actions.php:582
 msgid "Group saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:571
+#: admin/class-admin-actions.php:583
 msgid "Group archived."
 msgstr ""
 
-#: admin/class-admin-actions.php:572
+#: admin/class-admin-actions.php:584
 msgid "Group restored."
 msgstr ""
 
-#: admin/class-admin-actions.php:573
+#: admin/class-admin-actions.php:585
 msgid "Group deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:577
+#: admin/class-admin-actions.php:589
 msgid "Done."
 msgstr ""
 
@@ -427,7 +431,7 @@ msgid "Approved"
 msgstr ""
 
 #: admin/class-admin.php:584
-#: includes/class-lifecycle.php:55
+#: includes/class-lifecycle.php:56
 msgid "Discarded"
 msgstr ""
 
@@ -452,90 +456,94 @@ msgid "Kept active"
 msgstr ""
 
 #: admin/class-admin.php:590
-#: includes/class-lifecycle.php:54
-msgid "Closed"
+msgid "Reopened"
 msgstr ""
 
 #: admin/class-admin.php:591
-#: admin/views/intention-edit.php:68
-#: admin/views/intention-edit.php:314
-msgid "Acknowledgement sent"
+#: includes/class-lifecycle.php:55
+msgid "Closed"
 msgstr ""
 
 #: admin/class-admin.php:592
-msgid "Moved to another group"
+#: admin/views/intention-edit.php:68
+#: admin/views/intention-edit.php:326
+msgid "Acknowledgement sent"
 msgstr ""
 
 #: admin/class-admin.php:593
-msgid "Received from another group"
+msgid "Moved to another group"
 msgstr ""
 
 #: admin/class-admin.php:594
-msgid "Update added"
+msgid "Received from another group"
 msgstr ""
 
 #: admin/class-admin.php:595
-msgid "Comment added"
+msgid "Update added"
 msgstr ""
 
 #: admin/class-admin.php:596
-msgid "Comment edited"
+msgid "Comment added"
 msgstr ""
 
 #: admin/class-admin.php:597
-msgid "Comment deleted"
+msgid "Comment edited"
 msgstr ""
 
 #: admin/class-admin.php:598
-msgid "Comment turned into an update"
+msgid "Comment deleted"
 msgstr ""
 
 #: admin/class-admin.php:599
-msgid "Delivered"
+msgid "Comment turned into an update"
 msgstr ""
 
 #: admin/class-admin.php:600
-msgid "Delivery failed"
+msgid "Delivered"
 msgstr ""
 
 #: admin/class-admin.php:601
-msgid "Group created"
+msgid "Delivery failed"
 msgstr ""
 
 #: admin/class-admin.php:602
-msgid "Group edited"
+msgid "Group created"
 msgstr ""
 
 #: admin/class-admin.php:603
-msgid "Group archived"
+msgid "Group edited"
 msgstr ""
 
 #: admin/class-admin.php:604
-msgid "Group restored"
+msgid "Group archived"
 msgstr ""
 
 #: admin/class-admin.php:605
-msgid "Leaders changed"
+msgid "Group restored"
 msgstr ""
 
 #: admin/class-admin.php:606
-msgid "New form address"
+msgid "Leaders changed"
 msgstr ""
 
 #: admin/class-admin.php:607
-msgid "Settings saved"
+msgid "New form address"
 msgstr ""
 
 #: admin/class-admin.php:608
+msgid "Settings saved"
+msgstr ""
+
+#: admin/class-admin.php:609
 msgid "Global settings saved"
 msgstr ""
 
-#: admin/class-admin.php:622
+#: admin/class-admin.php:623
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr ""
 
-#: admin/class-admin.php:623
+#: admin/class-admin.php:624
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr ""
@@ -604,12 +612,12 @@ msgid "Save settings"
 msgstr ""
 
 #: admin/views/groups.php:17
-#: includes/class-lifecycle.php:51
+#: includes/class-lifecycle.php:52
 msgid "Pending"
 msgstr ""
 
 #: admin/views/groups.php:18
-#: includes/class-lifecycle.php:53
+#: includes/class-lifecycle.php:54
 msgid "In review"
 msgstr ""
 
@@ -983,35 +991,44 @@ msgid "History"
 msgstr ""
 
 #: admin/views/intention-edit.php:287
+#: admin/views/intention-edit.php:299
 msgid "Quick actions"
 msgstr ""
 
-#: admin/views/intention-edit.php:298
+#: admin/views/intention-edit.php:289
+msgid "Reopen"
+msgstr ""
+
+#: admin/views/intention-edit.php:290
+msgid "If it was closed by mistake: it becomes active again and keeps its history."
+msgstr ""
+
+#: admin/views/intention-edit.php:310
 msgid "Back to normal priority"
 msgstr ""
 
-#: admin/views/intention-edit.php:298
+#: admin/views/intention-edit.php:310
 msgid "Mark as high priority"
 msgstr ""
 
-#: admin/views/intention-edit.php:303
+#: admin/views/intention-edit.php:315
 #: admin/views/reviews.php:43
 msgid "Still current"
 msgstr ""
 
-#: admin/views/intention-edit.php:308
+#: admin/views/intention-edit.php:320
 msgid "Postpone review to"
 msgstr ""
 
-#: admin/views/intention-edit.php:309
+#: admin/views/intention-edit.php:321
 msgid "Postpone"
 msgstr ""
 
-#: admin/views/intention-edit.php:320
+#: admin/views/intention-edit.php:332
 msgid "Move to"
 msgstr ""
 
-#: admin/views/intention-edit.php:327
+#: admin/views/intention-edit.php:339
 msgid "Move"
 msgstr ""
 
@@ -1300,7 +1317,7 @@ msgid "The comment is empty."
 msgstr ""
 
 #: includes/class-comments.php:53
-#: includes/class-intentions.php:963
+#: includes/class-intentions.php:995
 #: includes/class-updates.php:38
 msgid "The intention does not exist."
 msgstr ""
@@ -1384,7 +1401,7 @@ msgid "Anonymous"
 msgstr ""
 
 #: includes/class-discretion.php:68
-#: includes/class-intentions.php:740
+#: includes/class-intentions.php:772
 msgid "Unknown discretion level."
 msgstr ""
 
@@ -1530,7 +1547,7 @@ msgid "The sick and difficult situations"
 msgstr ""
 
 #: includes/class-index-composer.php:193
-#: includes/class-lifecycle.php:40
+#: includes/class-lifecycle.php:41
 msgid "Thanksgiving"
 msgstr ""
 
@@ -1558,95 +1575,95 @@ msgid ""
 "%2$s"
 msgstr ""
 
-#: includes/class-intentions.php:391
+#: includes/class-intentions.php:423
 msgid "Choose why the intention is being closed."
 msgstr ""
 
-#: includes/class-intentions.php:455
-#: includes/class-intentions.php:805
+#: includes/class-intentions.php:487
+#: includes/class-intentions.php:837
 msgid "Unknown priority."
 msgstr ""
 
-#: includes/class-intentions.php:470
+#: includes/class-intentions.php:502
 msgid "Choose a future date."
 msgstr ""
 
-#: includes/class-intentions.php:493
+#: includes/class-intentions.php:525
 msgid "Acknowledgement sent to the requester."
 msgstr ""
 
-#: includes/class-intentions.php:520
+#: includes/class-intentions.php:552
 msgid "You can only move intentions between groups you lead."
 msgstr ""
 
-#: includes/class-intentions.php:758
+#: includes/class-intentions.php:790
 msgid "Please tell us your name."
 msgstr ""
 
-#: includes/class-intentions.php:762
+#: includes/class-intentions.php:794
 msgid "Please tell us who we should pray for."
 msgstr ""
 
-#: includes/class-intentions.php:766
+#: includes/class-intentions.php:798
 msgid "Please write your intention."
 msgstr ""
 
-#: includes/class-intentions.php:770
+#: includes/class-intentions.php:802
 msgid "Please choose the kind of intention."
 msgstr ""
 
-#: includes/class-intentions.php:774
+#: includes/class-intentions.php:806
 msgid "Please tell us the date."
 msgstr ""
 
-#: includes/class-intentions.php:778
-#: includes/class-intentions.php:809
+#: includes/class-intentions.php:810
+#: includes/class-intentions.php:841
 msgid "The date is not valid."
 msgstr ""
 
-#: includes/class-intentions.php:787
+#: includes/class-intentions.php:819
 msgid "The time is not valid."
 msgstr ""
 
 #. translators: %d: maximum number of characters.
-#: includes/class-intentions.php:800
+#: includes/class-intentions.php:832
 #, php-format
 msgid "The summary cannot be longer than %d characters."
 msgstr ""
 
-#: includes/class-intentions.php:970
+#: includes/class-intentions.php:1002
 msgid "That change is not possible in the intention’s current state."
 msgstr ""
 
-#: includes/class-intentions.php:977
+#: includes/class-intentions.php:1009
 msgid "Write the summary for the index before activating the intention."
 msgstr ""
 
-#: includes/class-lifecycle.php:37
+#: includes/class-lifecycle.php:38
 msgid "One-off event"
 msgstr ""
 
-#: includes/class-lifecycle.php:38
+#: includes/class-lifecycle.php:39
 msgid "Deceased"
 msgstr ""
 
-#: includes/class-lifecycle.php:39
+#: includes/class-lifecycle.php:40
 msgid "Ongoing situation"
 msgstr ""
 
-#: includes/class-lifecycle.php:52
+#: includes/class-lifecycle.php:53
 msgid "Active"
 msgstr ""
 
-#: includes/class-lifecycle.php:66
+#: includes/class-lifecycle.php:67
 msgid "Answered"
 msgstr ""
 
-#: includes/class-lifecycle.php:67
+#: includes/class-lifecycle.php:68
 msgid "Expired"
 msgstr ""
 
-#: includes/class-lifecycle.php:68
+#: includes/class-lifecycle.php:69
 msgid "Withdrawn by the requester"
 msgstr ""
 

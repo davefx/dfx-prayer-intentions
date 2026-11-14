@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.14\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/proposals-index\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish (Spain)\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-14T07:45:48+00:00\n"
+"POT-Creation-Date: 2026-11-14T09:22:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -41,116 +41,120 @@ msgstr "David Marín Carreño"
 msgid "https://davefx.com"
 msgstr "https://davefx.com"
 
-#: admin/class-admin-actions.php:115
+#: admin/class-admin-actions.php:116
 msgid "Unknown action."
 msgstr "Acción desconocida."
 
-#: admin/class-admin-actions.php:119
+#: admin/class-admin-actions.php:120
 msgid "The link has expired. Please try again."
 msgstr "El enlace ha caducado. Vuelve a intentarlo."
 
-#: admin/class-admin-actions.php:123
+#: admin/class-admin-actions.php:124
 msgid "You are not allowed to do that."
 msgstr "No tienes permiso para hacer eso."
 
-#: admin/class-admin-actions.php:437
+#: admin/class-admin-actions.php:448
 msgid "The group does not exist."
 msgstr "El grupo no existe."
 
-#: admin/class-admin-actions.php:551
+#: admin/class-admin-actions.php:562
 msgid "Intention approved."
 msgstr "Intención aprobada."
 
-#: admin/class-admin-actions.php:552
+#: admin/class-admin-actions.php:563
 msgid "Intention discarded."
 msgstr "Intención descartada."
 
-#: admin/class-admin-actions.php:553
+#: admin/class-admin-actions.php:564
 msgid "Duplicate merged."
 msgstr "Duplicado fusionado."
 
-#: admin/class-admin-actions.php:554
+#: admin/class-admin-actions.php:565
 msgid "Intention saved."
 msgstr "Intención guardada."
 
-#: admin/class-admin-actions.php:555
+#: admin/class-admin-actions.php:566
 msgid "Comment added."
 msgstr "Comentario añadido."
 
-#: admin/class-admin-actions.php:556
+#: admin/class-admin-actions.php:567
 msgid "Comment updated."
 msgstr "Comentario actualizado."
 
-#: admin/class-admin-actions.php:557
+#: admin/class-admin-actions.php:568
 msgid "Comment deleted."
 msgstr "Comentario borrado."
 
-#: admin/class-admin-actions.php:558
+#: admin/class-admin-actions.php:569
 msgid "Comment turned into an update."
 msgstr "Comentario convertido en actualización."
 
-#: admin/class-admin-actions.php:559
+#: admin/class-admin-actions.php:570
 msgid "Update added."
 msgstr "Actualización añadida."
 
-#: admin/class-admin-actions.php:560
+#: admin/class-admin-actions.php:571
 msgid "Priority changed."
 msgstr "Prioridad cambiada."
 
-#: admin/class-admin-actions.php:561
+#: admin/class-admin-actions.php:572
 msgid "Review postponed."
 msgstr "Revisión pospuesta."
 
-#: admin/class-admin-actions.php:562
+#: admin/class-admin-actions.php:573
 msgid "Acknowledgement marked as sent."
 msgstr "Acuse marcado como enviado."
 
-#: admin/class-admin-actions.php:563
+#: admin/class-admin-actions.php:574
 msgid "Intention moved to the other group."
 msgstr "Intención trasladada al otro grupo."
 
-#: admin/class-admin-actions.php:564
+#: admin/class-admin-actions.php:575
 msgid "Intention kept active."
 msgstr "La intención sigue activa."
 
-#: admin/class-admin-actions.php:565
+#: admin/class-admin-actions.php:576
 msgid "Intention closed."
 msgstr "Intención cerrada."
 
-#: admin/class-admin-actions.php:566
-#: admin/class-admin-actions.php:574
+#: admin/class-admin-actions.php:577
+msgid "Intention reopened."
+msgstr "Intención reabierta."
+
+#: admin/class-admin-actions.php:578
+#: admin/class-admin-actions.php:586
 msgid "Settings saved."
 msgstr "Ajustes guardados."
 
-#: admin/class-admin-actions.php:567
+#: admin/class-admin-actions.php:579
 msgid "The form has a new address. The old one no longer works."
 msgstr "El formulario tiene una dirección nueva. La anterior ya no funciona."
 
-#: admin/class-admin-actions.php:568
+#: admin/class-admin-actions.php:580
 msgid "Test message sent."
 msgstr "Mensaje de prueba enviado."
 
-#: admin/class-admin-actions.php:569
+#: admin/class-admin-actions.php:581
 msgid "Digest generated and sent."
 msgstr "Resumen generado y enviado."
 
-#: admin/class-admin-actions.php:570
+#: admin/class-admin-actions.php:582
 msgid "Group saved."
 msgstr "Grupo guardado."
 
-#: admin/class-admin-actions.php:571
+#: admin/class-admin-actions.php:583
 msgid "Group archived."
 msgstr "Grupo archivado."
 
-#: admin/class-admin-actions.php:572
+#: admin/class-admin-actions.php:584
 msgid "Group restored."
 msgstr "Grupo restaurado."
 
-#: admin/class-admin-actions.php:573
+#: admin/class-admin-actions.php:585
 msgid "Group deleted."
 msgstr "Grupo eliminado."
 
-#: admin/class-admin-actions.php:577
+#: admin/class-admin-actions.php:589
 msgid "Done."
 msgstr "Hecho."
 
@@ -429,7 +433,7 @@ msgid "Approved"
 msgstr "Aprobada"
 
 #: admin/class-admin.php:584
-#: includes/class-lifecycle.php:55
+#: includes/class-lifecycle.php:56
 msgid "Discarded"
 msgstr "Descartada"
 
@@ -454,90 +458,94 @@ msgid "Kept active"
 msgstr "Sigue vigente"
 
 #: admin/class-admin.php:590
-#: includes/class-lifecycle.php:54
+msgid "Reopened"
+msgstr "Reabierta"
+
+#: admin/class-admin.php:591
+#: includes/class-lifecycle.php:55
 msgid "Closed"
 msgstr "Cerrada"
 
-#: admin/class-admin.php:591
+#: admin/class-admin.php:592
 #: admin/views/intention-edit.php:68
-#: admin/views/intention-edit.php:314
+#: admin/views/intention-edit.php:326
 msgid "Acknowledgement sent"
 msgstr "Acuse enviado"
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:593
 msgid "Moved to another group"
 msgstr "Trasladada a otro grupo"
 
-#: admin/class-admin.php:593
+#: admin/class-admin.php:594
 msgid "Received from another group"
 msgstr "Recibida de otro grupo"
 
-#: admin/class-admin.php:594
+#: admin/class-admin.php:595
 msgid "Update added"
 msgstr "Actualización añadida"
 
-#: admin/class-admin.php:595
+#: admin/class-admin.php:596
 msgid "Comment added"
 msgstr "Comentario añadido"
 
-#: admin/class-admin.php:596
+#: admin/class-admin.php:597
 msgid "Comment edited"
 msgstr "Comentario editado"
 
-#: admin/class-admin.php:597
+#: admin/class-admin.php:598
 msgid "Comment deleted"
 msgstr "Comentario borrado"
 
-#: admin/class-admin.php:598
+#: admin/class-admin.php:599
 msgid "Comment turned into an update"
 msgstr "Comentario convertido en actualización"
 
-#: admin/class-admin.php:599
+#: admin/class-admin.php:600
 msgid "Delivered"
 msgstr "Entregado"
 
-#: admin/class-admin.php:600
+#: admin/class-admin.php:601
 msgid "Delivery failed"
 msgstr "Envío fallido"
 
-#: admin/class-admin.php:601
+#: admin/class-admin.php:602
 msgid "Group created"
 msgstr "Grupo creado"
 
-#: admin/class-admin.php:602
+#: admin/class-admin.php:603
 msgid "Group edited"
 msgstr "Grupo editado"
 
-#: admin/class-admin.php:603
+#: admin/class-admin.php:604
 msgid "Group archived"
 msgstr "Grupo archivado"
 
-#: admin/class-admin.php:604
+#: admin/class-admin.php:605
 msgid "Group restored"
 msgstr "Grupo restaurado"
 
-#: admin/class-admin.php:605
+#: admin/class-admin.php:606
 msgid "Leaders changed"
 msgstr "Líderes cambiados"
 
-#: admin/class-admin.php:606
+#: admin/class-admin.php:607
 msgid "New form address"
 msgstr "Nueva dirección del formulario"
 
-#: admin/class-admin.php:607
+#: admin/class-admin.php:608
 msgid "Settings saved"
 msgstr "Ajustes guardados"
 
-#: admin/class-admin.php:608
+#: admin/class-admin.php:609
 msgid "Global settings saved"
 msgstr "Ajustes globales guardados"
 
-#: admin/class-admin.php:622
+#: admin/class-admin.php:623
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr "Spam"
 
-#: admin/class-admin.php:623
+#: admin/class-admin.php:624
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr "Duplicado"
@@ -606,12 +614,12 @@ msgid "Save settings"
 msgstr "Guardar ajustes"
 
 #: admin/views/groups.php:17
-#: includes/class-lifecycle.php:51
+#: includes/class-lifecycle.php:52
 msgid "Pending"
 msgstr "Pendientes"
 
 #: admin/views/groups.php:18
-#: includes/class-lifecycle.php:53
+#: includes/class-lifecycle.php:54
 msgid "In review"
 msgstr "En revisión"
 
@@ -985,35 +993,44 @@ msgid "History"
 msgstr "Historial"
 
 #: admin/views/intention-edit.php:287
+#: admin/views/intention-edit.php:299
 msgid "Quick actions"
 msgstr "Acciones rápidas"
 
-#: admin/views/intention-edit.php:298
+#: admin/views/intention-edit.php:289
+msgid "Reopen"
+msgstr "Reabrir"
+
+#: admin/views/intention-edit.php:290
+msgid "If it was closed by mistake: it becomes active again and keeps its history."
+msgstr "Si se cerró por error: vuelve a estar activa y conserva su historial."
+
+#: admin/views/intention-edit.php:310
 msgid "Back to normal priority"
 msgstr "Volver a prioridad normal"
 
-#: admin/views/intention-edit.php:298
+#: admin/views/intention-edit.php:310
 msgid "Mark as high priority"
 msgstr "Marcar prioridad alta"
 
-#: admin/views/intention-edit.php:303
+#: admin/views/intention-edit.php:315
 #: admin/views/reviews.php:43
 msgid "Still current"
 msgstr "Sigue vigente"
 
-#: admin/views/intention-edit.php:308
+#: admin/views/intention-edit.php:320
 msgid "Postpone review to"
 msgstr "Posponer la revisión al"
 
-#: admin/views/intention-edit.php:309
+#: admin/views/intention-edit.php:321
 msgid "Postpone"
 msgstr "Posponer"
 
-#: admin/views/intention-edit.php:320
+#: admin/views/intention-edit.php:332
 msgid "Move to"
 msgstr "Trasladar a"
 
-#: admin/views/intention-edit.php:327
+#: admin/views/intention-edit.php:339
 msgid "Move"
 msgstr "Trasladar"
 
@@ -1302,7 +1319,7 @@ msgid "The comment is empty."
 msgstr "El comentario está vacío."
 
 #: includes/class-comments.php:53
-#: includes/class-intentions.php:963
+#: includes/class-intentions.php:995
 #: includes/class-updates.php:38
 msgid "The intention does not exist."
 msgstr "La intención no existe."
@@ -1386,7 +1403,7 @@ msgid "Anonymous"
 msgstr "Anónimo"
 
 #: includes/class-discretion.php:68
-#: includes/class-intentions.php:740
+#: includes/class-intentions.php:772
 msgid "Unknown discretion level."
 msgstr "Nivel de discreción desconocido."
 
@@ -1532,7 +1549,7 @@ msgid "The sick and difficult situations"
 msgstr "Enfermos y situaciones difíciles"
 
 #: includes/class-index-composer.php:193
-#: includes/class-lifecycle.php:40
+#: includes/class-lifecycle.php:41
 msgid "Thanksgiving"
 msgstr "Acción de gracias"
 
@@ -1560,95 +1577,95 @@ msgid ""
 "%2$s"
 msgstr "Petición duplicada fusionada, de %1$s:\n%2$s"
 
-#: includes/class-intentions.php:391
+#: includes/class-intentions.php:423
 msgid "Choose why the intention is being closed."
 msgstr "Indica por qué se cierra la intención."
 
-#: includes/class-intentions.php:455
-#: includes/class-intentions.php:805
+#: includes/class-intentions.php:487
+#: includes/class-intentions.php:837
 msgid "Unknown priority."
 msgstr "Prioridad desconocida."
 
-#: includes/class-intentions.php:470
+#: includes/class-intentions.php:502
 msgid "Choose a future date."
 msgstr "Elige una fecha futura."
 
-#: includes/class-intentions.php:493
+#: includes/class-intentions.php:525
 msgid "Acknowledgement sent to the requester."
 msgstr "Acuse de recibo enviado al solicitante."
 
-#: includes/class-intentions.php:520
+#: includes/class-intentions.php:552
 msgid "You can only move intentions between groups you lead."
 msgstr "Solo puedes trasladar intenciones entre grupos que diriges."
 
-#: includes/class-intentions.php:758
+#: includes/class-intentions.php:790
 msgid "Please tell us your name."
 msgstr "Dinos tu nombre."
 
-#: includes/class-intentions.php:762
+#: includes/class-intentions.php:794
 msgid "Please tell us who we should pray for."
 msgstr "Dinos por quién debemos rezar."
 
-#: includes/class-intentions.php:766
+#: includes/class-intentions.php:798
 msgid "Please write your intention."
 msgstr "Escribe tu intención."
 
-#: includes/class-intentions.php:770
+#: includes/class-intentions.php:802
 msgid "Please choose the kind of intention."
 msgstr "Elige el tipo de intención."
 
-#: includes/class-intentions.php:774
+#: includes/class-intentions.php:806
 msgid "Please tell us the date."
 msgstr "Dinos la fecha."
 
-#: includes/class-intentions.php:778
-#: includes/class-intentions.php:809
+#: includes/class-intentions.php:810
+#: includes/class-intentions.php:841
 msgid "The date is not valid."
 msgstr "La fecha no es válida."
 
-#: includes/class-intentions.php:787
+#: includes/class-intentions.php:819
 msgid "The time is not valid."
 msgstr "La hora no es válida."
 
 #. translators: %d: maximum number of characters.
-#: includes/class-intentions.php:800
+#: includes/class-intentions.php:832
 #, php-format
 msgid "The summary cannot be longer than %d characters."
 msgstr "El resumen no puede tener más de %d caracteres."
 
-#: includes/class-intentions.php:970
+#: includes/class-intentions.php:1002
 msgid "That change is not possible in the intention’s current state."
 msgstr "Ese cambio no es posible en el estado actual de la intención."
 
-#: includes/class-intentions.php:977
+#: includes/class-intentions.php:1009
 msgid "Write the summary for the index before activating the intention."
 msgstr "Escribe el resumen para el índice antes de activar la intención."
 
-#: includes/class-lifecycle.php:37
+#: includes/class-lifecycle.php:38
 msgid "One-off event"
 msgstr "Evento puntual"
 
-#: includes/class-lifecycle.php:38
+#: includes/class-lifecycle.php:39
 msgid "Deceased"
 msgstr "Difunto"
 
-#: includes/class-lifecycle.php:39
+#: includes/class-lifecycle.php:40
 msgid "Ongoing situation"
 msgstr "Situación prolongada"
 
-#: includes/class-lifecycle.php:52
+#: includes/class-lifecycle.php:53
 msgid "Active"
 msgstr "Activa"
 
-#: includes/class-lifecycle.php:66
+#: includes/class-lifecycle.php:67
 msgid "Answered"
 msgstr "Atendida"
 
-#: includes/class-lifecycle.php:67
+#: includes/class-lifecycle.php:68
 msgid "Expired"
 msgstr "Caducada"
 
-#: includes/class-lifecycle.php:68
+#: includes/class-lifecycle.php:69
 msgid "Withdrawn by the requester"
 msgstr "Retirada por el solicitante"
 

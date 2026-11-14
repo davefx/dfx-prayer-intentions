@@ -587,6 +587,7 @@ final class DFXPRAY_Admin {
 			'visible_name_changed'      => __( 'Visible name changed', 'dfx-prayer-intentions' ),
 			'intention_due'             => __( 'Review date reached', 'dfx-prayer-intentions' ),
 			'intention_kept_active'     => __( 'Kept active', 'dfx-prayer-intentions' ),
+			'intention_reopened'        => __( 'Reopened', 'dfx-prayer-intentions' ),
 			'intention_closed'          => __( 'Closed', 'dfx-prayer-intentions' ),
 			'intention_ack_sent'        => __( 'Acknowledgement sent', 'dfx-prayer-intentions' ),
 			'intention_transferred_out' => __( 'Moved to another group', 'dfx-prayer-intentions' ),

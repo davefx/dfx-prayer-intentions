@@ -117,7 +117,8 @@ class LifecycleTest extends DFXPRAY_Test_Case {
 			array( 'review', 'closed', true ),
 			array( 'active', 'closed', true ),
 			array( 'pending', 'closed', false ),
-			array( 'closed', 'active', false ),
+			array( 'closed', 'active', true ),
+			array( 'closed', 'review', false ),
 			array( 'discarded', 'active', false ),
 			array( 'active', 'pending', false ),
 		);

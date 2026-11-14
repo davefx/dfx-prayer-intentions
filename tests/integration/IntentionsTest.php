@@ -366,6 +366,30 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A closed intention can be reopened by mistake: back to active, with a
+	 * new review date, the closing data cleared and the history kept.
+	 */
+	public function test_reopen(): void {
+		$id = $this->make_active( $this->group );
+		$this->intentions->close( $id, 'expired' );
+
+		$this->assertTrue( $this->intentions->reopen( $id ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertSame( 'active', $intention['status'] );
+		$this->assertSame( '', $intention['close_reason'] );
+		$this->assertNull( $intention['closed_at'] );
+		$this->assertSame( '2026-10-24', $intention['next_review'] );
+		$this->assertSame( 'intention_reopened', DFXPRAY_Log::get_instance()->for_intention( $id )[0]['action'] );
+
+		$this->assertWPError( $this->intentions->reopen( $id ) );
+
+		$discarded = $this->make_pending( $this->group );
+		$this->intentions->discard( $discarded, 'spam' );
+		$this->assertWPError( $this->intentions->reopen( $discarded ) );
+	}
+
+	/**
 	 * Leaders can harden discretion but not relax it.
 	 */
 	public function test_update_discretion_hardening(): void {

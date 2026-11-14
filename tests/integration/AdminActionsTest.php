@@ -107,6 +107,7 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 			array( 'ack_sent', array() ),
 			array( 'keep_active', array() ),
 			array( 'close', array( 'reason' => 'answered' ) ),
+			array( 'reopen', array() ),
 			array( 'transfer', array( 'group_id' => 0 ) ),
 		);
 	}

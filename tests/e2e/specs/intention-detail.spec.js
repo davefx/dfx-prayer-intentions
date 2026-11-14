@@ -131,6 +131,25 @@ test( 'closing as answered adds a linked thanksgiving to the index', async ( { p
 	await expect( index ).not.toHaveValue( /busca trabajo/ );
 } );
 
+test( 'an intention closed by mistake can be reopened', async ( { page } ) => {
+	const id = createIntention( group.id, { summary: 'quimioterapia' } );
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
+
+	await page.getByLabel( 'Close as' ).selectOption( 'expired' );
+	await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention closed.' );
+	await expect( page.locator( '.dfxpray-status' ) ).toHaveText( 'Closed' );
+
+	await page.getByRole( 'button', { name: 'Reopen' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention reopened.' );
+	await expect( page.locator( '.dfxpray-status' ) ).toHaveText( 'Active' );
+	await expect( page.locator( 'table.dfxpray-table' ).last() ).toContainText( 'Reopened' );
+
+	await page.goto( groupUrl( group.id, 'index' ) );
+	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /Carmen, madre de Luis: quimioterapia/ );
+} );
+
 test( 'the list filters by kind, status and name', async ( { page } ) => {
 	createIntention( group.id, { beneficiary_name: 'Carmencita' } );
 	createIntention( group.id, { beneficiary_name: 'Pablito', type: 'event', reference_date: '2030-01-01' } );

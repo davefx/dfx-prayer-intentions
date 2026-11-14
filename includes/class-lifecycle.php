@@ -25,6 +25,7 @@ final class DFXPRAY_Lifecycle {
 		'pending' => array( 'active', 'discarded' ),
 		'active'  => array( 'review', 'closed' ),
 		'review'  => array( 'active', 'closed' ),
+		'closed'  => array( 'active' ),
 	);
 
 	/**

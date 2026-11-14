@@ -371,6 +371,38 @@ final class DFXPRAY_Intentions {
 	}
 
 	/**
+	 * Reopen an intention closed by mistake: active again, with the review
+	 * date a kept-active intention gets. The linked thanksgiving, if any, and
+	 * the history stay as they are.
+	 *
+	 * @param int $id Intention ID.
+	 * @return true|WP_Error
+	 */
+	public function reopen( int $id ) {
+		$current = $this->get( $id );
+		if ( ! $current ) {
+			return $this->not_found_error();
+		}
+
+		if ( 'closed' !== $current['status'] || ! DFXPRAY_Lifecycle::get_instance()->can_transition( 'closed', 'active' ) ) {
+			return $this->transition_error();
+		}
+
+		$this->write(
+			$id,
+			array(
+				'status'       => 'active',
+				'close_reason' => '',
+				'closed_at'    => null,
+				'next_review'  => DFXPRAY_Lifecycle::get_instance()->keep_active_review_date( $current['type'], $current['group_id'] ),
+			)
+		);
+		DFXPRAY_Log::get_instance()->add( 'intention_reopened', $current['group_id'], $id, array( 'reason' => $current['close_reason'] ) );
+
+		return true;
+	}
+
+	/**
 	 * Close an intention.
 	 *
 	 * @param int    $id                   Intention ID.
