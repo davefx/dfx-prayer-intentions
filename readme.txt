@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.19
+Stable tag: 26.11.20
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,12 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.20 =
+* Every field of an intention can be edited from the leaders' app.
+* "Name to show" (formerly "first name") also takes a surname, to tell apart members with the same first name: "Luis Sebastián" appears as "N.H. Luis Sebastián".
+* The app shows when each intention was added, its next review and who asked for it, with their full name.
+* A warmer design for the app: EB Garamond and Cinzel, shipped with the plugin, cards, status pills and a bottom bar with icons.
 
 = 26.11.19 =
 * The praying hands of the icon take the DFX family colours: white hands with a navy outline and maroon cuffs.
