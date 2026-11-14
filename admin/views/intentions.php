@@ -37,7 +37,7 @@ $dfxpray_filters   = array(
 );
 // phpcs:enable
 
-$dfxpray_rows = DFXPRAY_Intentions::get_instance()->query( $group_id, array_filter( $dfxpray_filters ) );
+$dfxpray_rows = DFXPRAY_Intentions::get_instance()->query( $group_id, array_filter( $dfxpray_filters ) + array( 'urgent_first' => true ) );
 ?>
 <p><a class="page-title-action" href="<?php echo esc_url( $dfxpray_admin->group_url( $group_id, 'intentions', array( 'view' => 'new' ) ) ); ?>"><?php esc_html_e( 'Add intention', 'dfx-prayer-intentions' ); ?></a></p>
 

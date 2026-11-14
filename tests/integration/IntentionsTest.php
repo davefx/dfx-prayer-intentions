@@ -465,6 +465,18 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Lists go from the most recent request; urgent_first puts the urgent ones before.
+	 */
+	public function test_query_order(): void {
+		$old    = $this->make_active( $this->group, array( 'asked_on' => '2026-09-01' ) );
+		$urgent = $this->make_active( $this->group, array( 'asked_on' => '2026-09-05', 'priority' => 'high' ) );
+		$recent = $this->make_active( $this->group, array( 'asked_on' => '2026-09-20' ) );
+
+		$this->assertSame( array( $recent, $urgent, $old ), array_column( $this->intentions->query( $this->group ), 'id' ) );
+		$this->assertSame( array( $urgent, $recent, $old ), array_column( $this->intentions->query( $this->group, array( 'urgent_first' => true ) ), 'id' ) );
+	}
+
+	/**
 	 * Praying for oneself shares the requester's first name.
 	 */
 	public function test_for_myself_shares_the_first_name(): void {

@@ -576,7 +576,8 @@ final class DFXPRAY_Intentions {
 	 * List a group's intentions.
 	 *
 	 * @param int   $group_id Group.
-	 * @param array $args     status (string|string[]), type, priority, search, date_from, date_to, limit.
+	 * @param array $args     status (string|string[]), type, priority, search, date_from, date_to, limit,
+	 *                        urgent_first (urgent ones first; then, as always, the most recent).
 	 * @return array[]
 	 */
 	public function query( int $group_id, array $args = array() ): array {
@@ -618,8 +619,9 @@ final class DFXPRAY_Intentions {
 		$limit    = isset( $args['limit'] ) ? max( 1, (int) $args['limit'] ) : 500;
 		$values[] = $limit;
 
-		$sql  = 'SELECT * FROM %i WHERE ' . implode( ' AND ', $where ) . ' ORDER BY created_at DESC, id DESC LIMIT %d';
-		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $values ), ARRAY_A ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql only holds placeholders.
+		$order = empty( $args['urgent_first'] ) ? 'created_at DESC, id DESC' : "priority = 'high' DESC, created_at DESC, id DESC";
+		$sql   = 'SELECT * FROM %i WHERE ' . implode( ' AND ', $where ) . ' ORDER BY ' . $order . ' LIMIT %d';
+		$rows  = $wpdb->get_results( $wpdb->prepare( $sql, $values ), ARRAY_A ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql only holds placeholders.
 
 		return array_map( array( $this, 'hydrate' ), $rows );
 	}

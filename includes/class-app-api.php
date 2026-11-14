@@ -150,7 +150,10 @@ final class DFXPRAY_App_API {
 			return $this->forbidden();
 		}
 
-		$args = array( 'status' => self::LISTS[ $status ] ?? self::LISTS['current'] );
+		$args = array(
+			'status'       => self::LISTS[ $status ] ?? self::LISTS['current'],
+			'urgent_first' => true,
+		);
 		if ( '' !== trim( $search ) ) {
 			$args['search'] = sanitize_text_field( $search );
 		}
@@ -159,7 +162,7 @@ final class DFXPRAY_App_API {
 		$intentions = DFXPRAY_Intentions::get_instance()->query( $group_id, $args );
 		$items      = array();
 
-		foreach ( DFXPRAY_Index_Composer::get_instance()->sort( $intentions ) as $intention ) {
+		foreach ( $intentions as $intention ) {
 			$items[] = array(
 				'id'          => $intention['id'],
 				'line'        => $formatter->line( $intention ),

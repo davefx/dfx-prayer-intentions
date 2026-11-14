@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.21
+Stable tag: 26.11.22
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.22 =
+* The lists of intentions, in the app and in the panel, show the urgent ones first and then the most recent requests.
 
 = 26.11.21 =
 * Leaders can set and correct the date of a request, in the panel and in the app: for requests written down later or brought from another list.

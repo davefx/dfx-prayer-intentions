@@ -82,6 +82,17 @@ test( 'a leader adds an intention and follows it up', async ( { page } ) => {
 	await expect( card.locator( '.dfx-requester' ) ).toHaveText( 'Asked by Felipe Arizu' );
 } );
 
+test( 'the list shows the urgent ones first, then the most recent', async ( { page } ) => {
+	createIntention( group.id, { beneficiary_name: 'Ana', summary: 'antigua', asked_on: '2026-09-01' } );
+	createIntention( group.id, { beneficiary_name: 'Berta', summary: 'reciente', asked_on: '2026-11-10' } );
+	createIntention( group.id, { beneficiary_name: 'Clara', summary: 'urgente', asked_on: '2026-10-01', priority: 'high' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+
+	await expect( page.locator( '.dfx-item .dfx-summary' ) ).toHaveText( [ 'urgente', 'reciente', 'antigua' ] );
+} );
+
 test( 'every field of an active intention can be edited in the app', async ( { page } ) => {
 	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'member_prefix' => 'N.H.' ) ); echo 1;` );
 	createIntention( group.id, { requester_name: 'Luis Sebastián', beneficiary_name: 'Marta', relationship: 'tía de', summary: 'descanse en paz' } );

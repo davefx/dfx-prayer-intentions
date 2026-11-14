@@ -130,6 +130,20 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The list puts the urgent ones first, then the most recent requests.
+	 */
+	public function test_list_order(): void {
+		$old           = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-01', 'type' => 'deceased', 'reference_date' => '2026-09-01' ) );
+		$urgent        = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-05', 'priority' => 'high' ) );
+		$recent        = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-20' ) );
+		$middle        = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-10', 'type' => 'thanksgiving' ) );
+		$urgent_recent = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-15', 'priority' => 'high' ) );
+
+		$items = $this->call( 'list', array( 'group_id' => $this->mine ) )['data']['items'];
+		$this->assertSame( array( $urgent_recent, $urgent, $recent, $middle, $old ), array_column( $items, 'id' ) );
+	}
+
+	/**
 	 * One intention with its updates, for its screen in the app.
 	 */
 	public function test_get(): void {
