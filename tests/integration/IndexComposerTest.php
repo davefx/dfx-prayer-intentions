@@ -176,6 +176,72 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The "prayer proposals" layout: sections by priority, members with their
+	 * prefix, shared summaries in one line, and only the recently departed.
+	 */
+	public function test_proposals_layout(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'  => 'proposals',
+				'member_prefix' => 'N.H.',
+				'index_header'  => "*Prayer proposals*\n_{long_date}_\n\nGood morning.",
+				'index_footer'  => 'A hug.',
+			)
+		);
+		$member = array( 'requester_is_member' => true );
+
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'summary' => 'tumor de páncreas', 'priority' => 'high' ) );
+		$this->make_active( $this->group, array( 'requester_name' => 'Luis Gómez', 'beneficiary_name' => 'Carmen', 'relationship' => 'madre de', 'type' => 'event', 'reference_date' => '2026-09-28', 'reference_time' => '09:30', 'summary' => 'operación' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Ramón', 'beneficiary_is_requester' => true, 'summary' => 'problemas en el hombro' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Felipe Arizu', 'beneficiary_name' => 'Marina', 'relationship' => 'esposa de', 'summary' => 'problemas de salud' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'David Marín', 'beneficiary_name' => 'Irene', 'relationship' => 'hija de', 'summary' => 'problemas de salud' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Álvaro Linares', 'beneficiary_name' => 'Argeme', 'relationship' => 'amiga de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-24', 'summary' => 'salió muy bien de su operación' ) );
+		$this->make_active( $this->group, array( 'requester_name' => 'Alberto', 'beneficiary_name' => 'Isabel', 'relationship' => 'madre de un amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-20', 'summary' => 'descanse en paz' ) );
+		$this->make_active( $this->group, array( 'requester_name' => 'Pedro', 'beneficiary_name' => 'Juana', 'relationship' => 'abuela de', 'type' => 'deceased', 'reference_date' => '2026-08-01', 'summary' => 'descanse en paz' ) );
+
+		$expected = implode(
+			"\n",
+			array(
+				'*Prayer proposals*',
+				'_Thursday, September 24, 2026_',
+				'',
+				'Good morning.',
+				'',
+				'*Especially*',
+				'• Antonio, amigo de N.H. Javier: tumor de páncreas',
+				'',
+				'*Also for*',
+				'• N.H. Ramón: problemas en el hombro',
+				'• Problemas de salud: Marina, esposa de N.H. Felipe; Irene, hija de N.H. David',
+				'• Carmen, madre de Luis: operación _(Monday 28, 9:30)_',
+				'',
+				'*We give thanks*',
+				'• Argeme, amiga de N.H. Álvaro: salió muy bien de su operación',
+				'',
+				'*For our departed*',
+				'• Isabel, madre de un amigo de Alberto: descanse en paz († 20/09)',
+				'',
+				'A hug.',
+			)
+		);
+
+		$this->assertSame( $expected, DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
+	 * Other groups keep the layout by type, without member prefixes.
+	 */
+	public function test_layout_by_type_is_the_default(): void {
+		$this->make_active( $this->group, array( 'requester_is_member' => true, 'summary' => 'por su salud' ) );
+
+		$text = DFXPRAY_Index_Composer::get_instance()->compose( $this->group );
+
+		$this->assertStringContainsString( '*The sick and difficult situations*', $text );
+		$this->assertStringContainsString( '• Carmen, madre de Luis: por su salud', $text );
+	}
+
+	/**
 	 * An empty index says so.
 	 */
 	public function test_empty_index(): void {

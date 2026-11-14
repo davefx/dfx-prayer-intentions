@@ -42,6 +42,8 @@ $dfxpray_v      = $dfxpray_intention ?? array(
 	'beneficiary_display_name' => '',
 	'requester_first_name'     => '',
 	'beneficiary_first_name'   => '',
+	'requester_is_member'      => true,
+	'beneficiary_is_member'    => false,
 	'priority'                 => 'normal',
 	'next_review'              => null,
 	'status'                   => '',
@@ -77,6 +79,8 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 				'group_id'                     => $group_id,
 				'has_beneficiary_is_requester' => 1,
 				'has_anniversary'              => 1,
+				'has_requester_is_member'      => 1,
+				'has_beneficiary_is_member'    => 1,
 			),
 			'dfxpray-intention-form'
 		);
@@ -88,6 +92,7 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						<input type="text" class="regular-text" id="dfxpray-requester-name" name="intention[requester_name]" value="<?php echo esc_attr( $dfxpray_v['requester_name'] ); ?>" required>
 						<input type="text" class="regular-text" name="intention[requester_contact]" value="<?php echo esc_attr( $dfxpray_v['requester_contact'] ); ?>" placeholder="<?php esc_attr_e( 'Email or phone', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Contact', 'dfx-prayer-intentions' ); ?>">
 						<input type="text" class="regular-text" name="intention[requester_first_name]" value="<?php echo esc_attr( $dfxpray_v['requester_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'First name, if compound', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'First name of the requester', 'dfx-prayer-intentions' ); ?>">
+						<label><input type="checkbox" name="intention[requester_is_member]" value="1" aria-label="<?php esc_attr_e( 'The requester is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['requester_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
 					</td>
 				</tr>
 				<tr>
@@ -97,6 +102,7 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						<input type="text" class="regular-text" id="dfxpray-beneficiary-name" name="intention[beneficiary_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_name'] ); ?>">
 						<input type="text" class="regular-text" name="intention[relationship]" value="<?php echo esc_attr( $dfxpray_v['relationship'] ); ?>" maxlength="100" placeholder="<?php esc_attr_e( 'Relationship, e.g. mother of', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Relationship', 'dfx-prayer-intentions' ); ?>">
 						<input type="text" class="regular-text" name="intention[beneficiary_first_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'First name, if compound', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'First name of the beneficiary', 'dfx-prayer-intentions' ); ?>">
+						<label><input type="checkbox" name="intention[beneficiary_is_member]" value="1" aria-label="<?php esc_attr_e( 'The beneficiary is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['beneficiary_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
 						<p class="description"><?php esc_html_e( 'Fill in the first name only when it has more than one word (Juan Tomás). Empty: the first word of the name.', 'dfx-prayer-intentions' ); ?></p>
 					</td>
 				</tr>

@@ -56,6 +56,7 @@ final class DFXPRAY_Settings {
 	 */
 	private const ENUMS = array(
 		'digest_when_empty' => array( 'short', 'none' ),
+		'index_layout'      => array( 'by_type', 'proposals' ),
 	);
 
 	/**
@@ -101,6 +102,8 @@ final class DFXPRAY_Settings {
 			'index_header'             => __( '🙏 *Active intentions* – {date}', 'dfx-prayer-intentions' ),
 			'index_footer'             => '',
 			'index_section_emojis'     => false,
+			'index_layout'             => 'by_type',
+			'member_prefix'            => '',
 			/* translators: {date} is replaced with the day and month. */
 			'digest_header'            => __( '🙏 *Prayer digest* – {date}', 'dfx-prayer-intentions' ),
 			'digest_footer'            => '',

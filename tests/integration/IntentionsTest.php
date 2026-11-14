@@ -430,6 +430,33 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Leaders mark who belongs to the group; praying for oneself shares it.
+	 */
+	public function test_member_flags(): void {
+		$id = $this->make_active( $this->group, array( 'requester_is_member' => '1' ) );
+
+		$intention = $this->intentions->get( $id );
+		$this->assertTrue( $intention['requester_is_member'] );
+		$this->assertFalse( $intention['beneficiary_is_member'] );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'beneficiary_is_member' => '1' ) ) );
+		$this->assertTrue( $this->intentions->get( $id )['beneficiary_is_member'] );
+
+		$self = $this->make_active(
+			$this->group,
+			array(
+				'requester_is_member'      => '1',
+				'beneficiary_is_requester' => '1',
+				'beneficiary_name'         => '',
+			)
+		);
+		$this->assertTrue( $this->intentions->get( $self )['beneficiary_is_member'] );
+
+		$pending = $this->make_pending( $this->group, array( 'requester_is_member' => '1' ) );
+		$this->assertFalse( $this->intentions->get( $pending )['requester_is_member'] );
+	}
+
+	/**
 	 * Visible names are rechecked when the level hardens.
 	 */
 	public function test_visible_names_cleared_when_level_hides_names(): void {

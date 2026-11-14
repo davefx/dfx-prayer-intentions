@@ -36,25 +36,23 @@ final class DFXPRAY_Index_Composer {
 		$settings  = DFXPRAY_Settings::get_instance();
 		$formatter = DFXPRAY_Formatter::get_instance();
 		$emojis    = (bool) $settings->get( 'index_section_emojis', $group_id );
-		$by_type   = array_fill_keys( array_values( self::SECTIONS ), array() );
-
-		foreach ( DFXPRAY_Intentions::get_instance()->listable( $group_id ) as $intention ) {
-			$by_type[ $intention['type'] ][] = $intention;
-		}
+		$listable  = DFXPRAY_Intentions::get_instance()->listable( $group_id );
+		$raw       = 'proposals' === $settings->get( 'index_layout', $group_id ) ? $this->proposal_sections( $listable, $group_id ) : $this->type_sections( $listable );
 
 		$sections = array();
-		foreach ( self::SECTIONS as $key => $type ) {
-			$intentions = $this->sort( $by_type[ $type ] );
-			$section    = array(
+		foreach ( $raw as $key => $lines ) {
+			$section = array(
 				'key'   => $key,
 				'title' => $this->titles()[ $key ],
 				'emoji' => $emojis ? $this->emojis()[ $key ] : '',
-				'lines' => array_map( array( $formatter, 'line' ), $intentions ),
+				'lines' => $lines,
 			);
 
 			/**
 			 * Filters one section of the index. The dynamic part is the
-			 * section key: events, deceased, ongoing or thanksgiving.
+			 * section key: events, deceased, ongoing or thanksgiving; with
+			 * the "prayer proposals" layout, urgent, others, thanks or
+			 * departed.
 			 *
 			 * @param array $section  Section: key, title, emoji, lines.
 			 * @param int   $group_id Group ID.
@@ -86,6 +84,94 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
+	 * Lines of the layout by type: one section per kind of intention.
+	 *
+	 * @param array[] $intentions Listable intentions.
+	 * @return array<string, string[]> Section key => lines.
+	 */
+	private function type_sections( array $intentions ): array {
+		$formatter = DFXPRAY_Formatter::get_instance();
+		$by_type   = array_fill_keys( array_values( self::SECTIONS ), array() );
+
+		foreach ( $intentions as $intention ) {
+			$by_type[ $intention['type'] ][] = $intention;
+		}
+
+		$sections = array();
+		foreach ( self::SECTIONS as $key => $type ) {
+			$sections[ $key ] = array_map( array( $formatter, 'line' ), $this->sort( $by_type[ $type ] ) );
+		}
+
+		return $sections;
+	}
+
+	/**
+	 * Lines of the "prayer proposals" layout: the urgent ones (high
+	 * priority), the rest, thanksgivings, and the departed of the last days
+	 * (the group's deceased deadline). Intentions sharing a summary go in one
+	 * line: "Problemas de salud: Marina, …; Irene, …".
+	 *
+	 * @param array[] $intentions Listable intentions.
+	 * @param int     $group_id   Group ID.
+	 * @return array<string, string[]> Section key => lines.
+	 */
+	private function proposal_sections( array $intentions, int $group_id ): array {
+		$formatter = DFXPRAY_Formatter::get_instance();
+		$clock     = DFXPRAY_Clock::get_instance();
+		$since     = $clock->local( $clock->today() )->modify( '-' . DFXPRAY_Settings::get_instance()->get( 'deceased_days', $group_id ) . ' days' )->format( 'Y-m-d' );
+		$buckets   = array_fill_keys( array( 'urgent', 'others', 'thanks', 'departed' ), array() );
+
+		foreach ( $this->sort( $intentions ) as $intention ) {
+			if ( 'deceased' === $intention['type'] ) {
+				if ( (string) $intention['reference_date'] >= $since ) {
+					$buckets['departed'][] = $intention;
+				}
+			} elseif ( 'thanksgiving' === $intention['type'] ) {
+				$buckets['thanks'][] = $intention;
+			} else {
+				$buckets[ 'high' === $intention['priority'] ? 'urgent' : 'others' ][] = $intention;
+			}
+		}
+
+		return array(
+			'urgent'   => $this->grouped_lines( $buckets['urgent'] ),
+			'others'   => $this->grouped_lines( $buckets['others'] ),
+			'thanks'   => $this->grouped_lines( $buckets['thanks'] ),
+			'departed' => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $buckets['departed'] ),
+		);
+	}
+
+	/**
+	 * Lines without priority mark, joining intentions that share a summary
+	 * (and have no date) into one line, where the first of them was.
+	 *
+	 * @param array[] $intentions Sorted intentions.
+	 * @return string[]
+	 */
+	private function grouped_lines( array $intentions ): array {
+		$formatter = DFXPRAY_Formatter::get_instance();
+		$groups    = array();
+
+		foreach ( $intentions as $intention ) {
+			$key              = '' === $formatter->date_suffix( $intention ) ? mb_strtolower( trim( $intention['summary'] ) ) : 'id:' . $intention['id'];
+			$groups[ $key ][] = $intention;
+		}
+
+		$lines = array();
+		foreach ( $groups as $group ) {
+			if ( 1 === count( $group ) ) {
+				$lines[] = $formatter->line( $group[0], false );
+				continue;
+			}
+
+			$summary = trim( $group[0]['summary'] );
+			$lines[] = mb_strtoupper( mb_substr( $summary, 0, 1 ) ) . mb_substr( $summary, 1 ) . ': ' . implode( '; ', array_map( array( $formatter, 'person' ), $group ) );
+		}
+
+		return $lines;
+	}
+
+	/**
 	 * Whether the text is too long to paste comfortably.
 	 *
 	 * @param string $text Text.
@@ -105,6 +191,10 @@ final class DFXPRAY_Index_Composer {
 			'deceased'     => __( 'For our departed', 'dfx-prayer-intentions' ),
 			'ongoing'      => __( 'The sick and difficult situations', 'dfx-prayer-intentions' ),
 			'thanksgiving' => __( 'Thanksgiving', 'dfx-prayer-intentions' ),
+			'urgent'       => __( 'Especially', 'dfx-prayer-intentions' ),
+			'others'       => __( 'Also for', 'dfx-prayer-intentions' ),
+			'thanks'       => __( 'We give thanks', 'dfx-prayer-intentions' ),
+			'departed'     => __( 'For our departed', 'dfx-prayer-intentions' ),
 		);
 	}
 
@@ -119,6 +209,10 @@ final class DFXPRAY_Index_Composer {
 			'deceased'     => '🕯️',
 			'ongoing'      => '🤲',
 			'thanksgiving' => '🙌',
+			'urgent'       => '❗',
+			'others'       => '🤲',
+			'thanks'       => '🙌',
+			'departed'     => '🕯️',
 		);
 	}
 

@@ -107,6 +107,30 @@ test( 'spam is discarded and duplicates are merged into the existing intention',
 	await expect( page.locator( '.dfxpray-timeline' ).last() ).toContainText( 'Merged duplicate request from Ana Pérez' );
 } );
 
+test( 'a group shares its index as prayer proposals, with members marked', async ( { page } ) => {
+	const marina = createIntention( group.id, { requester_name: 'Felipe Arizu', beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud' } );
+	createIntention( group.id, { requester_name: 'Javier Cavallé', requester_is_member: true, beneficiary_name: 'Antonio', relationship: 'amigo de', summary: 'tumor de páncreas', priority: 'high' } );
+	await login( page, 'leader1' );
+
+	await page.goto( groupUrl( group.id, 'settings' ) );
+	await page.getByLabel( 'Index layout' ).selectOption( 'proposals' );
+	await page.getByLabel( 'Prefix for members of the group' ).fill( 'N.H.' );
+	await page.getByLabel( 'Index header' ).fill( '*Propuestas de oración*\n_{long_date}_' );
+	await page.getByRole( 'button', { name: 'Save settings' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Settings saved.' );
+
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: marina } ) );
+	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Marina, esposa de Felipe: problemas de salud' );
+	await page.getByLabel( 'The requester is a member of the group' ).check();
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Marina, esposa de N.H. Felipe: problemas de salud' );
+
+	await page.goto( groupUrl( group.id, 'index' ) );
+	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue(
+		/^\*Propuestas de oración\*\n_\w+, \w+ \d+, \d{4}_\n\n\*Especially\*\n• Antonio, amigo de N\.H\. Javier: tumor de páncreas\n\n\*Also for\*\n• Marina, esposa de N\.H\. Felipe: problemas de salud$/
+	);
+} );
+
 test( 'the index warns when it is too long for one message', async ( { page } ) => {
 	for ( let i = 0; i < 45; i++ ) {
 		createIntention( group.id, { summary: 'x'.repeat( 95 ) } );

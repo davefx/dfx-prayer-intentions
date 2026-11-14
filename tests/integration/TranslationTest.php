@@ -15,7 +15,7 @@ class TranslationTest extends DFXPRAY_Test_Case {
 
 	/**
 	 * Switch to Spanish. The test library ships only part of core's Spanish
-	 * translation, so the weekday names core would translate are supplied here.
+	 * translation, so the weekday and month names core would translate are supplied here.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -37,7 +37,7 @@ class TranslationTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Core's weekday names in Spanish.
+	 * Core's weekday names in Spanish, and the month of the frozen date.
 	 *
 	 * @param string $translation Translation.
 	 * @param string $text        Original.
@@ -52,6 +52,7 @@ class TranslationTest extends DFXPRAY_Test_Case {
 			'Friday'    => 'viernes',
 			'Saturday'  => 'sábado',
 			'Sunday'    => 'domingo',
+			'September' => 'septiembre',
 		);
 
 		return 'default' === $domain && isset( $days[ $text ] ) ? $days[ $text ] : $translation;
@@ -151,6 +152,14 @@ class TranslationTest extends DFXPRAY_Test_Case {
 		$html = (string) ob_get_clean();
 
 		$this->assertStringContainsString( 'Funcionalidad de gestión de intenciones de oración proporcionada a través del plugin <strong>DFX Prayer Intentions</strong> por <a href="https://davefx.com/es/plugins-de-wordpress/">David Marín Carreño</a>. A.M.D.G.', $html );
+	}
+
+	/**
+	 * The long date of the prayer proposals header, in Spanish.
+	 */
+	public function test_long_date_in_spanish(): void {
+		$this->assertSame( 'Jueves, 24 de septiembre de 2026', DFXPRAY_Formatter::get_instance()->fill( '{long_date}' ) );
+		$this->assertSame( array( 'Especialmente', 'También por', 'Damos gracias', 'Por nuestros difuntos' ), array_values( array_intersect_key( DFXPRAY_Index_Composer::get_instance()->titles(), array_flip( array( 'urgent', 'others', 'thanks', 'departed' ) ) ) ) );
 	}
 
 	/**

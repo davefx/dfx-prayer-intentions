@@ -70,7 +70,9 @@ final class DFXPRAY_Formatter {
 	 * @param array $intention Intention.
 	 */
 	public function person( array $intention ): string {
-		return DFXPRAY_Discretion::get_instance()->describe( $intention ) ?? __( 'A private intention', 'dfx-prayer-intentions' );
+		$prefix = (string) DFXPRAY_Settings::get_instance()->get( 'member_prefix', isset( $intention['group_id'] ) ? (int) $intention['group_id'] : null );
+
+		return DFXPRAY_Discretion::get_instance()->describe( $intention, $prefix ) ?? __( 'A private intention', 'dfx-prayer-intentions' );
 	}
 
 	/**
@@ -94,18 +96,35 @@ final class DFXPRAY_Formatter {
 	 * A full index line (without bullet): priority mark, person, summary and
 	 * the date suffix of events and the departed.
 	 *
+	 * @param array $intention     Intention.
+	 * @param bool  $priority_mark Whether high priority is marked with "❗ ".
+	 */
+	public function line( array $intention, bool $priority_mark = true ): string {
+		$line = $this->person_with( $intention, $intention['summary'] ) . $this->date_suffix( $intention );
+
+		return ( $priority_mark ? $this->priority_mark( $intention ) : '' ) . $line;
+	}
+
+	/**
+	 * The date suffix of a line: " _(Monday 28, 9:30)_" for events,
+	 * " († 20/09)" for the departed, empty otherwise.
+	 *
 	 * @param array $intention Intention.
 	 */
-	public function line( array $intention ): string {
-		$line = $this->person_with( $intention, $intention['summary'] );
-
-		if ( 'event' === $intention['type'] && $intention['reference_date'] ) {
-			$line .= ' _(' . $this->when( $intention['reference_date'], $intention['reference_time'] ) . ')_';
-		} elseif ( 'deceased' === $intention['type'] && $intention['reference_date'] ) {
-			$line .= ' († ' . $this->short_date( $intention['reference_date'] ) . ')';
+	public function date_suffix( array $intention ): string {
+		if ( empty( $intention['reference_date'] ) ) {
+			return '';
 		}
 
-		return $this->priority_mark( $intention ) . $line;
+		if ( 'event' === $intention['type'] ) {
+			return ' _(' . $this->when( $intention['reference_date'], $intention['reference_time'] ) . ')_';
+		}
+
+		if ( 'deceased' === $intention['type'] ) {
+			return ' († ' . $this->short_date( $intention['reference_date'] ) . ')';
+		}
+
+		return '';
 	}
 
 	/**
@@ -118,12 +137,31 @@ final class DFXPRAY_Formatter {
 	}
 
 	/**
-	 * Replace {date} in a header or footer.
+	 * Replace {date} ("24/09") and {long_date} ("Thursday, September 24,
+	 * 2026") in a header or footer.
 	 *
 	 * @param string $template Template.
 	 */
 	public function fill( string $template ): string {
-		return str_replace( '{date}', $this->short_date( DFXPRAY_Clock::get_instance()->today() ), $template );
+		$today = DFXPRAY_Clock::get_instance()->today();
+
+		return str_replace(
+			array( '{date}', '{long_date}' ),
+			array( $this->short_date( $today ), $this->long_date( $today ) ),
+			$template
+		);
+	}
+
+	/**
+	 * Full date with the weekday, capitalised: "Thursday, September 24, 2026".
+	 *
+	 * @param string $date Y-m-d.
+	 */
+	public function long_date( string $date ): string {
+		/* translators: PHP date format for the full date with the weekday, see https://www.php.net/manual/datetime.format.php */
+		$text = wp_date( _x( 'l, F j, Y', 'long date format', 'dfx-prayer-intentions' ), $this->timestamp( $date ) );
+
+		return mb_strtoupper( mb_substr( $text, 0, 1 ) ) . mb_substr( $text, 1 );
 	}
 
 	/**

@@ -45,6 +45,8 @@ final class DFXPRAY_Intentions {
 		'beneficiary_display_name',
 		'requester_first_name',
 		'beneficiary_first_name',
+		'requester_is_member',
+		'beneficiary_is_member',
 		'next_review',
 	);
 
@@ -420,6 +422,8 @@ final class DFXPRAY_Intentions {
 				'beneficiary_display_name' => $current['beneficiary_display_name'],
 				'requester_first_name'     => $current['requester_first_name'],
 				'beneficiary_first_name'   => $current['beneficiary_first_name'],
+				'requester_is_member'      => $current['requester_is_member'],
+				'beneficiary_is_member'    => $current['beneficiary_is_member'],
 				'body'                     => $current['body'],
 				'discretion'               => $current['discretion'],
 				'type'                     => 'thanksgiving',
@@ -686,6 +690,8 @@ final class DFXPRAY_Intentions {
 			'beneficiary_display_name' => '',
 			'requester_first_name'     => '',
 			'beneficiary_first_name'   => '',
+			'requester_is_member'      => false,
+			'beneficiary_is_member'    => false,
 			'priority'                 => 'normal',
 			'next_review'              => null,
 		);
@@ -697,7 +703,7 @@ final class DFXPRAY_Intentions {
 			}
 		}
 
-		foreach ( array( 'beneficiary_is_requester', 'anniversary' ) as $field ) {
+		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'requester_is_member', 'beneficiary_is_member' ) as $field ) {
 			if ( array_key_exists( $field, $data ) ) {
 				$r[ $field ] = (bool) filter_var( $data[ $field ], FILTER_VALIDATE_BOOLEAN );
 			}
@@ -741,6 +747,7 @@ final class DFXPRAY_Intentions {
 		if ( $r['beneficiary_is_requester'] ) {
 			$r['beneficiary_name']       = $r['requester_name'];
 			$r['beneficiary_first_name'] = $r['requester_first_name'];
+			$r['beneficiary_is_member']  = $r['requester_is_member'];
 			$r['relationship']           = '';
 		}
 
@@ -893,7 +900,7 @@ final class DFXPRAY_Intentions {
 			}
 		}
 
-		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'ack_sent' ) as $bool ) {
+		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'ack_sent', 'requester_is_member', 'beneficiary_is_member' ) as $bool ) {
 			if ( array_key_exists( $bool, $fields ) ) {
 				$fields[ $bool ] = $fields[ $bool ] ? 1 : 0;
 			}
@@ -932,6 +939,8 @@ final class DFXPRAY_Intentions {
 			'beneficiary_display_name' => $row['beneficiary_display_name'],
 			'requester_first_name'     => $row['requester_first_name'],
 			'beneficiary_first_name'   => $row['beneficiary_first_name'],
+			'requester_is_member'      => (bool) $row['requester_is_member'],
+			'beneficiary_is_member'    => (bool) $row['beneficiary_is_member'],
 			'priority'                 => $row['priority'],
 			'status'                   => $row['status'],
 			'close_reason'             => $row['close_reason'],

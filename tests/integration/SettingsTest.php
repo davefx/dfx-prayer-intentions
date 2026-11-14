@@ -28,6 +28,8 @@ class SettingsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( '23:00', $settings->get( 'quiet_start' ) );
 		$this->assertSame( '07:00', $settings->get( 'quiet_end' ) );
 		$this->assertSame( 4000, DFXPRAY_Settings::INDEX_LENGTH_WARNING );
+		$this->assertSame( 'by_type', $settings->get( 'index_layout' ) );
+		$this->assertSame( '', $settings->get( 'member_prefix' ) );
 	}
 
 	/**
@@ -83,6 +85,7 @@ class SettingsTest extends DFXPRAY_Test_Case {
 				'quiet_start'         => '22:30',
 				'alert_at_exact_time' => '1',
 				'index_footer'        => '<script>x</script>Ave María',
+				'index_layout'        => 'bogus',
 			)
 		);
 
@@ -91,6 +94,7 @@ class SettingsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( '22:30', $settings->get( 'quiet_start' ) );
 		$this->assertTrue( $settings->get( 'alert_at_exact_time' ) );
 		$this->assertSame( 'Ave María', $settings->get( 'index_footer' ) );
+		$this->assertSame( 'by_type', $settings->get( 'index_layout' ) );
 	}
 
 	/**

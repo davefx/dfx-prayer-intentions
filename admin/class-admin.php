@@ -448,9 +448,9 @@ final class DFXPRAY_Admin {
 				'label' => __( 'Message after sending the form', 'dfx-prayer-intentions' ),
 			),
 			'index_header'             => array(
-				'type'  => 'text',
+				'type'  => 'textarea',
 				'label' => __( 'Index header', 'dfx-prayer-intentions' ),
-				'help'  => __( '{date} is replaced with the date.', 'dfx-prayer-intentions' ),
+				'help'  => __( '{date} is replaced with the date, and {long_date} with the date and weekday in full.', 'dfx-prayer-intentions' ),
 			),
 			'index_footer'             => array(
 				'type'  => 'textarea',
@@ -460,6 +460,19 @@ final class DFXPRAY_Admin {
 			'index_section_emojis'     => array(
 				'type'  => 'checkbox',
 				'label' => __( 'Emojis in the index sections', 'dfx-prayer-intentions' ),
+			),
+			'index_layout'             => array(
+				'type'    => 'select',
+				'label'   => __( 'Index layout', 'dfx-prayer-intentions' ),
+				'options' => array(
+					'by_type'   => __( 'By kind: events, the departed, ongoing situations, thanksgiving', 'dfx-prayer-intentions' ),
+					'proposals' => __( 'Prayer proposals: especially, also for, we give thanks, the recently departed', 'dfx-prayer-intentions' ),
+				),
+			),
+			'member_prefix'            => array(
+				'type'  => 'text',
+				'label' => __( 'Prefix for members of the group', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix.', 'dfx-prayer-intentions' ),
 			),
 			'digest_header'            => array(
 				'type'  => 'text',
@@ -542,7 +555,7 @@ final class DFXPRAY_Admin {
 	public function setting_sections( string $scope ): array {
 		$sections = array(
 			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'ongoing_review_days', 'thanksgiving_days', 'keep_active_days', 'recent_deceased_days' ),
-			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'index_footer', 'index_section_emojis', 'digest_header', 'digest_footer', 'digest_include_comments' ),
+			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);
 

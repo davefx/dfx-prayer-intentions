@@ -110,6 +110,40 @@ class DiscretionTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Members of the group carry the group's prefix ("N.H."), unless a
+	 * leader wrote a visible name for them.
+	 */
+	public function test_describe_with_member_prefix(): void {
+		$intention = array(
+			'requester_name'           => 'Luis Gómez',
+			'requester_is_member'      => true,
+			'beneficiary_name'         => 'Carmen Ruiz',
+			'beneficiary_is_member'    => false,
+			'beneficiary_is_requester' => false,
+			'relationship'             => 'madre de',
+			'discretion'               => 'first_name',
+			'requester_display_name'   => '',
+			'beneficiary_display_name' => '',
+		);
+
+		$this->assertSame( 'Carmen, madre de N.H. Luis', $this->discretion->describe( $intention, 'N.H.' ) );
+		$this->assertSame( 'Carmen, madre de Luis', $this->discretion->describe( $intention ) );
+
+		$intention['beneficiary_is_member'] = true;
+		$this->assertSame( 'N.H. Carmen, madre de N.H. Luis', $this->discretion->describe( $intention, 'N.H.' ) );
+
+		$intention['requester_display_name'] = 'nuestro hermano Luis';
+		$this->assertSame( 'N.H. Carmen, madre de nuestro hermano Luis', $this->discretion->describe( $intention, 'N.H.' ) );
+
+		$intention['beneficiary_is_requester'] = true;
+		$intention['requester_display_name']   = '';
+		$this->assertSame( 'N.H. Luis', $this->discretion->describe( $intention, 'N.H.' ) );
+
+		$intention['discretion'] = 'anonymous';
+		$this->assertNull( $this->discretion->describe( $intention, 'N.H.' ) );
+	}
+
+	/**
 	 * The visible name replaces the original when the level shows a name.
 	 */
 	public function test_visible_name_used_for_name_levels(): void {

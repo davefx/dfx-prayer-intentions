@@ -162,12 +162,13 @@ final class DFXPRAY_Discretion {
 	/**
 	 * The people part of an index line: "Carmen, madre de Luis".
 	 *
-	 * @param array $intention Intention fields.
+	 * @param array  $intention     Intention fields.
+	 * @param string $member_prefix Prefix for members of the group ("N.H."),
+	 *                              set per group; empty for none.
 	 * @return string|null Null when anonymous.
 	 */
-	public function describe( array $intention ): ?string {
-		$level     = $intention['discretion'];
-		$requester = $this->format_name( $intention['requester_name'], $level, $intention['requester_display_name'] ?? '', $intention['requester_first_name'] ?? '' );
+	public function describe( array $intention, string $member_prefix = '' ): ?string {
+		$requester = $this->person( $intention, 'requester', $member_prefix );
 
 		if ( null === $requester ) {
 			return null;
@@ -177,7 +178,7 @@ final class DFXPRAY_Discretion {
 			return $requester;
 		}
 
-		$beneficiary  = (string) $this->format_name( $intention['beneficiary_name'], $level, $intention['beneficiary_display_name'] ?? '', $intention['beneficiary_first_name'] ?? '' );
+		$beneficiary  = (string) $this->person( $intention, 'beneficiary', $member_prefix );
 		$relationship = trim( (string) ( $intention['relationship'] ?? '' ) );
 
 		if ( '' === $relationship ) {
@@ -185,6 +186,27 @@ final class DFXPRAY_Discretion {
 		}
 
 		return $beneficiary . ', ' . $relationship . ' ' . $requester;
+	}
+
+	/**
+	 * One person of an intention as shown: the name at its level, with the
+	 * member prefix when the person belongs to the group. A visible name
+	 * written by a leader is used as it is, without the prefix.
+	 *
+	 * @param array  $intention     Intention fields.
+	 * @param string $person        'requester' or 'beneficiary'.
+	 * @param string $member_prefix Prefix for members; empty for none.
+	 */
+	private function person( array $intention, string $person, string $member_prefix ): ?string {
+		$visible = trim( (string) ( $intention[ $person . '_display_name' ] ?? '' ) );
+		$name    = $this->format_name( (string) $intention[ $person . '_name' ], $intention['discretion'], $visible, (string) ( $intention[ $person . '_first_name' ] ?? '' ) );
+		$prefix  = trim( $member_prefix );
+
+		if ( null === $name || '' === $prefix || '' !== $visible || empty( $intention[ $person . '_is_member' ] ) ) {
+			return $name;
+		}
+
+		return $prefix . ' ' . $name;
 	}
 
 	/**
