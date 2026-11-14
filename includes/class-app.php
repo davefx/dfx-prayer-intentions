@@ -229,8 +229,9 @@ final class DFXPRAY_App {
 			$this->asset( 'css/app.css' ),
 			$this->asset( 'images/app-icon-192.png' ),
 			$this->asset( 'images/app-icon-512.png' ),
-			$this->asset( 'fonts/IBMPlexSans-Regular.woff2' ),
-			$this->asset( 'fonts/IBMPlexSans-SemiBold.woff2' ),
+			$this->asset( 'fonts/EBGaramond-wght.woff2' ),
+			$this->asset( 'fonts/EBGaramond-Italic-wght.woff2' ),
+			$this->asset( 'fonts/Cinzel-wght.woff2' ),
 		);
 
 		return 'const CACHE = ' . wp_json_encode( 'dfxpray-app-' . DFXPRAY_VERSION ) . ";\n"
