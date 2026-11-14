@@ -1,0 +1,244 @@
+/* DFX Prayer Intentions: the leaders' app. Mobile first. */
+
+:root {
+	--dfx-navy: #24305a;
+	--dfx-maroon: #8a1f24;
+	--dfx-ink: #1d2330;
+	--dfx-muted: #5c6475;
+	--dfx-line: #dde1ea;
+	--dfx-bg: #f5f6f9;
+	color-scheme: light;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--dfx-bg);
+	color: var(--dfx-ink);
+	font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.dfx-header {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+	background: var(--dfx-navy);
+	color: #fff;
+}
+
+.dfx-header h1 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.dfx-header select {
+	max-width: 50%;
+}
+
+.dfx-group {
+	font-size: 14px;
+	opacity: 0.85;
+}
+
+.dfx-main {
+	padding: 16px 16px calc(88px + env(safe-area-inset-bottom));
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.dfx-nav {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	padding-bottom: env(safe-area-inset-bottom);
+	background: #fff;
+	border-top: 1px solid var(--dfx-line);
+}
+
+.dfx-nav button {
+	padding: 14px 4px;
+	border: 0;
+	background: none;
+	color: var(--dfx-muted);
+	font: inherit;
+	font-size: 14px;
+}
+
+.dfx-nav button.is-active {
+	color: var(--dfx-navy);
+	font-weight: 600;
+	box-shadow: inset 0 3px 0 var(--dfx-navy);
+}
+
+h2 {
+	margin: 20px 0 8px;
+	font-size: 17px;
+}
+
+.dfx-muted {
+	color: var(--dfx-muted);
+}
+
+.dfx-notice {
+	padding: 10px 12px;
+	border-radius: 8px;
+	background: #fff8e1;
+}
+
+.dfx-notice.is-ok {
+	background: #e7f5ea;
+}
+
+.dfx-notice.is-error {
+	background: #fdecec;
+}
+
+.dfx-message {
+	padding: 14px;
+	border: 1px solid var(--dfx-line);
+	border-radius: 10px;
+	background: #fff;
+	white-space: pre-wrap;
+	font: inherit;
+	font-size: 15px;
+}
+
+.dfx-actions,
+.dfx-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+.dfx-toolbar input {
+	flex: 1;
+}
+
+.dfx-button {
+	padding: 10px 16px;
+	border: 1px solid var(--dfx-navy);
+	border-radius: 8px;
+	background: #fff;
+	color: var(--dfx-navy);
+	font: inherit;
+	font-weight: 600;
+}
+
+.dfx-button.is-primary {
+	background: var(--dfx-navy);
+	color: #fff;
+}
+
+.dfx-button.is-danger {
+	border-color: var(--dfx-maroon);
+	color: var(--dfx-maroon);
+}
+
+.dfx-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.dfx-item {
+	display: block;
+	width: 100%;
+	margin-bottom: 8px;
+	padding: 12px 14px;
+	border: 1px solid var(--dfx-line);
+	border-radius: 10px;
+	background: #fff;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+}
+
+.dfx-item small {
+	display: block;
+	margin-top: 4px;
+	color: var(--dfx-muted);
+}
+
+.dfx-back {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--dfx-navy);
+	font: inherit;
+}
+
+.dfx-line {
+	font-size: 18px;
+}
+
+.dfx-body {
+	white-space: pre-wrap;
+}
+
+.dfx-form {
+	margin: 16px 0;
+	padding: 14px;
+	border: 1px solid var(--dfx-line);
+	border-radius: 10px;
+	background: #fff;
+}
+
+.dfx-field {
+	display: block;
+	margin-bottom: 12px;
+}
+
+.dfx-label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.dfx-field input,
+.dfx-field select,
+.dfx-field textarea,
+.dfx-toolbar input,
+.dfx-toolbar select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--dfx-line);
+	border-radius: 8px;
+	font: inherit;
+}
+
+.dfx-toolbar select {
+	width: auto;
+}
+
+.dfx-check {
+	display: block;
+	margin-bottom: 12px;
+}
+
+.dfx-timeline {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.dfx-timeline li {
+	padding: 10px 0;
+	border-bottom: 1px solid var(--dfx-line);
+}
+
+.dfx-timeline p {
+	margin: 4px 0 0;
+}

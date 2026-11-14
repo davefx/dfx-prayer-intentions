@@ -49,6 +49,7 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | Anything a leader does in the panel | a `do_<action>()` in `admin/class-admin-actions.php`, registered in `ACTIONS` with its permission scope; the view only renders a form through `DFXPRAY_Admin::form_open()` |
 | A task on a group (moderation, index…) | a tab: `admin/views/<name>.php`, registered in `DFXPRAY_Admin::TABS` and `tab_titles()`; link to it with `DFXPRAY_Admin::group_url( $group_id, $tab )` |
 | A site-wide screen | `DFXPRAY_Admin::render_page()` and `register_menu()`; the menu only holds "Groups", "Global settings" and one entry per group |
+| Anything a leader does in the app | the screen in `assets/js/app.js`; a write is a panel action (add it to `DFXPRAY_App_API::WRITES`), a read an `op` in `DFXPRAY_App_API::respond()`, scoped with `DFXPRAY_Permissions`; add it to the IDOR provider in `AppApiTest` |
 | Text shared with the group (index, digest, alerts) | `DFXPRAY_Formatter`, `DFXPRAY_Index_Composer`, `DFXPRAY_Digest_Composer`, templates in `templates/` |
 | A setting | default and type in `DFXPRAY_Settings::defaults()`; add to `GLOBAL_ONLY` if leaders must not override it; field in `DFXPRAY_Admin::setting_fields()` and `setting_sections()` |
 | A delivery channel | a class implementing `DFXPRAY_Channel`, added in `DFXPRAY_Channels::all()` (third parties use the `dfxpray_channels` filter) |
@@ -71,7 +72,13 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 - **Intentions stay out of WordPress' public surfaces**: custom tables only,
   no REST routes, no posts. The form page sends `noindex`, `nofollow` and
   no-cache headers and defines `DONOTCACHEPAGE`; it is never added to
-  `robots.txt`.
+  `robots.txt`. The leaders' app (`DFXPRAY_App`) talks only to
+  `DFXPRAY_App_API` through admin-ajax, for logged-in users (no `nopriv`
+  handler), with its own nonce; reads are scoped to the user's groups and
+  every write goes through `DFXPRAY_Admin_Actions::run()`, so the panel's
+  permission checks apply. Its service worker caches the app's own files,
+  never data; the app keeps on the device only the message and the lists
+  (summaries), never the full text of a request.
 - **No timed event is left without notice.** Alerts are never sent in quiet
   hours; the previous digest lists them in "Without an hour alert", and if no
   digest did, an early alert goes out just before quiet hours.

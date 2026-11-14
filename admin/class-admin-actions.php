@@ -120,6 +120,23 @@ final class DFXPRAY_Admin_Actions {
 			return $this->failure( 'nonce', __( 'The link has expired. Please try again.', 'dfx-prayer-intentions' ) );
 		}
 
+		return $this->run( $action, $request );
+	}
+
+	/**
+	 * Run an action whose request the caller has already authenticated
+	 * (a nonce of its own, such as the app's). Permissions are checked here,
+	 * exactly as for the panel.
+	 *
+	 * @param string $action  Action name.
+	 * @param array  $request Unslashed request data.
+	 * @return array{ok:bool, code:string, message:string, id:?int}
+	 */
+	public function run( string $action, array $request ): array {
+		if ( ! isset( self::ACTIONS[ $action ] ) ) {
+			return $this->failure( 'unknown', __( 'Unknown action.', 'dfx-prayer-intentions' ) );
+		}
+
 		if ( ! $this->is_allowed( self::ACTIONS[ $action ], $request ) ) {
 			return $this->failure( 'forbidden', __( 'You are not allowed to do that.', 'dfx-prayer-intentions' ) );
 		}
@@ -182,7 +199,7 @@ final class DFXPRAY_Admin_Actions {
 	 *
 	 * @param int $id Intention ID.
 	 */
-	private function can_manage_intention( int $id ): bool {
+	public function can_manage_intention( int $id ): bool {
 		$intention = DFXPRAY_Intentions::get_instance()->get( $id );
 
 		return $intention && DFXPRAY_Permissions::get_instance()->can_manage_group( $intention['group_id'] );

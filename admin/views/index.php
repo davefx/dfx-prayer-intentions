@@ -16,6 +16,15 @@ $dfxpray_text     = $dfxpray_composer->compose( $group_id );
 $dfxpray_length   = mb_strlen( $dfxpray_text );
 ?>
 <p class="description"><?php esc_html_e( 'Active and in-review intentions, formatted for WhatsApp. Copy it and paste it into the group.', 'dfx-prayer-intentions' ); ?></p>
+<p class="dfxpray-app-link">
+	<?php
+	printf(
+		/* translators: %s: link to the leaders' app. */
+		esc_html__( 'On your phone: %s (you can add it to the home screen).', 'dfx-prayer-intentions' ),
+		'<a href="' . esc_url( DFXPRAY_App::get_instance()->url() ) . '">' . esc_html__( 'open the leaders’ app', 'dfx-prayer-intentions' ) . '</a>'
+	);
+	?>
+</p>
 
 <?php if ( $dfxpray_composer->is_too_long( $dfxpray_text ) ) : ?>
 	<div class="notice notice-warning inline">

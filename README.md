@@ -15,6 +15,7 @@ includes/                   domain services, one singleton class per file
 admin/                      panel: DFXPRAY_Admin (screens), DFXPRAY_Admin_Actions (every POST)
   views/                    screen templates
 templates/                  index, digest and form templates (theme-overridable)
+assets/js/app.js            the leaders' app (PWA, no build step); served by DFXPRAY_App, data from DFXPRAY_App_API
 blocks/form/                the dfxpray/form block (no build step)
 languages/                  POT and the es_ES translation
 ```
@@ -26,6 +27,16 @@ does not. The only exception is the autoloader, which is static by necessity.
 Time always comes from `DFXPRAY_Clock`, in the site timezone, so tests can
 freeze it. On a site that defines `DFXPRAY_ALLOW_FROZEN_CLOCK`, the
 `dfxpray_frozen_now` option freezes it too (the E2E suite does this).
+
+## The leaders' app
+
+Leaders can install a small app on their phones at `/<url_base>-app/` (by
+default `/prayer-requests-app/`): today's message ready to share, the
+intentions with their follow-up, a quick form to add one, and moderation and
+reviews. It is a PWA (manifest and service worker under that address) and
+talks only to `DFXPRAY_App_API` through admin-ajax, for logged-in leaders,
+with the panel's own permission checks. Without connection it shows the last
+message and lists saved on the device and queues changes until it is back.
 
 ## Tests
 
