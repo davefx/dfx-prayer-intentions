@@ -208,10 +208,9 @@ final class DFXPRAY_App {
 					'type'  => 'image/png',
 				),
 				array(
-					'src'     => $this->asset( 'images/app-icon-512.png' ),
-					'sizes'   => '512x512',
-					'type'    => 'image/png',
-					'purpose' => 'any maskable',
+					'src'   => $this->asset( 'images/app-icon-512.png' ),
+					'sizes' => '512x512',
+					'type'  => 'image/png',
 				),
 			),
 		);
