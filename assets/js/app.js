@@ -34,6 +34,7 @@
 		groups: [],
 		group: store.get( 'group', 0 ),
 		tab: 'today',
+		edition: 'daily',
 		filter: 'current',
 		search: '',
 		notice: null,
@@ -294,7 +295,7 @@
 	async function today() {
 		const t = ticket();
 		loading();
-		const result = await api( 'index', { group_id: state.group }, 'index:' + state.group );
+		const result = await api( 'index', { group_id: state.group, edition: state.edition }, 'index:' + state.edition + ':' + state.group );
 		if ( stale( t ) ) {
 			return;
 		}
@@ -307,8 +308,23 @@
 			await navigator.clipboard.writeText( text );
 			copy.textContent = S.copied;
 		} );
+		const edition = ( key, label ) =>
+			h(
+				'button',
+				{
+					type: 'button',
+					class: 'dfx-segment' + ( key === state.edition ? ' is-active' : '' ),
+					'aria-pressed': key === state.edition ? 'true' : 'false',
+					onclick: () => {
+						state.edition = key;
+						today();
+					},
+				},
+				label
+			);
 		frame(
 			result.offline ? h( 'p', { class: 'dfx-notice' }, S.offline ) : null,
+			h( 'div', { class: 'dfx-segments', role: 'group' }, edition( 'daily', S.daily ), edition( 'monthly', S.monthly ) ),
 			h(
 				'div',
 				{ class: 'dfx-actions' },
@@ -511,6 +527,7 @@
 				h( 'p', { class: 'dfx-created' }, S.addedOn + ' ' + formatDate( it.created_at, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } ) ),
 				h( 'h2', { class: 'dfx-line', id: 'dfx-line' }, lineParts( result.data.line ) ),
 				h( 'p', { class: 'dfx-requester', id: 'dfx-requester' }, S.requestedBy + ' ' + it.requester_name + ( it.requester_contact ? ' · ' + it.requester_contact : '' ) ),
+				result.data.ask ? h( 'p', {}, h( 'a', { class: 'dfx-button dfx-ask', href: result.data.ask, target: '_blank', rel: 'noopener' }, S.askWhatsApp ) ) : null,
 				h(
 					'p',
 					{ class: 'dfx-item-meta' },
@@ -543,7 +560,7 @@
 			form(
 				( data ) => {
 					const intention = {};
-					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review', 'asked_on' ].forEach( ( key ) => {
+					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review', 'asked_on', 'scope', 'topic', 'requester_phone' ].forEach( ( key ) => {
 						if ( data.has( key ) ) {
 							intention[ key ] = data.get( key );
 						}
@@ -566,6 +583,7 @@
 				text( 'requester_first_name', S.nameToShowRequester, it.requester_first_name ),
 				text( 'requester_display_name', S.visibleRequester, it.requester_display_name ),
 				text( 'requester_contact', S.contact, it.requester_contact ),
+				text( 'requester_phone', S.phone, it.requester_phone, { type: 'tel' } ),
 				box( 'requester_is_member', S.requesterIsMember, it.requester_is_member ),
 				box( 'beneficiary_is_requester', S.forThemselves, it.beneficiary_is_requester ),
 				text( 'beneficiary_name', S.beneficiary, it.beneficiary_name ),
@@ -581,6 +599,8 @@
 				text( 'summary', S.summary, it.summary, { maxlength: 100, required: 'pending' !== it.status } ),
 				field( S.discretion, select( 'discretion', allowed, it.discretion ) ),
 				field( S.priority, select( 'priority', { normal: S.normal, high: S.highPriority }, it.priority ) ),
+				field( S.message, select( 'scope', C.scopes, it.scope ) ),
+				field( S.topic, select( 'topic', C.topics, it.topic ) ),
 				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
 				text( 'asked_on', S.askedOn, String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ),
 				h( 'button', { class: 'dfx-button is-primary' }, S.saveChanges )
@@ -612,6 +632,7 @@
 					return render();
 				},
 				field( S.requester, h( 'input', { name: 'requester_name', required: true } ) ),
+				field( S.phone, h( 'input', { name: 'requester_phone', type: 'tel' } ) ),
 				check( S.member, h( 'input', { type: 'checkbox', name: 'requester_is_member', value: '1', checked: true } ) ),
 				check( S.forThemselves, h( 'input', { type: 'checkbox', name: 'beneficiary_is_requester', value: '1' } ) ),
 				field( S.beneficiary, h( 'input', { name: 'beneficiary_name' } ) ),
@@ -622,6 +643,8 @@
 				field( S.summary, h( 'input', { name: 'summary', maxlength: 100, required: true } ) ),
 				field( S.fullText, h( 'textarea', { name: 'body', rows: 4, required: true } ), S.neverPublished ),
 				check( S.highPriority, h( 'input', { type: 'checkbox', name: 'priority', value: '1' } ) ),
+				field( S.message, select( 'scope', C.scopes, 'daily' ) ),
+				field( S.topic, select( 'topic', C.topics, '' ) ),
 				field( S.askedOn, h( 'input', { type: 'date', name: 'asked_on', max: C.today } ), S.askedOnHint ),
 				h( 'button', { class: 'dfx-button is-primary' }, S.addIntention )
 			)

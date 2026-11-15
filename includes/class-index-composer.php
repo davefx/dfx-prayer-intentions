@@ -30,14 +30,25 @@ final class DFXPRAY_Index_Composer {
 	/**
 	 * Compose the index of a group.
 	 *
-	 * @param int $group_id Group ID.
+	 * The daily edition leaves out the intentions kept for the monthly list;
+	 * the monthly one has them all, by topic.
+	 *
+	 * @param int    $group_id Group ID.
+	 * @param string $edition  'daily' or 'monthly'.
 	 */
-	public function compose( int $group_id ): string {
+	public function compose( int $group_id, string $edition = 'daily' ): string {
 		$settings  = DFXPRAY_Settings::get_instance();
 		$formatter = DFXPRAY_Formatter::get_instance();
 		$emojis    = (bool) $settings->get( 'index_section_emojis', $group_id );
 		$listable  = DFXPRAY_Intentions::get_instance()->listable( $group_id );
-		$raw       = 'proposals' === $settings->get( 'index_layout', $group_id ) ? $this->proposal_sections( $listable, $group_id ) : $this->type_sections( $listable );
+		$monthly   = 'monthly' === $edition;
+
+		if ( $monthly ) {
+			$raw = $this->monthly_sections( $listable, $group_id );
+		} else {
+			$daily = array_values( array_filter( $listable, static fn( $i ) => 'monthly' !== $i['scope'] ) );
+			$raw   = 'proposals' === $settings->get( 'index_layout', $group_id ) ? $this->proposal_sections( $daily, $group_id ) : $this->type_sections( $daily );
+		}
 
 		$sections = array();
 		foreach ( $raw as $key => $lines ) {
@@ -75,7 +86,7 @@ final class DFXPRAY_Index_Composer {
 		return DFXPRAY_Templates::get_instance()->render(
 			'index.php',
 			array(
-				'header'        => $formatter->fill( (string) $settings->get( 'index_header', $group_id ) ),
+				'header'        => $formatter->fill( (string) $settings->get( $monthly ? 'monthly_header' : 'index_header', $group_id ) ),
 				'footer'        => $formatter->fill( (string) $settings->get( 'index_footer', $group_id ) ),
 				'sections'      => $sections,
 				'empty_message' => __( 'There are no active intentions.', 'dfx-prayer-intentions' ),
@@ -117,9 +128,71 @@ final class DFXPRAY_Index_Composer {
 	 */
 	private function proposal_sections( array $intentions, int $group_id ): array {
 		$formatter = DFXPRAY_Formatter::get_instance();
-		$clock     = DFXPRAY_Clock::get_instance();
-		$since     = $clock->local( $clock->today() )->modify( '-' . DFXPRAY_Settings::get_instance()->get( 'deceased_days', $group_id ) . ' days' )->format( 'Y-m-d' );
-		$buckets   = array_fill_keys( array( 'urgent', 'others', 'thanks', 'departed' ), array() );
+		$buckets   = $this->buckets( $intentions, $this->departed_since( 'daily_deceased_days', $group_id ) );
+		$others    = $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) );
+
+		if ( $buckets['health'] ) {
+			/* translators: %s: the people, separated by semicolons. */
+			array_unshift( $others, sprintf( __( 'For the health of %s', 'dfx-prayer-intentions' ), implode( '; ', array_map( array( $formatter, 'person' ), $buckets['health'] ) ) ) );
+		}
+
+		return array(
+			'urgent'   => $this->grouped_lines( $buckets['urgent'] ),
+			'others'   => $others,
+			'current'  => $this->grouped_lines( $buckets['current'] ),
+			'thanks'   => $this->grouped_lines( $buckets['thanks'] ),
+			'departed' => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $buckets['departed'] ),
+		);
+	}
+
+	/**
+	 * Lines of the monthly list: every intention, by topic, with the
+	 * departed of the month and a standing line for those who study or look
+	 * for work.
+	 *
+	 * @param array[] $intentions Listable intentions.
+	 * @param int     $group_id   Group ID.
+	 * @return array<string, string[]> Section key => lines.
+	 */
+	private function monthly_sections( array $intentions, int $group_id ): array {
+		$formatter = DFXPRAY_Formatter::get_instance();
+		$buckets   = $this->buckets( $intentions, $this->departed_since( 'deceased_days', $group_id ) );
+		$lines     = static fn( array $items ): array => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $items );
+
+		return array(
+			'urgent'   => $lines( $buckets['urgent'] ),
+			'sick'     => $lines( $buckets['health'] ),
+			'studies'  => array_merge( $lines( $buckets['studies'] ), array( __( 'For those who study, sit exams or look for work', 'dfx-prayer-intentions' ) ) ),
+			'economic' => $lines( $buckets['economic'] ),
+			'general'  => $lines( $buckets['general'] ),
+			'current'  => $lines( $buckets['current'] ),
+			'thanks'   => $lines( $buckets['thanks'] ),
+			'departed' => $lines( $buckets['departed'] ),
+		);
+	}
+
+	/**
+	 * First day whose departed still appear, after a deadline setting.
+	 *
+	 * @param string $setting  'deceased_days' or 'daily_deceased_days'.
+	 * @param int    $group_id Group ID.
+	 */
+	private function departed_since( string $setting, int $group_id ): string {
+		$clock = DFXPRAY_Clock::get_instance();
+
+		return $clock->local( $clock->today() )->modify( '-' . DFXPRAY_Settings::get_instance()->get( $setting, $group_id ) . ' days' )->format( 'Y-m-d' );
+	}
+
+	/**
+	 * Sort intentions into the buckets of the messages: urgent ones, then
+	 * by topic, thanksgivings, and the departed since a day.
+	 *
+	 * @param array[] $intentions Intentions.
+	 * @param string  $since      Y-m-d: older departed are left out.
+	 * @return array<string, array[]>
+	 */
+	private function buckets( array $intentions, string $since ): array {
+		$buckets = array_fill_keys( array( 'urgent', 'health', 'studies', 'economic', 'general', 'current', 'thanks', 'departed' ), array() );
 
 		foreach ( $this->sort( $intentions ) as $intention ) {
 			if ( 'deceased' === $intention['type'] ) {
@@ -128,17 +201,14 @@ final class DFXPRAY_Index_Composer {
 				}
 			} elseif ( 'thanksgiving' === $intention['type'] ) {
 				$buckets['thanks'][] = $intention;
+			} elseif ( 'high' === $intention['priority'] ) {
+				$buckets['urgent'][] = $intention;
 			} else {
-				$buckets[ 'high' === $intention['priority'] ? 'urgent' : 'others' ][] = $intention;
+				$buckets[ '' === $intention['topic'] ? 'general' : $intention['topic'] ][] = $intention;
 			}
 		}
 
-		return array(
-			'urgent'   => $this->grouped_lines( $buckets['urgent'] ),
-			'others'   => $this->grouped_lines( $buckets['others'] ),
-			'thanks'   => $this->grouped_lines( $buckets['thanks'] ),
-			'departed' => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $buckets['departed'] ),
-		);
+		return $buckets;
 	}
 
 	/**
@@ -195,6 +265,11 @@ final class DFXPRAY_Index_Composer {
 			'others'       => __( 'Also for', 'dfx-prayer-intentions' ),
 			'thanks'       => __( 'We give thanks', 'dfx-prayer-intentions' ),
 			'departed'     => __( 'For our departed', 'dfx-prayer-intentions' ),
+			'current'      => __( 'Current affairs', 'dfx-prayer-intentions' ),
+			'sick'         => __( 'For the sick', 'dfx-prayer-intentions' ),
+			'studies'      => __( 'Studies, exams and job interviews', 'dfx-prayer-intentions' ),
+			'economic'     => __( 'Economic or legal problems', 'dfx-prayer-intentions' ),
+			'general'      => __( 'Other intentions', 'dfx-prayer-intentions' ),
 		);
 	}
 
@@ -213,6 +288,11 @@ final class DFXPRAY_Index_Composer {
 			'others'       => '🤲',
 			'thanks'       => '🙌',
 			'departed'     => '🕯️',
+			'current'      => '🌍',
+			'sick'         => '🤲',
+			'studies'      => '📚',
+			'economic'     => '⚖️',
+			'general'      => '🙏',
 		);
 	}
 

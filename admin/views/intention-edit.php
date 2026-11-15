@@ -46,6 +46,9 @@ $dfxpray_v      = $dfxpray_intention ?? array(
 	'beneficiary_is_member'    => false,
 	'priority'                 => 'normal',
 	'next_review'              => null,
+	'scope'                    => 'daily',
+	'topic'                    => '',
+	'requester_phone'          => '',
 	'status'                   => '',
 );
 $dfxpray_levels = $dfxpray_discretion->levels();
@@ -91,6 +94,11 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 					<td>
 						<input type="text" class="regular-text" id="dfxpray-requester-name" name="intention[requester_name]" value="<?php echo esc_attr( $dfxpray_v['requester_name'] ); ?>" required>
 						<input type="text" class="regular-text" name="intention[requester_contact]" value="<?php echo esc_attr( $dfxpray_v['requester_contact'] ); ?>" placeholder="<?php esc_attr_e( 'Email or phone', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Contact', 'dfx-prayer-intentions' ); ?>">
+						<input type="tel" class="regular-text" name="intention[requester_phone]" value="<?php echo esc_attr( $dfxpray_v['requester_phone'] ); ?>" placeholder="<?php esc_attr_e( 'Phone (WhatsApp)', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Phone of the requester', 'dfx-prayer-intentions' ); ?>">
+						<?php $dfxpray_ask = $dfxpray_is_new ? '' : DFXPRAY_Formatter::get_instance()->ask_link( $dfxpray_v ); ?>
+						<?php if ( '' !== $dfxpray_ask ) : ?>
+							<a class="button dfxpray-ask" href="<?php echo esc_url( $dfxpray_ask ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Ask by WhatsApp how it goes', 'dfx-prayer-intentions' ); ?></a>
+						<?php endif; ?>
 						<input type="text" class="regular-text" name="intention[requester_first_name]" value="<?php echo esc_attr( $dfxpray_v['requester_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'Name to show, if not just the first word', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Name to show for the requester', 'dfx-prayer-intentions' ); ?>">
 						<label><input type="checkbox" name="intention[requester_is_member]" value="1" aria-label="<?php esc_attr_e( 'The requester is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['requester_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
 					</td>
@@ -182,6 +190,22 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 							<option value="normal" <?php selected( $dfxpray_v['priority'], 'normal' ); ?>><?php esc_html_e( 'Normal', 'dfx-prayer-intentions' ); ?></option>
 							<option value="high" <?php selected( $dfxpray_v['priority'], 'high' ); ?>><?php esc_html_e( 'High', 'dfx-prayer-intentions' ); ?></option>
 						</select>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="dfxpray-scope"><?php esc_html_e( 'Message', 'dfx-prayer-intentions' ); ?></label></th>
+					<td>
+						<select id="dfxpray-scope" name="intention[scope]">
+							<?php foreach ( DFXPRAY_Intentions::get_instance()->scope_labels() as $dfxpray_key => $dfxpray_label ) : ?>
+								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['scope'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<select id="dfxpray-topic" name="intention[topic]" aria-label="<?php esc_attr_e( 'Topic', 'dfx-prayer-intentions' ); ?>">
+							<?php foreach ( DFXPRAY_Intentions::get_instance()->topic_labels() as $dfxpray_key => $dfxpray_label ) : ?>
+								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['topic'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description"><?php esc_html_e( 'The monthly list, read at the meeting, has every intention by topic; the daily message leaves out those kept for the monthly one.', 'dfx-prayer-intentions' ); ?></p>
 					</td>
 				</tr>
 				<tr>

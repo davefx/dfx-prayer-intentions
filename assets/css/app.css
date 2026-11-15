@@ -716,3 +716,39 @@ h2.dfx-line {
 	letter-spacing: 0;
 	text-transform: none;
 }
+
+/* Daily / monthly switch and the WhatsApp question ------------------- */
+
+.dfx-segments {
+	display: inline-flex;
+	margin: 0 0 4px;
+	padding: 3px;
+	border-radius: 999px;
+	background: #e6ebf5;
+}
+
+.dfx-segment {
+	padding: 7px 16px;
+	border: 0;
+	border-radius: 999px;
+	background: none;
+	color: var(--muted);
+	font-family: var(--display);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+}
+
+.dfx-segment.is-active {
+	background: var(--paper);
+	color: var(--navy);
+	box-shadow: 0 1px 4px rgba(18, 31, 64, 0.12);
+}
+
+.dfx-ask {
+	display: inline-block;
+	margin: 0 0 12px;
+	border-color: #1f8f4e;
+	color: #1f8f4e;
+	text-decoration: none;
+}

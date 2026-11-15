@@ -102,6 +102,23 @@ test( 'the date of the request can be corrected', async ( { page } ) => {
 	expect( php( `echo wp_json_encode( DFXPRAY_Intentions::get_instance()->get( ${ id } )['created_at'] );` ) ).toMatch( /^2026-09-14 / );
 } );
 
+test( 'the panel keeps the edition, topic and phone, and shows both messages', async ( { page } ) => {
+	const id = createIntention( group.id, { beneficiary_name: 'Fátima', relationship: 'sobrina de', summary: 'quimioterapia' } );
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
+
+	await page.locator( '#dfxpray-scope' ).selectOption( 'monthly' );
+	await page.getByLabel( 'Topic' ).selectOption( 'health' );
+	await page.getByLabel( 'Phone of the requester' ).fill( '+34 611 22 33 44' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toBeVisible();
+	await expect( page.getByRole( 'link', { name: 'Ask by WhatsApp how it goes' } ) ).toHaveAttribute( 'href', /^https:\/\/wa\.me\/34611223344\?text=/ );
+
+	await page.goto( groupUrl( group.id, 'index' ) );
+	await expect( page.locator( '#dfxpray-index-text' ) ).not.toHaveValue( /Fátima/ );
+	await expect( page.locator( '#dfxpray-monthly-text' ) ).toHaveValue( /Fátima, sobrina de Luis: quimioterapia/ );
+} );
+
 test( 'a leader adds an intention by hand, with a key date', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions' ) );

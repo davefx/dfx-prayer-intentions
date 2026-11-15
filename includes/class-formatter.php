@@ -76,6 +76,72 @@ final class DFXPRAY_Formatter {
 	}
 
 	/**
+	 * A phone number as kept: digits, with a leading "+" when it had one.
+	 *
+	 * @param string $phone Phone as typed.
+	 * @return string|null Clean phone ('' when empty), null when it is not a phone.
+	 */
+	public function clean_phone( string $phone ): ?string {
+		$phone = trim( $phone );
+		if ( '' === $phone ) {
+			return '';
+		}
+
+		if ( ! preg_match( '/^\+?[\d\s().-]{6,}$/', $phone ) ) {
+			return null;
+		}
+
+		$digits = preg_replace( '/\D/', '', $phone );
+		if ( strlen( $digits ) < 6 || strlen( $digits ) > 15 ) {
+			return null;
+		}
+
+		return ( str_starts_with( $phone, '+' ) ? '+' : '' ) . $digits;
+	}
+
+	/**
+	 * A WhatsApp link to ask the requester how the intention goes, with the
+	 * question already written; '' when there is no phone to call. National
+	 * numbers take the default country code.
+	 *
+	 * @param array $intention Intention.
+	 */
+	public function ask_link( array $intention ): string {
+		$phone = (string) ( $intention['requester_phone'] ?? '' );
+		if ( '' === $phone ) {
+			$phone = (string) $this->clean_phone( (string) ( $intention['requester_contact'] ?? '' ) );
+		}
+
+		if ( '' === $phone ) {
+			return '';
+		}
+
+		$digits = ltrim( $phone, '+' );
+		if ( ! str_starts_with( $phone, '+' ) ) {
+			$digits = preg_replace( '/\D/', '', (string) DFXPRAY_Settings::get_instance()->get( 'phone_country_code' ) ) . $digits;
+		}
+
+		$first   = static fn( string $given, string $full ): string => '' !== $given ? $given : (string) strtok( $full, ' ' );
+		$name    = $first( (string) ( $intention['requester_first_name'] ?? '' ), (string) $intention['requester_name'] );
+		$summary = (string) ( $intention['summary'] ?? '' );
+
+		if ( ! empty( $intention['beneficiary_is_requester'] ) ) {
+			/* translators: 1: requester's first name, 2: summary of the intention. */
+			$text = sprintf( __( 'Hi %1$s, how are you doing (%2$s)?', 'dfx-prayer-intentions' ), $name, $summary );
+		} else {
+			$text = sprintf(
+				/* translators: 1: requester's first name, 2: beneficiary's first name, 3: summary of the intention. */
+				__( 'Hi %1$s, how is %2$s doing (%3$s)?', 'dfx-prayer-intentions' ),
+				$name,
+				$first( (string) ( $intention['beneficiary_first_name'] ?? '' ), (string) $intention['beneficiary_name'] ),
+				$summary
+			);
+		}
+
+		return 'https://wa.me/' . $digits . '?text=' . rawurlencode( $text );
+	}
+
+	/**
 	 * "Person: text", the building block of every line.
 	 *
 	 * @param array  $intention Intention.

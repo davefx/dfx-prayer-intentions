@@ -39,6 +39,7 @@ final class DFXPRAY_Settings {
 		'turnstile_secret',
 		'rate_limit_per_hour',
 		'delete_data_on_uninstall',
+		'phone_country_code',
 	);
 
 	/**
@@ -87,10 +88,12 @@ final class DFXPRAY_Settings {
 			'turnstile_secret'         => '',
 			'rate_limit_per_hour'      => 5,
 			'delete_data_on_uninstall' => true,
+			'phone_country_code'       => '34',
 
 			// Deadlines.
 			'event_grace_days'         => 2,
 			'deceased_days'            => 30,
+			'daily_deceased_days'      => 7,
 			'deceased_auto_close'      => true,
 			'ongoing_review_days'      => 30,
 			'thanksgiving_days'        => 7,
@@ -102,6 +105,8 @@ final class DFXPRAY_Settings {
 			/* translators: {date} is replaced with the day and month. */
 			'index_header'             => __( '🙏 *Active intentions* – {date}', 'dfx-prayer-intentions' ),
 			'index_footer'             => '',
+			/* translators: {long_date} is replaced with the full date. */
+			'monthly_header'           => __( "*Prayer intentions of the month*\n_{long_date}_", 'dfx-prayer-intentions' ),
 			'index_section_emojis'     => false,
 			'index_layout'             => 'by_type',
 			'member_prefix'            => '',

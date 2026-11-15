@@ -65,7 +65,7 @@ test( 'approving with a summary activates the intention and puts it in the index
 	await expect( index ).toHaveValue( /\*The sick and difficult situations\*\n• Carmen, madre de Luis: por su salud/ );
 	await expect( index ).not.toHaveValue( /enferma/ );
 
-	await page.getByRole( 'button', { name: 'Copy' } ).click();
+	await page.locator( '[data-dfxpray-copy="dfxpray-index-text"]' ).click();
 	await expect( page.getByRole( 'button', { name: 'Copied!' } ) ).toBeVisible();
 	const clipboard = await page.evaluate( () => navigator.clipboard.readText() );
 	expect( clipboard ).toContain( '• Carmen, madre de Luis: por su salud' );

@@ -91,7 +91,7 @@ final class DFXPRAY_App_API {
 				return $this->success( array( 'groups' => $this->groups() ) );
 
 			case 'index':
-				return $this->index( (int) ( $request['group_id'] ?? 0 ) );
+				return $this->index( (int) ( $request['group_id'] ?? 0 ), 'monthly' === ( $request['edition'] ?? '' ) ? 'monthly' : 'daily' );
 
 			case 'list':
 				return $this->list_intentions( (int) ( $request['group_id'] ?? 0 ), (string) ( $request['status'] ?? 'current' ), (string) ( $request['q'] ?? '' ) );
@@ -126,16 +126,17 @@ final class DFXPRAY_App_API {
 	}
 
 	/**
-	 * The group's index: the message to share.
+	 * The group's index: the message to share, daily or monthly.
 	 *
-	 * @param int $group_id Group.
+	 * @param int    $group_id Group.
+	 * @param string $edition  'daily' or 'monthly'.
 	 */
-	private function index( int $group_id ): array {
+	private function index( int $group_id, string $edition = 'daily' ): array {
 		if ( ! DFXPRAY_Permissions::get_instance()->can_manage_group( $group_id ) ) {
 			return $this->forbidden();
 		}
 
-		return $this->success( array( 'text' => DFXPRAY_Index_Composer::get_instance()->compose( $group_id ) ) );
+		return $this->success( array( 'text' => DFXPRAY_Index_Composer::get_instance()->compose( $group_id, $edition ) ) );
 	}
 
 	/**
@@ -206,6 +207,7 @@ final class DFXPRAY_App_API {
 				'intention' => $intention,
 				'line'      => DFXPRAY_Formatter::get_instance()->line( $intention ),
 				'updates'   => $updates,
+				'ask'       => DFXPRAY_Formatter::get_instance()->ask_link( $intention ),
 			)
 		);
 	}

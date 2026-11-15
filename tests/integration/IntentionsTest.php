@@ -502,6 +502,46 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Leaders choose the edition (daily or monthly) and the topic.
+	 */
+	public function test_scope_and_topic(): void {
+		$id = $this->make_active( $this->group );
+		$this->assertSame( 'daily', $this->intentions->get( $id )['scope'] );
+		$this->assertSame( '', $this->intentions->get( $id )['topic'] );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'scope' => 'monthly', 'topic' => 'health' ) ) );
+		$this->assertSame( 'monthly', $this->intentions->get( $id )['scope'] );
+		$this->assertSame( 'health', $this->intentions->get( $id )['topic'] );
+
+		$this->assertSame( 'dfxpray_scope_invalid', $this->intentions->update( $id, array( 'scope' => 'weekly' ) )->get_error_code() );
+		$this->assertSame( 'dfxpray_topic_invalid', $this->intentions->update( $id, array( 'topic' => 'sports' ) )->get_error_code() );
+
+		$form = $this->make_pending( $this->group, array_merge( $this->form_data(), array( 'scope' => 'monthly', 'topic' => 'health' ) ) );
+		$this->assertSame( 'daily', $this->intentions->get( $form )['scope'] );
+		$this->assertSame( '', $this->intentions->get( $form )['topic'] );
+	}
+
+	/**
+	 * The requester's phone is kept clean and offered again for their next
+	 * requests, so leaders can ask them by WhatsApp how it goes.
+	 */
+	public function test_requester_phone(): void {
+		$first = $this->make_active( $this->group, array( 'requester_name' => 'Ramón García', 'requester_phone' => '+34 600 11 22 33' ) );
+		$this->assertSame( '+34600112233', $this->intentions->get( $first )['requester_phone'] );
+
+		$next = $this->make_active( $this->group, array( 'requester_name' => 'ramón garcía' ) );
+		$this->assertSame( '+34600112233', $this->intentions->get( $next )['requester_phone'] );
+
+		$other_group = $this->make_active( $this->make_group( 'B', array( $this->leader ) ), array( 'requester_name' => 'Ramón García' ) );
+		$this->assertSame( '', $this->intentions->get( $other_group )['requester_phone'] );
+
+		$this->assertSame( 'dfxpray_phone_invalid', $this->intentions->update( $first, array( 'requester_phone' => 'call me' ) )->get_error_code() );
+
+		$this->assertTrue( $this->intentions->update( $first, array( 'requester_phone' => '600 99 88 77' ) ) );
+		$this->assertSame( '600998877', $this->intentions->get( $first )['requester_phone'] );
+	}
+
+	/**
 	 * Praying for oneself shares the requester's first name.
 	 */
 	public function test_for_myself_shares_the_first_name(): void {

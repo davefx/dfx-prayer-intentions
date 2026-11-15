@@ -45,5 +45,5 @@ test( 'the index reads like the specification', async ( { page } ) => {
 			'• Antonio, padre de Javier: por su eterno descanso († 20/09)',
 		].join( '\n' )
 	);
-	await expect( page.getByRole( 'button', { name: 'Copiar' } ) ).toBeVisible();
+	await expect( page.locator( '[data-dfxpray-copy="dfxpray-index-text"]' ) ).toHaveText( 'Copiar' );
 } );

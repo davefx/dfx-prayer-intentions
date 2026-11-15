@@ -93,4 +93,35 @@ class FormatterTest extends DFXPRAY_Test_Case {
 			$overrides
 		);
 	}
+
+	/**
+	 * A WhatsApp link to ask the requester how it goes; national numbers
+	 * take the default country code.
+	 */
+	public function test_ask_link(): void {
+		$intention = array(
+			'requester_name'           => 'Ramón García',
+			'requester_first_name'     => '',
+			'requester_phone'          => '600998877',
+			'requester_contact'        => '',
+			'beneficiary_name'         => 'José',
+			'beneficiary_first_name'   => '',
+			'beneficiary_is_requester' => false,
+			'summary'                  => 'trasplante',
+		);
+
+		$link = $this->formatter->ask_link( $intention );
+		$this->assertStringStartsWith( 'https://wa.me/34600998877?text=', $link );
+		$this->assertSame( 'Hi Ramón, how is José doing (trasplante)?', rawurldecode( substr( $link, strpos( $link, '=' ) + 1 ) ) );
+
+		$intention['requester_phone'] = '+351912345678';
+		$this->assertStringStartsWith( 'https://wa.me/351912345678?', $this->formatter->ask_link( $intention ) );
+
+		$intention['requester_phone']   = '';
+		$intention['requester_contact'] = 'ramon@example.com';
+		$this->assertSame( '', $this->formatter->ask_link( $intention ) );
+
+		$intention['requester_contact'] = '611 22 33 44';
+		$this->assertStringStartsWith( 'https://wa.me/34611223344?', $this->formatter->ask_link( $intention ) );
+	}
 }

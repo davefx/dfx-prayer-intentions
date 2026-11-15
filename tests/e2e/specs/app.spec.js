@@ -93,6 +93,32 @@ test( 'the list shows the urgent ones first, then the most recent', async ( { pa
 	await expect( page.locator( '.dfx-item .dfx-summary' ) ).toHaveText( [ 'urgente', 'reciente', 'antigua' ] );
 } );
 
+test( 'daily message and monthly list; the requester can be asked by WhatsApp', async ( { page } ) => {
+	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'index_layout' => 'proposals' ) ); echo 1;` );
+	createIntention( group.id, { beneficiary_name: 'Fátima', relationship: 'sobrina de', summary: 'quimioterapia', topic: 'health', scope: 'monthly' } );
+	createIntention( group.id, { beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud', topic: 'health', requester_phone: '600 99 88 77' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+
+	await expect( page.locator( '#dfx-message' ) ).toContainText( 'For the health of Marina, esposa de Luis' );
+	await expect( page.locator( '#dfx-message' ) ).not.toContainText( 'Fátima' );
+	await page.getByRole( 'button', { name: 'Monthly list' } ).click();
+	await expect( page.locator( '#dfx-message' ) ).toContainText( 'Fátima, sobrina de Luis: quimioterapia' );
+	await expect( page.locator( '#dfx-message' ) ).toContainText( 'For those who study, sit exams or look for work' );
+
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'Marina' } ).click();
+	await expect( page.getByRole( 'link', { name: 'Ask by WhatsApp how it goes' } ) ).toHaveAttribute( 'href', /^https:\/\/wa\.me\/34600998877\?text=/ );
+
+	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.locator( '.dfx-edit select[name="scope"]' ).selectOption( 'monthly' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.dfx-notice' ) ).toBeVisible();
+	await page.getByRole( 'button', { name: 'Today' } ).click();
+	await page.getByRole( 'button', { name: 'Daily', exact: true } ).click();
+	await expect( page.locator( '#dfx-message' ) ).not.toContainText( 'Marina' );
+} );
+
 test( 'every field of an active intention can be edited in the app', async ( { page } ) => {
 	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'member_prefix' => 'N.H.' ) ); echo 1;` );
 	createIntention( group.id, { requester_name: 'Luis Sebastián', beneficiary_name: 'Marta', relationship: 'tía de', summary: 'descanse en paz' } );

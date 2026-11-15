@@ -427,6 +427,11 @@ final class DFXPRAY_Admin {
 				'type'  => 'number',
 				'label' => __( 'Deceased: days after the death', 'dfx-prayer-intentions' ),
 			),
+			'daily_deceased_days'      => array(
+				'type'  => 'number',
+				'label' => __( 'Daily message: departed during (days)', 'dfx-prayer-intentions' ),
+				'help'  => __( 'The monthly list keeps them for the whole deceased deadline.', 'dfx-prayer-intentions' ),
+			),
 			'deceased_auto_close'      => array(
 				'type'  => 'checkbox',
 				'label' => __( 'Close the deceased when that time is over', 'dfx-prayer-intentions' ),
@@ -456,6 +461,11 @@ final class DFXPRAY_Admin {
 				'type'  => 'textarea',
 				'label' => __( 'Index header', 'dfx-prayer-intentions' ),
 				'help'  => __( '{date} is replaced with the date, and {long_date} with the date and weekday in full.', 'dfx-prayer-intentions' ),
+			),
+			'monthly_header'           => array(
+				'type'  => 'textarea',
+				'label' => __( 'Monthly list header', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Placeholders: {date}, {long_date}.', 'dfx-prayer-intentions' ),
 			),
 			'index_footer'             => array(
 				'type'  => 'textarea',
@@ -526,6 +536,11 @@ final class DFXPRAY_Admin {
 				'label' => __( 'Delete closed and discarded intentions after (days)', 'dfx-prayer-intentions' ),
 				'help'  => __( 'Including their updates, comments and history.', 'dfx-prayer-intentions' ),
 			),
+			'phone_country_code'       => array(
+				'type'  => 'text',
+				'label' => __( 'Country code for phone numbers', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Added to numbers written without one, for the WhatsApp links. 34 is Spain.', 'dfx-prayer-intentions' ),
+			),
 			'url_base'                 => array(
 				'type'  => 'text',
 				'label' => __( 'Beginning of the form addresses', 'dfx-prayer-intentions' ),
@@ -559,15 +574,15 @@ final class DFXPRAY_Admin {
 	 */
 	public function setting_sections( string $scope ): array {
 		$sections = array(
-			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'keep_active_days', 'recent_deceased_days' ),
-			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
+			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'keep_active_days', 'recent_deceased_days' ),
+			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);
 
 		if ( 'global' === $scope ) {
 			$sections = array_merge(
 				array(
-					__( 'Data and protection', 'dfx-prayer-intentions' ) => array( 'retention_days', 'url_base', 'rate_limit_per_hour', 'turnstile_site_key', 'turnstile_secret', 'delete_data_on_uninstall' ),
+					__( 'Data and protection', 'dfx-prayer-intentions' ) => array( 'retention_days', 'phone_country_code', 'url_base', 'rate_limit_per_hour', 'turnstile_site_key', 'turnstile_secret', 'delete_data_on_uninstall' ),
 				),
 				$sections
 			);

@@ -58,3 +58,17 @@ DFXPRAY_Admin::get_instance()->view(
 	printf( esc_html__( '%s characters', 'dfx-prayer-intentions' ), esc_html( number_format_i18n( $dfxpray_length ) ) );
 	?>
 </p>
+
+<h2><?php esc_html_e( 'Monthly list', 'dfx-prayer-intentions' ); ?></h2>
+<p class="description"><?php esc_html_e( 'Every active intention, by topic, to read at the monthly meeting.', 'dfx-prayer-intentions' ); ?></p>
+<?php
+DFXPRAY_Admin::get_instance()->view(
+	'partials/copy-box',
+	array(
+		'id'    => 'dfxpray-monthly-text',
+		'label' => __( 'Monthly list', 'dfx-prayer-intentions' ),
+		'text'  => $dfxpray_composer->compose( $group_id, 'monthly' ),
+		'rows'  => 20,
+	)
+);
+?>

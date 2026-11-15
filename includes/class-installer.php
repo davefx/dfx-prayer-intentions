@@ -19,7 +19,7 @@ final class DFXPRAY_Installer {
 	/**
 	 * Schema version. Bump it whenever get_schema() changes.
 	 */
-	public const DB_VERSION = '4';
+	public const DB_VERSION = '5';
 
 	/**
 	 * The capability that gives access to the leaders' panel.
@@ -166,6 +166,9 @@ CREATE TABLE {$t['intentions']} (
   requester_is_member tinyint(1) NOT NULL DEFAULT 0,
   beneficiary_is_member tinyint(1) NOT NULL DEFAULT 0,
   priority varchar(10) NOT NULL DEFAULT 'normal',
+  scope varchar(10) NOT NULL DEFAULT 'daily',
+  topic varchar(20) NOT NULL DEFAULT '',
+  requester_phone varchar(32) NOT NULL DEFAULT '',
   status varchar(20) NOT NULL DEFAULT 'pending',
   close_reason varchar(20) NOT NULL DEFAULT '',
   next_review date NULL,

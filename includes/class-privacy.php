@@ -91,6 +91,7 @@ final class DFXPRAY_Privacy {
 				__( 'Group', 'dfx-prayer-intentions' )     => $group ? $group['name'] : '',
 				__( 'Your name', 'dfx-prayer-intentions' ) => $intention['requester_name'],
 				__( 'Contact', 'dfx-prayer-intentions' )   => $intention['requester_contact'],
+				__( 'Phone', 'dfx-prayer-intentions' )     => $intention['requester_phone'],
 				__( 'Beneficiary', 'dfx-prayer-intentions' ) => $intention['beneficiary_name'],
 				__( 'Relationship', 'dfx-prayer-intentions' ) => $intention['relationship'],
 				__( 'Kind', 'dfx-prayer-intentions' )      => $types[ $intention['type'] ] ?? $intention['type'],

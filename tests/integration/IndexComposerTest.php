@@ -230,6 +230,101 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Two editions: the daily one, short (urgent ones, one line for health,
+	 * the other daily ones, current affairs, thanks and the departed of the
+	 * last week); the monthly one with every intention, by topic.
+	 */
+	public function test_daily_and_monthly_editions(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'   => 'proposals',
+				'member_prefix'  => 'N.H.',
+				'index_header'   => '*Daily*',
+				'monthly_header' => '*Monthly*',
+				'index_footer'   => '',
+			)
+		);
+		$member = array( 'requester_is_member' => true );
+
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'summary' => 'tumor de páncreas', 'priority' => 'high', 'topic' => 'health' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Felipe Arizu', 'beneficiary_name' => 'Marina', 'relationship' => 'esposa de', 'summary' => 'problemas de salud', 'topic' => 'health' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Ramón', 'beneficiary_is_requester' => true, 'summary' => 'problemas en el hombro', 'topic' => 'health' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Manolo', 'beneficiary_name' => 'Fátima', 'relationship' => 'sobrina de', 'summary' => 'quimioterapia', 'topic' => 'health', 'scope' => 'monthly' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Axel', 'beneficiary_name' => 'Lucía', 'relationship' => 'hija de', 'summary' => 'depresión' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Alejandro', 'beneficiary_is_requester' => true, 'summary' => 'su academia', 'topic' => 'economic', 'scope' => 'monthly' ) );
+		$this->make_active( $this->group, array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Ceuta', 'relationship' => '', 'summary' => 'por los ceutíes', 'topic' => 'current' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Álvaro', 'beneficiary_name' => 'Argeme', 'relationship' => 'amiga de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-24', 'summary' => 'salió bien' ) );
+		$this->make_active( $this->group, array( 'requester_name' => 'Alberto', 'beneficiary_name' => 'Isabel', 'relationship' => 'madre de un amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-20', 'summary' => 'descanse en paz' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Teo', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-10', 'summary' => 'descanse en paz' ) );
+
+		$composer = DFXPRAY_Index_Composer::get_instance();
+
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*Especially*',
+					'• Antonio, amigo de N.H. Javier: tumor de páncreas',
+					'',
+					'*Also for*',
+					'• For the health of Marina, esposa de N.H. Felipe; N.H. Ramón',
+					'• Lucía, hija de N.H. Axel: depresión',
+					'',
+					'*Current affairs*',
+					'• Ceuta: por los ceutíes',
+					'',
+					'*We give thanks*',
+					'• Argeme, amiga de N.H. Álvaro: salió bien',
+					'',
+					'*For our departed*',
+					'• Isabel, madre de un amigo de Alberto: descanse en paz († 20/09)',
+				)
+			),
+			$composer->compose( $this->group )
+		);
+
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Monthly*',
+					'',
+					'*Especially*',
+					'• Antonio, amigo de N.H. Javier: tumor de páncreas',
+					'',
+					'*For the sick*',
+					'• Marina, esposa de N.H. Felipe: problemas de salud',
+					'• N.H. Ramón: problemas en el hombro',
+					'• Fátima, sobrina de N.H. Manolo: quimioterapia',
+					'',
+					'*Studies, exams and job interviews*',
+					'• For those who study, sit exams or look for work',
+					'',
+					'*Economic or legal problems*',
+					'• N.H. Alejandro: su academia',
+					'',
+					'*Other intentions*',
+					'• Lucía, hija de N.H. Axel: depresión',
+					'',
+					'*Current affairs*',
+					'• Ceuta: por los ceutíes',
+					'',
+					'*We give thanks*',
+					'• Argeme, amiga de N.H. Álvaro: salió bien',
+					'',
+					'*For our departed*',
+					'• Antonio, amigo de N.H. Teo: descanse en paz († 10/09)',
+					'• Isabel, madre de un amigo de Alberto: descanse en paz († 20/09)',
+				)
+			),
+			$composer->compose( $this->group, 'monthly' )
+		);
+	}
+
+	/**
 	 * Other groups keep the layout by type, without member prefixes.
 	 */
 	public function test_layout_by_type_is_the_default(): void {

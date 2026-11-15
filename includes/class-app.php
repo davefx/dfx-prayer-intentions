@@ -165,6 +165,8 @@ final class DFXPRAY_App {
 			'reasons'  => DFXPRAY_Lifecycle::get_instance()->close_reasons(),
 			'statuses' => DFXPRAY_Lifecycle::get_instance()->statuses(),
 			'levels'   => DFXPRAY_Discretion::get_instance()->levels(),
+			'scopes'   => DFXPRAY_Intentions::get_instance()->scope_labels(),
+			'topics'   => DFXPRAY_Intentions::get_instance()->topic_labels(),
 		);
 		$title  = __( 'Prayer intentions', 'dfx-prayer-intentions' );
 
@@ -334,6 +336,12 @@ JS;
 			'addedOn'               => __( 'Added on', 'dfx-prayer-intentions' ),
 			'requestedBy'           => __( 'Asked by', 'dfx-prayer-intentions' ),
 			'askedOn'               => __( 'Date of the request', 'dfx-prayer-intentions' ),
+			'daily'                 => __( 'Daily', 'dfx-prayer-intentions' ),
+			'monthly'               => __( 'Monthly list', 'dfx-prayer-intentions' ),
+			'askWhatsApp'           => __( 'Ask by WhatsApp how it goes', 'dfx-prayer-intentions' ),
+			'phone'                 => __( 'Phone (WhatsApp)', 'dfx-prayer-intentions' ),
+			'message'               => __( 'Message', 'dfx-prayer-intentions' ),
+			'topic'                 => __( 'Topic', 'dfx-prayer-intentions' ),
 			'askedOnHint'           => __( 'The day it was asked for. Leave it empty for today.', 'dfx-prayer-intentions' ),
 			'saveChanges'           => __( 'Save changes', 'dfx-prayer-intentions' ),
 			'nameToShowRequester'   => __( 'Name to show for the requester', 'dfx-prayer-intentions' ),

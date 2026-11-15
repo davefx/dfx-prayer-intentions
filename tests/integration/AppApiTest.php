@@ -108,6 +108,9 @@ class AppApiTest extends DFXPRAY_Test_Case {
 
 		$this->assertTrue( $result['ok'] );
 		$this->assertSame( DFXPRAY_Index_Composer::get_instance()->compose( $this->mine ), $result['data']['text'] );
+
+		$monthly = $this->call( 'index', array( 'group_id' => $this->mine, 'edition' => 'monthly' ) );
+		$this->assertSame( DFXPRAY_Index_Composer::get_instance()->compose( $this->mine, 'monthly' ), $monthly['data']['text'] );
 	}
 
 	/**
@@ -156,6 +159,10 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( $id, $result['data']['intention']['id'] );
 		$this->assertSame( 'Carmen, madre de Luis: por su salud', $result['data']['line'] );
 		$this->assertSame( 'Sigue ingresada.', $result['data']['updates'][0]['body'] );
+		$this->assertSame( '', $result['data']['ask'] );
+
+		DFXPRAY_Intentions::get_instance()->update( $id, array( 'requester_phone' => '600998877' ) );
+		$this->assertStringStartsWith( 'https://wa.me/34600998877?text=', $this->call( 'get', array( 'intention_id' => $id ) )['data']['ask'] );
 	}
 
 	/**

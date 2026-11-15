@@ -48,7 +48,48 @@ final class DFXPRAY_Intentions {
 		'requester_is_member',
 		'beneficiary_is_member',
 		'next_review',
+		'scope',
+		'topic',
+		'requester_phone',
 	);
+
+	/**
+	 * Editions of the shared message an intention goes in: every day, or
+	 * only in the monthly list read at the meeting (which has them all).
+	 */
+	public const SCOPES = array( 'daily', 'monthly' );
+
+	/**
+	 * Topics that group intentions in the messages ('' is general).
+	 */
+	public const TOPICS = array( '', 'health', 'studies', 'economic', 'current' );
+
+	/**
+	 * Names of the editions, for the forms.
+	 *
+	 * @return array<string, string>
+	 */
+	public function scope_labels(): array {
+		return array(
+			'daily'   => __( 'Daily message', 'dfx-prayer-intentions' ),
+			'monthly' => __( 'Only the monthly list', 'dfx-prayer-intentions' ),
+		);
+	}
+
+	/**
+	 * Names of the topics, for the forms.
+	 *
+	 * @return array<string, string>
+	 */
+	public function topic_labels(): array {
+		return array(
+			''         => __( 'General', 'dfx-prayer-intentions' ),
+			'health'   => __( 'Health (one line in the daily message)', 'dfx-prayer-intentions' ),
+			'studies'  => __( 'Studies, exams and work', 'dfx-prayer-intentions' ),
+			'economic' => __( 'Economic or legal problems', 'dfx-prayer-intentions' ),
+			'current'  => __( 'Current affairs', 'dfx-prayer-intentions' ),
+		);
+	}
 
 	/**
 	 * Maximum length of the index summary.
@@ -76,6 +117,10 @@ final class DFXPRAY_Intentions {
 
 		if ( is_wp_error( $record ) ) {
 			return $record;
+		}
+
+		if ( '' === $record['requester_phone'] ) {
+			$record['requester_phone'] = $this->known_phone( $group_id, $record['requester_name'] );
 		}
 
 		$now      = DFXPRAY_Clock::get_instance()->mysql();
@@ -780,6 +825,9 @@ final class DFXPRAY_Intentions {
 			'beneficiary_is_member'    => false,
 			'priority'                 => 'normal',
 			'next_review'              => null,
+			'scope'                    => 'daily',
+			'topic'                    => '',
+			'requester_phone'          => '',
 		);
 
 		$texts = array( 'requester_name', 'requester_contact', 'beneficiary_name', 'relationship', 'summary', 'requester_display_name', 'beneficiary_display_name', 'requester_first_name', 'beneficiary_first_name' );
@@ -805,6 +853,19 @@ final class DFXPRAY_Intentions {
 
 		if ( array_key_exists( 'priority', $data ) ) {
 			$r['priority'] = sanitize_key( (string) $data['priority'] );
+		}
+
+		foreach ( array( 'scope', 'topic' ) as $field ) {
+			if ( array_key_exists( $field, $data ) ) {
+				$r[ $field ] = sanitize_key( (string) $data[ $field ] );
+			}
+		}
+
+		if ( array_key_exists( 'requester_phone', $data ) ) {
+			$r['requester_phone'] = DFXPRAY_Formatter::get_instance()->clean_phone( (string) $data['requester_phone'] );
+			if ( null === $r['requester_phone'] ) {
+				return new WP_Error( 'dfxpray_phone_invalid', __( 'The phone number is not valid.', 'dfx-prayer-intentions' ) );
+			}
 		}
 
 		foreach ( array( 'reference_date', 'reference_time', 'next_review' ) as $field ) {
@@ -891,6 +952,14 @@ final class DFXPRAY_Intentions {
 			return new WP_Error( 'dfxpray_priority_invalid', __( 'Unknown priority.', 'dfx-prayer-intentions' ) );
 		}
 
+		if ( ! in_array( $r['scope'], self::SCOPES, true ) ) {
+			return new WP_Error( 'dfxpray_scope_invalid', __( 'Choose whether it goes in the daily or the monthly message.', 'dfx-prayer-intentions' ) );
+		}
+
+		if ( ! in_array( $r['topic'], self::TOPICS, true ) ) {
+			return new WP_Error( 'dfxpray_topic_invalid', __( 'Unknown topic.', 'dfx-prayer-intentions' ) );
+		}
+
 		if ( null !== $r['next_review'] && ! $this->is_valid_date( $r['next_review'] ) ) {
 			return new WP_Error( 'dfxpray_date_invalid', __( 'The date is not valid.', 'dfx-prayer-intentions' ) );
 		}
@@ -945,6 +1014,29 @@ final class DFXPRAY_Intentions {
 		usort( $clean, static fn( $a, $b ) => strcmp( $a['date'] . $a['time'], $b['date'] . $b['time'] ) );
 
 		return $clean;
+	}
+
+	/**
+	 * The last phone the group knows for a requester (same name, any case).
+	 *
+	 * @param int    $group_id Group.
+	 * @param string $name     Requester name.
+	 */
+	private function known_phone( int $group_id, string $name ): string {
+		global $wpdb;
+
+		if ( '' === $name ) {
+			return '';
+		}
+
+		return (string) $wpdb->get_var( // phpcs:ignore WordPress.DB
+			$wpdb->prepare(
+				"SELECT requester_phone FROM %i WHERE group_id = %d AND LOWER(requester_name) = LOWER(%s) AND requester_phone <> '' ORDER BY id DESC LIMIT 1",
+				$this->tables()['intentions'],
+				$group_id,
+				$name
+			)
+		);
 	}
 
 	/**
@@ -1051,6 +1143,9 @@ final class DFXPRAY_Intentions {
 			'requester_is_member'      => (bool) $row['requester_is_member'],
 			'beneficiary_is_member'    => (bool) $row['beneficiary_is_member'],
 			'priority'                 => $row['priority'],
+			'scope'                    => $row['scope'],
+			'topic'                    => $row['topic'],
+			'requester_phone'          => $row['requester_phone'],
 			'status'                   => $row['status'],
 			'close_reason'             => $row['close_reason'],
 			'next_review'              => $row['next_review'],

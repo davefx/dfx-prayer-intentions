@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.23
+Stable tag: 26.11.24
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.24 =
+* Two messages: the daily one, short (urgent ones, one line for the health of many, current affairs, thanks and the departed of the last week), and the monthly list read at the meeting, with every intention by topic. Each intention says which one it goes in and its topic.
+* The requester's phone is kept and offered again for their next requests, with a button to ask them by WhatsApp how it goes.
 
 = 26.11.23 =
 * The deceased close themselves when their time in the index is over, instead of waiting in review (a group setting, on by default). Those whose anniversary is remembered are kept, and the anniversary still appears in the digest.
