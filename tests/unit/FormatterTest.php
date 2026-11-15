@@ -151,4 +151,34 @@ class FormatterTest extends DFXPRAY_Test_Case {
 		$this->assertSame( $this->formatter->ask_link( $juan ), $this->formatter->ask_link_for( array( $juan ) ) );
 		$this->assertSame( '', $this->formatter->ask_link_for( array() ) );
 	}
+
+	/**
+	 * The question names each beneficiary as the requester would: without
+	 * the part that points back to the requester, keeping a relationship
+	 * that says something ("hija de unos amigos"), dropping a bare one.
+	 */
+	public function test_ask_link_names_the_beneficiary_for_the_requester(): void {
+		$base = array(
+			'requester_name'           => 'Javier López',
+			'requester_first_name'     => '',
+			'requester_phone'          => '650971212',
+			'requester_contact'        => '',
+			'beneficiary_first_name'   => '',
+			'beneficiary_display_name' => '',
+			'beneficiary_is_requester' => false,
+			'relationship'             => '',
+		);
+		$son      = array_merge( $base, array( 'beneficiary_name' => 'Hijo', 'beneficiary_display_name' => 'El hijo de una compañera de N.H. Javier López', 'summary' => 'operación de una mano' ) );
+		$carolina = array_merge( $base, array( 'beneficiary_name' => 'Carolina', 'relationship' => 'hija de unos amigos de', 'summary' => '18 años, epilepsia' ) );
+		$jose     = array_merge( $base, array( 'beneficiary_name' => 'José', 'relationship' => 'amigo de', 'summary' => 'trasplante' ) );
+		$beatriz  = array_merge( $base, array( 'beneficiary_name' => 'Beatriz', 'beneficiary_display_name' => 'Beatriz, hija de N.H. Carlos', 'summary' => 'trasplante de riñón' ) );
+
+		$text = static fn( string $link ): string => rawurldecode( substr( $link, strpos( $link, '=' ) + 1 ) );
+
+		$this->assertSame(
+			"Hi Javier, how are these intentions going?\n• El hijo de una compañera (operación de una mano)\n• Carolina, hija de unos amigos (18 años, epilepsia)\n• José (trasplante)\n• Beatriz, hija de N.H. Carlos (trasplante de riñón)",
+			$text( $this->formatter->ask_link_for( array( $son, $carolina, $jose, $beatriz ) ) )
+		);
+		$this->assertSame( 'Hi Javier, how is el hijo de una compañera doing (operación de una mano)?', $text( $this->formatter->ask_link( $son ) ) );
+	}
 }

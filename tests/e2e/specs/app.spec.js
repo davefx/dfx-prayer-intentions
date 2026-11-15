@@ -132,7 +132,7 @@ test( 'the To ask tab groups by brother, with one WhatsApp question for all thei
 	const href = await titon.getByRole( 'link', { name: 'Ask about all of them by WhatsApp' } ).getAttribute( 'href' );
 	expect( href ).toMatch( /^https:\/\/wa\.me\/34606453787\?text=/ );
 	expect( decodeURIComponent( href ) ).toContain( '• Juan Pablo (tumor cerebral)' );
-	expect( decodeURIComponent( href ) ).toContain( '• Beatriz (trasplante de riñón)' );
+	expect( decodeURIComponent( href ) ).toContain( '• Beatriz, hija de un amigo (trasplante de riñón)' );
 	await expect( page.locator( '.dfx-ask-group', { hasText: 'Ramón García' } ) ).toHaveCount( 0 );
 
 	await page.getByRole( 'button', { name: 'Intentions' } ).click();

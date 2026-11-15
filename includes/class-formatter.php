@@ -140,7 +140,7 @@ final class DFXPRAY_Formatter {
 				$text = sprintf( __( 'Hi %1$s, how are you doing (%2$s)?', 'dfx-prayer-intentions' ), $name, $summary );
 			} else {
 				/* translators: 1: requester's first name, 2: beneficiary's name, 3: summary of the intention. */
-				$text = sprintf( __( 'Hi %1$s, how is %2$s doing (%3$s)?', 'dfx-prayer-intentions' ), $name, $this->beneficiary_name( $first ), $summary );
+				$text = sprintf( __( 'Hi %1$s, how is %2$s doing (%3$s)?', 'dfx-prayer-intentions' ), $name, $this->in_sentence( $this->beneficiary_name( $first ) ), $summary );
 			}
 		} else {
 			/* translators: %s: requester's first name. */
@@ -187,15 +187,68 @@ final class DFXPRAY_Formatter {
 	}
 
 	/**
-	 * The beneficiary as the requester knows them: their name to show, or
-	 * their name as written.
+	 * The beneficiary as the requester would name them in a question:
+	 * their visible name without the part that points back to the
+	 * requester ("… de N.H. Javier López"), or their name with a
+	 * relationship that says something ("Carolina, hija de unos amigos");
+	 * a bare relationship ("amigo de") is left out.
 	 *
 	 * @param array $intention Intention.
 	 */
 	private function beneficiary_name( array $intention ): string {
-		$given = (string) ( $intention['beneficiary_first_name'] ?? '' );
+		$display = trim( (string) ( $intention['beneficiary_display_name'] ?? '' ) );
+		if ( '' !== $display ) {
+			return $this->without_requester( $display, $intention );
+		}
 
-		return '' !== $given ? $given : (string) $intention['beneficiary_name'];
+		$given        = (string) ( $intention['beneficiary_first_name'] ?? '' );
+		$name         = '' !== $given ? $given : (string) $intention['beneficiary_name'];
+		$relationship = trim( (string) preg_replace( '/\s+(de|del|of)$/u', '', trim( (string) ( $intention['relationship'] ?? '' ) ) ) );
+
+		return str_contains( $relationship, ' ' ) ? $name . ', ' . $relationship : $name;
+	}
+
+	/**
+	 * A visible name without a trailing "de [prefix] <requester>".
+	 *
+	 * @param string $display   Visible name.
+	 * @param array  $intention Intention.
+	 */
+	private function without_requester( string $display, array $intention ): string {
+		$cut = mb_strrpos( $display, ' de ' );
+		if ( false === $cut ) {
+			return $display;
+		}
+
+		$tail   = trim( mb_substr( $display, $cut + 4 ) );
+		$prefix = trim( (string) DFXPRAY_Settings::get_instance()->get( 'member_prefix', isset( $intention['group_id'] ) ? (int) $intention['group_id'] : null ) );
+		if ( '' !== $prefix && str_starts_with( $tail, $prefix . ' ' ) ) {
+			$tail = trim( substr( $tail, strlen( $prefix ) ) );
+		}
+		$tail = (string) preg_replace( '/^N\.\s?H\.\s+/u', '', $tail );
+
+		$names = array_filter( array( (string) ( $intention['requester_first_name'] ?? '' ), (string) $intention['requester_name'] ) );
+		foreach ( $names as $name ) {
+			if ( '' !== $tail && 0 === mb_stripos( $name, $tail ) ) {
+				return rtrim( mb_substr( $display, 0, $cut ), ' ,' );
+			}
+		}
+
+		return $display;
+	}
+
+	/**
+	 * A subject to go inside a sentence: a leading article in lower case
+	 * ("¿Cómo sigue el hijo de…?").
+	 *
+	 * @param string $subject Subject.
+	 */
+	private function in_sentence( string $subject ): string {
+		if ( preg_match( '/^(El|La|Los|Las|Un|Una|Unos|Unas|The|A|An)\s/u', $subject ) ) {
+			return mb_strtolower( mb_substr( $subject, 0, 1 ) ) . mb_substr( $subject, 1 );
+		}
+
+		return $subject;
 	}
 
 	/**
