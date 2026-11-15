@@ -347,7 +347,8 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * Leaders land on the panel after logging in.
+	 * Leaders land on the panel after logging in, unless they came from the
+	 * app, which they go back to.
 	 *
 	 * @param string           $redirect_to Destination.
 	 * @param string           $requested   Requested destination.
@@ -355,6 +356,11 @@ final class DFXPRAY_Admin {
 	 * @return string
 	 */
 	public function login_redirect( $redirect_to, $requested, $user ) {
+		$app = DFXPRAY_App::get_instance()->url();
+		if ( is_string( $requested ) && '' !== $requested && str_starts_with( $requested, $app ) ) {
+			return $requested;
+		}
+
 		if ( $user instanceof WP_User && DFXPRAY_Permissions::get_instance()->is_panel_only_user( $user->ID ) ) {
 			return $this->landing_url( $user->ID );
 		}

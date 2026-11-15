@@ -330,6 +330,17 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Leaders who came from the app go back to the app after logging in.
+	 */
+	public function test_login_redirect_back_to_the_app(): void {
+		$user = get_userdata( $this->leader );
+		$app  = DFXPRAY_App::get_instance()->url();
+
+		$this->assertSame( $app, apply_filters( 'login_redirect', $app, $app, $user ) );
+		$this->assertSame( admin_url( 'admin.php?page=dfxpray-group-' . $this->mine ), apply_filters( 'login_redirect', 'https://example.org/', 'https://example.org/', $user ) );
+	}
+
+	/**
 	 * Panel-only users go from the dashboard to the panel and do not see it in the menu.
 	 */
 	public function test_dashboard_leads_leaders_to_the_panel(): void {

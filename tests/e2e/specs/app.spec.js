@@ -148,6 +148,32 @@ test( 'the To ask tab groups by brother, with one WhatsApp question for all thei
 	await expect( page.locator( '.dfx-hero .dfx-chip.is-ask' ) ).toHaveCount( 0 );
 } );
 
+test( 'the back button moves through the app and never leaves it for the login page', async ( { page } ) => {
+	createIntention( group.id, { beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud' } );
+	await page.goto( APP );
+	await expect( page ).toHaveURL( /wp-login\.php/ );
+	await page.fill( '#user_login', 'leader1' );
+	await page.fill( '#user_pass', 'leader1' );
+	await Promise.all( [ page.waitForURL( /prayer-requests-app/ ), page.click( '#wp-submit' ) ] );
+	await expect( page.locator( '#dfx-message' ) ).toBeVisible();
+
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'Marina' } ).click();
+	await expect( page.locator( '#dfx-line' ) ).toBeVisible();
+
+	await page.goBack();
+	await expect( page.locator( '.dfx-item', { hasText: 'Marina' } ) ).toBeVisible();
+	await page.goBack();
+	await expect( page.locator( '#dfx-message' ) ).toBeVisible();
+
+	await page.goBack();
+	await expect( page ).toHaveURL( /prayer-requests-app/ );
+	await expect( page.locator( '#dfx-message' ) ).toBeVisible();
+	await page.goBack();
+	await expect( page ).toHaveURL( /prayer-requests-app/ );
+	await expect( page.locator( '#dfx-message' ) ).toBeVisible();
+} );
+
 test( 'every field of an active intention can be edited in the app', async ( { page } ) => {
 	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'member_prefix' => 'N.H.' ) ); echo 1;` );
 	createIntention( group.id, { requester_name: 'Luis Sebastián', beneficiary_name: 'Marta', relationship: 'tía de', summary: 'descanse en paz' } );

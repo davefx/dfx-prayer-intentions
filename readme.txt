@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.27
+Stable tag: 26.11.28
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.28 =
+* In the leaders' app, the phone's back button moves between screens (an intention, the list, "Today") and no longer leaves the app for the login page.
+* Leaders who log in from the app go back to the app instead of the panel.
 
 = 26.11.27 =
 * Thanksgivings appear in the daily message only the morning after the good news, and close themselves when their days are over (a group setting); the monthly list, read at the monthly adoration, gives thanks again for those of the last month, closed ones included.

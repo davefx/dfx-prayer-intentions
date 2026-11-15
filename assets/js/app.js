@@ -268,10 +268,36 @@
 		frame( h( 'p', { class: 'dfx-muted' }, S.loading ) );
 	}
 
-	function go( tab ) {
+	/*
+	 * History: every screen is an entry, so Android's back button moves
+	 * through the app. The first entry is a guard: going back to it keeps
+	 * the leader on "Today" instead of leaving for the page before the app
+	 * (often the login page).
+	 */
+	function remember( entry ) {
+		history.pushState( Object.assign( { dfx: true }, entry ), '' );
+	}
+
+	function go( tab, fromHistory ) {
 		state.tab = tab;
+		if ( ! fromHistory ) {
+			remember( { tab } );
+		}
 		render();
 	}
+
+	window.addEventListener( 'popstate', ( event ) => {
+		const entry = event.state;
+		if ( ! entry || ! entry.dfx || entry.guard ) {
+			remember( { tab: 'today' } );
+			return go( 'today', true );
+		}
+		if ( entry.id ) {
+			state.tab = entry.tab;
+			return detail( entry.id, false, true );
+		}
+		return go( entry.tab, true );
+	} );
 
 	async function render() {
 		if ( ! state.groups.length ) {
@@ -470,7 +496,10 @@
 		return detail( id, true );
 	}
 
-	async function detail( id, keepNotice ) {
+	async function detail( id, keepNotice, fromHistory ) {
+		if ( ! keepNotice && ! fromHistory ) {
+			remember( { tab: state.tab, id } );
+		}
 		const notice = keepNotice ? state.notice : null;
 		const t = ticket();
 		loading();
@@ -480,7 +509,7 @@
 			return;
 		}
 		if ( ! result.ok ) {
-			return frame( h( 'p', { class: 'dfx-notice is-error' }, result.message ), h( 'button', { type: 'button', class: 'dfx-button', onclick: () => go( state.tab ) }, S.back ) );
+			return frame( h( 'p', { class: 'dfx-notice is-error' }, result.message ), h( 'button', { type: 'button', class: 'dfx-button', onclick: () => history.back() }, S.back ) );
 		}
 		const it = result.data.intention;
 		const open = 'active' === it.status || 'review' === it.status;
@@ -551,7 +580,7 @@
 		const updates = result.data.updates;
 
 		frame(
-			h( 'button', { type: 'button', class: 'dfx-back', onclick: () => go( state.tab ) }, '← ' + S.back ),
+			h( 'button', { type: 'button', class: 'dfx-back', onclick: () => history.back() }, '← ' + S.back ),
 			h(
 				'section',
 				{ class: 'dfx-hero' + ( 'high' === it.priority ? ' is-urgent' : '' ) },
@@ -690,6 +719,8 @@
 	/* ------------------------------------------------------------------ */
 
 	async function start() {
+		history.replaceState( { dfx: true, guard: true }, '' );
+		remember( { tab: state.tab } );
 		const result = await api( 'bootstrap', {}, 'bootstrap' );
 		state.groups = result.ok ? result.data.groups : [];
 		if ( ! state.groups.some( ( g ) => g.id === state.group ) && state.groups.length ) {
