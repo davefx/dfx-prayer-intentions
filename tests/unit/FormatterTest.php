@@ -181,4 +181,59 @@ class FormatterTest extends DFXPRAY_Test_Case {
 		);
 		$this->assertSame( 'Hi Javier, how is el hijo de una compañera doing (operación de una mano)?', $text( $this->formatter->ask_link( $son ) ) );
 	}
+
+	/**
+	 * The greeting uses only the first name, even when the name to show
+	 * carries a surname to tell brothers apart ("Javier Cavallé").
+	 */
+	public function test_ask_link_greets_by_first_name(): void {
+		$intention = array(
+			'requester_name'           => 'Javier Cavallé',
+			'requester_first_name'     => 'Javier Cavallé',
+			'requester_phone'          => '669711942',
+			'requester_contact'        => '',
+			'beneficiary_name'         => 'Manolo Campos',
+			'beneficiary_first_name'   => 'Manolo Campos',
+			'beneficiary_display_name' => '',
+			'beneficiary_is_requester' => false,
+			'relationship'             => '',
+			'summary'                  => 'depresión',
+		);
+
+		$link = $this->formatter->ask_link( $intention );
+		$this->assertSame( 'Hi Javier, how is Manolo Campos doing (depresión)?', rawurldecode( substr( $link, strpos( $link, '=' ) + 1 ) ) );
+	}
+
+	/**
+	 * A summary that starts with the person's name does not repeat it:
+	 * "Lourdes, …: Lourdes, ya está en casa" reads "Lourdes, …: ya está en casa".
+	 */
+	public function test_line_does_not_repeat_the_name(): void {
+		$intention = array(
+			'requester_name'           => 'Marcelo Ouviña',
+			'requester_first_name'     => '',
+			'requester_display_name'   => '',
+			'requester_is_member'      => false,
+			'beneficiary_name'         => 'Lourdes',
+			'beneficiary_first_name'   => '',
+			'beneficiary_display_name' => 'Lourdes, hija de un matrimonio del PAC',
+			'beneficiary_is_member'    => false,
+			'beneficiary_is_requester' => false,
+			'relationship'             => '',
+			'discretion'               => 'first_name',
+			'type'                     => 'thanksgiving',
+			'priority'                 => 'normal',
+			'reference_date'           => null,
+			'reference_time'           => null,
+			'summary'                  => 'Lourdes, tras su trasplante de hígado, ya está en casa.',
+		);
+
+		$this->assertSame( 'Lourdes, hija de un matrimonio del PAC: tras su trasplante de hígado, ya está en casa.', $this->formatter->line( $intention ) );
+
+		$intention['summary'] = 'Lourdes ya está en casa';
+		$this->assertSame( 'Lourdes, hija de un matrimonio del PAC: ya está en casa', $this->formatter->line( $intention ) );
+
+		$intention['summary'] = 'Lourditas ya está en casa';
+		$this->assertSame( 'Lourdes, hija de un matrimonio del PAC: Lourditas ya está en casa', $this->formatter->line( $intention ) );
+	}
 }

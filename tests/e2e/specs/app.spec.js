@@ -158,7 +158,7 @@ test( 'every field of an active intention can be edited in the app', async ( { p
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía de Luis: descanse en paz' );
 
 	await page.getByText( 'Edit', { exact: true } ).click();
-	await page.getByLabel( 'Name to show for the requester' ).fill( 'Luis Sebastián' );
+	await page.getByLabel( 'How the requester is called' ).fill( 'Luis Sebastián' );
 	await page.getByLabel( 'The requester is a member of the group' ).check();
 	await page.getByLabel( 'Relationship, e.g. mother of' ).fill( 'tía materna de' );
 	await page.getByLabel( 'Full text' ).fill( 'Falleció el sábado.' );

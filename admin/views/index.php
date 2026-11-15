@@ -60,7 +60,7 @@ DFXPRAY_Admin::get_instance()->view(
 </p>
 
 <h2><?php esc_html_e( 'Monthly list', 'dfx-prayer-intentions' ); ?></h2>
-<p class="description"><?php esc_html_e( 'Every active intention, by topic, to read at the monthly meeting.', 'dfx-prayer-intentions' ); ?></p>
+<p class="description"><?php esc_html_e( 'Every active intention, by topic, to read at the monthly adoration.', 'dfx-prayer-intentions' ); ?></p>
 <?php
 DFXPRAY_Admin::get_instance()->view(
 	'partials/copy-box',

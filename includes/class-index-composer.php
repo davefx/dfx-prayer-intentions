@@ -119,8 +119,8 @@ final class DFXPRAY_Index_Composer {
 	/**
 	 * Lines of the "prayer proposals" layout, the daily message: the urgent
 	 * ones (high priority), the people whose health we pray for (only their
-	 * names, our brothers first), the rest, current affairs, thanksgivings,
-	 * and the departed of the last week. Other intentions sharing a summary
+	 * names, our brothers first), the rest, current affairs, the thanksgivings
+	 * of the last day, and the departed of the last week. Other intentions sharing a summary
 	 * go in one line: "Problemas de salud: Marina, …; Irene, …".
 	 *
 	 * @param array[] $intentions Listable intentions.
@@ -130,21 +130,24 @@ final class DFXPRAY_Index_Composer {
 	private function proposal_sections( array $intentions, int $group_id ): array {
 		$formatter = DFXPRAY_Formatter::get_instance();
 		$buckets   = $this->buckets( $intentions, $this->departed_since( 'daily_deceased_days', $group_id ) );
+		$thanks    = $this->departed_since( 'daily_thanks_days', $group_id );
+		$thanked   = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
 
 		return array(
 			'urgent'   => $this->grouped_lines( $buckets['urgent'] ),
 			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
 			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),
-			'thanks'   => $this->grouped_lines( $buckets['thanks'] ),
+			'thanks'   => $this->grouped_lines( $thanked ),
 			'departed' => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $buckets['departed'] ),
 		);
 	}
 
 	/**
-	 * Lines of the monthly list: every intention, by topic, with the
-	 * departed of the month and a standing line for those who study or look
-	 * for work.
+	 * Lines of the monthly list, read at the monthly adoration: every
+	 * intention, by topic, with the thanks and the departed of the month
+	 * (thanks already closed included) and a standing line for those who
+	 * study or look for work.
 	 *
 	 * @param array[] $intentions Listable intentions.
 	 * @param int     $group_id   Group ID.
@@ -152,7 +155,16 @@ final class DFXPRAY_Index_Composer {
 	 */
 	private function monthly_sections( array $intentions, int $group_id ): array {
 		$formatter = DFXPRAY_Formatter::get_instance();
-		$buckets   = $this->buckets( $intentions, $this->departed_since( 'deceased_days', $group_id ) );
+		$since     = $this->departed_since( 'monthly_thanks_days', $group_id );
+		$closed    = DFXPRAY_Intentions::get_instance()->query(
+			$group_id,
+			array(
+				'status' => 'closed',
+				'type'   => 'thanksgiving',
+			)
+		);
+		$closed    = array_filter( $closed, static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $since );
+		$buckets   = $this->buckets( array_merge( $intentions, $closed ), $this->departed_since( 'deceased_days', $group_id ) );
 		$lines     = static fn( array $items ): array => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $items );
 
 		return array(
@@ -168,9 +180,10 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * First day whose departed still appear, after a deadline setting.
+	 * First day whose departed (or thanksgivings) still appear, after a
+	 * deadline setting.
 	 *
-	 * @param string $setting  'deceased_days' or 'daily_deceased_days'.
+	 * @param string $setting  A setting with a number of days (deceased_days, daily_thanks_days…).
 	 * @param int    $group_id Group ID.
 	 */
 	private function departed_since( string $setting, int $group_id ): string {

@@ -17,6 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class DFXPRAY_Discretion {
 
+	/**
+	 * Longest name a leader may give someone ("how we call them").
+	 */
+	public const CALLED_MAX_LENGTH = 60;
+
 	use DFXPRAY_Singleton;
 
 	/**
@@ -83,8 +88,10 @@ final class DFXPRAY_Discretion {
 	 * @param string $name         Original name.
 	 * @param string $level        Level.
 	 * @param string $visible_name Leader-edited visible name; used only for name levels.
-	 * @param string $first_name   First name set by a leader when it is compound
-	 *                             ("Juan Tomás"); empty means the first word.
+	 * @param string $first_name   How we call them, set by a leader: a compound
+	 *                             name, a nickname or a name with a surname
+	 *                             ("Juan Tomás", "Toni Alfonso"); empty means
+	 *                             the first word.
 	 * @return string|null Null when nothing about the person may appear.
 	 */
 	public function format_name( string $name, string $level, string $visible_name = '', string $first_name = '' ): ?string {
@@ -96,7 +103,10 @@ final class DFXPRAY_Discretion {
 				return '' !== $visible_name ? $visible_name : implode( ' ', $tokens );
 
 			case 'first_name':
-				return '' !== $visible_name ? $visible_name : implode( ' ', array_slice( $tokens, 0, $this->first_name_length( $name, $first_name ) ) );
+				if ( '' !== $visible_name ) {
+					return $visible_name;
+				}
+				return '' !== trim( $first_name ) ? implode( ' ', $this->tokens( $first_name ) ) : implode( ' ', array_slice( $tokens, 0, 1 ) );
 
 			case 'initials':
 				$initials = array();
@@ -137,26 +147,29 @@ final class DFXPRAY_Discretion {
 		$found    = array_intersect( $this->normalized_words( $visible_name ), $surnames );
 
 		if ( $found ) {
-			return new WP_Error( 'dfxpray_visible_name_reveals', __( 'With “first name” discretion, the visible name cannot include surnames.', 'dfx-prayer-intentions' ) );
+			return new WP_Error( 'dfxpray_visible_name_reveals', __( 'With “first name” discretion, the description cannot include surnames.', 'dfx-prayer-intentions' ) );
 		}
 
 		return true;
 	}
 
 	/**
-	 * Check a first name set by a leader: it must be the first words of the
-	 * name. Nothing is guessed; the leader decides how many words it has.
+	 * Check how a leader says someone is called: any name (a compound one, a
+	 * nickname, one with a surname to tell brothers apart), not too long.
 	 *
 	 * @param string $name       Original name.
-	 * @param string $first_name Proposed first name; empty means the first word.
+	 * @param string $first_name Proposed name; empty means the first word.
 	 * @return true|WP_Error
 	 */
 	public function validate_first_name( string $name, string $first_name ) {
-		if ( '' === trim( $first_name ) || $this->prefix_length( $name, $first_name ) > 0 ) {
+		unset( $name );
+
+		if ( mb_strlen( trim( $first_name ) ) <= self::CALLED_MAX_LENGTH ) {
 			return true;
 		}
 
-		return new WP_Error( 'dfxpray_first_name_invalid', __( 'The name to show must be the first words of the full name.', 'dfx-prayer-intentions' ) );
+		/* translators: %d: maximum number of characters. */
+		return new WP_Error( 'dfxpray_first_name_invalid', sprintf( __( 'How someone is called cannot be longer than %d characters.', 'dfx-prayer-intentions' ), self::CALLED_MAX_LENGTH ) );
 	}
 
 	/**

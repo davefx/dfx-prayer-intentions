@@ -613,15 +613,13 @@
 					} );
 				},
 				text( 'requester_name', S.requester, it.requester_name, { required: true } ),
-				text( 'requester_first_name', S.nameToShowRequester, it.requester_first_name ),
-				text( 'requester_display_name', S.visibleRequester, it.requester_display_name ),
+				field( S.nameToShowRequester, h( 'input', { name: 'requester_first_name', value: it.requester_first_name || '' } ), S.calledHelp ),
 				text( 'requester_contact', S.contact, it.requester_contact ),
 				text( 'requester_phone', S.phone, it.requester_phone, { type: 'tel' } ),
 				box( 'requester_is_member', S.requesterIsMember, it.requester_is_member ),
 				box( 'beneficiary_is_requester', S.forThemselves, it.beneficiary_is_requester ),
 				text( 'beneficiary_name', S.beneficiary, it.beneficiary_name ),
 				text( 'beneficiary_first_name', S.nameToShowBeneficiary, it.beneficiary_first_name ),
-				text( 'beneficiary_display_name', S.visibleBeneficiary, it.beneficiary_display_name ),
 				text( 'relationship', S.relationship, it.relationship, { maxlength: 100 } ),
 				box( 'beneficiary_is_member', S.beneficiaryIsMember, it.beneficiary_is_member ),
 				field( S.kind, select( 'type', C.types, it.type ) ),
@@ -636,6 +634,8 @@
 				field( S.topic, select( 'topic', C.topics, it.topic ) ),
 				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
 				box( 'to_ask', S.toAskMark, it.to_ask ),
+				text( 'requester_display_name', S.visibleRequester, it.requester_display_name ),
+				field( S.visibleBeneficiary, h( 'input', { name: 'beneficiary_display_name', value: it.beneficiary_display_name || '' } ), S.descriptionHelp ),
 				text( 'asked_on', S.askedOn, String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ),
 				h( 'button', { class: 'dfx-button is-primary' }, S.saveChanges )
 			)

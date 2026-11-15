@@ -57,35 +57,35 @@ test( 'visible names cannot reveal more than the discretion level allows', async
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
-	await page.getByLabel( 'Visible name of the beneficiary' ).fill( 'Nuestro hermano David Marín' );
+	await page.getByLabel( 'Description of the beneficiary instead of the name' ).fill( 'Nuestro hermano David Marín' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.notice-error' ) ).toContainText( 'cannot include surnames' );
 
-	await page.getByLabel( 'Visible name of the beneficiary' ).fill( 'Nuestro hermano David' );
+	await page.getByLabel( 'Description of the beneficiary instead of the name' ).fill( 'Nuestro hermano David' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Nuestro hermano David, madre de Luis: su operación' );
-	await expect( page.locator( 'table.dfxpray-table' ).last() ).toContainText( 'Visible name changed: “” → “Nuestro hermano David”' );
+	await expect( page.locator( 'table.dfxpray-table' ).last() ).toContainText( 'Description changed: “” → “Nuestro hermano David”' );
 
 	await expect( page.getByLabel( 'Discretion', { exact: true } ).locator( 'option' ) ).toHaveText( [ 'First name', 'Initials', 'Anonymous' ] );
 } );
 
-test( 'a leader sets compound first names by hand', async ( { page } ) => {
+test( 'a leader sets how people are called: compound names, nicknames, a description', async ( { page } ) => {
 	const id = createIntention( group.id, { requester_name: 'Juan Tomás Rubio', beneficiary_name: 'José Antonio Ruiz', relationship: 'tío de', summary: 'su operación' } );
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'José, tío de Juan: su operación' );
 
-	await page.getByLabel( 'Name to show for the beneficiary' ).fill( 'Antonio' );
+	await page.getByLabel( 'How the beneficiary is called' ).fill( 'Pepe' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
-	await expect( page.locator( '.notice-error' ) ).toContainText( 'first words of the full name' );
+	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Pepe, tío de Juan: su operación' );
 
-	await page.getByLabel( 'Name to show for the beneficiary' ).fill( 'José Antonio' );
-	await page.getByLabel( 'Name to show for the requester' ).fill( 'Juan Tomás' );
+	await page.getByLabel( 'How the beneficiary is called' ).fill( 'José Antonio' );
+	await page.getByLabel( 'How the requester is called' ).fill( 'Juan Tomás' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'José Antonio, tío de Juan Tomás: su operación' );
 
-	await page.getByLabel( 'Visible name of the beneficiary' ).fill( 'Nuestro tío José Antonio' );
+	await page.getByLabel( 'Description of the beneficiary instead of the name' ).fill( 'Nuestro tío José Antonio' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Nuestro tío José Antonio, tío de Juan Tomás: su operación' );
 } );

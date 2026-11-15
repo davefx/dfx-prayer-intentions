@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.26
+Stable tag: 26.11.27
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,12 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.27 =
+* Thanksgivings appear in the daily message only the morning after the good news, and close themselves when their days are over (a group setting); the monthly list, read at the monthly adoration, gives thanks again for those of the last month, closed ones included.
+* The WhatsApp question greets the requester by their first name only, even when their name to show carries a surname.
+* A summary that starts with the person's name no longer repeats it in the line ("Lourdes, …: Lourdes, ya está en casa").
+* Clearer names: "Name to show" becomes "How they are called" and takes nicknames and surnames (Toni Alfonso, Javi Cavallé) without changing the full name; "Visible name" becomes "Description instead of the name", for discreet cases, at the end of the form.
 
 = 26.11.26 =
 * The WhatsApp question names each person as the requester would: "El hijo de una compañera", "Carolina, hija de unos amigos", "José", instead of a bare name or a name that points back to the requester.

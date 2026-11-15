@@ -177,13 +177,13 @@ final class DFXPRAY_Formatter {
 	}
 
 	/**
-	 * The name to use for someone: the one given, or the first word.
+	 * The name to greet someone by: the first word of their name to show (which may carry a surname to tell brothers apart), or of their full name.
 	 *
 	 * @param string $given Name to show, if any.
 	 * @param string $full  Full name.
 	 */
 	private function given_name( string $given, string $full ): string {
-		return '' !== $given ? $given : (string) strtok( $full, ' ' );
+		return (string) strtok( '' !== $given ? $given : $full, ' ' );
 	}
 
 	/**
@@ -276,9 +276,39 @@ final class DFXPRAY_Formatter {
 	 * @param bool  $priority_mark Whether high priority is marked with "❗ ".
 	 */
 	public function line( array $intention, bool $priority_mark = true ): string {
-		$line = $this->person_with( $intention, $intention['summary'] ) . $this->date_suffix( $intention );
+		$line = $this->person_with( $intention, $this->summary_without_name( $intention ) ) . $this->date_suffix( $intention );
 
 		return ( $priority_mark ? $this->priority_mark( $intention ) : '' ) . $line;
+	}
+
+	/**
+	 * The summary without the person's name at its start, which the line
+	 * already gives: "Lourdes, ya está en casa" becomes "ya está en casa".
+	 *
+	 * @param array $intention Intention.
+	 */
+	private function summary_without_name( array $intention ): string {
+		$summary = trim( (string) $intention['summary'] );
+		$person  = ! empty( $intention['beneficiary_is_requester'] ) ? 'requester' : 'beneficiary';
+		$full    = trim( (string) ( $intention[ $person . '_name' ] ?? '' ) );
+		$names   = array_filter(
+			array_unique(
+				array(
+					trim( (string) ( $intention[ $person . '_first_name' ] ?? '' ) ),
+					$full,
+					(string) strtok( $full, ' ' ),
+				)
+			)
+		);
+		usort( $names, static fn( $a, $b ) => mb_strlen( $b ) <=> mb_strlen( $a ) );
+
+		foreach ( $names as $name ) {
+			if ( preg_match( '/^' . preg_quote( $name, '/' ) . '(?:\s*[,:]\s*|\s+)(.+)$/su', $summary, $match ) ) {
+				return $match[1];
+			}
+		}
+
+		return $summary;
 	}
 
 	/**

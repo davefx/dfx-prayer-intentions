@@ -313,6 +313,26 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Thanksgivings close themselves when their days are over, like the
+	 * deceased, unless the group turns it off.
+	 */
+	public function test_thanksgivings_close_themselves(): void {
+		$old    = $this->make_active( $this->group, array( 'type' => 'thanksgiving', 'reference_date' => '2026-09-10' ) );
+		$recent = $this->make_active( $this->group, array( 'type' => 'thanksgiving', 'reference_date' => '2026-09-23' ) );
+
+		$this->intentions->process_due();
+
+		$this->assertSame( 'closed', $this->intentions->get( $old )['status'] );
+		$this->assertSame( 'expired', $this->intentions->get( $old )['close_reason'] );
+		$this->assertSame( 'active', $this->intentions->get( $recent )['status'] );
+
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'thanksgiving_auto_close' => false ) );
+		$kept = $this->make_active( $this->group, array( 'type' => 'thanksgiving', 'reference_date' => '2026-09-10' ) );
+		$this->intentions->process_due();
+		$this->assertSame( 'review', $this->intentions->get( $kept )['status'] );
+	}
+
+	/**
 	 * "Still current" reactivates with a new review date.
 	 */
 	public function test_keep_active(): void {
@@ -444,21 +464,20 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Leaders set a compound first name by hand; it must open the name.
+	 * Leaders set how someone is called: a compound name or a nickname.
 	 */
 	public function test_update_first_names(): void {
 		$id = $this->make_active( $this->group, array( 'beneficiary_name' => 'Juan Tomás Rubio' ) );
 
-		$error = $this->intentions->update( $id, array( 'beneficiary_first_name' => 'Tomás' ) );
-		$this->assertWPError( $error );
-		$this->assertSame( 'dfxpray_first_name_invalid', $error->get_error_code() );
+		$this->assertTrue( $this->intentions->update( $id, array( 'beneficiary_first_name' => 'Tomi' ) ) );
+		$this->assertStringStartsWith( 'Tomi, ', DFXPRAY_Discretion::get_instance()->describe( $this->intentions->get( $id ) ) );
 
 		$this->assertTrue( $this->intentions->update( $id, array( 'beneficiary_first_name' => 'Juan Tomás' ) ) );
 		$intention = $this->intentions->get( $id );
 		$this->assertSame( 'Juan Tomás', $intention['beneficiary_first_name'] );
 		$this->assertStringStartsWith( 'Juan Tomás, ', DFXPRAY_Discretion::get_instance()->describe( $intention ) );
 
-		$this->assertWPError( $this->intentions->update( $id, array( 'beneficiary_name' => 'Pedro Rubio' ) ) );
+		$this->assertTrue( $this->intentions->update( $id, array( 'beneficiary_name' => 'Pedro Rubio' ) ) );
 	}
 
 	/**

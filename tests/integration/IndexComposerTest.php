@@ -255,6 +255,7 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 		$this->make_active( $this->group, $member + array( 'requester_name' => 'Alejandro', 'beneficiary_is_requester' => true, 'summary' => 'su academia', 'topic' => 'economic', 'scope' => 'monthly' ) );
 		$this->make_active( $this->group, array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Ceuta', 'relationship' => '', 'summary' => 'por los ceutíes', 'topic' => 'current' ) );
 		$this->make_active( $this->group, $member + array( 'requester_name' => 'Álvaro', 'beneficiary_name' => 'Argeme', 'relationship' => 'amiga de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-24', 'summary' => 'salió bien' ) );
+		$this->make_active( $this->group, $member + array( 'requester_name' => 'Alejandro', 'beneficiary_name' => 'Pilar', 'relationship' => 'esposa de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-21', 'summary' => 'ya tiene el alta' ) );
 		$this->make_active( $this->group, array( 'requester_name' => 'Alberto', 'beneficiary_name' => 'Isabel', 'relationship' => 'madre de un amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-20', 'summary' => 'descanse en paz' ) );
 		$this->make_active( $this->group, $member + array( 'requester_name' => 'Teo', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-10', 'summary' => 'descanse en paz' ) );
 
@@ -316,6 +317,7 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 					'• Ceuta: por los ceutíes',
 					'',
 					'*We give thanks*',
+					'• Pilar, esposa de N.H. Alejandro: ya tiene el alta',
 					'• Argeme, amiga de N.H. Álvaro: salió bien',
 					'',
 					'*For our departed*',
@@ -325,6 +327,24 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 			),
 			$composer->compose( $this->group, 'monthly' )
 		);
+	}
+
+	/**
+	 * The monthly list gives thanks again for the good news of the month,
+	 * also for those already closed after their days in the daily message.
+	 */
+	public function test_monthly_list_recovers_the_thanks_of_the_month(): void {
+		$intentions = DFXPRAY_Intentions::get_instance();
+		$recent     = $this->make_active( $this->group, array( 'beneficiary_name' => 'Argeme', 'relationship' => '', 'type' => 'thanksgiving', 'reference_date' => '2026-09-05', 'summary' => 'salió bien' ) );
+		$old        = $this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'relationship' => '', 'type' => 'thanksgiving', 'reference_date' => '2026-08-10', 'summary' => 'ya en casa' ) );
+		$intentions->close( $recent, 'expired' );
+		$intentions->close( $old, 'expired' );
+
+		$monthly = DFXPRAY_Index_Composer::get_instance()->compose( $this->group, 'monthly' );
+
+		$this->assertStringContainsString( '• Argeme: salió bien', $monthly );
+		$this->assertStringNotContainsString( 'Rosa', $monthly );
+		$this->assertStringNotContainsString( 'Argeme', DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
 	}
 
 	/**

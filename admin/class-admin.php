@@ -445,6 +445,20 @@ final class DFXPRAY_Admin {
 				'type'  => 'number',
 				'label' => __( 'Thanksgiving: days', 'dfx-prayer-intentions' ),
 			),
+			'daily_thanks_days'        => array(
+				'type'  => 'number',
+				'label' => __( 'Daily message: thanksgivings during (days)', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Counted from the day of the good news: 1 means only the next message. The monthly list keeps them.', 'dfx-prayer-intentions' ),
+			),
+			'monthly_thanks_days'      => array(
+				'type'  => 'number',
+				'label' => __( 'Monthly list: thanksgivings of the last (days)', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Also those already closed, to give thanks again at the monthly adoration.', 'dfx-prayer-intentions' ),
+			),
+			'thanksgiving_auto_close'  => array(
+				'type'  => 'checkbox',
+				'label' => __( 'Close thanksgivings when their days are over', 'dfx-prayer-intentions' ),
+			),
 			'keep_active_days'         => array(
 				'type'  => 'number',
 				'label' => __( '“Still current”: days until the next review', 'dfx-prayer-intentions' ),
@@ -574,7 +588,7 @@ final class DFXPRAY_Admin {
 	 */
 	public function setting_sections( string $scope ): array {
 		$sections = array(
-			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'keep_active_days', 'recent_deceased_days' ),
+			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days', 'recent_deceased_days' ),
 			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);
@@ -604,7 +618,7 @@ final class DFXPRAY_Admin {
 			'intention_discarded'       => __( 'Discarded', 'dfx-prayer-intentions' ),
 			'intention_merged'          => __( 'Duplicate merged into it', 'dfx-prayer-intentions' ),
 			'intention_updated'         => __( 'Edited', 'dfx-prayer-intentions' ),
-			'visible_name_changed'      => __( 'Visible name changed', 'dfx-prayer-intentions' ),
+			'visible_name_changed'      => __( 'Description changed', 'dfx-prayer-intentions' ),
 			'intention_due'             => __( 'Review date reached', 'dfx-prayer-intentions' ),
 			'intention_kept_active'     => __( 'Kept active', 'dfx-prayer-intentions' ),
 			'intention_reopened'        => __( 'Reopened', 'dfx-prayer-intentions' ),

@@ -101,7 +101,7 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						<?php if ( '' !== $dfxpray_ask ) : ?>
 							<a class="button dfxpray-ask" href="<?php echo esc_url( $dfxpray_ask ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Ask by WhatsApp how it goes', 'dfx-prayer-intentions' ); ?></a>
 						<?php endif; ?>
-						<input type="text" class="regular-text" name="intention[requester_first_name]" value="<?php echo esc_attr( $dfxpray_v['requester_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'Name to show, if not just the first word', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Name to show for the requester', 'dfx-prayer-intentions' ); ?>">
+						<input type="text" class="regular-text" name="intention[requester_first_name]" value="<?php echo esc_attr( $dfxpray_v['requester_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'How we call them: Toni, Javi Cavallé…', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'How the requester is called', 'dfx-prayer-intentions' ); ?>">
 						<label><input type="checkbox" name="intention[requester_is_member]" value="1" aria-label="<?php esc_attr_e( 'The requester is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['requester_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
 					</td>
 				</tr>
@@ -111,9 +111,9 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						<label><input type="checkbox" name="intention[beneficiary_is_requester]" value="1" <?php checked( $dfxpray_v['beneficiary_is_requester'] ); ?>> <?php esc_html_e( 'The requester themselves', 'dfx-prayer-intentions' ); ?></label><br>
 						<input type="text" class="regular-text" id="dfxpray-beneficiary-name" name="intention[beneficiary_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_name'] ); ?>">
 						<input type="text" class="regular-text" name="intention[relationship]" value="<?php echo esc_attr( $dfxpray_v['relationship'] ); ?>" maxlength="100" placeholder="<?php esc_attr_e( 'Relationship, e.g. mother of', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Relationship', 'dfx-prayer-intentions' ); ?>">
-						<input type="text" class="regular-text" name="intention[beneficiary_first_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'Name to show, if not just the first word', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Name to show for the beneficiary', 'dfx-prayer-intentions' ); ?>">
+						<input type="text" class="regular-text" name="intention[beneficiary_first_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'How we call them: Toni, Javi Cavallé…', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'How the beneficiary is called', 'dfx-prayer-intentions' ); ?>">
 						<label><input type="checkbox" name="intention[beneficiary_is_member]" value="1" aria-label="<?php esc_attr_e( 'The beneficiary is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['beneficiary_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
-						<p class="description"><?php esc_html_e( 'Only when the first word is not enough: a compound first name (Juan Tomás) or a surname to tell two people apart (Luis Sebastián). It must be the first words of the full name. Empty: the first word.', 'dfx-prayer-intentions' ); ?></p>
+						<p class="description"><?php esc_html_e( 'How we call them in the messages, when the first word of the full name is not it: a nickname (Toni), a compound name (Juan Tomás) or a surname to tell two brothers apart (Javi Cavallé). The prefix and the relationship are added. Empty: the first word.', 'dfx-prayer-intentions' ); ?></p>
 					</td>
 				</tr>
 				<tr>
@@ -178,14 +178,6 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><?php esc_html_e( 'Visible names', 'dfx-prayer-intentions' ); ?></th>
-					<td>
-						<input type="text" class="regular-text" name="intention[requester_display_name]" value="<?php echo esc_attr( $dfxpray_v['requester_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Requester, as shown', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Visible name of the requester', 'dfx-prayer-intentions' ); ?>">
-						<input type="text" class="regular-text" name="intention[beneficiary_display_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Beneficiary, as shown', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Visible name of the beneficiary', 'dfx-prayer-intentions' ); ?>">
-						<p class="description"><?php esc_html_e( 'Only used with full name or first name, and never revealing more than the level allows. Example: “Our brother David”.', 'dfx-prayer-intentions' ); ?></p>
-					</td>
-				</tr>
-				<tr>
 					<th scope="row"><label for="dfxpray-priority"><?php esc_html_e( 'Priority', 'dfx-prayer-intentions' ); ?></label></th>
 					<td>
 						<select id="dfxpray-priority" name="intention[priority]">
@@ -207,7 +199,15 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['topic'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
 							<?php endforeach; ?>
 						</select>
-						<p class="description"><?php esc_html_e( 'The monthly list, read at the meeting, has every intention by topic; the daily message leaves out those kept for the monthly one.', 'dfx-prayer-intentions' ); ?></p>
+						<p class="description"><?php esc_html_e( 'The monthly list, read at the monthly adoration, has every intention by topic; the daily message leaves out those kept for the monthly one.', 'dfx-prayer-intentions' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Description instead of the name', 'dfx-prayer-intentions' ); ?></th>
+					<td>
+						<input type="text" class="regular-text" name="intention[requester_display_name]" value="<?php echo esc_attr( $dfxpray_v['requester_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Requester, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the requester instead of the name', 'dfx-prayer-intentions' ); ?>">
+						<input type="text" class="regular-text" name="intention[beneficiary_display_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Beneficiary, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the beneficiary instead of the name', 'dfx-prayer-intentions' ); ?>">
+						<p class="description"><?php esc_html_e( 'Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “La hija de N.H. Axel”. It cannot reveal more than the discretion level allows.', 'dfx-prayer-intentions' ); ?></p>
 					</td>
 				</tr>
 				<tr>

@@ -56,9 +56,13 @@ class DiscretionTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * A first name set by hand replaces the first word; nothing is guessed.
+	 * The name a leader sets ("how we call them") replaces the first word:
+	 * a compound name, a nickname, or a name with a surname to tell brothers
+	 * apart. Nothing is guessed.
 	 */
 	public function test_first_name_set_by_hand(): void {
+		$this->assertSame( 'Toni Alfonso', $this->discretion->format_name( 'Antonio Alfonso García', 'first_name', '', 'Toni Alfonso' ) );
+		$this->assertSame( 'Manolo', $this->discretion->format_name( 'Manuel González Laguillo', 'first_name', '', 'Manolo' ) );
 		$this->assertSame( 'Juan Tomás', $this->discretion->format_name( 'Juan Tomás Rubio', 'first_name', '', 'Juan Tomás' ) );
 		$this->assertSame( 'Juan', $this->discretion->format_name( 'Juan Tomás Rubio', 'first_name' ) );
 		$this->assertSame( 'Titón', $this->discretion->format_name( 'Titón Alonso', 'first_name' ) );
@@ -68,17 +72,15 @@ class DiscretionTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * The first name set by hand must be the first words of the name.
+	 * How we call someone is up to the leaders: a nickname, a compound name
+	 * or a name with a surname; only its length is limited.
 	 */
-	public function test_first_name_must_open_the_name(): void {
+	public function test_how_we_call_them_is_free(): void {
 		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Juan Tomás' ) );
-		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'juan  tomas' ) );
-		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Pablo', 'Juan Pablo' ) );
-		$this->assertTrue( $this->discretion->validate_first_name( 'Mª Soledad', 'Mª Soledad' ) );
+		$this->assertTrue( $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Tomás' ) );
+		$this->assertTrue( $this->discretion->validate_first_name( 'Antonio Alfonso García', 'Toni Alfonso' ) );
 		$this->assertTrue( $this->discretion->validate_first_name( 'Titón Alonso', '' ) );
-		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Tomás' ) );
-		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Juan Rubio' ) );
-		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', 'Juan Tomás Rubio Pérez' ) );
+		$this->assertInstanceOf( WP_Error::class, $this->discretion->validate_first_name( 'Juan Tomás Rubio', str_repeat( 'Juan ', 20 ) ) );
 	}
 
 	/**

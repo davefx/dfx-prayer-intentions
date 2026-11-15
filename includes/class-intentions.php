@@ -56,7 +56,7 @@ final class DFXPRAY_Intentions {
 
 	/**
 	 * Editions of the shared message an intention goes in: every day, or
-	 * only in the monthly list read at the meeting (which has them all).
+	 * only in the monthly list read at the monthly adoration (which has them all).
 	 */
 	public const SCOPES = array( 'daily', 'monthly' );
 
@@ -377,8 +377,8 @@ final class DFXPRAY_Intentions {
 	/**
 	 * Move every active intention whose review date has arrived to "review".
 	 *
-	 * The deceased of a group that closes them on its own are closed instead,
-	 * also those already waiting in review.
+	 * The deceased and thanksgivings of a group that closes them on its own
+	 * are closed instead, also those already waiting in review.
 	 *
 	 * @return int How many moved or closed.
 	 */
@@ -389,7 +389,7 @@ final class DFXPRAY_Intentions {
 		$settings = DFXPRAY_Settings::get_instance();
 		$deceased = $wpdb->get_results( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
-				"SELECT id, group_id FROM %i WHERE type = 'deceased' AND status IN ('active','review') AND next_review IS NOT NULL AND next_review <= %s",
+				"SELECT id, group_id, type FROM %i WHERE type IN ('deceased','thanksgiving') AND status IN ('active','review') AND next_review IS NOT NULL AND next_review <= %s",
 				$this->tables()['intentions'],
 				DFXPRAY_Clock::get_instance()->today()
 			),
@@ -397,7 +397,7 @@ final class DFXPRAY_Intentions {
 		);
 
 		foreach ( $deceased as $row ) {
-			if ( $settings->get( 'deceased_auto_close', (int) $row['group_id'] ) && true === $this->close( (int) $row['id'], 'expired' ) ) {
+			if ( $settings->get( $row['type'] . '_auto_close', (int) $row['group_id'] ) && true === $this->close( (int) $row['id'], 'expired' ) ) {
 				++$closed;
 			}
 		}
