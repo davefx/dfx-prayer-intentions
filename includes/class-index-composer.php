@@ -117,10 +117,11 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * Lines of the "prayer proposals" layout: the urgent ones (high
-	 * priority), the rest, thanksgivings, and the departed of the last days
-	 * (the group's deceased deadline). Intentions sharing a summary go in one
-	 * line: "Problemas de salud: Marina, …; Irene, …".
+	 * Lines of the "prayer proposals" layout, the daily message: the urgent
+	 * ones (high priority), the people whose health we pray for (only their
+	 * names, our brothers first), the rest, current affairs, thanksgivings,
+	 * and the departed of the last week. Other intentions sharing a summary
+	 * go in one line: "Problemas de salud: Marina, …; Irene, …".
 	 *
 	 * @param array[] $intentions Listable intentions.
 	 * @param int     $group_id   Group ID.
@@ -129,16 +130,11 @@ final class DFXPRAY_Index_Composer {
 	private function proposal_sections( array $intentions, int $group_id ): array {
 		$formatter = DFXPRAY_Formatter::get_instance();
 		$buckets   = $this->buckets( $intentions, $this->departed_since( 'daily_deceased_days', $group_id ) );
-		$others    = $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) );
-
-		if ( $buckets['health'] ) {
-			/* translators: %s: the people, separated by semicolons. */
-			array_unshift( $others, sprintf( __( 'For the health of %s', 'dfx-prayer-intentions' ), implode( '; ', array_map( array( $formatter, 'person' ), $buckets['health'] ) ) ) );
-		}
 
 		return array(
 			'urgent'   => $this->grouped_lines( $buckets['urgent'] ),
-			'others'   => $others,
+			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
+			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),
 			'thanks'   => $this->grouped_lines( $buckets['thanks'] ),
 			'departed' => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $buckets['departed'] ),
@@ -208,6 +204,12 @@ final class DFXPRAY_Index_Composer {
 			}
 		}
 
+		// Our brothers first, then everyone else, each in their order.
+		$buckets['health'] = array_merge(
+			array_values( array_filter( $buckets['health'], static fn( $i ) => $i['beneficiary_is_member'] ) ),
+			array_values( array_filter( $buckets['health'], static fn( $i ) => ! $i['beneficiary_is_member'] ) )
+		);
+
 		return $buckets;
 	}
 
@@ -265,7 +267,8 @@ final class DFXPRAY_Index_Composer {
 			'others'       => __( 'Also for', 'dfx-prayer-intentions' ),
 			'thanks'       => __( 'We give thanks', 'dfx-prayer-intentions' ),
 			'departed'     => __( 'For our departed', 'dfx-prayer-intentions' ),
-			'current'      => __( 'Current affairs', 'dfx-prayer-intentions' ),
+			'health'       => __( 'For the health of', 'dfx-prayer-intentions' ),
+			'current'      => _x( 'We also pray for', 'heading of the current affairs section', 'dfx-prayer-intentions' ),
 			'sick'         => __( 'For the sick', 'dfx-prayer-intentions' ),
 			'studies'      => __( 'Studies, exams and job interviews', 'dfx-prayer-intentions' ),
 			'economic'     => __( 'Economic or legal problems', 'dfx-prayer-intentions' ),
@@ -288,6 +291,7 @@ final class DFXPRAY_Index_Composer {
 			'others'       => '🤲',
 			'thanks'       => '🙌',
 			'departed'     => '🕯️',
+			'health'       => '🤲',
 			'current'      => '🌍',
 			'sick'         => '🤲',
 			'studies'      => '📚',

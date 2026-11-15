@@ -115,6 +115,7 @@
 		intentions: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
 		moderation: 'M4 13l2-8h12l2 8M4 13v6h16v-6M4 13h5l1 2h4l1-2h5',
 		add: 'M12 5v14M5 12h14',
+		ask: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12zM9.6 9.4a2.4 2.4 0 1 1 3.3 2.2c-.5.3-.9.7-.9 1.4M12 15.8h.01',
 	};
 
 	function icon( name ) {
@@ -226,7 +227,7 @@
 	}
 
 	function nav() {
-		const tabs = { today: S.today, intentions: S.intentions, moderation: S.moderation, add: S.add };
+		const tabs = { today: S.today, intentions: S.intentions, ask: S.toAskTab, moderation: S.moderation, add: S.add };
 		return h(
 			'nav',
 			{ class: 'dfx-nav' },
@@ -279,6 +280,8 @@
 		switch ( state.tab ) {
 			case 'intentions':
 				return intentions();
+			case 'ask':
+				return toAsk();
 			case 'moderation':
 				return moderation();
 			case 'add':
@@ -363,6 +366,7 @@
 								'span',
 								{ class: 'dfx-item-meta' },
 								h( 'span', { class: 'dfx-chip is-' + item.status }, C.statuses[ item.status ] || '' ),
+								item.to_ask ? h( 'span', { class: 'dfx-chip is-ask' }, S.toAskMark ) : null,
 								item.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( item.next_review, { day: 'numeric', month: 'short' } ) ) : null
 							)
 						)
@@ -394,6 +398,33 @@
 			h( 'div', { class: 'dfx-toolbar' }, search, filter ),
 			result.offline ? h( 'p', { class: 'dfx-notice' }, S.offline ) : null,
 			result.ok ? itemList( result.data.items ) : h( 'p', { class: 'dfx-notice is-error' }, result.message )
+		);
+	}
+
+	async function toAsk() {
+		const t = ticket();
+		loading();
+		const result = await api( 'list', { group_id: state.group, status: 'ask' }, 'list:' + state.group + ':ask' );
+		if ( stale( t ) ) {
+			return;
+		}
+		frame(
+			result.offline ? h( 'p', { class: 'dfx-notice' }, S.offline ) : null,
+			h( 'h2', {}, S.toAskTitle ),
+			h( 'p', { class: 'dfx-muted' }, S.toAskHelp ),
+			! result.ok ? h( 'p', { class: 'dfx-notice is-error' }, result.message ) : null,
+			result.ok && ! result.data.items.length ? h( 'p', { class: 'dfx-muted' }, S.nothing ) : null,
+			result.ok
+				? ( result.data.groups || [] ).map( ( group ) =>
+						h(
+							'section',
+							{ class: 'dfx-ask-group' },
+							h( 'h3', { class: 'dfx-ask-who' }, group.requester ),
+							group.ask ? h( 'a', { class: 'dfx-button dfx-ask', href: group.ask, target: '_blank', rel: 'noopener' }, group.ids.length > 1 ? S.askAllWhatsApp : S.askWhatsApp ) : h( 'p', { class: 'dfx-muted' }, S.noPhone ),
+							itemList( result.data.items.filter( ( item ) => group.ids.includes( item.id ) ) )
+						)
+				  )
+				: null
 		);
 	}
 
@@ -532,6 +563,7 @@
 					'p',
 					{ class: 'dfx-item-meta' },
 					h( 'span', { class: 'dfx-chip is-' + it.status, id: 'dfx-status' }, C.statuses[ it.status ] ),
+					it.to_ask ? h( 'span', { class: 'dfx-chip is-ask' }, S.toAskMark ) : null,
 					h( 'span', { class: 'dfx-chip' }, C.types[ it.type ] ),
 					it.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( it.next_review, { day: 'numeric', month: 'long' } ) ) : null
 				)
@@ -565,7 +597,7 @@
 							intention[ key ] = data.get( key );
 						}
 					} );
-					[ 'requester_is_member', 'beneficiary_is_requester', 'beneficiary_is_member', 'anniversary' ].forEach( ( key ) => {
+					[ 'requester_is_member', 'beneficiary_is_requester', 'beneficiary_is_member', 'anniversary', 'to_ask' ].forEach( ( key ) => {
 						if ( data.get( key ) ) {
 							intention[ key ] = '1';
 						}
@@ -576,6 +608,7 @@
 						has_beneficiary_is_requester: 1,
 						has_beneficiary_is_member: 1,
 						has_anniversary: 1,
+						has_to_ask: 1,
 						intention,
 					} );
 				},
@@ -602,6 +635,7 @@
 				field( S.message, select( 'scope', C.scopes, it.scope ) ),
 				field( S.topic, select( 'topic', C.topics, it.topic ) ),
 				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
+				box( 'to_ask', S.toAskMark, it.to_ask ),
 				text( 'asked_on', S.askedOn, String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ),
 				h( 'button', { class: 'dfx-button is-primary' }, S.saveChanges )
 			)

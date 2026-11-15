@@ -542,6 +542,28 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Leaders mark the intentions whose state they must ask about; an update
+	 * (the answer) or closing it clears the mark.
+	 */
+	public function test_to_ask(): void {
+		$id = $this->make_active( $this->group );
+		$this->assertFalse( $this->intentions->get( $id )['to_ask'] );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'to_ask' => '1' ) ) );
+		$this->assertTrue( $this->intentions->get( $id )['to_ask'] );
+
+		DFXPRAY_Updates::get_instance()->add( $id, 'Ya está en casa.' );
+		$this->assertFalse( $this->intentions->get( $id )['to_ask'] );
+
+		$this->intentions->update( $id, array( 'to_ask' => '1' ) );
+		$this->intentions->close( $id, 'expired' );
+		$this->assertFalse( $this->intentions->get( $id )['to_ask'] );
+
+		$form = $this->make_pending( $this->group, array_merge( $this->form_data(), array( 'to_ask' => '1' ) ) );
+		$this->assertFalse( $this->intentions->get( $form )['to_ask'] );
+	}
+
+	/**
 	 * Praying for oneself shares the requester's first name.
 	 */
 	public function test_for_myself_shares_the_first_name(): void {

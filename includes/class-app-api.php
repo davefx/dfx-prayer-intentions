@@ -44,6 +44,7 @@ final class DFXPRAY_App_API {
 		'pending' => array( 'pending' ),
 		'review'  => array( 'review' ),
 		'closed'  => array( 'closed' ),
+		'ask'     => DFXPRAY_Intentions::LISTABLE_STATUSES,
 	);
 
 	/**
@@ -154,6 +155,7 @@ final class DFXPRAY_App_API {
 		$args = array(
 			'status'       => self::LISTS[ $status ] ?? self::LISTS['current'],
 			'urgent_first' => true,
+			'to_ask'       => 'ask' === $status,
 		);
 		if ( '' !== trim( $search ) ) {
 			$args['search'] = sanitize_text_field( $search );
@@ -173,10 +175,44 @@ final class DFXPRAY_App_API {
 				'next_review' => $intention['next_review'],
 				'created_at'  => $intention['created_at'],
 				'requester'   => $intention['requester_name'],
+				'to_ask'      => $intention['to_ask'],
+				'ask'         => $formatter->ask_link( $intention ),
 			);
 		}
 
-		return $this->success( array( 'items' => $items ) );
+		$data = array( 'items' => $items );
+		if ( 'ask' === $status ) {
+			$data['groups'] = $this->by_requester( $intentions );
+		}
+
+		return $this->success( $data );
+	}
+
+	/**
+	 * Intentions grouped by requester (same name, any case), each group with
+	 * one WhatsApp question about all of them.
+	 *
+	 * @param array[] $intentions Intentions.
+	 * @return array[] requester, ids, ask.
+	 */
+	private function by_requester( array $intentions ): array {
+		$groups = array();
+		foreach ( $intentions as $intention ) {
+			$groups[ mb_strtolower( trim( $intention['requester_name'] ) ) ][] = $intention;
+		}
+
+		$formatter = DFXPRAY_Formatter::get_instance();
+
+		return array_values(
+			array_map(
+				static fn( array $group ): array => array(
+					'requester' => $group[0]['requester_name'],
+					'ids'       => array_column( $group, 'id' ),
+					'ask'       => $formatter->ask_link_for( $group ),
+				),
+				$groups
+			)
+		);
 	}
 
 	/**

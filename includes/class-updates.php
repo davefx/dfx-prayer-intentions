@@ -51,6 +51,7 @@ final class DFXPRAY_Updates {
 
 		$id = (int) $wpdb->insert_id;
 		DFXPRAY_Log::get_instance()->add( 'update_added', $intention['group_id'], $intention_id, array( 'update' => $id ) );
+		DFXPRAY_Intentions::get_instance()->clear_to_ask( $intention_id );
 
 		return $id;
 	}

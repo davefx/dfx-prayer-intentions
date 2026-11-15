@@ -84,6 +84,7 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 				'has_anniversary'              => 1,
 				'has_requester_is_member'      => 1,
 				'has_beneficiary_is_member'    => 1,
+				'has_to_ask'                   => 1,
 			),
 			'dfxpray-intention-form'
 		);
@@ -96,6 +97,7 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						<input type="text" class="regular-text" name="intention[requester_contact]" value="<?php echo esc_attr( $dfxpray_v['requester_contact'] ); ?>" placeholder="<?php esc_attr_e( 'Email or phone', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Contact', 'dfx-prayer-intentions' ); ?>">
 						<input type="tel" class="regular-text" name="intention[requester_phone]" value="<?php echo esc_attr( $dfxpray_v['requester_phone'] ); ?>" placeholder="<?php esc_attr_e( 'Phone (WhatsApp)', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Phone of the requester', 'dfx-prayer-intentions' ); ?>">
 						<?php $dfxpray_ask = $dfxpray_is_new ? '' : DFXPRAY_Formatter::get_instance()->ask_link( $dfxpray_v ); ?>
+						<label><input type="checkbox" name="intention[to_ask]" value="1" <?php checked( ! empty( $dfxpray_v['to_ask'] ) ); ?>> <?php esc_html_e( 'Pending to ask', 'dfx-prayer-intentions' ); ?></label>
 						<?php if ( '' !== $dfxpray_ask ) : ?>
 							<a class="button dfxpray-ask" href="<?php echo esc_url( $dfxpray_ask ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Ask by WhatsApp how it goes', 'dfx-prayer-intentions' ); ?></a>
 						<?php endif; ?>

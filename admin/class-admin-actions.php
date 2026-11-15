@@ -250,7 +250,7 @@ final class DFXPRAY_Admin_Actions {
 			$data['key_dates'] = $this->key_dates_from_columns( $r['key_dates'] );
 		}
 
-		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'requester_is_member', 'beneficiary_is_member' ) as $flag ) {
+		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'requester_is_member', 'beneficiary_is_member', 'to_ask' ) as $flag ) {
 			if ( isset( $r['intention'] ) && ! isset( $data[ $flag ] ) && isset( $r[ 'has_' . $flag ] ) ) {
 				$data[ $flag ] = false;
 			}

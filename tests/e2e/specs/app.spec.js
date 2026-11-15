@@ -100,7 +100,7 @@ test( 'daily message and monthly list; the requester can be asked by WhatsApp', 
 	await login( page, 'leader1' );
 	await page.goto( APP );
 
-	await expect( page.locator( '#dfx-message' ) ).toContainText( 'For the health of Marina, esposa de Luis' );
+	await expect( page.locator( '#dfx-message' ) ).toContainText( '*For the health of*\n• Marina, esposa de Luis' );
 	await expect( page.locator( '#dfx-message' ) ).not.toContainText( 'Fátima' );
 	await page.getByRole( 'button', { name: 'Monthly list' } ).click();
 	await expect( page.locator( '#dfx-message' ) ).toContainText( 'Fátima, sobrina de Luis: quimioterapia' );
@@ -117,6 +117,35 @@ test( 'daily message and monthly list; the requester can be asked by WhatsApp', 
 	await page.getByRole( 'button', { name: 'Today' } ).click();
 	await page.getByRole( 'button', { name: 'Daily', exact: true } ).click();
 	await expect( page.locator( '#dfx-message' ) ).not.toContainText( 'Marina' );
+} );
+
+test( 'the To ask tab groups by brother, with one WhatsApp question for all their intentions', async ( { page } ) => {
+	createIntention( group.id, { requester_name: 'Titón Alonso', requester_phone: '606 45 37 87', beneficiary_name: 'Juan Pablo', relationship: 'conocido de', summary: 'tumor cerebral', to_ask: '1' } );
+	createIntention( group.id, { requester_name: 'Titón Alonso', beneficiary_name: 'Beatriz', relationship: 'hija de un amigo de', summary: 'trasplante de riñón', to_ask: '1' } );
+	createIntention( group.id, { requester_name: 'Ramón García', beneficiary_name: 'José', relationship: 'amigo de', summary: 'trasplante' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+
+	await page.getByRole( 'button', { name: 'To ask' } ).click();
+	const titon = page.locator( '.dfx-ask-group', { hasText: 'Titón Alonso' } );
+	await expect( titon.locator( '.dfx-item' ) ).toHaveCount( 2 );
+	const href = await titon.getByRole( 'link', { name: 'Ask about all of them by WhatsApp' } ).getAttribute( 'href' );
+	expect( href ).toMatch( /^https:\/\/wa\.me\/34606453787\?text=/ );
+	expect( decodeURIComponent( href ) ).toContain( '• Juan Pablo (tumor cerebral)' );
+	expect( decodeURIComponent( href ) ).toContain( '• Beatriz (trasplante de riñón)' );
+	await expect( page.locator( '.dfx-ask-group', { hasText: 'Ramón García' } ) ).toHaveCount( 0 );
+
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'José' } ).click();
+	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.getByLabel( 'Pending to ask', { exact: true } ).check();
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.dfx-hero .dfx-chip.is-ask' ) ).toHaveText( 'Pending to ask' );
+
+	await page.getByLabel( 'New update' ).fill( 'Ya está en casa.' );
+	await page.getByRole( 'button', { name: 'Add update' } ).click();
+	await expect( page.locator( '.dfx-timeline' ) ).toContainText( 'Ya está en casa.' );
+	await expect( page.locator( '.dfx-hero .dfx-chip.is-ask' ) ).toHaveCount( 0 );
 } );
 
 test( 'every field of an active intention can be edited in the app', async ( { page } ) => {

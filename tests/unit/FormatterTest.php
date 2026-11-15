@@ -124,4 +124,31 @@ class FormatterTest extends DFXPRAY_Test_Case {
 		$intention['requester_contact'] = '611 22 33 44';
 		$this->assertStringStartsWith( 'https://wa.me/34611223344?', $this->formatter->ask_link( $intention ) );
 	}
+
+	/**
+	 * One WhatsApp message asks a requester about all their intentions.
+	 */
+	public function test_ask_link_for_several(): void {
+		$base = array(
+			'requester_name'           => 'Titón Alonso',
+			'requester_first_name'     => '',
+			'requester_phone'          => '606453787',
+			'requester_contact'        => '',
+			'beneficiary_first_name'   => '',
+			'beneficiary_is_requester' => false,
+		);
+		$juan    = $base + array( 'beneficiary_name' => 'Juan Pablo', 'summary' => 'tumor cerebral' );
+		$beatriz = $base + array( 'beneficiary_name' => 'Beatriz', 'summary' => 'trasplante de riñón' );
+		$self    = array_merge( $base, array( 'beneficiary_name' => 'Titón Alonso', 'beneficiary_is_requester' => true, 'summary' => 'vértigos' ) );
+
+		$link = $this->formatter->ask_link_for( array( $juan, $beatriz, $self ) );
+		$this->assertStringStartsWith( 'https://wa.me/34606453787?text=', $link );
+		$this->assertSame(
+			"Hi Titón, how are these intentions going?\n• Juan Pablo (tumor cerebral)\n• Beatriz (trasplante de riñón)\n• You (vértigos)",
+			rawurldecode( substr( $link, strpos( $link, '=' ) + 1 ) )
+		);
+
+		$this->assertSame( $this->formatter->ask_link( $juan ), $this->formatter->ask_link_for( array( $juan ) ) );
+		$this->assertSame( '', $this->formatter->ask_link_for( array() ) );
+	}
 }

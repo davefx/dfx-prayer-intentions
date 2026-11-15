@@ -133,6 +133,42 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * "To ask": the intentions marked to ask about and those due for review.
+	 */
+	public function test_list_to_ask(): void {
+		$marked = $this->make_active( $this->mine, array( 'to_ask' => '1' ) );
+		$due    = $this->make_active( $this->mine, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		DFXPRAY_Intentions::get_instance()->process_due();
+		$this->make_active( $this->mine );
+		$this->make_active( $this->other, array( 'to_ask' => '1' ) );
+
+		$items = $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'ask' ) )['data']['items'];
+
+		$this->assertEqualsCanonicalizing( array( $marked, $due ), array_column( $items, 'id' ) );
+		$this->assertArrayHasKey( 'ask', $items[0] );
+	}
+
+	/**
+	 * "To ask" also comes grouped by requester, with one question for all.
+	 */
+	public function test_to_ask_grouped_by_requester(): void {
+		$first  = $this->make_active( $this->mine, array( 'requester_name' => 'Titón Alonso', 'requester_phone' => '606453787', 'beneficiary_name' => 'Juan Pablo', 'to_ask' => '1' ) );
+		$second = $this->make_active( $this->mine, array( 'requester_name' => 'Titón Alonso', 'beneficiary_name' => 'Beatriz', 'to_ask' => '1' ) );
+		$other  = $this->make_active( $this->mine, array( 'requester_name' => 'Ramón García', 'to_ask' => '1' ) );
+
+		$groups = $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'ask' ) )['data']['groups'];
+
+		$this->assertCount( 2, $groups );
+		$titon = current( array_filter( $groups, static fn( $g ) => 'Titón Alonso' === $g['requester'] ) );
+		$this->assertEqualsCanonicalizing( array( $first, $second ), $titon['ids'] );
+		$this->assertStringContainsString( 'Juan%20Pablo', $titon['ask'] );
+		$this->assertStringContainsString( 'Beatriz', $titon['ask'] );
+		$ramon = current( array_filter( $groups, static fn( $g ) => 'Ramón García' === $g['requester'] ) );
+		$this->assertSame( array( $other ), $ramon['ids'] );
+		$this->assertSame( '', $ramon['ask'] );
+	}
+
+	/**
 	 * The list puts the urgent ones first, then the most recent requests.
 	 */
 	public function test_list_order(): void {

@@ -51,6 +51,7 @@ final class DFXPRAY_Intentions {
 		'scope',
 		'topic',
 		'requester_phone',
+		'to_ask',
 	);
 
 	/**
@@ -509,6 +510,7 @@ final class DFXPRAY_Intentions {
 				'status'       => 'closed',
 				'close_reason' => $reason,
 				'closed_at'    => DFXPRAY_Clock::get_instance()->mysql(),
+				'to_ask'       => false,
 			)
 		);
 		DFXPRAY_Log::get_instance()->add( 'intention_closed', $current['group_id'], $id, array( 'reason' => $reason ) );
@@ -642,6 +644,7 @@ final class DFXPRAY_Intentions {
 	 *
 	 * @param int   $group_id Group.
 	 * @param array $args     status (string|string[]), type, priority, search, date_from, date_to, limit,
+	 *                        to_ask (only those marked to ask about, or due for review),
 	 *                        urgent_first (urgent ones first; then, as always, the most recent).
 	 * @return array[]
 	 */
@@ -669,6 +672,10 @@ final class DFXPRAY_Intentions {
 			$where[]  = '(requester_name LIKE %s OR beneficiary_name LIKE %s)';
 			$values[] = $like;
 			$values[] = $like;
+		}
+
+		if ( ! empty( $args['to_ask'] ) ) {
+			$where[] = "(to_ask = 1 OR status = 'review')";
 		}
 
 		if ( ! empty( $args['date_from'] ) ) {
@@ -828,6 +835,7 @@ final class DFXPRAY_Intentions {
 			'scope'                    => 'daily',
 			'topic'                    => '',
 			'requester_phone'          => '',
+			'to_ask'                   => false,
 		);
 
 		$texts = array( 'requester_name', 'requester_contact', 'beneficiary_name', 'relationship', 'summary', 'requester_display_name', 'beneficiary_display_name', 'requester_first_name', 'beneficiary_first_name' );
@@ -837,7 +845,7 @@ final class DFXPRAY_Intentions {
 			}
 		}
 
-		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'requester_is_member', 'beneficiary_is_member' ) as $field ) {
+		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'requester_is_member', 'beneficiary_is_member', 'to_ask' ) as $field ) {
 			if ( array_key_exists( $field, $data ) ) {
 				$r[ $field ] = (bool) filter_var( $data[ $field ], FILTER_VALIDATE_BOOLEAN );
 			}
@@ -1017,6 +1025,18 @@ final class DFXPRAY_Intentions {
 	}
 
 	/**
+	 * Clear the "to ask" mark: the leader has news about it.
+	 *
+	 * @param int $id Intention ID.
+	 */
+	public function clear_to_ask( int $id ): void {
+		$current = $this->get( $id );
+		if ( $current && $current['to_ask'] ) {
+			$this->write( $id, array( 'to_ask' => false ) );
+		}
+	}
+
+	/**
 	 * The last phone the group knows for a requester (same name, any case).
 	 *
 	 * @param int    $group_id Group.
@@ -1101,7 +1121,7 @@ final class DFXPRAY_Intentions {
 			}
 		}
 
-		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'ack_sent', 'requester_is_member', 'beneficiary_is_member' ) as $bool ) {
+		foreach ( array( 'beneficiary_is_requester', 'anniversary', 'ack_sent', 'requester_is_member', 'beneficiary_is_member', 'to_ask' ) as $bool ) {
 			if ( array_key_exists( $bool, $fields ) ) {
 				$fields[ $bool ] = $fields[ $bool ] ? 1 : 0;
 			}
@@ -1146,6 +1166,7 @@ final class DFXPRAY_Intentions {
 			'scope'                    => $row['scope'],
 			'topic'                    => $row['topic'],
 			'requester_phone'          => $row['requester_phone'],
+			'to_ask'                   => (bool) $row['to_ask'],
 			'status'                   => $row['status'],
 			'close_reason'             => $row['close_reason'],
 			'next_review'              => $row['next_review'],

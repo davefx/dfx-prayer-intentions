@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.24
+Stable tag: 26.11.25
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,11 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.25 =
+* The current affairs section of the messages opens with "We also pray for" instead of a label.
+* The daily message lists the people whose health we pray for in a section of their own, our brothers first; the monthly list orders the sick the same way.
+* "To ask" in the leaders' app: the intentions marked "pending to ask" and those due for review, grouped by requester, with one WhatsApp message asking each of them about all theirs. An update or closing the intention clears the mark.
 
 = 26.11.24 =
 * Two messages: the daily one, short (urgent ones, one line for the health of many, current affairs, thanks and the departed of the last week), and the monthly list read at the meeting, with every intention by topic. Each intention says which one it goes in and its topic.

@@ -107,6 +107,59 @@ final class DFXPRAY_Formatter {
 	 * @param array $intention Intention.
 	 */
 	public function ask_link( array $intention ): string {
+		return $this->ask_link_for( array( $intention ) );
+	}
+
+	/**
+	 * A WhatsApp link asking one requester, in a single message, how all
+	 * their intentions go; '' when there are none or no phone to call.
+	 *
+	 * @param array[] $intentions Intentions of the same requester.
+	 */
+	public function ask_link_for( array $intentions ): string {
+		$intentions = array_values( $intentions );
+		$digits     = '';
+		foreach ( $intentions as $intention ) {
+			$digits = $this->whatsapp_number( $intention );
+			if ( '' !== $digits ) {
+				break;
+			}
+		}
+
+		if ( '' === $digits ) {
+			return '';
+		}
+
+		$first = $intentions[0];
+		$name  = $this->given_name( (string) ( $first['requester_first_name'] ?? '' ), (string) $first['requester_name'] );
+
+		if ( 1 === count( $intentions ) ) {
+			$summary = (string) ( $first['summary'] ?? '' );
+			if ( ! empty( $first['beneficiary_is_requester'] ) ) {
+				/* translators: 1: requester's first name, 2: summary of the intention. */
+				$text = sprintf( __( 'Hi %1$s, how are you doing (%2$s)?', 'dfx-prayer-intentions' ), $name, $summary );
+			} else {
+				/* translators: 1: requester's first name, 2: beneficiary's name, 3: summary of the intention. */
+				$text = sprintf( __( 'Hi %1$s, how is %2$s doing (%3$s)?', 'dfx-prayer-intentions' ), $name, $this->beneficiary_name( $first ), $summary );
+			}
+		} else {
+			/* translators: %s: requester's first name. */
+			$text = sprintf( __( 'Hi %s, how are these intentions going?', 'dfx-prayer-intentions' ), $name );
+			foreach ( $intentions as $intention ) {
+				$who   = empty( $intention['beneficiary_is_requester'] ) ? $this->beneficiary_name( $intention ) : __( 'You', 'dfx-prayer-intentions' );
+				$text .= "\n• " . $who . ( '' !== (string) ( $intention['summary'] ?? '' ) ? ' (' . $intention['summary'] . ')' : '' );
+			}
+		}
+
+		return 'https://wa.me/' . $digits . '?text=' . rawurlencode( $text );
+	}
+
+	/**
+	 * The international number to open in WhatsApp for a requester, or ''.
+	 *
+	 * @param array $intention Intention.
+	 */
+	private function whatsapp_number( array $intention ): string {
 		$phone = (string) ( $intention['requester_phone'] ?? '' );
 		if ( '' === $phone ) {
 			$phone = (string) $this->clean_phone( (string) ( $intention['requester_contact'] ?? '' ) );
@@ -116,29 +169,33 @@ final class DFXPRAY_Formatter {
 			return '';
 		}
 
-		$digits = ltrim( $phone, '+' );
-		if ( ! str_starts_with( $phone, '+' ) ) {
-			$digits = preg_replace( '/\D/', '', (string) DFXPRAY_Settings::get_instance()->get( 'phone_country_code' ) ) . $digits;
+		if ( str_starts_with( $phone, '+' ) ) {
+			return ltrim( $phone, '+' );
 		}
 
-		$first   = static fn( string $given, string $full ): string => '' !== $given ? $given : (string) strtok( $full, ' ' );
-		$name    = $first( (string) ( $intention['requester_first_name'] ?? '' ), (string) $intention['requester_name'] );
-		$summary = (string) ( $intention['summary'] ?? '' );
+		return preg_replace( '/\D/', '', (string) DFXPRAY_Settings::get_instance()->get( 'phone_country_code' ) ) . $phone;
+	}
 
-		if ( ! empty( $intention['beneficiary_is_requester'] ) ) {
-			/* translators: 1: requester's first name, 2: summary of the intention. */
-			$text = sprintf( __( 'Hi %1$s, how are you doing (%2$s)?', 'dfx-prayer-intentions' ), $name, $summary );
-		} else {
-			$text = sprintf(
-				/* translators: 1: requester's first name, 2: beneficiary's first name, 3: summary of the intention. */
-				__( 'Hi %1$s, how is %2$s doing (%3$s)?', 'dfx-prayer-intentions' ),
-				$name,
-				$first( (string) ( $intention['beneficiary_first_name'] ?? '' ), (string) $intention['beneficiary_name'] ),
-				$summary
-			);
-		}
+	/**
+	 * The name to use for someone: the one given, or the first word.
+	 *
+	 * @param string $given Name to show, if any.
+	 * @param string $full  Full name.
+	 */
+	private function given_name( string $given, string $full ): string {
+		return '' !== $given ? $given : (string) strtok( $full, ' ' );
+	}
 
-		return 'https://wa.me/' . $digits . '?text=' . rawurlencode( $text );
+	/**
+	 * The beneficiary as the requester knows them: their name to show, or
+	 * their name as written.
+	 *
+	 * @param array $intention Intention.
+	 */
+	private function beneficiary_name( array $intention ): string {
+		$given = (string) ( $intention['beneficiary_first_name'] ?? '' );
+
+		return '' !== $given ? $given : (string) $intention['beneficiary_name'];
 	}
 
 	/**

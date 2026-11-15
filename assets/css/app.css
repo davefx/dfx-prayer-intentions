@@ -181,7 +181,7 @@ h2 {
 	left: 0;
 	z-index: 3;
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
 	background: rgba(255, 255, 255, 0.96);
 	backdrop-filter: blur(8px);
@@ -751,4 +751,21 @@ h2.dfx-line {
 	border-color: #1f8f4e;
 	color: #1f8f4e;
 	text-decoration: none;
+}
+
+.dfx-ask-group {
+	margin: 18px 0 26px;
+}
+
+.dfx-ask-who {
+	margin: 0 2px 8px;
+	color: var(--navy);
+	font-family: var(--serif);
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.dfx-chip.is-ask {
+	background: #e3f4ea;
+	color: #1f8f4e;
 }
