@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T05:01:42+00:00\n"
+"POT-Creation-Date: 2026-11-16T05:53:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -1152,7 +1152,7 @@ msgid "edited by %1$s on %2$s"
 msgstr ""
 
 #: admin/views/intention-edit.php:280
-#: admin/views/members.php:95
+#: admin/views/members.php:102
 #: includes/class-app.php:335
 msgid "Edit"
 msgstr ""
@@ -1162,7 +1162,7 @@ msgid "Comment"
 msgstr ""
 
 #: admin/views/intention-edit.php:289
-#: admin/views/members.php:98
+#: admin/views/members.php:105
 #: includes/class-app.php:298
 msgid "Save"
 msgstr ""
@@ -1172,7 +1172,7 @@ msgid "Turn into an update"
 msgstr ""
 
 #: admin/views/intention-edit.php:305
-#: admin/views/members.php:101
+#: admin/views/members.php:108
 msgid "Delete"
 msgstr ""
 
@@ -1289,7 +1289,7 @@ msgid "How he is called"
 msgstr ""
 
 #: admin/views/members.php:43
-#: admin/views/members.php:69
+#: admin/views/members.php:73
 msgid "Birthday"
 msgstr ""
 
@@ -1321,32 +1321,40 @@ msgstr ""
 msgid "He is then no longer mentioned on his birthday, and we pray especially for him every year on the anniversary of his death."
 msgstr ""
 
-#: admin/views/members.php:61
+#: admin/views/members.php:59
+msgid "Notes"
+msgstr ""
+
+#: admin/views/members.php:60
+msgid "Internal: XI Retiro - Mesa 1…"
+msgstr ""
+
+#: admin/views/members.php:65
 msgid "The members of the group. On their birthday they open “Especially” in the daily message. Only the leaders see this list."
 msgstr ""
 
-#: admin/views/members.php:67
+#: admin/views/members.php:71
 msgid "Member"
 msgstr ""
 
-#: admin/views/members.php:68
+#: admin/views/members.php:72
 #: includes/class-privacy.php:94
 msgid "Phone"
 msgstr ""
 
-#: admin/views/members.php:70
+#: admin/views/members.php:74
 msgid "Actions"
 msgstr ""
 
-#: admin/views/members.php:110
+#: admin/views/members.php:117
 msgid "No members yet."
 msgstr ""
 
-#: admin/views/members.php:113
+#: admin/views/members.php:120
 msgid "Add a member"
 msgstr ""
 
-#: admin/views/members.php:130
+#: admin/views/members.php:138
 msgid "Add member"
 msgstr ""
 
@@ -2085,7 +2093,7 @@ msgid "You can only move intentions between groups you lead."
 msgstr ""
 
 #: includes/class-intentions.php:875
-#: includes/class-members.php:213
+#: includes/class-members.php:219
 msgid "The phone number is not valid."
 msgstr ""
 
@@ -2172,19 +2180,19 @@ msgstr ""
 msgid "Withdrawn by the requester"
 msgstr ""
 
-#: includes/class-members.php:69
+#: includes/class-members.php:70
 msgid "The member does not exist."
 msgstr ""
 
-#: includes/class-members.php:232
+#: includes/class-members.php:238
 msgid "The date of death must be a valid day, today or earlier."
 msgstr ""
 
-#: includes/class-members.php:236
+#: includes/class-members.php:242
 msgid "Write the name of the member."
 msgstr ""
 
-#: includes/class-members.php:242
+#: includes/class-members.php:248
 msgid "The birthday is not a valid day."
 msgstr ""
 

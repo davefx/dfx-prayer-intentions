@@ -67,6 +67,17 @@ class MembersTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Internal notes about a member (the retreat he walked, his table…).
+	 */
+	public function test_notes(): void {
+		$id = $this->members->create( $this->group, array( 'name' => 'Pablo Navarro', 'notes' => " Caminó en el XI Retiro (Mesa 4)\nCoro " ) );
+		$this->assertSame( "Caminó en el XI Retiro (Mesa 4)\nCoro", $this->members->get( $id )['notes'] );
+
+		$this->assertTrue( $this->members->update( $id, array( 'called' => 'Pablo Navarro' ) ) );
+		$this->assertSame( "Caminó en el XI Retiro (Mesa 4)\nCoro", $this->members->get( $id )['notes'] );
+	}
+
+	/**
 	 * Wrong data is refused.
 	 */
 	public function test_validation(): void {

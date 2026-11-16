@@ -26,10 +26,12 @@ test( 'leaders keep the brothers, and those whose birthday it is open the daily 
 	await add.getByLabel( 'Phone (WhatsApp)' ).fill( '600 11 22 33' );
 	await add.getByLabel( 'Day of birth' ).fill( String( day ) );
 	await add.getByLabel( 'Month of birth' ).selectOption( String( month ) );
+	await add.getByLabel( 'Notes' ).fill( 'XI Retiro - Mesa 1' );
 	await add.getByRole( 'button', { name: 'Add member' } ).click();
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Member saved.' );
 	await expect( page.locator( 'table.dfxpray-members' ) ).toContainText( 'Ramón García Sanz' );
 	await expect( page.locator( 'table.dfxpray-members' ) ).toContainText( '600112233' );
+	await expect( page.locator( '.dfxpray-member-notes' ) ).toHaveText( 'XI Retiro - Mesa 1' );
 
 	await page.goto( groupUrl( group.id, 'index' ) );
 	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /\*Especially\*\n• N\.H\. Ramón García: on his birthday/ );

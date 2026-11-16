@@ -55,6 +55,10 @@ $dfxpray_fields = static function ( array $member, array $months, string $suffix
 		<input type="date" id="dfxpray-member-death-<?php echo esc_attr( $suffix ); ?>" name="member[death_date]" value="<?php echo esc_attr( (string) ( $member['death_date'] ?? '' ) ); ?>" max="<?php echo esc_attr( DFXPRAY_Clock::get_instance()->today() ); ?>">
 		<br><small><?php esc_html_e( 'He is then no longer mentioned on his birthday, and we pray especially for him every year on the anniversary of his death.', 'dfx-prayer-intentions' ); ?></small>
 	</p>
+	<p>
+		<label for="dfxpray-member-notes-<?php echo esc_attr( $suffix ); ?>"><?php esc_html_e( 'Notes', 'dfx-prayer-intentions' ); ?></label><br>
+		<textarea class="large-text" rows="2" id="dfxpray-member-notes-<?php echo esc_attr( $suffix ); ?>" name="member[notes]" placeholder="<?php esc_attr_e( 'Internal: XI Retiro - Mesa 1…', 'dfx-prayer-intentions' ); ?>"><?php echo esc_textarea( (string) ( $member['notes'] ?? '' ) ); ?></textarea>
+	</p>
 	<?php
 };
 ?>
@@ -77,6 +81,9 @@ $dfxpray_fields = static function ( array $member, array $months, string $suffix
 						<strong><?php echo esc_html( $dfxpray_member['name'] ); ?></strong>
 						<?php if ( '' !== $dfxpray_member['called'] ) : ?>
 							<br><small><?php echo esc_html( $dfxpray_member['called'] ); ?></small>
+						<?php endif; ?>
+						<?php if ( '' !== $dfxpray_member['notes'] ) : ?>
+							<br><small class="dfxpray-member-notes"><?php echo nl2br( esc_html( $dfxpray_member['notes'] ) ); ?></small>
 						<?php endif; ?>
 					</td>
 					<td><?php echo esc_html( $dfxpray_member['phone'] ); ?></td>
@@ -122,6 +129,7 @@ $dfxpray_fields = static function ( array $member, array $months, string $suffix
 			'birth_month' => null,
 			'birth_year'  => null,
 			'death_date'  => null,
+			'notes'       => '',
 		),
 		$dfxpray_months,
 		'new'

@@ -27,7 +27,8 @@ final class DFXPRAY_Members {
 	 * Add a member to a group.
 	 *
 	 * @param int   $group_id Group ID.
-	 * @param array $data     name, called, phone, birth_day, birth_month, birth_year, death_date.
+	 * @param array $data     name, called, phone, birth_day, birth_month, birth_year, death_date,
+	 *                        notes.
 	 * @return int|WP_Error Member ID.
 	 */
 	public function create( int $group_id, array $data ) {
@@ -199,12 +200,17 @@ final class DFXPRAY_Members {
 			'birth_month' => null,
 			'birth_year'  => null,
 			'death_date'  => null,
+			'notes'       => '',
 		);
 
 		foreach ( array( 'name', 'called' ) as $field ) {
 			if ( array_key_exists( $field, $data ) ) {
 				$r[ $field ] = mb_substr( trim( sanitize_text_field( (string) $data[ $field ] ) ), 0, self::NAME_MAX_LENGTH );
 			}
+		}
+
+		if ( array_key_exists( 'notes', $data ) ) {
+			$r['notes'] = trim( sanitize_textarea_field( (string) $data['notes'] ) );
 		}
 
 		if ( array_key_exists( 'phone', $data ) ) {
@@ -250,6 +256,7 @@ final class DFXPRAY_Members {
 			'birth_month' => $month,
 			'birth_year'  => $r['birth_year'],
 			'death_date'  => $death,
+			'notes'       => $r['notes'],
 		);
 	}
 
@@ -272,6 +279,7 @@ final class DFXPRAY_Members {
 			'birth_month' => $int( $row['birth_month'] ),
 			'birth_year'  => $int( $row['birth_year'] ),
 			'death_date'  => $row['death_date'],
+			'notes'       => (string) $row['notes'],
 			'created_at'  => $row['created_at'],
 			'updated_at'  => $row['updated_at'],
 		);

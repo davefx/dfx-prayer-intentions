@@ -56,6 +56,8 @@ T = {
 "One-off events: days after the date": "Eventos puntuales: días tras la fecha",
 "After that, the intention goes to review.": "Después, la intención pasa a revisión.",
 "Deceased: days after the death": "Difuntos: días tras el fallecimiento",
+"Notes": "Notas",
+"Internal: XI Retiro - Mesa 1…": "Interno: XI Retiro - Mesa 1…",
 "They open “Especially”, and so do the members who have died, on the anniversary of their death. The dates are kept in the Members tab.": "Abren «Especialmente», igual que los miembros fallecidos en el aniversario de su fallecimiento. Las fechas se guardan en la pestaña Miembros.",
 "The date of death must be a valid day, today or earlier.": "La fecha de fallecimiento debe ser un día válido, hoy o anterior.",
 "%1$s: on the anniversary of his death († %2$s)": "%1$s: en el aniversario de su fallecimiento († %2$s)",

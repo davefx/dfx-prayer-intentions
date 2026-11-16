@@ -19,7 +19,7 @@ final class DFXPRAY_Installer {
 	/**
 	 * Schema version. Bump it whenever get_schema() changes.
 	 */
-	public const DB_VERSION = '8';
+	public const DB_VERSION = '9';
 
 	/**
 	 * The capability that gives access to the leaders' panel.
@@ -218,6 +218,7 @@ CREATE TABLE {$t['members']} (
   birth_month tinyint(2) unsigned NULL,
   birth_year smallint(4) unsigned NULL,
   death_date date NULL,
+  notes text NULL,
   created_at datetime NOT NULL,
   updated_at datetime NOT NULL,
   PRIMARY KEY  (id),

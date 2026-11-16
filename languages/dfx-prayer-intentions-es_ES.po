@@ -11,7 +11,7 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T05:01:42+00:00\n"
+"POT-Creation-Date: 2026-11-16T05:53:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -1154,7 +1154,7 @@ msgid "edited by %1$s on %2$s"
 msgstr "editado por %1$s el %2$s"
 
 #: admin/views/intention-edit.php:280
-#: admin/views/members.php:95
+#: admin/views/members.php:102
 #: includes/class-app.php:335
 msgid "Edit"
 msgstr "Editar"
@@ -1164,7 +1164,7 @@ msgid "Comment"
 msgstr "Comentario"
 
 #: admin/views/intention-edit.php:289
-#: admin/views/members.php:98
+#: admin/views/members.php:105
 #: includes/class-app.php:298
 msgid "Save"
 msgstr "Guardar"
@@ -1174,7 +1174,7 @@ msgid "Turn into an update"
 msgstr "Convertir en actualización"
 
 #: admin/views/intention-edit.php:305
-#: admin/views/members.php:101
+#: admin/views/members.php:108
 msgid "Delete"
 msgstr "Borrar"
 
@@ -1291,7 +1291,7 @@ msgid "How he is called"
 msgstr "Cómo se le nombra"
 
 #: admin/views/members.php:43
-#: admin/views/members.php:69
+#: admin/views/members.php:73
 msgid "Birthday"
 msgstr "Cumpleaños"
 
@@ -1323,32 +1323,40 @@ msgstr "Fecha de fallecimiento"
 msgid "He is then no longer mentioned on his birthday, and we pray especially for him every year on the anniversary of his death."
 msgstr "Entonces ya no se le menciona en su cumpleaños, y pedimos especialmente por él cada año en el aniversario de su fallecimiento."
 
-#: admin/views/members.php:61
+#: admin/views/members.php:59
+msgid "Notes"
+msgstr "Notas"
+
+#: admin/views/members.php:60
+msgid "Internal: XI Retiro - Mesa 1…"
+msgstr "Interno: XI Retiro - Mesa 1…"
+
+#: admin/views/members.php:65
 msgid "The members of the group. On their birthday they open “Especially” in the daily message. Only the leaders see this list."
 msgstr "Los miembros del grupo. El día de su cumpleaños abren «Especialmente» en el mensaje diario. Solo los líderes ven esta lista."
 
-#: admin/views/members.php:67
+#: admin/views/members.php:71
 msgid "Member"
 msgstr "Miembro"
 
-#: admin/views/members.php:68
+#: admin/views/members.php:72
 #: includes/class-privacy.php:94
 msgid "Phone"
 msgstr "Teléfono"
 
-#: admin/views/members.php:70
+#: admin/views/members.php:74
 msgid "Actions"
 msgstr "Acciones"
 
-#: admin/views/members.php:110
+#: admin/views/members.php:117
 msgid "No members yet."
 msgstr "Todavía no hay miembros."
 
-#: admin/views/members.php:113
+#: admin/views/members.php:120
 msgid "Add a member"
 msgstr "Añadir un miembro"
 
-#: admin/views/members.php:130
+#: admin/views/members.php:138
 msgid "Add member"
 msgstr "Añadir miembro"
 
@@ -2087,7 +2095,7 @@ msgid "You can only move intentions between groups you lead."
 msgstr "Solo puedes trasladar intenciones entre grupos que diriges."
 
 #: includes/class-intentions.php:875
-#: includes/class-members.php:213
+#: includes/class-members.php:219
 msgid "The phone number is not valid."
 msgstr "El teléfono no es válido."
 
@@ -2174,19 +2182,19 @@ msgstr "Caducada"
 msgid "Withdrawn by the requester"
 msgstr "Retirada por el solicitante"
 
-#: includes/class-members.php:69
+#: includes/class-members.php:70
 msgid "The member does not exist."
 msgstr "El miembro no existe."
 
-#: includes/class-members.php:232
+#: includes/class-members.php:238
 msgid "The date of death must be a valid day, today or earlier."
 msgstr "La fecha de fallecimiento debe ser un día válido, hoy o anterior."
 
-#: includes/class-members.php:236
+#: includes/class-members.php:242
 msgid "Write the name of the member."
 msgstr "Escribe el nombre del miembro."
 
-#: includes/class-members.php:242
+#: includes/class-members.php:248
 msgid "The birthday is not a valid day."
 msgstr "El cumpleaños no es un día válido."
 
