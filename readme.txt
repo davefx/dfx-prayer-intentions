@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.35
+Stable tag: 26.11.36
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.36 =
+* The six tabs of the app fit in one row on a phone; the day the Members tab opens on is no longer hidden under the header.
 
 = 26.11.35 =
 * The app has a Members tab: the year by month and day of their birthdays (and of the anniversaries of those who died), opening on today or the next day with someone, with their notes and a WhatsApp link.

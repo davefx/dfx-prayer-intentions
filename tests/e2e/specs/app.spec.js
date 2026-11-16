@@ -289,6 +289,10 @@ test( 'the Members tab goes through the year by month and opens on today or the 
 	await page.goto( APP );
 	await page.getByRole( 'button', { name: 'Members' } ).click();
 
+	const tops = await page.locator( '.dfx-nav button' ).evaluateAll( ( buttons ) => buttons.map( ( b ) => Math.round( b.getBoundingClientRect().top ) ) );
+	expect( tops ).toHaveLength( 6 );
+	expect( new Set( tops ).size, 'The six tabs fit in one row on a phone.' ).toBe( 1 );
+
 	const months = page.locator( '.dfx-month > summary' );
 	await expect( months ).toHaveCount( 13 );
 	await expect( months.first() ).toContainText( 'January' );
@@ -299,6 +303,8 @@ test( 'the Members tab goes through the year by month and opens on today or the 
 
 	const focused = page.locator( '.dfx-day:focus' );
 	await expect( focused ).toContainText( 'Teo' );
+	const headerBottom = await page.locator( '.dfx-header' ).evaluate( ( el ) => el.getBoundingClientRect().bottom );
+	expect( await focused.evaluate( ( el ) => el.getBoundingClientRect().top ), 'The day is not hidden under the header.' ).toBeGreaterThanOrEqual( headerBottom );
 	const teo = page.locator( '.dfx-member', { hasText: 'Teo' } );
 	await expect( teo ).toContainText( 'Birthday' );
 	await expect( teo ).toContainText( 'XI Retiro - Mesa 1' );
