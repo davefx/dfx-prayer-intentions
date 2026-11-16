@@ -277,6 +277,40 @@ test( 'an intention prayed for until a day leaves the message by itself the day 
 	freeze( null );
 } );
 
+test( 'the Members tab goes through the year by month and opens on today or the next day with someone', async ( { page } ) => {
+	freeze( '2026-11-16 10:00' );
+	php( `$m = DFXPRAY_Members::get_instance();
+		$m->create( ${ group.id }, array( 'name' => 'Luis Gómez', 'birth_day' => '10', 'birth_month' => '1', 'birth_year' => '1960' ) );
+		$m->create( ${ group.id }, array( 'name' => 'Teo Martín', 'phone' => '600 11 22 33', 'birth_day' => '20', 'birth_month' => '11', 'notes' => 'XI Retiro - Mesa 1' ) );
+		$m->create( ${ group.id }, array( 'name' => 'Ramón Vallvé', 'death_date' => '2023-12-27' ) );
+		$m->create( ${ group.id }, array( 'name' => 'Pepe Ruiz' ) );
+		echo 1;` );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Members' } ).click();
+
+	const months = page.locator( '.dfx-month > summary' );
+	await expect( months ).toHaveCount( 13 );
+	await expect( months.first() ).toContainText( 'January' );
+	await expect( months.nth( 10 ) ).toContainText( 'November' );
+	await expect( months.last() ).toContainText( 'No date' );
+	await expect( page.locator( '.dfx-month[open] > summary' ) ).toHaveCount( 1 );
+	await expect( page.locator( '.dfx-month[open] > summary' ) ).toContainText( 'November' );
+
+	const focused = page.locator( '.dfx-day:focus' );
+	await expect( focused ).toContainText( 'Teo' );
+	const teo = page.locator( '.dfx-member', { hasText: 'Teo' } );
+	await expect( teo ).toContainText( 'Birthday' );
+	await expect( teo ).toContainText( 'XI Retiro - Mesa 1' );
+	await expect( teo.getByRole( 'link', { name: 'WhatsApp' } ) ).toHaveAttribute( 'href', 'https://wa.me/34600112233' );
+
+	await months.nth( 11 ).click();
+	await expect( page.locator( '.dfx-member', { hasText: 'Ramón' } ) ).toContainText( 'Anniversary of his death († 2023)' );
+	await months.first().click();
+	await expect( page.locator( '.dfx-member', { hasText: 'Luis' } ) ).toContainText( 'Turns 67' );
+	freeze( null );
+} );
+
 test( 'requests from the form are moderated in the app', async ( { page } ) => {
 	createIntention( group.id, { beneficiary_name: 'Pedro', relationship: 'hermano de', summary: '' }, 'form' );
 	await login( page, 'leader1' );

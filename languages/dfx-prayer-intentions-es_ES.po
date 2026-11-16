@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.33\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.34\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/proposals-index\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish (Spain)\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T09:24:12+00:00\n"
+"POT-Creation-Date: 2026-11-16T10:53:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -43,7 +43,7 @@ msgstr "https://davefx.com"
 
 #: admin/class-admin-actions.php:118
 #: admin/class-admin-actions.php:139
-#: includes/class-app-api.php:107
+#: includes/class-app-api.php:110
 msgid "Unknown action."
 msgstr "Acción desconocida."
 
@@ -52,7 +52,7 @@ msgid "The link has expired. Please try again."
 msgstr "El enlace ha caducado. Vuelve a intentarlo."
 
 #: admin/class-admin-actions.php:143
-#: includes/class-app-api.php:302
+#: includes/class-app-api.php:339
 #: includes/class-app.php:142
 msgid "You are not allowed to do that."
 msgstr "No tienes permiso para hacer eso."
@@ -213,6 +213,7 @@ msgid "Index"
 msgstr "Índice"
 
 #: admin/class-admin.php:95
+#: includes/class-app.php:353
 msgid "Members"
 msgstr "Miembros"
 
@@ -729,7 +730,7 @@ msgstr "Todavía no estás asignado a ningún grupo. Pídeselo al administrador 
 #: admin/views/groups.php:54
 #: admin/views/intention-edit.php:322
 #: admin/views/intentions.php:42
-#: includes/class-app.php:357
+#: includes/class-app.php:365
 msgid "Add intention"
 msgstr "Añadir intención"
 
@@ -815,7 +816,7 @@ msgstr "%s caracteres"
 
 #: admin/views/index.php:62
 #: admin/views/index.php:69
-#: includes/class-app.php:369
+#: includes/class-app.php:377
 msgid "Monthly list"
 msgstr "Lista mensual"
 
@@ -967,7 +968,7 @@ msgstr "Fecha de fallecimiento"
 
 #: admin/views/intention-edit.php:184
 #: admin/views/intention-edit.php:209
-#: includes/class-app.php:382
+#: includes/class-app.php:390
 msgid "Time"
 msgstr "Hora"
 
@@ -1002,7 +1003,7 @@ msgid "What they told us"
 msgstr "Lo que nos contó"
 
 #: admin/views/intention-edit.php:220
-#: includes/class-app.php:355
+#: includes/class-app.php:363
 msgid "Never published. Only leaders read it."
 msgstr "Nunca se publica. Solo lo leen los líderes."
 
@@ -1031,7 +1032,7 @@ msgid "Message"
 msgstr "Mensaje"
 
 #: admin/views/intention-edit.php:249
-#: includes/class-app.php:377
+#: includes/class-app.php:385
 msgid "Topic"
 msgstr "Tema"
 
@@ -1064,7 +1065,7 @@ msgstr "Discreción y nombres"
 #: admin/views/intention-edit.php:271
 #: admin/views/moderation.php:43
 #: admin/views/partials/intention-facts.php:35
-#: includes/class-app.php:383
+#: includes/class-app.php:391
 #: includes/class-privacy.php:101
 msgid "Discretion"
 msgstr "Discreción"
@@ -1082,7 +1083,7 @@ msgid "Requester, as described"
 msgstr "Quien lo pide, descrito"
 
 #: admin/views/intention-edit.php:286
-#: includes/class-app.php:379
+#: includes/class-app.php:387
 msgid "Description of the requester instead of the name"
 msgstr "Descripción de quien lo pide en lugar del nombre"
 
@@ -1091,7 +1092,7 @@ msgid "Beneficiary, as described"
 msgstr "Por quien se pide, descrito"
 
 #: admin/views/intention-edit.php:287
-#: includes/class-app.php:380
+#: includes/class-app.php:388
 msgid "Description of the beneficiary instead of the name"
 msgstr "Descripción de la persona por quien se pide en lugar del nombre"
 
@@ -1115,23 +1116,23 @@ msgid "Or pray for it only until"
 msgstr "O rezar solo hasta el"
 
 #: admin/views/intention-edit.php:308
-#: includes/class-app.php:360
+#: includes/class-app.php:368
 msgid "The day after, it leaves the messages and closes by itself."
 msgstr "Al día siguiente deja de salir en los mensajes y se cierra sola."
 
 #: admin/views/intention-edit.php:312
 #: admin/views/intention-edit.php:314
-#: includes/class-app.php:374
+#: includes/class-app.php:382
 msgid "Pending to ask"
 msgstr "Pendiente de preguntar"
 
 #: admin/views/intention-edit.php:316
-#: includes/class-app.php:370
+#: includes/class-app.php:378
 msgid "Ask by WhatsApp how it goes"
 msgstr "Preguntar por WhatsApp cómo sigue"
 
 #: admin/views/intention-edit.php:322
-#: includes/class-app.php:378
+#: includes/class-app.php:386
 msgid "Save changes"
 msgstr "Guardar cambios"
 
@@ -1198,7 +1199,7 @@ msgstr "editado por %1$s el %2$s"
 
 #: admin/views/intention-edit.php:375
 #: admin/views/members.php:102
-#: includes/class-app.php:365
+#: includes/class-app.php:373
 msgid "Edit"
 msgstr "Editar"
 
@@ -1323,7 +1324,7 @@ msgid "Requester"
 msgstr "Solicitante"
 
 #: admin/views/intentions.php:78
-#: includes/class-app.php:359
+#: includes/class-app.php:367
 msgid "Next review"
 msgstr "Próxima revisión"
 
@@ -1353,6 +1354,7 @@ msgstr "Teléfono (WhatsApp)"
 
 #: admin/views/members.php:43
 #: admin/views/members.php:73
+#: includes/class-app.php:354
 msgid "Birthday"
 msgstr "Cumpleaños"
 
@@ -1719,75 +1721,98 @@ msgstr "Qué es de %s"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: includes/class-app.php:353
+#. translators: %d: the age a member turns.
+#: includes/class-app.php:356
+#, php-format
+msgid "Turns %d"
+msgstr "Cumple %d años"
+
+#: includes/class-app.php:357
+msgid "Anniversary of his death"
+msgstr "Aniversario de su fallecimiento"
+
+#: includes/class-app.php:358
+#: includes/class-digest-composer.php:107
+msgid "Tomorrow"
+msgstr "Mañana"
+
+#: includes/class-app.php:359
+msgid "Nobody this month."
+msgstr "Nadie este mes."
+
+#: includes/class-app.php:360
+msgid "No date"
+msgstr "Sin fecha"
+
+#: includes/class-app.php:361
 msgid "Edit intention"
 msgstr "Editar intención"
 
-#: includes/class-app.php:354
+#: includes/class-app.php:362
 msgid "Full text"
 msgstr "Texto completo"
 
-#: includes/class-app.php:356
+#: includes/class-app.php:364
 #: includes/class-digest-composer.php:106
 msgid "High priority"
 msgstr "Prioridad alta"
 
-#: includes/class-app.php:358
+#: includes/class-app.php:366
 #: includes/class-privacy.php:91
 #: blocks/form/editor.js:28
 msgid "Group"
 msgstr "Grupo"
 
-#: includes/class-app.php:361
+#: includes/class-app.php:369
 msgctxt "followed by the last day an intention is prayed for"
 msgid "Until"
 msgstr "Hasta el"
 
-#: includes/class-app.php:362
+#: includes/class-app.php:370
 msgid "To install it, use “Add to home screen” in your browser’s menu."
 msgstr "Para instalarla, usa «Añadir a pantalla de inicio» en el menú del navegador."
 
-#: includes/class-app.php:363
+#: includes/class-app.php:371
 msgid "You do not lead any group yet."
 msgstr "Todavía no diriges ningún grupo."
 
-#: includes/class-app.php:364
+#: includes/class-app.php:372
 msgid "Discard this request?"
 msgstr "¿Descartar esta petición?"
 
-#: includes/class-app.php:366
+#: includes/class-app.php:374
 msgid "Added on"
 msgstr "Añadida el"
 
-#: includes/class-app.php:367
+#: includes/class-app.php:375
 msgid "Asked by"
 msgstr "Pide"
 
-#: includes/class-app.php:368
+#: includes/class-app.php:376
 msgid "Daily"
 msgstr "Diario"
 
-#: includes/class-app.php:371
+#: includes/class-app.php:379
 msgid "To ask"
 msgstr "Consultar"
 
-#: includes/class-app.php:372
+#: includes/class-app.php:380
 msgid "Pending to ask how they go"
 msgstr "Pendientes de preguntar cómo siguen"
 
-#: includes/class-app.php:373
+#: includes/class-app.php:381
 msgid "Those you marked to ask about, and those whose review date has come. Adding an update or closing one takes it off the list."
 msgstr "Las que marcaste para preguntar y las que ya han llegado a su fecha de revisión. Al añadir una actualización o cerrarla, sale de la lista."
 
-#: includes/class-app.php:375
+#: includes/class-app.php:383
 msgid "Ask about all of them by WhatsApp"
 msgstr "Preguntar por todas por WhatsApp"
 
-#: includes/class-app.php:376
+#: includes/class-app.php:384
 msgid "No phone yet: add it when editing one of them."
 msgstr "Aún sin teléfono: añádelo al editar cualquiera de ellas."
 
-#: includes/class-app.php:381
+#: includes/class-app.php:389
 msgid "Only for discreet cases: “La hija de N.H. Axel”. Nothing is added to it."
 msgstr "Solo para casos discretos: «La hija de N.H. Axel». No se le añade nada."
 
@@ -1851,10 +1876,6 @@ msgstr "Sin aviso de hora"
 #: includes/class-digest-composer.php:105
 msgid "News"
 msgstr "Novedades"
-
-#: includes/class-digest-composer.php:107
-msgid "Tomorrow"
-msgstr "Mañana"
 
 #: includes/class-digest-composer.php:108
 msgid "Recently departed"
@@ -2038,13 +2059,13 @@ msgid "You"
 msgstr "Tú"
 
 #. translators: 1: person (or "A private intention"), 2: summary or update.
-#: includes/class-formatter.php:268
+#: includes/class-formatter.php:279
 #, php-format
 msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
 
 #. translators: PHP date format for the full date with the weekday, see https://www.php.net/manual/datetime.format.php
-#: includes/class-formatter.php:368
+#: includes/class-formatter.php:379
 msgctxt "long date format"
 msgid "l, F j, Y"
 msgstr "l, j \d\e F \d\e Y"
@@ -2194,7 +2215,7 @@ msgid "You can only move intentions between groups you lead."
 msgstr "Solo puedes trasladar intenciones entre grupos que diriges."
 
 #: includes/class-intentions.php:925
-#: includes/class-members.php:219
+#: includes/class-members.php:310
 msgid "The phone number is not valid."
 msgstr "El teléfono no es válido."
 
@@ -2302,15 +2323,15 @@ msgstr "Retirada por el solicitante"
 msgid "The member does not exist."
 msgstr "El miembro no existe."
 
-#: includes/class-members.php:238
+#: includes/class-members.php:329
 msgid "The date of death must be a valid day, today or earlier."
 msgstr "La fecha de fallecimiento debe ser un día válido, hoy o anterior."
 
-#: includes/class-members.php:242
+#: includes/class-members.php:333
 msgid "Write the name of the member."
 msgstr "Escribe el nombre del miembro."
 
-#: includes/class-members.php:248
+#: includes/class-members.php:339
 msgid "The birthday is not a valid day."
 msgstr "El cumpleaños no es un día válido."
 

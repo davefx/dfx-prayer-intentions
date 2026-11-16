@@ -235,6 +235,21 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The members of a group, by their next birthday or anniversary.
+	 */
+	public function test_members(): void {
+		DFXPRAY_Members::get_instance()->create( $this->mine, array( 'name' => 'Teo Martín', 'phone' => '600 11 22 33', 'birth_day' => '30', 'birth_month' => '9', 'notes' => 'XI Retiro - Mesa 1' ) );
+		DFXPRAY_Members::get_instance()->create( $this->mine, array( 'name' => 'Luis Gómez', 'birth_day' => '25', 'birth_month' => '9' ) );
+
+		$result = $this->call( 'members', array( 'group_id' => $this->mine ) );
+
+		$this->assertTrue( $result['ok'] );
+		$this->assertSame( array( 'Luis Gómez', 'Teo Martín' ), array_column( $result['data']['members'], 'name' ) );
+		$this->assertSame( 'XI Retiro - Mesa 1', $result['data']['members'][1]['notes'] );
+		$this->assertSame( 'https://wa.me/34600112233', $result['data']['members'][1]['whatsapp'] );
+	}
+
+	/**
 	 * Reading another group's data is refused.
 	 */
 	public function test_other_group_cannot_be_read(): void {
@@ -243,6 +258,7 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'forbidden', $this->call( 'index', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'list', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'get', array( 'intention_id' => $id ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'members', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'preview', array( 'group_id' => $this->other, 'intention' => array( 'summary' => 'x' ) ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'preview', array( 'group_id' => $this->mine, 'intention_id' => $id, 'intention' => array( 'summary' => 'x' ) ) )['code'] );
 	}

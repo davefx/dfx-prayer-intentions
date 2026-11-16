@@ -165,6 +165,17 @@ final class DFXPRAY_Formatter {
 			$phone = (string) $this->clean_phone( (string) ( $intention['requester_contact'] ?? '' ) );
 		}
 
+		return $this->wa_number( $phone );
+	}
+
+	/**
+	 * A phone as WhatsApp takes it: international, digits only, with the
+	 * site's country code when it has none; '' if it is not a phone.
+	 *
+	 * @param string $phone Phone, as written.
+	 */
+	public function wa_number( string $phone ): string {
+		$phone = (string) $this->clean_phone( $phone );
 		if ( '' === $phone ) {
 			return '';
 		}

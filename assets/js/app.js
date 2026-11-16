@@ -116,6 +116,7 @@
 		intentions: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
 		moderation: 'M4 13l2-8h12l2 8M4 13v6h16v-6M4 13h5l1 2h4l1-2h5',
 		add: 'M12 5v14M5 12h14',
+		members: 'M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20M9 11a3.5 3.5 0 1 0 0-7a3.5 3.5 0 1 0 0 7M22 20v-1.5a4 4 0 0 0-3-3.9M16 4.1a3.5 3.5 0 0 1 0 6.8',
 		ask: 'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12zM9.6 9.4a2.4 2.4 0 1 1 3.3 2.2c-.5.3-.9.7-.9 1.4M12 15.8h.01',
 	};
 
@@ -242,7 +243,7 @@
 	}
 
 	function nav() {
-		const tabs = { today: S.today, intentions: S.intentions, ask: S.toAskTab, moderation: S.moderation, add: S.add };
+		const tabs = { today: S.today, intentions: S.intentions, ask: S.toAskTab, members: S.members, moderation: S.moderation, add: S.add };
 		return h(
 			'nav',
 			{ class: 'dfx-nav' },
@@ -327,6 +328,8 @@
 				return toAsk();
 			case 'moderation':
 				return moderation();
+			case 'members':
+				return membersTab();
 			case 'add':
 				return addForm();
 			default:
@@ -861,6 +864,123 @@
 				return render();
 			} )
 		);
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Members: the year by month, by the day of their birthday           */
+	/* ------------------------------------------------------------------ */
+
+	/**
+	 * The members by month and day of their birthday (or of the death of
+	 * those who died), January to December, with those without a date
+	 * last. The current month opens on today, or on the next day with
+	 * someone; if nobody is left this month, the next month with someone
+	 * opens too.
+	 */
+	async function membersTab() {
+		const t = ticket();
+		loading();
+		const result = await api( 'members', { group_id: state.group } );
+		if ( stale( t ) ) {
+			return;
+		}
+		if ( ! result.ok ) {
+			return frame( h( 'p', { class: 'dfx-notice is-error' }, result.message ) );
+		}
+
+		const now = toDate( C.today );
+		const thisMonth = now.getMonth() + 1;
+		const byMonth = {};
+		const undated = [];
+		result.data.members.forEach( ( member ) => {
+			if ( member.month ) {
+				( byMonth[ member.month ] = byMonth[ member.month ] || [] ).push( member );
+			} else {
+				undated.push( member );
+			}
+		} );
+
+		let target = null;
+		for ( let k = 0; k < 12 && ! target; k++ ) {
+			const month = ( ( thisMonth - 1 + k ) % 12 ) + 1;
+			const next = ( byMonth[ month ] || [] ).find( ( member ) => k > 0 || member.day >= now.getDate() );
+			if ( next ) {
+				target = { month, day: next.day };
+			}
+		}
+
+		const monthName = ( month ) => {
+			const name = new Intl.DateTimeFormat( LOCALE, { month: 'long' } ).format( new Date( 2000, month - 1, 1 ) );
+			return name.charAt( 0 ).toUpperCase() + name.slice( 1 );
+		};
+
+		const card = ( member ) => {
+			let occasion = S.birthday;
+			if ( 'anniversary' === member.kind ) {
+				occasion = S.deathAnniversary + ' († ' + String( member.death_date ).slice( 0, 4 ) + ')';
+			} else if ( member.years ) {
+				occasion = S.turns.replace( '%d', member.years );
+			}
+			let when = null;
+			if ( 0 === member.days ) {
+				when = S.today;
+			} else if ( 1 === member.days ) {
+				when = S.tomorrow;
+			}
+			return h(
+				'div',
+				{ class: 'dfx-member' },
+				h( 'p', { class: 'dfx-member-name' }, h( 'strong', {}, member.shown ), member.shown !== member.name ? h( 'span', { class: 'dfx-muted' }, ' · ' + member.name ) : null ),
+				member.kind ? h( 'p', { class: 'dfx-occasion' }, when ? h( 'span', { class: 'dfx-chip is-ask' }, when ) : null, ' ', occasion ) : null,
+				member.notes ? h( 'small', { class: 'dfx-muted' }, member.notes ) : null,
+				member.whatsapp && 'anniversary' !== member.kind ? h( 'a', { class: 'dfx-button dfx-ask', href: member.whatsapp, target: '_blank', rel: 'noopener' }, S.whatsapp ) : null
+			);
+		};
+
+		const days = ( members ) => {
+			const groups = [];
+			members.forEach( ( member ) => {
+				const last = groups[ groups.length - 1 ];
+				if ( last && last.day === member.day ) {
+					last.members.push( member );
+				} else {
+					groups.push( { day: member.day, month: member.month, next: member.next, members: [ member ] } );
+				}
+			} );
+			return groups.map( ( group ) =>
+				h(
+					'section',
+					{ class: 'dfx-day' + ( 0 === group.members[ 0 ].days ? ' is-today' : '' ), id: 'dfx-day-' + group.month + '-' + group.day, tabindex: '-1' },
+					h( 'h3', { class: 'dfx-day-title' }, h( 'span', { class: 'dfx-day-number' }, String( group.day ) ), ' ', formatDate( group.next, { weekday: 'long' } ) ),
+					group.members.map( card )
+				)
+			);
+		};
+
+		const months = [];
+		for ( let month = 1; month <= 12; month++ ) {
+			const members = byMonth[ month ] || [];
+			const open = month === thisMonth || ( target && month === target.month );
+			months.push(
+				h(
+					'details',
+					{ class: 'dfx-month', open: open ? true : null },
+					h( 'summary', {}, monthName( month ), ' ', h( 'span', { class: 'dfx-count' }, String( members.length ) ) ),
+					members.length ? days( members ) : h( 'p', { class: 'dfx-muted' }, S.nobody )
+				)
+			);
+		}
+		if ( undated.length ) {
+			months.push( h( 'details', { class: 'dfx-month' }, h( 'summary', {}, S.noDate, ' ', h( 'span', { class: 'dfx-count' }, String( undated.length ) ) ), undated.map( card ) ) );
+		}
+
+		frame( h( 'h2', {}, S.members ), months );
+
+		const day = target ? document.getElementById( 'dfx-day-' + target.month + '-' + target.day ) : null;
+		if ( day ) {
+			day.scrollIntoView( { block: 'start' } );
+			day.focus( { preventScroll: true } );
+		}
 	}
 
 	/* ------------------------------------------------------------------ */

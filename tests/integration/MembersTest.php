@@ -146,6 +146,35 @@ class MembersTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The members in the order of the calendar, by the month and day of
+	 * their date: the birthday, or the anniversary of the death of those
+	 * who died. Each carries its next date, the days until it and the
+	 * years turned or since; members without a date go last, by name.
+	 */
+	public function test_calendar(): void {
+		$m = $this->members;
+		$m->create( $this->group, array( 'name' => 'Zacarías Pérez' ) );
+		$m->create( $this->group, array( 'name' => 'Luis Gómez', 'birth_day' => '10', 'birth_month' => '1', 'birth_year' => '1960' ) );
+		$m->create( $this->group, array( 'name' => 'Ramón Vallvé', 'birth_day' => '5', 'birth_month' => '3', 'death_date' => '2023-12-27' ) );
+		$m->create( $this->group, array( 'name' => 'Pepe Ruiz' ) );
+		$m->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '20', 'birth_month' => '11' ) );
+		$m->create( $this->group, array( 'name' => 'Javier López', 'called' => 'Javier López', 'birth_day' => '16', 'birth_month' => '11', 'birth_year' => '1972' ) );
+		$m->create( $this->group, array( 'name' => 'Bisiesto Feb', 'birth_day' => '29', 'birth_month' => '2', 'birth_year' => '1980' ) );
+
+		$list = $m->calendar( $this->group, '2026-11-16' );
+
+		$this->assertSame( array( 'Luis Gómez', 'Bisiesto Feb', 'Javier López', 'Teo Martín', 'Ramón Vallvé', 'Pepe Ruiz', 'Zacarías Pérez' ), array_column( $list, 'name' ) );
+		$this->assertSame( array( 1, 2, 11, 11, 12, null, null ), array_column( $list, 'month' ) );
+		$this->assertSame( array( 10, 29, 16, 20, 27, null, null ), array_column( $list, 'day' ) );
+		$this->assertSame( array( 'birthday', 'birthday', 'birthday', 'birthday', 'anniversary', '', '' ), array_column( $list, 'kind' ) );
+		$this->assertSame( array( '2027-01-10', '2027-02-28', '2026-11-16', '2026-11-20', '2026-12-27', null, null ), array_column( $list, 'next' ) );
+		$this->assertSame( array( 55, 104, 0, 4, 41, null, null ), array_column( $list, 'days' ) );
+		$this->assertSame( array( 67, 47, 54, null, 3, null, null ), array_column( $list, 'years' ) );
+		$this->assertSame( 'Javier López', $list[2]['shown'] );
+		$this->assertSame( 'Teo', $list[3]['shown'] );
+	}
+
+	/**
 	 * Deleting a group deletes its members.
 	 */
 	public function test_deleting_the_group_deletes_its_members(): void {

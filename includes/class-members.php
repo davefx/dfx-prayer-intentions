@@ -167,6 +167,97 @@ final class DFXPRAY_Members {
 	}
 
 	/**
+	 * The members of a group in the order of the calendar (month, then
+	 * day) of their date: the birthday, or the anniversary of the death of
+	 * those who died. Each one carries the kind of date ('birthday',
+	 * 'anniversary' or '' when there is none), its month and day, its next
+	 * date from a day, the days until it and the years turned (or since
+	 * the death), when known. Members without a date go last, by name.
+	 *
+	 * @param int    $group_id Group ID.
+	 * @param string $today    Y-m-d.
+	 * @return array[]
+	 */
+	public function calendar( int $group_id, string $today ): array {
+		$clock = DFXPRAY_Clock::get_instance();
+		$from  = $clock->local( $today );
+		$short = $this->short_names( $group_id );
+		$list  = array();
+
+		foreach ( $this->for_group( $group_id ) as $member ) {
+			$entry = array_merge(
+				$member,
+				array(
+					'shown' => $short[ $member['id'] ],
+					'kind'  => '',
+					'month' => null,
+					'day'   => null,
+					'next'  => null,
+					'days'  => null,
+					'years' => null,
+				)
+			);
+
+			if ( null !== $member['death_date'] ) {
+				$entry['kind'] = 'anniversary';
+				$since         = (int) substr( $member['death_date'], 0, 4 );
+				$month         = (int) substr( $member['death_date'], 5, 2 );
+				$day           = (int) substr( $member['death_date'], 8, 2 );
+			} elseif ( null !== $member['birth_day'] ) {
+				$entry['kind'] = 'birthday';
+				$since         = $member['birth_year'];
+				$month         = (int) $member['birth_month'];
+				$day           = (int) $member['birth_day'];
+			}
+
+			if ( '' !== $entry['kind'] ) {
+				$year = (int) $from->format( 'Y' );
+				$next = $this->occurrence( $year, $month, $day );
+				if ( $next < $today || ( 'anniversary' === $entry['kind'] && $next <= $member['death_date'] ) ) {
+					++$year;
+					$next = $this->occurrence( $year, $month, $day );
+				}
+				$entry['month'] = $month;
+				$entry['day']   = $day;
+				$entry['next']  = $next;
+				$entry['days']  = (int) $from->diff( $clock->local( $next ) )->days;
+				$entry['years'] = $since ? $year - (int) $since : null;
+			}
+
+			$list[] = $entry;
+		}
+
+		usort(
+			$list,
+			static function ( array $a, array $b ): int {
+				if ( ( null === $a['month'] ) !== ( null === $b['month'] ) ) {
+					return null === $a['month'] ? 1 : -1;
+				}
+				return array( $a['month'], $a['day'], $a['name'] ) <=> array( $b['month'], $b['day'], $b['name'] );
+			}
+		);
+
+		return $list;
+	}
+
+	/**
+	 * A day of the year in a given year: 29 February is the 28th in
+	 * common years.
+	 *
+	 * @param int $year  Year.
+	 * @param int $month Month.
+	 * @param int $day   Day.
+	 * @return string Y-m-d.
+	 */
+	private function occurrence( int $year, int $month, int $day ): string {
+		if ( 2 === $month && 29 === $day && ! checkdate( 2, 29, $year ) ) {
+			$day = 28;
+		}
+
+		return sprintf( '%04d-%02d-%02d', $year, $month, $day );
+	}
+
+	/**
 	 * Whether a day of the year (month, day) is celebrated on a date.
 	 *
 	 * @param int    $month Month.

@@ -535,6 +535,94 @@ details.dfx-card > :not(summary) {
 	gap: 10px;
 }
 
+/* Members: the year by month -------------------------------------- */
+
+.dfx-month {
+	margin-bottom: 10px;
+	border-radius: var(--radius);
+	background: var(--paper);
+	box-shadow: var(--shadow);
+}
+
+.dfx-month > summary {
+	padding: 14px 16px;
+	color: var(--navy);
+	font-family: var(--display);
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	cursor: pointer;
+}
+
+.dfx-month > :not(summary) {
+	margin: 0 16px;
+}
+
+.dfx-month[open] {
+	padding-bottom: 12px;
+}
+
+.dfx-count {
+	margin-left: 4px;
+	color: var(--muted);
+	font-family: var(--serif);
+	font-size: 14px;
+	font-weight: 400;
+	letter-spacing: 0;
+}
+
+.dfx-day {
+	padding: 8px 10px;
+	border-top: 1px solid var(--line);
+	border-radius: 10px;
+	scroll-margin-top: 12px;
+}
+
+.dfx-day:focus {
+	outline: 2px solid var(--steel);
+	outline-offset: 2px;
+}
+
+.dfx-day.is-today {
+	background: #eef2f9;
+}
+
+.dfx-day-title {
+	margin: 0 0 6px;
+	color: var(--muted);
+	font-family: var(--serif);
+	font-size: 15px;
+	font-weight: 400;
+}
+
+.dfx-day-number {
+	color: var(--maroon);
+	font-family: var(--display);
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.dfx-member {
+	margin-bottom: 10px;
+}
+
+.dfx-member p {
+	margin: 0 0 2px;
+}
+
+.dfx-member strong {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.dfx-member .dfx-button {
+	display: inline-block;
+	margin-top: 6px;
+	padding: 6px 14px;
+	font-size: 15px;
+	text-decoration: none;
+}
+
 /* Today's message ---------------------------------------------------- */
 
 .dfx-paper {

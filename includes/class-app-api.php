@@ -100,12 +100,49 @@ final class DFXPRAY_App_API {
 			case 'get':
 				return $this->intention( (int) ( $request['intention_id'] ?? 0 ) );
 
+			case 'members':
+				return $this->members( (int) ( $request['group_id'] ?? 0 ) );
+
 			case 'preview':
 				return $this->preview( (int) ( $request['group_id'] ?? 0 ), (int) ( $request['intention_id'] ?? 0 ), (array) ( $request['intention'] ?? array() ) );
 
 			default:
 				return $this->failure( 'unknown', __( 'Unknown action.', 'dfx-prayer-intentions' ) );
 		}
+	}
+
+	/**
+	 * The members of a group in the order of the calendar of their
+	 * birthday or anniversary, with a link to write to them by WhatsApp.
+	 *
+	 * @param int $group_id Group.
+	 */
+	private function members( int $group_id ): array {
+		if ( ! DFXPRAY_Permissions::get_instance()->can_manage_group( $group_id ) ) {
+			return $this->forbidden();
+		}
+
+		$formatter = DFXPRAY_Formatter::get_instance();
+		$members   = array();
+		foreach ( DFXPRAY_Members::get_instance()->calendar( $group_id, DFXPRAY_Clock::get_instance()->today() ) as $member ) {
+			$number    = $formatter->wa_number( $member['phone'] );
+			$members[] = array(
+				'id'         => $member['id'],
+				'name'       => $member['name'],
+				'shown'      => $member['shown'],
+				'notes'      => $member['notes'],
+				'kind'       => $member['kind'],
+				'month'      => $member['month'],
+				'day'        => $member['day'],
+				'next'       => $member['next'],
+				'days'       => $member['days'],
+				'years'      => $member['years'],
+				'death_date' => $member['death_date'],
+				'whatsapp'   => '' !== $number ? 'https://wa.me/' . $number : '',
+			);
+		}
+
+		return $this->success( array( 'members' => $members ) );
 	}
 
 	/**
