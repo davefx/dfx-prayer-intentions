@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.31
+Stable tag: 26.11.32
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.32 =
+* Members celebrating their birthday on the same day share one line, after the news of the day before.
+* Members who would show the same name carry their first surname.
 
 = 26.11.31 =
 * Members have internal notes (for instance, the retreat they walked and their table).

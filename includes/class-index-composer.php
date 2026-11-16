@@ -142,7 +142,7 @@ final class DFXPRAY_Index_Composer {
 		$thanked   = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
 
 		return array(
-			'urgent'   => array_merge( $this->birthday_lines( $group_id ), $this->grouped_lines( array_merge( $news, $buckets['urgent'] ) ) ),
+			'urgent'   => array_merge( $this->grouped_lines( $news ), $this->birthday_lines( $group_id ), $this->grouped_lines( $buckets['urgent'] ) ),
 			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
 			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),
@@ -188,10 +188,11 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * The members who celebrate their birthday today, and those who died on
-	 * this day of an earlier year, unless the group turned it off:
-	 * "N.H. Ramón García: on his birthday", "N.H. Juan: on the anniversary
-	 * of his death († 2024)".
+	 * The members who celebrate their birthday today, all in one line, and
+	 * those who died on this day of an earlier year, unless the group
+	 * turned it off: "N.H. Ramón García and N.H. Teo: on their birthday",
+	 * "N.H. Juan: on the anniversary of his death († 2024)". Namesakes
+	 * carry their surname.
 	 *
 	 * @param int $group_id Group ID.
 	 * @return string[]
@@ -205,20 +206,26 @@ final class DFXPRAY_Index_Composer {
 		$prefix  = trim( (string) $settings->get( 'member_prefix', $group_id ) );
 		$members = DFXPRAY_Members::get_instance();
 		$today   = DFXPRAY_Clock::get_instance()->today();
-		$name    = static fn( array $member ): string => trim( $prefix . ' ' . ( '' !== $member['called'] ? $member['called'] : (string) strtok( $member['name'], ' ' ) ) );
+		$short   = $members->short_names( $group_id );
+		$name    = static fn( array $member ): string => trim( $prefix . ' ' . $short[ $member['id'] ] );
+		$lines   = array();
 
-		return array_merge(
-			array_map(
-				/* translators: %s: the member, as he is called ("N.H. Ramón"). */
-				static fn( array $member ): string => sprintf( __( '%s: on his birthday', 'dfx-prayer-intentions' ), $name( $member ) ),
-				$members->birthdays_on( $group_id, $today )
-			),
-			array_map(
-				/* translators: 1: the member, as he is called ("N.H. Juan"), 2: year of his death. */
-				static fn( array $member ): string => sprintf( __( '%1$s: on the anniversary of his death († %2$s)', 'dfx-prayer-intentions' ), $name( $member ), substr( $member['death_date'], 0, 4 ) ),
-				$members->death_anniversaries_on( $group_id, $today )
-			)
-		);
+		$birthdays = array_map( $name, $members->birthdays_on( $group_id, $today ) );
+		if ( 1 === count( $birthdays ) ) {
+			/* translators: %s: the member, as he is called ("N.H. Ramón"). */
+			$lines[] = sprintf( __( '%s: on his birthday', 'dfx-prayer-intentions' ), $birthdays[0] );
+		} elseif ( $birthdays ) {
+			$last = array_pop( $birthdays );
+			/* translators: 1: members, separated by commas ("N.H. Ramón, N.H. Teo"), 2: the last member ("N.H. Luis"). */
+			$lines[] = sprintf( __( '%1$s and %2$s: on their birthday', 'dfx-prayer-intentions' ), implode( ', ', $birthdays ), $last );
+		}
+
+		foreach ( $members->death_anniversaries_on( $group_id, $today ) as $member ) {
+			/* translators: 1: the member, as he is called ("N.H. Juan"), 2: year of his death. */
+			$lines[] = sprintf( __( '%1$s: on the anniversary of his death († %2$s)', 'dfx-prayer-intentions' ), $name( $member ), substr( $member['death_date'], 0, 4 ) );
+		}
+
+		return $lines;
 	}
 
 	/**

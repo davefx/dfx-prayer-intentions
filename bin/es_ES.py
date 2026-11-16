@@ -60,6 +60,7 @@ T = {
 "Internal: XI Retiro - Mesa 1…": "Interno: XI Retiro - Mesa 1…",
 "They open “Especially”, and so do the members who have died, on the anniversary of their death. The dates are kept in the Members tab.": "Abren «Especialmente», igual que los miembros fallecidos en el aniversario de su fallecimiento. Las fechas se guardan en la pestaña Miembros.",
 "The date of death must be a valid day, today or earlier.": "La fecha de fallecimiento debe ser un día válido, hoy o anterior.",
+"%1$s and %2$s: on their birthday": "%1$s y %2$s: en su cumpleaños",
 "%1$s: on the anniversary of his death († %2$s)": "%1$s: en el aniversario de su fallecimiento († %2$s)",
 "Date of death": "Fecha de fallecimiento",
 "He is then no longer mentioned on his birthday, and we pray especially for him every year on the anniversary of his death.": "Entonces ya no se le menciona en su cumpleaños, y pedimos especialmente por él cada año en el aniversario de su fallecimiento.",

@@ -402,6 +402,8 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 
 		$this->freeze_time( '2026-09-20 10:00' );
 		$this->make_active( $this->group, array( 'beneficiary_name' => 'Antonio', 'relationship' => '', 'summary' => 'tumor', 'priority' => 'high' ) );
+		$this->freeze_time( '2026-09-23 21:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Pedro', 'relationship' => '', 'type' => 'deceased', 'reference_date' => '2026-09-23', 'summary' => 'descanse en paz' ) );
 		$this->freeze_time( '2026-09-24 05:00' );
 
 		$this->assertSame(
@@ -411,8 +413,8 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 					'*Daily*',
 					'',
 					'*Especially*',
-					'• N.H. Ramón García: on his birthday',
-					'• N.H. Teo: on his birthday',
+					'• Pedro: descanse en paz († 23/09)',
+					'• N.H. Ramón García and N.H. Teo: on their birthday',
 					'• Antonio: tumor',
 				)
 			),
@@ -422,6 +424,26 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'daily_birthdays' => false ) );
 		$this->assertStringNotContainsString( 'birthday', DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
+	 * Members who would show the same name get their surname: "Juan Carlos
+	 * Cuenca", "Javier López"; the others keep theirs.
+	 */
+	public function test_birthdays_tell_namesakes_apart(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		$members = DFXPRAY_Members::get_instance();
+		$members->create( $this->group, array( 'name' => 'Juan Carlos Cuenca Alcázar', 'called' => 'Juan Carlos', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create( $this->group, array( 'name' => 'Juan Carlos Espidel', 'called' => 'Juan Carlos' ) );
+		$members->create( $this->group, array( 'name' => 'Javier de la Torre', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create( $this->group, array( 'name' => 'Javier López' ) );
+		$members->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '24', 'birth_month' => '9' ) );
+
+		$this->freeze_time( '2026-09-24 05:00' );
+		$this->assertSame(
+			"*Daily*\n\n*Especially*\n• N.H. Javier de la Torre, N.H. Juan Carlos Cuenca and N.H. Teo: on their birthday",
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
 	}
 
 	/**

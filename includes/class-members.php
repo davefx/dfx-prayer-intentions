@@ -286,6 +286,62 @@ final class DFXPRAY_Members {
 	}
 
 	/**
+	 * How each member of a group is named in the messages: how he is
+	 * called, or the first word of his name; members who would show the
+	 * same name get their first surname, with its particles ("Juan
+	 * Carlos Cuenca", "Javier de la Torre").
+	 *
+	 * @param int $group_id Group ID.
+	 * @return string[] Names by member ID.
+	 */
+	public function short_names( int $group_id ): array {
+		$members = $this->for_group( $group_id );
+		$key     = static fn( string $name ): string => mb_strtolower( remove_accents( $name ) );
+		$short   = array();
+		$counts  = array();
+		foreach ( $members as $member ) {
+			$short[ $member['id'] ] = '' !== $member['called'] ? $member['called'] : (string) strtok( $member['name'], ' ' );
+			$k                      = $key( $short[ $member['id'] ] );
+			$counts[ $k ]           = ( $counts[ $k ] ?? 0 ) + 1;
+		}
+
+		foreach ( $members as $member ) {
+			if ( $counts[ $key( $short[ $member['id'] ] ) ] > 1 ) {
+				$short[ $member['id'] ] .= $this->surname( $member['name'], $short[ $member['id'] ] );
+			}
+		}
+
+		return $short;
+	}
+
+	/**
+	 * The first surname in a full name, after the words of the short name
+	 * (or after the first word, when he is called otherwise), with the
+	 * particles before it: " Cuenca", " de la Torre"; empty if none.
+	 *
+	 * @param string $name  Full name.
+	 * @param string $short Short name.
+	 */
+	private function surname( string $name, string $short ): string {
+		$words = preg_split( '/\s+/u', trim( $name ) );
+		$given = preg_split( '/\s+/u', trim( $short ) );
+		$skip  = 1;
+		if ( mb_strtolower( remove_accents( implode( ' ', array_slice( $words, 0, count( $given ) ) ) ) ) === mb_strtolower( remove_accents( implode( ' ', $given ) ) ) ) {
+			$skip = count( $given );
+		}
+
+		$surname = array();
+		foreach ( array_slice( $words, $skip ) as $word ) {
+			$surname[] = $word;
+			if ( ! in_array( mb_strtolower( $word ), array( 'de', 'del', 'la', 'las', 'los', 'y' ), true ) ) {
+				break;
+			}
+		}
+
+		return $surname ? ' ' . implode( ' ', $surname ) : '';
+	}
+
+	/**
 	 * Members table.
 	 */
 	private function table(): string {
