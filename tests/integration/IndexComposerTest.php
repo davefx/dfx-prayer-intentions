@@ -373,8 +373,9 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 					'*Daily*',
 					'',
 					'*Especially*',
-					'• Lucía: operación',
 					'• Pedro: descanse en paz († 22/09)',
+					'',
+					'• Lucía: operación',
 					'',
 					'*Also for*',
 					'• Rosa: de antes',
@@ -414,7 +415,9 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 					'',
 					'*Especially*',
 					'• Pedro: descanse en paz († 23/09)',
+					'',
 					'• N.H. Ramón García and N.H. Teo: on their birthday',
+					'',
 					'• Antonio: tumor',
 				)
 			),
@@ -459,6 +462,44 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 		$this->freeze_time( '2026-09-24 05:00' );
 		$this->assertSame(
 			"*Daily*\n\n*Especially*\n• N.H. Pedro: on the anniversary of his death († 2024)",
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+	}
+
+	/**
+	 * "Especially" keeps the departed, the birthdays and the serious
+	 * intentions apart, with a blank line between them: an anniversary of a
+	 * death goes with the departed, never next to a birthday.
+	 */
+	public function test_especially_keeps_its_cases_apart(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		$members = DFXPRAY_Members::get_instance();
+		$members->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create( $this->group, array( 'name' => 'Pedro Gil', 'death_date' => '2024-09-24' ) );
+
+		$this->freeze_time( '2026-09-20 10:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Antonio', 'relationship' => '', 'summary' => 'tumor', 'priority' => 'high' ) );
+		$this->freeze_time( '2026-09-23 21:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'relationship' => '', 'type' => 'deceased', 'reference_date' => '2026-09-23', 'summary' => 'descanse en paz' ) );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Lucía', 'relationship' => '', 'summary' => 'operación' ) );
+		$this->freeze_time( '2026-09-24 05:00' );
+
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*Especially*',
+					'• Rosa: descanse en paz († 23/09)',
+					'• N.H. Pedro: on the anniversary of his death († 2024)',
+					'',
+					'• N.H. Teo: on his birthday',
+					'',
+					'• Lucía: operación',
+					'• Antonio: tumor',
+				)
+			),
 			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
 		);
 	}

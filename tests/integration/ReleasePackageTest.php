@@ -163,7 +163,7 @@ class ReleasePackageTest extends DFXPRAY_Test_Case {
 	public function test_zip_excludes_development_files(): void {
 		foreach ( $this->zip_files() as $file ) {
 			$this->assertDoesNotMatchRegularExpression(
-				'#^dfx-prayer-intentions/(tests|vendor|node_modules|bin|dist|\.git|composer\.|package|phpunit|phpcs|playwright|AGENTS\.md|README\.md|\.gitignore|\.distignore)#',
+				'#^dfx-prayer-intentions/(tests|vendor|node_modules|bin|dist|\.git|composer\.|package|phpunit|phpcs|playwright|AGENTS\.md|CLAUDE\.md|README\.md|\.gitignore|\.distignore|\.claude)#',
 				$file
 			);
 			$this->assertStringNotContainsString( '__pycache__', $file );

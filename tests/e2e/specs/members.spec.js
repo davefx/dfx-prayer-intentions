@@ -2,7 +2,7 @@
  * The brothers of a group, kept in the panel, and their birthdays in the
  * daily message.
  */
-const { groupUrl, test, expect, resetData, createGroup, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
 
 let group;
 
@@ -33,8 +33,9 @@ test( 'leaders keep the brothers, and those whose birthday it is open the daily 
 	await expect( page.locator( 'table.dfxpray-members' ) ).toContainText( '600112233' );
 	await expect( page.locator( '.dfxpray-member-notes' ) ).toHaveText( 'XI Retiro - Mesa 1' );
 
+	createIntention( group.id, { beneficiary_name: 'Antonio', relationship: '', summary: 'tumor', priority: 'high' } );
 	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /\*Especially\*\n• N\.H\. Ramón García: on his birthday/ );
+	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /\*Especially\*\n• N\.H\. Ramón García: on his birthday\n\n• Antonio: tumor/ );
 
 	await page.goto( groupUrl( group.id, 'members' ) );
 	await page.getByText( 'Edit', { exact: true } ).click();

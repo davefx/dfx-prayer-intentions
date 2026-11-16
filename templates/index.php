@@ -8,7 +8,7 @@
  *
  * @var string $header        Header, with {date} already replaced.
  * @var string $footer        Footer.
- * @var array  $sections      Sections: title, emoji, lines (strings, no bullet).
+ * @var array  $sections      Sections: title, emoji, lines (strings, no bullet; an empty one is a blank line).
  * @var string $empty_message Shown when there are no sections.
  *
  * @package DFXPRAY
@@ -26,7 +26,7 @@ if ( '' !== $header ) {
 
 foreach ( $sections as $dfxpray_section ) {
 	$dfxpray_title = ( '' !== $dfxpray_section['emoji'] ? $dfxpray_section['emoji'] . ' ' : '' ) . '*' . $dfxpray_section['title'] . '*';
-	$dfxpray_lines = array_map( static fn( $line ) => '• ' . $line, $dfxpray_section['lines'] );
+	$dfxpray_lines = array_map( static fn( $line ) => '' === $line ? '' : '• ' . $line, $dfxpray_section['lines'] );
 
 	$dfxpray_blocks[] = implode( "\n", array_merge( array( $dfxpray_title ), $dfxpray_lines ) );
 }

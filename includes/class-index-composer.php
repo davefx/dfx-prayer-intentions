@@ -117,9 +117,10 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * Lines of the "prayer proposals" layout, the daily message: the news of
-	 * the day before (also the departed) and the urgent ones (high
-	 * priority), the people whose health we pray for (only their
+	 * Lines of the "prayer proposals" layout, the daily message: in
+	 * "Especially", the departed of the day before and the anniversaries of
+	 * a death, then the birthdays, then the other news and the urgent ones
+	 * (high priority), each block apart; the people whose health we pray for (only their
 	 * names, our brothers first), the rest, current affairs, the thanksgivings
 	 * of the last day, and the departed of the last week. Other intentions sharing a summary
 	 * go in one line: "Problemas de salud: Marina, …; Irene, …".
@@ -133,16 +134,19 @@ final class DFXPRAY_Index_Composer {
 		$since     = (int) DFXPRAY_Settings::get_instance()->get( 'daily_news_days', $group_id ) > 0 ? $this->departed_since( 'daily_news_days', $group_id ) : '9999-12-31';
 		$is_news   = static fn( $i ) => 'thanksgiving' !== $i['type'] && substr( (string) $i['created_at'], 0, 10 ) >= $since;
 		$news      = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
-		$news      = array_merge(
-			array_filter( $news, static fn( $i ) => 'deceased' !== $i['type'] ),
-			array_filter( $news, static fn( $i ) => 'deceased' === $i['type'] )
-		);
 		$buckets   = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
 		$thanks    = $this->departed_since( 'daily_thanks_days', $group_id );
 		$thanked   = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
 
+		$news_departed = array_values( array_filter( $news, static fn( $i ) => 'deceased' === $i['type'] ) );
+		$news_serious  = array_values( array_filter( $news, static fn( $i ) => 'deceased' !== $i['type'] ) );
+
 		return array(
-			'urgent'   => array_merge( $this->grouped_lines( $news ), $this->birthday_lines( $group_id ), $this->grouped_lines( $buckets['urgent'] ) ),
+			'urgent'   => $this->apart(
+				array_merge( $this->grouped_lines( $news_departed ), $this->anniversary_lines( $group_id ) ),
+				$this->birthday_lines( $group_id ),
+				array_merge( $this->grouped_lines( $news_serious ), $this->grouped_lines( $buckets['urgent'] ) )
+			),
 			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
 			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),
@@ -188,44 +192,91 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * The members who celebrate their birthday today, all in one line, and
-	 * those who died on this day of an earlier year, unless the group
-	 * turned it off: "N.H. Ramón García and N.H. Teo: on their birthday",
-	 * "N.H. Juan: on the anniversary of his death († 2024)". Namesakes
-	 * carry their surname.
+	 * Blocks of lines with a blank line between them, leaving out the empty
+	 * ones: "Especially" keeps the departed, the birthdays and the serious
+	 * intentions apart. The template prints an empty line as a blank line.
+	 *
+	 * @param string[] ...$blocks Blocks of lines.
+	 * @return string[]
+	 */
+	private function apart( array ...$blocks ): array {
+		$lines = array();
+
+		foreach ( array_filter( $blocks ) as $block ) {
+			if ( $lines ) {
+				$lines[] = '';
+			}
+			$lines = array_merge( $lines, array_values( $block ) );
+		}
+
+		return $lines;
+	}
+
+	/**
+	 * How a member is named in the daily message, with the group prefix;
+	 * namesakes carry their surname. Null when the group turned the
+	 * birthdays and anniversaries off.
+	 *
+	 * @param int $group_id Group ID.
+	 * @return callable|null
+	 */
+	private function member_namer( int $group_id ): ?callable {
+		$settings = DFXPRAY_Settings::get_instance();
+		if ( ! $settings->get( 'daily_birthdays', $group_id ) ) {
+			return null;
+		}
+
+		$prefix = trim( (string) $settings->get( 'member_prefix', $group_id ) );
+		$short  = DFXPRAY_Members::get_instance()->short_names( $group_id );
+
+		return static fn( array $member ): string => trim( $prefix . ' ' . $short[ $member['id'] ] );
+	}
+
+	/**
+	 * The members who celebrate their birthday today, all in one line:
+	 * "N.H. Ramón García and N.H. Teo: on their birthday".
 	 *
 	 * @param int $group_id Group ID.
 	 * @return string[]
 	 */
 	private function birthday_lines( int $group_id ): array {
-		$settings = DFXPRAY_Settings::get_instance();
-		if ( ! $settings->get( 'daily_birthdays', $group_id ) ) {
+		$name = $this->member_namer( $group_id );
+		if ( ! $name ) {
 			return array();
 		}
 
-		$prefix  = trim( (string) $settings->get( 'member_prefix', $group_id ) );
-		$members = DFXPRAY_Members::get_instance();
-		$today   = DFXPRAY_Clock::get_instance()->today();
-		$short   = $members->short_names( $group_id );
-		$name    = static fn( array $member ): string => trim( $prefix . ' ' . $short[ $member['id'] ] );
-		$lines   = array();
-
-		$birthdays = array_map( $name, $members->birthdays_on( $group_id, $today ) );
+		$birthdays = array_map( $name, DFXPRAY_Members::get_instance()->birthdays_on( $group_id, DFXPRAY_Clock::get_instance()->today() ) );
 		if ( 1 === count( $birthdays ) ) {
 			/* translators: %s: the member, as he is called ("N.H. Ramón"). */
-			$lines[] = sprintf( __( '%s: on his birthday', 'dfx-prayer-intentions' ), $birthdays[0] );
-		} elseif ( $birthdays ) {
+			return array( sprintf( __( '%s: on his birthday', 'dfx-prayer-intentions' ), $birthdays[0] ) );
+		}
+		if ( $birthdays ) {
 			$last = array_pop( $birthdays );
 			/* translators: 1: members, separated by commas ("N.H. Ramón, N.H. Teo"), 2: the last member ("N.H. Luis"). */
-			$lines[] = sprintf( __( '%1$s and %2$s: on their birthday', 'dfx-prayer-intentions' ), implode( ', ', $birthdays ), $last );
+			return array( sprintf( __( '%1$s and %2$s: on their birthday', 'dfx-prayer-intentions' ), implode( ', ', $birthdays ), $last ) );
 		}
 
-		foreach ( $members->death_anniversaries_on( $group_id, $today ) as $member ) {
+		return array();
+	}
+
+	/**
+	 * The members who died on this day of an earlier year: "N.H. Juan: on
+	 * the anniversary of his death († 2024)". They go with the departed.
+	 *
+	 * @param int $group_id Group ID.
+	 * @return string[]
+	 */
+	private function anniversary_lines( int $group_id ): array {
+		$name = $this->member_namer( $group_id );
+		if ( ! $name ) {
+			return array();
+		}
+
+		return array_map(
 			/* translators: 1: the member, as he is called ("N.H. Juan"), 2: year of his death. */
-			$lines[] = sprintf( __( '%1$s: on the anniversary of his death († %2$s)', 'dfx-prayer-intentions' ), $name( $member ), substr( $member['death_date'], 0, 4 ) );
-		}
-
-		return $lines;
+			static fn( array $member ): string => sprintf( __( '%1$s: on the anniversary of his death († %2$s)', 'dfx-prayer-intentions' ), $name( $member ), substr( $member['death_date'], 0, 4 ) ),
+			DFXPRAY_Members::get_instance()->death_anniversaries_on( $group_id, DFXPRAY_Clock::get_instance()->today() )
+		);
 	}
 
 	/**

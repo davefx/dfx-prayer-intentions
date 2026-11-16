@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.36
+Stable tag: 26.11.37
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.37 =
+* In the daily message, "Especially" keeps its cases apart, with a blank line between them: first the departed (deaths reported the day before and anniversaries of a member's death), then the birthdays, then the serious intentions.
+* The package no longer includes the local working folders of the development tools.
 
 = 26.11.36 =
 * The six tabs of the app fit in one row on a phone; the day the Members tab opens on is no longer hidden under the header.
