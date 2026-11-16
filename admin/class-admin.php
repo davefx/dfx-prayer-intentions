@@ -451,6 +451,11 @@ final class DFXPRAY_Admin {
 				'type'  => 'number',
 				'label' => __( 'Thanksgiving: days', 'dfx-prayer-intentions' ),
 			),
+			'daily_news_days'          => array(
+				'type'  => 'number',
+				'label' => __( 'Daily message: news go first during (days)', 'dfx-prayer-intentions' ),
+				'help'  => __( 'What was registered the day before (and that morning) goes in “Especially”. 0: never.', 'dfx-prayer-intentions' ),
+			),
 			'daily_thanks_days'        => array(
 				'type'  => 'number',
 				'label' => __( 'Daily message: thanksgivings during (days)', 'dfx-prayer-intentions' ),
@@ -594,7 +599,7 @@ final class DFXPRAY_Admin {
 	 */
 	public function setting_sections( string $scope ): array {
 		$sections = array(
-			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days', 'recent_deceased_days' ),
+			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'daily_news_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days', 'recent_deceased_days' ),
 			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);

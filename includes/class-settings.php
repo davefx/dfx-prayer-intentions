@@ -98,6 +98,7 @@ final class DFXPRAY_Settings {
 			'ongoing_review_days'      => 30,
 			'thanksgiving_days'        => 7,
 			'daily_thanks_days'        => 1,
+			'daily_news_days'          => 1,
 			'monthly_thanks_days'      => 30,
 			'thanksgiving_auto_close'  => true,
 			'keep_active_days'         => 30,

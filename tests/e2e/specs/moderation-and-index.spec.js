@@ -108,7 +108,7 @@ test( 'spam is discarded and duplicates are merged into the existing intention',
 } );
 
 test( 'a group shares its index as prayer proposals, with members marked', async ( { page } ) => {
-	const marina = createIntention( group.id, { requester_name: 'Felipe Arizu', beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud' } );
+	const marina = createIntention( group.id, { requester_name: 'Felipe Arizu', beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud', asked_on: '2026-01-02' } );
 	createIntention( group.id, { requester_name: 'Javier Cavallé', requester_is_member: true, beneficiary_name: 'Antonio', relationship: 'amigo de', summary: 'tumor de páncreas', priority: 'high' } );
 	await login( page, 'leader1' );
 

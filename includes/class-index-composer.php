@@ -117,8 +117,9 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * Lines of the "prayer proposals" layout, the daily message: the urgent
-	 * ones (high priority), the people whose health we pray for (only their
+	 * Lines of the "prayer proposals" layout, the daily message: the news of
+	 * the day before (also the departed) and the urgent ones (high
+	 * priority), the people whose health we pray for (only their
 	 * names, our brothers first), the rest, current affairs, the thanksgivings
 	 * of the last day, and the departed of the last week. Other intentions sharing a summary
 	 * go in one line: "Problemas de salud: Marina, …; Irene, …".
@@ -129,12 +130,19 @@ final class DFXPRAY_Index_Composer {
 	 */
 	private function proposal_sections( array $intentions, int $group_id ): array {
 		$formatter = DFXPRAY_Formatter::get_instance();
-		$buckets   = $this->buckets( $intentions, $this->departed_since( 'daily_deceased_days', $group_id ) );
+		$since     = (int) DFXPRAY_Settings::get_instance()->get( 'daily_news_days', $group_id ) > 0 ? $this->departed_since( 'daily_news_days', $group_id ) : '9999-12-31';
+		$is_news   = static fn( $i ) => 'thanksgiving' !== $i['type'] && substr( (string) $i['created_at'], 0, 10 ) >= $since;
+		$news      = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
+		$news      = array_merge(
+			array_filter( $news, static fn( $i ) => 'deceased' !== $i['type'] ),
+			array_filter( $news, static fn( $i ) => 'deceased' === $i['type'] )
+		);
+		$buckets   = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
 		$thanks    = $this->departed_since( 'daily_thanks_days', $group_id );
 		$thanked   = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
 
 		return array(
-			'urgent'   => $this->grouped_lines( $buckets['urgent'] ),
+			'urgent'   => $this->grouped_lines( array_merge( $news, $buckets['urgent'] ) ),
 			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
 			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),

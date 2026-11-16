@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.28
+Stable tag: 26.11.29
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.29 =
+* The news of the day before (and of the same morning) goes first in the daily message, in "Especially", the departed too; from the next day on, each goes back to its place (a group setting).
 
 = 26.11.28 =
 * In the leaders' app, the phone's back button moves between screens (an intention, the list, "Today") and no longer leaves the app for the login page.

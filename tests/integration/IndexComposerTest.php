@@ -180,6 +180,7 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * prefix, shared summaries in one line, and only the recently departed.
 	 */
 	public function test_proposals_layout(): void {
+		$this->freeze_time( '2026-09-20 10:00' );
 		DFXPRAY_Settings::get_instance()->save_group(
 			$this->group,
 			array(
@@ -226,6 +227,7 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 			)
 		);
 
+		$this->freeze_time( '2026-09-24 10:00' );
 		$this->assertSame( $expected, DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
 	}
 
@@ -235,6 +237,7 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * last week); the monthly one with every intention, by topic.
 	 */
 	public function test_daily_and_monthly_editions(): void {
+		$this->freeze_time( '2026-09-20 10:00' );
 		DFXPRAY_Settings::get_instance()->save_group(
 			$this->group,
 			array(
@@ -259,6 +262,7 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 		$this->make_active( $this->group, array( 'requester_name' => 'Alberto', 'beneficiary_name' => 'Isabel', 'relationship' => 'madre de un amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-20', 'summary' => 'descanse en paz' ) );
 		$this->make_active( $this->group, $member + array( 'requester_name' => 'Teo', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-10', 'summary' => 'descanse en paz' ) );
 
+		$this->freeze_time( '2026-09-24 10:00' );
 		$composer = DFXPRAY_Index_Composer::get_instance();
 
 		$this->assertSame(
@@ -345,6 +349,44 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 		$this->assertStringContainsString( '• Argeme: salió bien', $monthly );
 		$this->assertStringNotContainsString( 'Rosa', $monthly );
 		$this->assertStringNotContainsString( 'Argeme', DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
+	 * The news of the day before (and of the same morning) goes first, in
+	 * "Especially", the departed too; from the next day on, they go back to
+	 * their place.
+	 */
+	public function test_news_of_the_day_before_go_first(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+
+		$this->freeze_time( '2026-09-20 10:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'relationship' => '', 'summary' => 'de antes' ) );
+		$this->freeze_time( '2026-09-23 21:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Pedro', 'relationship' => '', 'type' => 'deceased', 'reference_date' => '2026-09-22', 'summary' => 'descanse en paz' ) );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Lucía', 'relationship' => '', 'summary' => 'operación' ) );
+
+		$this->freeze_time( '2026-09-24 05:00' );
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*Especially*',
+					'• Lucía: operación',
+					'• Pedro: descanse en paz († 22/09)',
+					'',
+					'*Also for*',
+					'• Rosa: de antes',
+				)
+			),
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+
+		$this->freeze_time( '2026-09-25 05:00' );
+		$text = DFXPRAY_Index_Composer::get_instance()->compose( $this->group );
+		$this->assertStringNotContainsString( '*Especially*', $text );
+		$this->assertStringContainsString( "*For our departed*\n• Pedro: descanse en paz († 22/09)", $text );
 	}
 
 	/**

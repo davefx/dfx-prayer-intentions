@@ -96,7 +96,7 @@ test( 'the list shows the urgent ones first, then the most recent', async ( { pa
 test( 'daily message and monthly list; the requester can be asked by WhatsApp', async ( { page } ) => {
 	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'index_layout' => 'proposals' ) ); echo 1;` );
 	createIntention( group.id, { beneficiary_name: 'Fátima', relationship: 'sobrina de', summary: 'quimioterapia', topic: 'health', scope: 'monthly' } );
-	createIntention( group.id, { beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud', topic: 'health', requester_phone: '600 99 88 77' } );
+	createIntention( group.id, { beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud', topic: 'health', requester_phone: '600 99 88 77', asked_on: '2026-01-02' } );
 	await login( page, 'leader1' );
 	await page.goto( APP );
 

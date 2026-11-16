@@ -56,6 +56,8 @@ T = {
 "One-off events: days after the date": "Eventos puntuales: días tras la fecha",
 "After that, the intention goes to review.": "Después, la intención pasa a revisión.",
 "Deceased: days after the death": "Difuntos: días tras el fallecimiento",
+"Daily message: news go first during (days)": "Mensaje diario: las novedades van primero durante (días)",
+"What was registered the day before (and that morning) goes in “Especially”. 0: never.": "Lo registrado el día anterior (y esa misma mañana) va en «Especialmente». 0: nunca.",
 "Description changed": "Descripción cambiada",
 "How we call them: Toni, Javi Cavallé…": "Cómo se le nombra: Toni, Javi Cavallé…",
 "How the requester is called": "Cómo se nombra a quien lo pide",
