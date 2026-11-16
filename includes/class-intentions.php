@@ -169,6 +169,33 @@ final class DFXPRAY_Intentions {
 	}
 
 	/**
+	 * The line an intention would show in the messages with these data,
+	 * without saving anything: a new one, or the changes to a saved one.
+	 *
+	 * @param int        $group_id Group.
+	 * @param array      $data     Raw data, as for create() or update().
+	 * @param array|null $current  The saved intention being edited, if any.
+	 * @return string|WP_Error
+	 */
+	public function preview( int $group_id, array $data, ?array $current = null ) {
+		$record = $this->build_record( $data, $current, true );
+		if ( is_wp_error( $record ) ) {
+			return $record;
+		}
+
+		$intention = array_merge(
+			$current ?? array(
+				'id'     => 0,
+				'status' => 'active',
+			),
+			$record,
+			array( 'group_id' => $group_id )
+		);
+
+		return DFXPRAY_Formatter::get_instance()->line( $intention );
+	}
+
+	/**
 	 * Get an intention.
 	 *
 	 * @param int $id Intention ID.

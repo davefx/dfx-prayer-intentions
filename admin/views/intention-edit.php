@@ -72,7 +72,6 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 					· <?php esc_html_e( 'Acknowledgement sent', 'dfx-prayer-intentions' ); ?>
 				<?php endif; ?>
 			</p>
-			<p class="dfxpray-preview"><?php esc_html_e( 'In the index:', 'dfx-prayer-intentions' ); ?> <code><?php echo esc_html( DFXPRAY_Formatter::get_instance()->line( $dfxpray_intention ) ); ?></code></p>
 		<?php endif; ?>
 
 		<?php
@@ -87,151 +86,239 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 				'has_beneficiary_is_member'    => 1,
 				'has_to_ask'                   => 1,
 			),
-			'dfxpray-intention-form'
+			'dfxpray-intention-form dfxpray-steps'
 		);
 		?>
-			<table class="form-table" role="presentation">
-				<tr>
-					<th scope="row"><label for="dfxpray-requester-name"><?php esc_html_e( 'Requester', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<input type="text" class="regular-text" id="dfxpray-requester-name" name="intention[requester_name]" value="<?php echo esc_attr( $dfxpray_v['requester_name'] ); ?>" required>
-						<input type="text" class="regular-text" name="intention[requester_contact]" value="<?php echo esc_attr( $dfxpray_v['requester_contact'] ); ?>" placeholder="<?php esc_attr_e( 'Email or phone', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Contact', 'dfx-prayer-intentions' ); ?>">
-						<input type="tel" class="regular-text" name="intention[requester_phone]" value="<?php echo esc_attr( $dfxpray_v['requester_phone'] ); ?>" placeholder="<?php esc_attr_e( 'Phone (WhatsApp)', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Phone of the requester', 'dfx-prayer-intentions' ); ?>">
-						<?php $dfxpray_ask = $dfxpray_is_new ? '' : DFXPRAY_Formatter::get_instance()->ask_link( $dfxpray_v ); ?>
-						<label><input type="checkbox" name="intention[to_ask]" value="1" <?php checked( ! empty( $dfxpray_v['to_ask'] ) ); ?>> <?php esc_html_e( 'Pending to ask', 'dfx-prayer-intentions' ); ?></label>
-						<?php if ( '' !== $dfxpray_ask ) : ?>
-							<a class="button dfxpray-ask" href="<?php echo esc_url( $dfxpray_ask ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Ask by WhatsApp how it goes', 'dfx-prayer-intentions' ); ?></a>
-						<?php endif; ?>
-						<input type="text" class="regular-text" name="intention[requester_first_name]" value="<?php echo esc_attr( $dfxpray_v['requester_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'How we call them: Toni, Javi Cavallé…', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'How the requester is called', 'dfx-prayer-intentions' ); ?>">
-						<label><input type="checkbox" name="intention[requester_is_member]" value="1" aria-label="<?php esc_attr_e( 'The requester is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['requester_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-beneficiary-name"><?php esc_html_e( 'Beneficiary', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<label><input type="checkbox" name="intention[beneficiary_is_requester]" value="1" <?php checked( $dfxpray_v['beneficiary_is_requester'] ); ?>> <?php esc_html_e( 'The requester themselves', 'dfx-prayer-intentions' ); ?></label><br>
-						<input type="text" class="regular-text" id="dfxpray-beneficiary-name" name="intention[beneficiary_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_name'] ); ?>">
-						<input type="text" class="regular-text" name="intention[relationship]" value="<?php echo esc_attr( $dfxpray_v['relationship'] ); ?>" maxlength="100" placeholder="<?php esc_attr_e( 'Relationship, e.g. mother of', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Relationship', 'dfx-prayer-intentions' ); ?>">
-						<input type="text" class="regular-text" name="intention[beneficiary_first_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_first_name'] ); ?>" placeholder="<?php esc_attr_e( 'How we call them: Toni, Javi Cavallé…', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'How the beneficiary is called', 'dfx-prayer-intentions' ); ?>">
-						<label><input type="checkbox" name="intention[beneficiary_is_member]" value="1" aria-label="<?php esc_attr_e( 'The beneficiary is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['beneficiary_is_member'] ); ?>> <?php esc_html_e( 'Member of the group', 'dfx-prayer-intentions' ); ?></label>
-						<p class="description"><?php esc_html_e( 'How we call them in the messages, when the first word of the full name is not it: a nickname (Toni), a compound name (Juan Tomás) or a surname to tell two brothers apart (Javi Cavallé). The prefix and the relationship are added. Empty: the first word.', 'dfx-prayer-intentions' ); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-type"><?php esc_html_e( 'Kind', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<select id="dfxpray-type" name="intention[type]">
-							<?php foreach ( $dfxpray_lifecycle->types() as $dfxpray_key => $dfxpray_label ) : ?>
-								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['type'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
-							<?php endforeach; ?>
-						</select>
-						<input type="date" name="intention[reference_date]" value="<?php echo esc_attr( (string) $dfxpray_v['reference_date'] ); ?>" aria-label="<?php esc_attr_e( 'Reference date', 'dfx-prayer-intentions' ); ?>">
-						<input type="time" name="intention[reference_time]" value="<?php echo esc_attr( (string) $dfxpray_v['reference_time'] ); ?>" aria-label="<?php esc_attr_e( 'Time (events only)', 'dfx-prayer-intentions' ); ?>">
-						<label><input type="checkbox" name="intention[anniversary]" value="1" <?php checked( $dfxpray_v['anniversary'] ); ?>> <?php esc_html_e( 'Remember the anniversary (deceased)', 'dfx-prayer-intentions' ); ?></label>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Key dates', 'dfx-prayer-intentions' ); ?></th>
-					<td>
-						<div class="dfxpray-key-dates" data-dfxpray-rows>
-							<?php
-							foreach ( array_merge(
-								$dfxpray_v['key_dates'],
-								array(
-									array(
-										'date'  => '',
-										'time'  => '',
-										'label' => '',
-									),
-								)
-							) as $dfxpray_kd ) :
-								?>
-								<p class="dfxpray-key-date" data-dfxpray-row>
-									<input type="date" name="key_dates[date][]" value="<?php echo esc_attr( $dfxpray_kd['date'] ); ?>" aria-label="<?php esc_attr_e( 'Date', 'dfx-prayer-intentions' ); ?>">
-									<input type="time" name="key_dates[time][]" value="<?php echo esc_attr( $dfxpray_kd['time'] ); ?>" aria-label="<?php esc_attr_e( 'Time', 'dfx-prayer-intentions' ); ?>">
-									<input type="text" name="key_dates[label][]" value="<?php echo esc_attr( $dfxpray_kd['label'] ); ?>" placeholder="<?php esc_attr_e( 'Funeral, month’s mind Mass, appointment…', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Label', 'dfx-prayer-intentions' ); ?>">
-								</p>
-							<?php endforeach; ?>
-						</div>
-						<button type="button" class="button-link" data-dfxpray-add-row><?php esc_html_e( 'Add another date', 'dfx-prayer-intentions' ); ?></button>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-body"><?php esc_html_e( 'Full text', 'dfx-prayer-intentions' ); ?></label></th>
-					<td><textarea id="dfxpray-body" class="large-text" rows="5" name="intention[body]" required><?php echo esc_textarea( $dfxpray_v['body'] ); ?></textarea>
-					<p class="description"><?php esc_html_e( 'Never published. Only leaders read it.', 'dfx-prayer-intentions' ); ?></p></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-summary"><?php esc_html_e( 'Summary for the index', 'dfx-prayer-intentions' ); ?></label></th>
-					<td><input type="text" class="large-text" id="dfxpray-summary" name="intention[summary]" value="<?php echo esc_attr( $dfxpray_v['summary'] ); ?>" maxlength="100" <?php echo $dfxpray_is_new || 'pending' !== $dfxpray_v['status'] ? 'required' : ''; ?>></td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-discretion"><?php esc_html_e( 'Discretion', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<select id="dfxpray-discretion" name="intention[discretion]">
-							<?php foreach ( array_slice( $dfxpray_levels, $dfxpray_is_new ? 0 : $dfxpray_from, null, true ) as $dfxpray_key => $dfxpray_label ) : ?>
-								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['discretion'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
-							<?php endforeach; ?>
-						</select>
-						<?php if ( ! $dfxpray_is_new ) : ?>
-							<p class="description"><?php esc_html_e( 'It can be made stricter than the requester chose, never more open.', 'dfx-prayer-intentions' ); ?></p>
-						<?php endif; ?>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-priority"><?php esc_html_e( 'Priority', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<select id="dfxpray-priority" name="intention[priority]">
-							<option value="normal" <?php selected( $dfxpray_v['priority'], 'normal' ); ?>><?php esc_html_e( 'Normal', 'dfx-prayer-intentions' ); ?></option>
-							<option value="high" <?php selected( $dfxpray_v['priority'], 'high' ); ?>><?php esc_html_e( 'High', 'dfx-prayer-intentions' ); ?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-scope"><?php esc_html_e( 'Message', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<select id="dfxpray-scope" name="intention[scope]">
-							<?php foreach ( DFXPRAY_Intentions::get_instance()->scope_labels() as $dfxpray_key => $dfxpray_label ) : ?>
-								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['scope'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
-							<?php endforeach; ?>
-						</select>
-						<select id="dfxpray-topic" name="intention[topic]" aria-label="<?php esc_attr_e( 'Topic', 'dfx-prayer-intentions' ); ?>">
-							<?php foreach ( DFXPRAY_Intentions::get_instance()->topic_labels() as $dfxpray_key => $dfxpray_label ) : ?>
-								<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['topic'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
-							<?php endforeach; ?>
-						</select>
-						<p class="description"><?php esc_html_e( 'The monthly list, read at the monthly adoration, has every intention by topic; the daily message leaves out those kept for the monthly one.', 'dfx-prayer-intentions' ); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Description instead of the name', 'dfx-prayer-intentions' ); ?></th>
-					<td>
-						<input type="text" class="regular-text" name="intention[requester_display_name]" value="<?php echo esc_attr( $dfxpray_v['requester_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Requester, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the requester instead of the name', 'dfx-prayer-intentions' ); ?>">
-						<input type="text" class="regular-text" name="intention[beneficiary_display_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Beneficiary, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the beneficiary instead of the name', 'dfx-prayer-intentions' ); ?>">
-						<p class="description"><?php esc_html_e( 'Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “La hija de N.H. Axel”. It cannot reveal more than the discretion level allows.', 'dfx-prayer-intentions' ); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-asked-on"><?php esc_html_e( 'Date of the request', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<input type="date" id="dfxpray-asked-on" name="intention[asked_on]" value="<?php echo esc_attr( $dfxpray_is_new ? '' : substr( (string) $dfxpray_v['created_at'], 0, 10 ) ); ?>" max="<?php echo esc_attr( DFXPRAY_Clock::get_instance()->today() ); ?>">
-						<p class="description"><?php esc_html_e( 'The day it was asked for. Leave it empty for today.', 'dfx-prayer-intentions' ); ?></p>
-					</td>
-				</tr>
-				<tr>
-					<th scope="row"><label for="dfxpray-ends-on"><?php esc_html_e( 'Pray for it until', 'dfx-prayer-intentions' ); ?></label></th>
-					<td>
-						<input type="date" id="dfxpray-ends-on" name="intention[ends_on]" value="<?php echo esc_attr( (string) $dfxpray_v['ends_on'] ); ?>">
-						<p class="description"><?php esc_html_e( 'The day after, it leaves the messages and closes by itself.', 'dfx-prayer-intentions' ); ?></p>
-					</td>
-				</tr>
-				<?php if ( ! $dfxpray_is_new && $dfxpray_open ) : ?>
+			<?php $dfxpray_ask = $dfxpray_is_new ? '' : DFXPRAY_Formatter::get_instance()->ask_link( $dfxpray_v ); ?>
+			<fieldset class="dfxpray-step">
+				<legend><span class="dfxpray-step-number">1</span> <?php esc_html_e( 'Who asks', 'dfx-prayer-intentions' ); ?></legend>
+				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><label for="dfxpray-next-review"><?php esc_html_e( 'Next review', 'dfx-prayer-intentions' ); ?></label></th>
-						<td><input type="date" id="dfxpray-next-review" name="intention[next_review]" value="<?php echo esc_attr( (string) $dfxpray_v['next_review'] ); ?>"></td>
+						<th scope="row"><label for="dfxpray-requester-name"><?php esc_html_e( 'Full name', 'dfx-prayer-intentions' ); ?></label></th>
+						<td><input type="text" class="regular-text" id="dfxpray-requester-name" name="intention[requester_name]" value="<?php echo esc_attr( $dfxpray_v['requester_name'] ); ?>" required></td>
 					</tr>
-				<?php endif; ?>
-			</table>
+					<tr data-dfxpray-called="requester">
+						<th scope="row"><label for="dfxpray-requester-called"><?php esc_html_e( 'How we call them', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="text" class="regular-text" id="dfxpray-requester-called" name="intention[requester_first_name]" value="<?php echo esc_attr( $dfxpray_v['requester_first_name'] ); ?>" aria-label="<?php esc_attr_e( 'How the requester is called', 'dfx-prayer-intentions' ); ?>">
+							<p class="description"><?php esc_html_e( 'A nickname, a compound name or a surname to tell brothers apart: Toni, Juan Tomás, Javi Cavallé. Empty: the first word, as shown in grey.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="dfxpray-requester-phone"><?php esc_html_e( 'WhatsApp', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="tel" class="regular-text" id="dfxpray-requester-phone" name="intention[requester_phone]" value="<?php echo esc_attr( $dfxpray_v['requester_phone'] ); ?>" aria-label="<?php esc_attr_e( 'Phone of the requester', 'dfx-prayer-intentions' ); ?>">
+							<p class="description"><?php esc_html_e( 'To ask them how it goes.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'One of our group', 'dfx-prayer-intentions' ); ?></th>
+						<td><label><input type="checkbox" name="intention[requester_is_member]" value="1" aria-label="<?php esc_attr_e( 'The requester is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['requester_is_member'] ); ?>> <?php esc_html_e( 'One of our group', 'dfx-prayer-intentions' ); ?></label></td>
+					</tr>
+					<?php if ( '' !== $dfxpray_v['requester_contact'] ) : ?>
+						<tr>
+							<th scope="row"><label for="dfxpray-requester-contact"><?php esc_html_e( 'Contact left in the form:', 'dfx-prayer-intentions' ); ?></label></th>
+							<td><input type="text" class="regular-text" id="dfxpray-requester-contact" name="intention[requester_contact]" value="<?php echo esc_attr( $dfxpray_v['requester_contact'] ); ?>"></td>
+						</tr>
+					<?php endif; ?>
+					<tr>
+						<th scope="row"><label for="dfxpray-asked-on"><?php esc_html_e( 'When they asked', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="date" id="dfxpray-asked-on" name="intention[asked_on]" value="<?php echo esc_attr( $dfxpray_is_new ? '' : substr( (string) $dfxpray_v['created_at'], 0, 10 ) ); ?>" max="<?php echo esc_attr( DFXPRAY_Clock::get_instance()->today() ); ?>">
+							<p class="description"><?php esc_html_e( 'Empty: today.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<fieldset class="dfxpray-step">
+				<legend><span class="dfxpray-step-number">2</span> <?php esc_html_e( 'Who we pray for', 'dfx-prayer-intentions' ); ?></legend>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'For themselves', 'dfx-prayer-intentions' ); ?></th>
+						<td><label><input type="checkbox" id="dfxpray-for-themselves" name="intention[beneficiary_is_requester]" value="1" <?php checked( $dfxpray_v['beneficiary_is_requester'] ); ?>> <?php esc_html_e( 'For themselves', 'dfx-prayer-intentions' ); ?></label></td>
+					</tr>
+					<tr data-dfxpray-beneficiary>
+						<th scope="row"><label for="dfxpray-beneficiary-name"><?php esc_html_e( 'Name', 'dfx-prayer-intentions' ); ?></label></th>
+						<td><input type="text" class="regular-text" id="dfxpray-beneficiary-name" name="intention[beneficiary_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_name'] ); ?>"></td>
+					</tr>
+					<tr data-dfxpray-beneficiary data-dfxpray-called="beneficiary">
+						<th scope="row"><label for="dfxpray-beneficiary-called"><?php esc_html_e( 'How we call them', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="text" class="regular-text" id="dfxpray-beneficiary-called" name="intention[beneficiary_first_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_first_name'] ); ?>" aria-label="<?php esc_attr_e( 'How the beneficiary is called', 'dfx-prayer-intentions' ); ?>">
+						</td>
+					</tr>
+					<tr data-dfxpray-beneficiary>
+						<th scope="row"><label for="dfxpray-relationship"><?php esc_html_e( 'What they are to the requester', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="text" class="regular-text" id="dfxpray-relationship" name="intention[relationship]" value="<?php echo esc_attr( $dfxpray_v['relationship'] ); ?>" maxlength="100">
+							<p class="description"><?php esc_html_e( '“mother of”, “friend of”… It goes before the requester’s name: “Carmen, mother of Luis”.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<tr data-dfxpray-beneficiary>
+						<th scope="row"><?php esc_html_e( 'One of our group', 'dfx-prayer-intentions' ); ?></th>
+						<td><label><input type="checkbox" name="intention[beneficiary_is_member]" value="1" aria-label="<?php esc_attr_e( 'The beneficiary is a member of the group', 'dfx-prayer-intentions' ); ?>" <?php checked( $dfxpray_v['beneficiary_is_member'] ); ?>> <?php esc_html_e( 'One of our group', 'dfx-prayer-intentions' ); ?></label></td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<fieldset class="dfxpray-step">
+				<legend><span class="dfxpray-step-number">3</span> <?php esc_html_e( 'What is happening', 'dfx-prayer-intentions' ); ?></legend>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="dfxpray-type"><?php esc_html_e( 'Kind', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<select id="dfxpray-type" name="intention[type]">
+								<?php foreach ( $dfxpray_lifecycle->kind_choices() as $dfxpray_key => $dfxpray_label ) : ?>
+									<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['type'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description" data-dfxpray-kinds="event"><?php esc_html_e( 'An operation, an exam, a retreat…', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<tr data-dfxpray-kinds="event deceased thanksgiving">
+						<th scope="row"><label for="dfxpray-reference-date" data-dfxpray-date-label data-date="<?php esc_attr_e( 'Date', 'dfx-prayer-intentions' ); ?>" data-death="<?php esc_attr_e( 'Date of death', 'dfx-prayer-intentions' ); ?>"><?php echo esc_html( 'deceased' === $dfxpray_v['type'] ? __( 'Date of death', 'dfx-prayer-intentions' ) : __( 'Date', 'dfx-prayer-intentions' ) ); ?></label></th>
+						<td><input type="date" id="dfxpray-reference-date" name="intention[reference_date]" value="<?php echo esc_attr( (string) $dfxpray_v['reference_date'] ); ?>"></td>
+					</tr>
+					<tr data-dfxpray-kinds="event">
+						<th scope="row"><label for="dfxpray-reference-time"><?php esc_html_e( 'Time', 'dfx-prayer-intentions' ); ?></label></th>
+						<td><input type="time" id="dfxpray-reference-time" name="intention[reference_time]" value="<?php echo esc_attr( (string) $dfxpray_v['reference_time'] ); ?>"></td>
+					</tr>
+					<tr data-dfxpray-kinds="deceased">
+						<th scope="row"><?php esc_html_e( 'Anniversary', 'dfx-prayer-intentions' ); ?></th>
+						<td><label><input type="checkbox" name="intention[anniversary]" value="1" <?php checked( $dfxpray_v['anniversary'] ); ?>> <?php esc_html_e( 'Remember it every year', 'dfx-prayer-intentions' ); ?></label></td>
+					</tr>
+					<tr data-dfxpray-kinds="event deceased">
+						<th scope="row"><?php esc_html_e( 'Key dates', 'dfx-prayer-intentions' ); ?></th>
+						<td>
+							<div class="dfxpray-key-dates" data-dfxpray-rows>
+								<?php
+								foreach ( array_merge(
+									$dfxpray_v['key_dates'],
+									array(
+										array(
+											'date'  => '',
+											'time'  => '',
+											'label' => '',
+										),
+									)
+								) as $dfxpray_kd ) :
+									?>
+									<p class="dfxpray-key-date" data-dfxpray-row>
+										<input type="date" name="key_dates[date][]" value="<?php echo esc_attr( $dfxpray_kd['date'] ); ?>" aria-label="<?php esc_attr_e( 'Date', 'dfx-prayer-intentions' ); ?>">
+										<input type="time" name="key_dates[time][]" value="<?php echo esc_attr( $dfxpray_kd['time'] ); ?>" aria-label="<?php esc_attr_e( 'Time', 'dfx-prayer-intentions' ); ?>">
+										<input type="text" name="key_dates[label][]" value="<?php echo esc_attr( $dfxpray_kd['label'] ); ?>" placeholder="<?php esc_attr_e( 'Funeral, month’s mind Mass, appointment…', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Label', 'dfx-prayer-intentions' ); ?>">
+									</p>
+								<?php endforeach; ?>
+							</div>
+							<button type="button" class="button-link" data-dfxpray-add-row><?php esc_html_e( 'Add another date', 'dfx-prayer-intentions' ); ?></button>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="dfxpray-body"><?php esc_html_e( 'What they told us', 'dfx-prayer-intentions' ); ?></label></th>
+						<td><textarea id="dfxpray-body" class="large-text" rows="5" name="intention[body]" required><?php echo esc_textarea( $dfxpray_v['body'] ); ?></textarea>
+						<p class="description"><?php esc_html_e( 'Never published. Only leaders read it.', 'dfx-prayer-intentions' ); ?></p></td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<fieldset class="dfxpray-step">
+				<legend><span class="dfxpray-step-number">4</span> <?php esc_html_e( 'How it appears in the message', 'dfx-prayer-intentions' ); ?></legend>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="dfxpray-summary"><?php esc_html_e( 'Summary', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="text" class="large-text" id="dfxpray-summary" name="intention[summary]" value="<?php echo esc_attr( $dfxpray_v['summary'] ); ?>" maxlength="100" <?php echo $dfxpray_is_new || 'pending' !== $dfxpray_v['status'] ? 'required' : ''; ?>>
+							<p class="description"><?php esc_html_e( 'What follows the name in the message.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<?php if ( ! $dfxpray_is_new ) : ?>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'How it appears', 'dfx-prayer-intentions' ); ?></th>
+							<td><p class="dfxpray-preview"><code><?php echo esc_html( DFXPRAY_Formatter::get_instance()->line( $dfxpray_intention ) ); ?></code></p></td>
+						</tr>
+					<?php endif; ?>
+					<tr>
+						<th scope="row"><label for="dfxpray-scope"><?php esc_html_e( 'Message', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<select id="dfxpray-scope" name="intention[scope]">
+								<?php foreach ( DFXPRAY_Intentions::get_instance()->scope_labels() as $dfxpray_key => $dfxpray_label ) : ?>
+									<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['scope'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<select id="dfxpray-topic" name="intention[topic]" aria-label="<?php esc_attr_e( 'Topic', 'dfx-prayer-intentions' ); ?>">
+								<?php foreach ( DFXPRAY_Intentions::get_instance()->topic_labels() as $dfxpray_key => $dfxpray_label ) : ?>
+									<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['topic'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( 'The monthly list, read at the monthly adoration, has every intention by topic; the daily message leaves out those kept for the monthly one.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="dfxpray-priority"><?php esc_html_e( 'Priority', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<select id="dfxpray-priority" name="intention[priority]">
+								<option value="normal" <?php selected( $dfxpray_v['priority'], 'normal' ); ?>><?php esc_html_e( 'Normal', 'dfx-prayer-intentions' ); ?></option>
+								<option value="high" <?php selected( $dfxpray_v['priority'], 'high' ); ?>><?php esc_html_e( 'Urgent: it opens “Especially”', 'dfx-prayer-intentions' ); ?></option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<details class="dfxpray-more">
+					<summary><?php esc_html_e( 'Discretion and names', 'dfx-prayer-intentions' ); ?></summary>
+					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><label for="dfxpray-discretion"><?php esc_html_e( 'Discretion', 'dfx-prayer-intentions' ); ?></label></th>
+							<td>
+								<select id="dfxpray-discretion" name="intention[discretion]">
+									<?php foreach ( array_slice( $dfxpray_levels, $dfxpray_is_new ? 0 : $dfxpray_from, null, true ) as $dfxpray_key => $dfxpray_label ) : ?>
+										<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['discretion'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+									<?php endforeach; ?>
+								</select>
+								<?php if ( ! $dfxpray_is_new ) : ?>
+									<p class="description"><?php esc_html_e( 'It can be made stricter than the requester chose, never more open.', 'dfx-prayer-intentions' ); ?></p>
+								<?php endif; ?>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Description instead of the name', 'dfx-prayer-intentions' ); ?></th>
+							<td>
+								<input type="text" class="regular-text" name="intention[requester_display_name]" value="<?php echo esc_attr( $dfxpray_v['requester_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Requester, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the requester instead of the name', 'dfx-prayer-intentions' ); ?>">
+								<input type="text" class="regular-text" name="intention[beneficiary_display_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Beneficiary, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the beneficiary instead of the name', 'dfx-prayer-intentions' ); ?>">
+								<p class="description"><?php esc_html_e( 'Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “La hija de N.H. Axel”. It cannot reveal more than the discretion level allows.', 'dfx-prayer-intentions' ); ?></p>
+							</td>
+						</tr>
+					</table>
+				</details>
+			</fieldset>
+
+			<fieldset class="dfxpray-step">
+				<legend><span class="dfxpray-step-number">5</span> <?php esc_html_e( 'Follow-up', 'dfx-prayer-intentions' ); ?></legend>
+				<table class="form-table" role="presentation">
+					<?php if ( ! $dfxpray_is_new && $dfxpray_open ) : ?>
+						<tr>
+							<th scope="row"><label for="dfxpray-next-review"><?php esc_html_e( 'Look at it again on', 'dfx-prayer-intentions' ); ?></label></th>
+							<td><input type="date" id="dfxpray-next-review" name="intention[next_review]" value="<?php echo esc_attr( (string) $dfxpray_v['next_review'] ); ?>"></td>
+						</tr>
+					<?php endif; ?>
+					<tr>
+						<th scope="row"><label for="dfxpray-ends-on"><?php esc_html_e( 'Or pray for it only until', 'dfx-prayer-intentions' ); ?></label></th>
+						<td>
+							<input type="date" id="dfxpray-ends-on" name="intention[ends_on]" value="<?php echo esc_attr( (string) $dfxpray_v['ends_on'] ); ?>">
+							<p class="description"><?php esc_html_e( 'The day after, it leaves the messages and closes by itself.', 'dfx-prayer-intentions' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Pending to ask', 'dfx-prayer-intentions' ); ?></th>
+						<td>
+							<label><input type="checkbox" name="intention[to_ask]" value="1" <?php checked( ! empty( $dfxpray_v['to_ask'] ) ); ?>> <?php esc_html_e( 'Pending to ask', 'dfx-prayer-intentions' ); ?></label>
+							<?php if ( '' !== $dfxpray_ask ) : ?>
+								<a class="button dfxpray-ask" href="<?php echo esc_url( $dfxpray_ask ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Ask by WhatsApp how it goes', 'dfx-prayer-intentions' ); ?></a>
+							<?php endif; ?>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
 			<p><button type="submit" class="button button-primary"><?php echo $dfxpray_is_new ? esc_html__( 'Add intention', 'dfx-prayer-intentions' ) : esc_html__( 'Save changes', 'dfx-prayer-intentions' ); ?></button></p>
 		</form>
 

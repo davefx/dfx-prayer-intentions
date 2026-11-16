@@ -38,6 +38,7 @@
 		filter: 'current',
 		search: '',
 		notice: null,
+		saved: false,
 	};
 
 	/* ------------------------------------------------------------------ */
@@ -308,7 +309,9 @@
 		}
 		if ( entry.id ) {
 			state.tab = entry.tab;
-			return detail( entry.id, false, true );
+			const saved = state.saved;
+			state.saved = false;
+			return entry.edit ? editScreen( entry.id, true ) : detail( entry.id, saved, true );
 		}
 		return go( entry.tab, true );
 	} );
@@ -583,9 +586,6 @@
 			);
 		}
 
-		if ( open || 'pending' === it.status ) {
-			blocks.unshift( editForm( it ) );
-		}
 
 		if ( 'closed' === it.status ) {
 			blocks.push( h( 'button', { type: 'button', class: 'dfx-button is-primary', onclick: () => act( id, 'reopen', {} ) }, S.reopen ) );
@@ -601,7 +601,12 @@
 				h( 'p', { class: 'dfx-created' }, S.addedOn + ' ' + formatDate( it.created_at, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } ) ),
 				h( 'h2', { class: 'dfx-line', id: 'dfx-line' }, lineParts( result.data.line ) ),
 				h( 'p', { class: 'dfx-requester', id: 'dfx-requester' }, S.requestedBy + ' ' + it.requester_name + ( it.requester_contact ? ' · ' + it.requester_contact : '' ) ),
-				result.data.ask ? h( 'p', {}, h( 'a', { class: 'dfx-button dfx-ask', href: result.data.ask, target: '_blank', rel: 'noopener' }, S.askWhatsApp ) ) : null,
+				h(
+					'p',
+					{ class: 'dfx-hero-actions' },
+					result.data.ask ? h( 'a', { class: 'dfx-button dfx-ask', href: result.data.ask, target: '_blank', rel: 'noopener' }, S.askWhatsApp ) : null,
+					open || 'pending' === it.status ? h( 'button', { type: 'button', class: 'dfx-button', onclick: () => editScreen( id ) }, S.edit ) : null
+				),
 				h(
 					'p',
 					{ class: 'dfx-item-meta' },
@@ -619,70 +624,222 @@
 	}
 
 	/**
-	 * Every field of an intention, as in the panel. Checkboxes send the
-	 * has_* markers so that unticking one saves it as off.
+	 * The fields of an intention in five steps, in the order a request is
+	 * told: who asks, who we pray for, what is happening, how it appears in
+	 * the message and how we follow it up. The same form adds and edits;
+	 * fields that do not apply are hidden (and not sent), and the line it
+	 * will show is previewed while it is written.
+	 *
+	 * @param {Object}   it     Intention (an empty one to add).
+	 * @param {boolean}  isNew  Whether it is being added.
+	 * @param {Function} onsave Called with the intention fields to save.
 	 */
-	function editForm( it ) {
+	function intentionForm( it, isNew, onsave ) {
 		const levels = Object.keys( C.levels );
-		const allowed = Object.fromEntries( levels.slice( Math.max( 0, levels.indexOf( it.discretion ) ) ).map( ( key ) => [ key, C.levels[ key ] ] ) );
-		const text = ( name, label, value, extra ) => field( label, h( 'input', Object.assign( { name, value: value || '' }, extra || {} ) ) );
+		const allowed = Object.fromEntries( levels.slice( isNew ? 0 : Math.max( 0, levels.indexOf( it.discretion ) ) ).map( ( key ) => [ key, C.levels[ key ] ] ) );
+		const words = ( text ) => String( text || '' ).trim().split( /\s+/ ).filter( Boolean );
+		const input = ( name, value, extra ) => h( 'input', Object.assign( { name, value: value || '' }, extra || {} ) );
 		const box = ( name, label, value ) => check( label, h( 'input', { type: 'checkbox', name, value: '1', checked: !! value } ) );
+		const radios = ( name, options, value ) =>
+			h(
+				'div',
+				{ class: 'dfx-choices' },
+				Object.entries( options ).map( ( [ key, text ] ) => h( 'label', { class: 'dfx-choice' }, h( 'input', { type: 'radio', name, value: key, checked: key === value } ), h( 'span', {}, text ) ) )
+			);
+		const step = ( number, title, ...content ) => h( 'fieldset', { class: 'dfx-step' }, h( 'legend', {}, h( 'span', { class: 'dfx-step-number' }, String( number ) ), ' ', title ), content );
+		const labelled = ( text, control, help ) => {
+			const span = h( 'span', { class: 'dfx-label' }, text );
+			return { span, el: h( 'label', { class: 'dfx-field' }, span, control, help ? h( 'small', {}, help ) : null ) };
+		};
 
-		return h(
-			'details',
-			{ class: 'dfx-edit' },
-			h( 'summary', {}, S.edit ),
-			form(
-				( data ) => {
-					const intention = {};
-					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review', 'ends_on', 'asked_on', 'scope', 'topic', 'requester_phone' ].forEach( ( key ) => {
-						if ( data.has( key ) ) {
-							intention[ key ] = data.get( key );
-						}
-					} );
-					[ 'requester_is_member', 'beneficiary_is_requester', 'beneficiary_is_member', 'anniversary', 'to_ask' ].forEach( ( key ) => {
-						if ( data.get( key ) ) {
-							intention[ key ] = '1';
-						}
-					} );
-					return act( it.id, 'save_intention', {
-						group_id: it.group_id,
-						has_requester_is_member: 1,
-						has_beneficiary_is_requester: 1,
-						has_beneficiary_is_member: 1,
-						has_anniversary: 1,
-						has_to_ask: 1,
-						intention,
-					} );
-				},
-				text( 'requester_name', S.requester, it.requester_name, { required: true } ),
-				field( S.nameToShowRequester, h( 'input', { name: 'requester_first_name', value: it.requester_first_name || '' } ), S.calledHelp ),
-				text( 'requester_contact', S.contact, it.requester_contact ),
-				text( 'requester_phone', S.phone, it.requester_phone, { type: 'tel' } ),
-				box( 'requester_is_member', S.requesterIsMember, it.requester_is_member ),
-				box( 'beneficiary_is_requester', S.forThemselves, it.beneficiary_is_requester ),
-				text( 'beneficiary_name', S.beneficiary, it.beneficiary_name ),
-				text( 'beneficiary_first_name', S.nameToShowBeneficiary, it.beneficiary_first_name ),
-				text( 'relationship', S.relationship, it.relationship, { maxlength: 100 } ),
-				box( 'beneficiary_is_member', S.beneficiaryIsMember, it.beneficiary_is_member ),
-				field( S.kind, select( 'type', C.types, it.type ) ),
-				text( 'reference_date', S.referenceDate, it.reference_date, { type: 'date' } ),
-				text( 'reference_time', S.time, it.reference_time, { type: 'time' } ),
-				box( 'anniversary', S.anniversary, it.anniversary ),
-				field( S.fullText, h( 'textarea', { name: 'body', rows: 4, required: true }, it.body ), S.neverPublished ),
-				text( 'summary', S.summary, it.summary, { maxlength: 100, required: 'pending' !== it.status } ),
-				field( S.discretion, select( 'discretion', allowed, it.discretion ) ),
-				field( S.priority, select( 'priority', { normal: S.normal, high: S.highPriority }, it.priority ) ),
-				field( S.message, select( 'scope', C.scopes, it.scope ) ),
-				field( S.topic, select( 'topic', C.topics, it.topic ) ),
-				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
-				field( S.endsOn, h( 'input', { name: 'ends_on', type: 'date', value: it.ends_on || '' } ), S.endsOnHelp ),
-				box( 'to_ask', S.toAskMark, it.to_ask ),
-				text( 'requester_display_name', S.visibleRequester, it.requester_display_name ),
-				field( S.visibleBeneficiary, h( 'input', { name: 'beneficiary_display_name', value: it.beneficiary_display_name || '' } ), S.descriptionHelp ),
-				text( 'asked_on', S.askedOn, String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ),
-				h( 'button', { class: 'dfx-button is-primary' }, S.saveChanges )
-			)
+		const requesterCalled = labelled( S.calledAs, input( 'requester_first_name', it.requester_first_name ), S.calledAsHelp );
+		const beneficiaryCalled = labelled( S.calledAs, input( 'beneficiary_first_name', it.beneficiary_first_name ), S.calledAsHelp );
+		const relationship = labelled( S.relationshipToRequester, input( 'relationship', it.relationship, { maxlength: 100 } ), S.relationshipHelp );
+		const date = labelled( S.date, input( 'reference_date', it.reference_date, { type: 'date' } ) );
+		const time = field( S.time, input( 'reference_time', it.reference_time, { type: 'time' } ) );
+		const anniversary = box( 'anniversary', S.rememberYearly, it.anniversary );
+		const eventHint = h( 'small', { class: 'dfx-hint' }, S.eventHint );
+		const beneficiary = h(
+			'div',
+			{ class: 'dfx-substep' },
+			field( S.name, input( 'beneficiary_name', it.beneficiary_is_requester ? '' : it.beneficiary_name ) ),
+			beneficiaryCalled.el,
+			relationship.el,
+			box( 'beneficiary_is_member', S.ourGroup, it.beneficiary_is_member )
+		);
+		const nextReview = isNew || 'pending' === it.status ? null : field( S.lookAgainOn, input( 'next_review', it.next_review, { type: 'date' } ) );
+		const preview = h( 'p', { class: 'dfx-preview-line', id: 'dfx-preview' } );
+		const previewNote = h( 'small', { class: 'dfx-preview-note' } );
+		const follow = [ nextReview, field( S.prayUntil, input( 'ends_on', it.ends_on, { type: 'date' } ), S.endsOnHelp ), box( 'to_ask', S.toAskMark, it.to_ask ) ];
+
+		const el = form(
+			( data ) => onsave( collect( data ) ),
+			step(
+				1,
+				S.stepWho,
+				field( S.fullName, input( 'requester_name', it.requester_name, { required: true } ) ),
+				requesterCalled.el,
+				field( S.whatsapp, input( 'requester_phone', it.requester_phone, { type: 'tel' } ), S.whatsappHelp ),
+				box( 'requester_is_member', S.ourGroup, it.requester_is_member ),
+				it.requester_contact ? h( 'p', { class: 'dfx-muted' }, S.formContact + ' ' + it.requester_contact ) : null,
+				field( S.whenAsked, input( 'asked_on', isNew ? '' : String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ), S.whenAskedHelp )
+			),
+			step( 2, S.stepForWhom, radios( 'beneficiary_is_requester', { self: S.forThemselves, other: S.forSomeoneElse }, it.beneficiary_is_requester ? 'self' : 'other' ), beneficiary ),
+			step(
+				3,
+				S.stepWhat,
+				radios( 'type', C.kinds, it.type || 'ongoing' ),
+				eventHint,
+				date.el,
+				time,
+				anniversary,
+				field( S.toldUs, h( 'textarea', { name: 'body', rows: 4, required: true }, it.body || '' ), S.neverPublished )
+			),
+			step(
+				4,
+				S.stepMessage,
+				field( S.summary, input( 'summary', it.summary, { maxlength: 100, required: isNew || 'pending' !== it.status } ), S.summaryHelp ),
+				h( 'div', { class: 'dfx-preview' }, h( 'span', { class: 'dfx-label' }, S.willAppear ), preview, previewNote ),
+				radios( 'scope', C.scopes, it.scope || 'daily' ),
+				field( S.topic, select( 'topic', C.topics, it.topic || '' ) ),
+				box( 'priority', S.urgent, 'high' === it.priority ),
+				h(
+					'details',
+					{ class: 'dfx-more' },
+					h( 'summary', {}, S.discretionAndNames ),
+					field( S.discretion, select( 'discretion', allowed, it.discretion || 'first_name' ) ),
+					field( S.visibleRequester, input( 'requester_display_name', it.requester_display_name ) ),
+					field( S.visibleBeneficiary, input( 'beneficiary_display_name', it.beneficiary_display_name ), S.descriptionHelp )
+				)
+			),
+			isNew ? h( 'details', { class: 'dfx-step dfx-step-folded' }, h( 'summary', {}, h( 'span', { class: 'dfx-step-number' }, '5' ), ' ', S.stepFollow ), follow ) : step( 5, S.stepFollow, follow ),
+			h( 'div', { class: 'dfx-actions' }, h( 'button', { class: 'dfx-button is-primary' }, isNew ? S.addIntention : S.saveChanges ) )
+		);
+
+		el.classList.add( 'dfx-steps' );
+
+		const value = ( name ) => {
+			const control = el.elements.namedItem( name );
+			return control && 'value' in control ? control.value : '';
+		};
+		const show = ( node, visible ) => {
+			node.hidden = ! visible;
+			node.querySelectorAll( 'input, select, textarea' ).forEach( ( control ) => {
+				control.disabled = ! visible;
+			} );
+		};
+
+		// "How we call them" is offered when the name has more than one word:
+		// with one word, both are the same.
+		function calledField( called, nameValue, calledValue ) {
+			show( called.el, words( nameValue ).length > 1 || '' !== calledValue.trim() );
+			called.el.querySelector( 'input' ).placeholder = words( nameValue )[ 0 ] || '';
+		}
+
+		function sync() {
+			calledField( requesterCalled, value( 'requester_name' ), value( 'requester_first_name' ) );
+			const forThemselves = 'self' === value( 'beneficiary_is_requester' );
+			show( beneficiary, ! forThemselves );
+			if ( ! forThemselves ) {
+				calledField( beneficiaryCalled, value( 'beneficiary_name' ), value( 'beneficiary_first_name' ) );
+			}
+			const requester = value( 'requester_first_name' ).trim() || words( value( 'requester_name' ) )[ 0 ] || '';
+			relationship.span.textContent = requester ? S.relationshipTo.replace( '%s', requester ) : S.relationshipToRequester;
+
+			const kind = value( 'type' );
+			date.span.textContent = 'deceased' === kind ? S.dateOfDeath : S.date;
+			show( date.el, 'ongoing' !== kind );
+			date.el.querySelector( 'input' ).required = 'event' === kind || 'deceased' === kind;
+			show( time, 'event' === kind );
+			show( anniversary, 'deceased' === kind );
+			eventHint.hidden = 'event' !== kind;
+
+			if ( nextReview ) {
+				nextReview.querySelector( 'input' ).disabled = '' !== value( 'ends_on' );
+			}
+		}
+
+		let timer = null;
+		async function refreshPreview() {
+			const result = await api( 'preview', { group_id: it.group_id || state.group, intention_id: it.id || 0, intention: collect( new FormData( el ) ) } );
+			if ( result.ok ) {
+				preview.textContent = result.data.line;
+				previewNote.textContent = '';
+			} else if ( 'offline' !== result.code ) {
+				previewNote.textContent = result.message;
+			}
+		}
+
+		function changed() {
+			sync();
+			clearTimeout( timer );
+			timer = setTimeout( refreshPreview, 300 );
+		}
+
+		el.addEventListener( 'input', changed );
+		el.addEventListener( 'change', changed );
+		sync();
+		if ( ! isNew ) {
+			refreshPreview();
+		}
+		return el;
+	}
+
+	/**
+	 * The fields of the form, as the API takes them. Checkboxes always send
+	 * a value, so that unticking one saves it as off.
+	 *
+	 * @param {FormData} data Form data.
+	 */
+	function collect( data ) {
+		const intention = {};
+		data.forEach( ( v, key ) => {
+			intention[ key ] = v;
+		} );
+		[ 'requester_is_member', 'beneficiary_is_member', 'anniversary', 'to_ask' ].forEach( ( key ) => {
+			intention[ key ] = data.get( key ) ? '1' : '';
+		} );
+		intention.beneficiary_is_requester = 'self' === data.get( 'beneficiary_is_requester' ) ? '1' : '';
+		intention.priority = data.get( 'priority' ) ? 'high' : 'normal';
+		return intention;
+	}
+
+	const MARKERS = { has_requester_is_member: 1, has_beneficiary_is_requester: 1, has_beneficiary_is_member: 1, has_anniversary: 1, has_to_ask: 1 };
+
+	/**
+	 * The form of a saved intention, on its own screen: Android's back
+	 * button (or Cancel) returns to it without saving.
+	 *
+	 * @param {number}  id          Intention.
+	 * @param {boolean} fromHistory Whether it is shown from the history.
+	 */
+	async function editScreen( id, fromHistory ) {
+		if ( ! fromHistory ) {
+			remember( { tab: state.tab, id, edit: true } );
+		}
+		const t = ticket();
+		loading();
+		const result = await api( 'get', { intention_id: id } );
+		if ( stale( t ) ) {
+			return;
+		}
+		if ( ! result.ok ) {
+			return frame( h( 'p', { class: 'dfx-notice is-error' }, result.message ) );
+		}
+		const it = result.data.intention;
+		frame(
+			h( 'button', { type: 'button', class: 'dfx-back', onclick: () => history.back() }, '← ' + S.cancel ),
+			h( 'h2', {}, S.editIntention ),
+			intentionForm( it, false, async ( intention ) => {
+				const saved = await write( 'save_intention', Object.assign( { intention_id: id, group_id: it.group_id, intention }, MARKERS ) );
+				notify( saved );
+				if ( saved.ok ) {
+					state.saved = true;
+					history.back();
+					return;
+				}
+				render();
+			} )
 		);
 	}
 
@@ -694,39 +851,15 @@
 		ticket();
 		frame(
 			h( 'h2', {}, S.addIntention ),
-			form(
-				async ( data ) => {
-					const intention = {};
-					data.forEach( ( value, key ) => {
-						intention[ key ] = value;
-					} );
-					intention.priority = data.get( 'priority' ) ? 'high' : 'normal';
-					const result = await write( 'save_intention', { intention_id: 0, group_id: state.group, intention } );
-					notify( result );
-					if ( result.ok && result.id ) {
-						state.tab = 'intentions';
-						return detail( result.id, true );
-					}
-					return render();
-				},
-				field( S.requester, h( 'input', { name: 'requester_name', required: true } ) ),
-				field( S.phone, h( 'input', { name: 'requester_phone', type: 'tel' } ) ),
-				check( S.member, h( 'input', { type: 'checkbox', name: 'requester_is_member', value: '1', checked: true } ) ),
-				check( S.forThemselves, h( 'input', { type: 'checkbox', name: 'beneficiary_is_requester', value: '1' } ) ),
-				field( S.beneficiary, h( 'input', { name: 'beneficiary_name' } ) ),
-				field( S.relationship, h( 'input', { name: 'relationship', maxlength: 100 } ) ),
-				check( S.member, h( 'input', { type: 'checkbox', name: 'beneficiary_is_member', value: '1' } ) ),
-				field( S.kind, select( 'type', C.types, 'ongoing' ) ),
-				field( S.referenceDate, h( 'input', { type: 'date', name: 'reference_date' } ) ),
-				field( S.endsOn, h( 'input', { type: 'date', name: 'ends_on' } ), S.endsOnHelp ),
-				field( S.summary, h( 'input', { name: 'summary', maxlength: 100, required: true } ) ),
-				field( S.fullText, h( 'textarea', { name: 'body', rows: 4, required: true } ), S.neverPublished ),
-				check( S.highPriority, h( 'input', { type: 'checkbox', name: 'priority', value: '1' } ) ),
-				field( S.message, select( 'scope', C.scopes, 'daily' ) ),
-				field( S.topic, select( 'topic', C.topics, '' ) ),
-				field( S.askedOn, h( 'input', { type: 'date', name: 'asked_on', max: C.today } ), S.askedOnHint ),
-				h( 'button', { class: 'dfx-button is-primary' }, S.addIntention )
-			)
+			intentionForm( { requester_is_member: true, type: 'ongoing', scope: 'daily', discretion: 'first_name' }, true, async ( intention ) => {
+				const result = await write( 'save_intention', Object.assign( { intention_id: 0, group_id: state.group, intention }, MARKERS ) );
+				notify( result );
+				if ( result.ok && result.id ) {
+					state.tab = 'intentions';
+					return detail( result.id, true );
+				}
+				return render();
+			} )
 		);
 	}
 

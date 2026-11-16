@@ -100,9 +100,40 @@ final class DFXPRAY_App_API {
 			case 'get':
 				return $this->intention( (int) ( $request['intention_id'] ?? 0 ) );
 
+			case 'preview':
+				return $this->preview( (int) ( $request['group_id'] ?? 0 ), (int) ( $request['intention_id'] ?? 0 ), (array) ( $request['intention'] ?? array() ) );
+
 			default:
 				return $this->failure( 'unknown', __( 'Unknown action.', 'dfx-prayer-intentions' ) );
 		}
+	}
+
+	/**
+	 * The line an intention would show while it is written, for the form.
+	 * An edit is scoped to the group of the saved intention.
+	 *
+	 * @param int   $group_id     Group of a new intention.
+	 * @param int   $intention_id Saved intention being edited, or 0.
+	 * @param array $data         Fields of the form.
+	 */
+	private function preview( int $group_id, int $intention_id, array $data ): array {
+		$intentions = DFXPRAY_Intentions::get_instance();
+		$current    = $intention_id ? $intentions->get( $intention_id ) : null;
+		if ( $intention_id && ! $current ) {
+			return $this->forbidden();
+		}
+
+		$group_id = $current ? (int) $current['group_id'] : $group_id;
+		if ( ! DFXPRAY_Permissions::get_instance()->can_manage_group( $group_id ) ) {
+			return $this->forbidden();
+		}
+
+		$line = $intentions->preview( $group_id, $data, $current );
+		if ( is_wp_error( $line ) ) {
+			return $this->failure( 'invalid', $line->get_error_message() );
+		}
+
+		return $this->success( array( 'line' => $line ) );
 	}
 
 	/**

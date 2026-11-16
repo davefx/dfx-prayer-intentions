@@ -48,6 +48,67 @@
 		}
 	} );
 
+	/*
+	 * The intention form: only the fields that apply to its kind, the
+	 * beneficiary only when it is someone else, "How we call them" when the
+	 * name has more than one word, and no review date when it ends on a day.
+	 */
+	function syncIntention( form ) {
+		const field = function ( name ) {
+			return form.querySelector( '[name="intention[' + name + ']"]' );
+		};
+		const show = function ( node, visible ) {
+			node.hidden = ! visible;
+			node.querySelectorAll( 'input, select, textarea' ).forEach( function ( control ) {
+				control.disabled = ! visible;
+			} );
+		};
+		const words = function ( text ) {
+			return String( text || '' ).trim().split( /\s+/ ).filter( Boolean );
+		};
+
+		const kind = field( 'type' ) ? field( 'type' ).value : '';
+		form.querySelectorAll( '[data-dfxpray-kinds]' ).forEach( function ( node ) {
+			show( node, node.dataset.dfxprayKinds.split( ' ' ).indexOf( kind ) !== -1 );
+		} );
+		const dateLabel = form.querySelector( '[data-dfxpray-date-label]' );
+		if ( dateLabel ) {
+			dateLabel.textContent = 'deceased' === kind ? dateLabel.dataset.death : dateLabel.dataset.date;
+		}
+
+		const forThemselves = field( 'beneficiary_is_requester' );
+		form.querySelectorAll( '[data-dfxpray-beneficiary]' ).forEach( function ( node ) {
+			show( node, ! ( forThemselves && forThemselves.checked ) );
+		} );
+
+		form.querySelectorAll( '[data-dfxpray-called]' ).forEach( function ( node ) {
+			const person = node.dataset.dfxprayCalled;
+			const name = field( person + '_name' );
+			const called = field( person + '_first_name' );
+			if ( 'beneficiary' === person && forThemselves && forThemselves.checked ) {
+				return;
+			}
+			show( node, words( name.value ).length > 1 || '' !== called.value.trim() );
+			called.placeholder = words( name.value )[ 0 ] || '';
+		} );
+
+		const review = field( 'next_review' );
+		const ends = field( 'ends_on' );
+		if ( review && ends ) {
+			review.disabled = '' !== ends.value;
+		}
+	}
+
+	document.querySelectorAll( 'form.dfxpray-steps' ).forEach( function ( form ) {
+		form.addEventListener( 'input', function () {
+			syncIntention( form );
+		} );
+		form.addEventListener( 'change', function () {
+			syncIntention( form );
+		} );
+		syncIntention( form );
+	} );
+
 	document.addEventListener( 'submit', function ( event ) {
 		if ( event.target.classList.contains( 'dfxpray-confirm' ) && ! window.confirm( strings.confirmDelete ) ) {
 			event.preventDefault();

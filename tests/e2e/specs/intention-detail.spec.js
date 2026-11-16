@@ -49,7 +49,7 @@ test( 'quick actions: priority, acknowledgement, postponement', async ( { page }
 
 	await page.getByLabel( 'Postpone review to' ).fill( '2031-01-15' );
 	await page.getByRole( 'button', { name: 'Postpone' } ).click();
-	await expect( page.getByLabel( 'Next review' ) ).toHaveValue( '2031-01-15' );
+	await expect( page.getByLabel( 'Look at it again on' ) ).toHaveValue( '2031-01-15' );
 } );
 
 test( 'visible names cannot reveal more than the discretion level allows', async ( { page } ) => {
@@ -57,10 +57,12 @@ test( 'visible names cannot reveal more than the discretion level allows', async
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
+	await page.getByText( 'Discretion and names' ).click();
 	await page.getByLabel( 'Description of the beneficiary instead of the name' ).fill( 'Nuestro hermano David Marín' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.notice-error' ) ).toContainText( 'cannot include surnames' );
 
+	await page.getByText( 'Discretion and names' ).click();
 	await page.getByLabel( 'Description of the beneficiary instead of the name' ).fill( 'Nuestro hermano David' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Nuestro hermano David, madre de Luis: su operación' );
@@ -85,6 +87,7 @@ test( 'a leader sets how people are called: compound names, nicknames, a descrip
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'José Antonio, tío de Juan Tomás: su operación' );
 
+	await page.getByText( 'Discretion and names' ).click();
 	await page.getByLabel( 'Description of the beneficiary instead of the name' ).fill( 'Nuestro tío José Antonio' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Nuestro tío José Antonio, tío de Juan Tomás: su operación' );
@@ -95,10 +98,10 @@ test( 'the date of the request can be corrected', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
-	await page.getByLabel( 'Date of the request' ).fill( '2026-09-14' );
+	await page.getByLabel( 'When they asked' ).fill( '2026-09-14' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.notice-success' ) ).toBeVisible();
-	await expect( page.getByLabel( 'Date of the request' ) ).toHaveValue( '2026-09-14' );
+	await expect( page.getByLabel( 'When they asked' ) ).toHaveValue( '2026-09-14' );
 	expect( php( `echo wp_json_encode( DFXPRAY_Intentions::get_instance()->get( ${ id } )['created_at'] );` ) ).toMatch( /^2026-09-14 / );
 } );
 
@@ -119,23 +122,56 @@ test( 'the panel keeps the edition, topic and phone, and shows both messages', a
 	await expect( page.locator( '#dfxpray-monthly-text' ) ).toHaveValue( /Fátima, sobrina de Luis: quimioterapia/ );
 } );
 
+test( 'the panel form follows the five steps and shows only the fields that apply', async ( { page } ) => {
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'intentions' ) );
+	await page.getByRole( 'link', { name: 'Add intention' } ).click();
+
+	await expect( page.locator( '.dfxpray-step > legend' ) ).toHaveText( [ /Who asks/, /Who we pray for/, /What is happening/, /How it appears in the message/, /Follow-up/ ] );
+
+	await page.getByLabel( 'Full name' ).fill( 'Titón' );
+	await expect( page.getByLabel( 'How the requester is called' ) ).toBeHidden();
+	await page.getByLabel( 'Full name' ).fill( 'Titón Alonso' );
+	await expect( page.getByLabel( 'How the requester is called' ) ).toHaveAttribute( 'placeholder', 'Titón' );
+
+	await expect( page.locator( '#dfxpray-reference-date' ) ).toBeHidden();
+	await page.getByLabel( 'Kind' ).selectOption( 'event' );
+	await expect( page.locator( '#dfxpray-reference-date' ) ).toBeVisible();
+	await expect( page.locator( 'label[for="dfxpray-reference-date"]' ) ).toHaveText( 'Date' );
+	await expect( page.locator( '#dfxpray-reference-time' ) ).toBeVisible();
+	await expect( page.getByLabel( 'Remember it every year' ) ).toBeHidden();
+	await page.getByLabel( 'Kind' ).selectOption( 'deceased' );
+	await expect( page.getByLabel( 'Date of death' ) ).toBeVisible();
+	await expect( page.getByLabel( 'Remember it every year' ) ).toBeVisible();
+	await expect( page.locator( '#dfxpray-reference-time' ) ).toBeHidden();
+
+	await page.locator( '#dfxpray-for-themselves' ).check();
+	await expect( page.locator( '#dfxpray-beneficiary-name' ) ).toBeHidden();
+	await page.locator( '#dfxpray-for-themselves' ).uncheck();
+	await expect( page.locator( '#dfxpray-beneficiary-name' ) ).toBeVisible();
+
+	await expect( page.getByLabel( 'Discretion', { exact: true } ) ).toBeHidden();
+	await page.getByText( 'Discretion and names' ).click();
+	await expect( page.getByLabel( 'Discretion', { exact: true } ) ).toBeVisible();
+} );
+
 test( 'a leader adds an intention by hand, with a key date', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions' ) );
 	await page.getByRole( 'link', { name: 'Add intention' } ).click();
 
-	await page.getByRole( 'textbox', { name: 'Requester', exact: true } ).fill( 'Javier Pérez' );
+	await page.getByLabel( 'Full name' ).fill( 'Javier Pérez' );
 	await page.locator( '#dfxpray-beneficiary-name' ).fill( 'Antonio Pérez' );
-	await page.getByLabel( 'Relationship', { exact: true } ).fill( 'padre de' );
+	await page.getByLabel( 'What they are to the requester' ).fill( 'padre de' );
 	await page.getByLabel( 'Kind' ).selectOption( 'deceased' );
-	await page.getByLabel( 'Reference date' ).fill( '2026-09-20' );
+	await page.getByLabel( 'Date of death' ).fill( '2026-09-20' );
 	await page.locator( 'input[name="key_dates[date][]"]' ).first().fill( '2026-09-22' );
 	await page.locator( 'input[name="key_dates[time][]"]' ).first().fill( '17:00' );
 	await page.locator( 'input[name="key_dates[label][]"]' ).first().fill( 'Funeral' );
 	await page.getByRole( 'button', { name: 'Add another date' } ).click();
 	await expect( page.locator( 'input[name="key_dates[date][]"]' ) ).toHaveCount( 2 );
-	await page.getByLabel( 'Full text' ).fill( 'Falleció el domingo.' );
-	await page.getByLabel( 'Summary for the index' ).fill( 'por su eterno descanso' );
+	await page.getByLabel( 'What they told us' ).fill( 'Falleció el domingo.' );
+	await page.getByLabel( 'Summary', { exact: true } ).fill( 'por su eterno descanso' );
 	await page.getByRole( 'button', { name: 'Add intention' } ).click();
 
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention saved.' );

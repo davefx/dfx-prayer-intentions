@@ -202,6 +202,39 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The line an intention would show, while it is being written: a new
+	 * one, or the changes to one already saved, without saving anything.
+	 */
+	public function test_preview(): void {
+		$result = $this->call(
+			'preview',
+			array(
+				'group_id'  => $this->mine,
+				'intention' => array(
+					'requester_name'   => 'Felipe Arizu',
+					'beneficiary_name' => 'Marina',
+					'relationship'     => 'esposa de',
+					'type'             => 'ongoing',
+					'body'             => 'Tratamiento.',
+					'summary'          => 'problemas de salud',
+				),
+			)
+		);
+		$this->assertTrue( $result['ok'], $result['message'] );
+		$this->assertSame( 'Marina, esposa de Felipe: problemas de salud', $result['data']['line'] );
+		$this->assertSame( array(), DFXPRAY_Intentions::get_instance()->query( $this->mine, array() ) );
+
+		$id     = $this->make_active( $this->mine, array( 'summary' => 'por su salud' ) );
+		$result = $this->call( 'preview', array( 'intention_id' => $id, 'intention' => array( 'summary' => 'ya en casa' ) ) );
+		$this->assertSame( 'Carmen, madre de Luis: ya en casa', $result['data']['line'] );
+		$this->assertSame( 'por su salud', DFXPRAY_Intentions::get_instance()->get( $id )['summary'] );
+
+		$result = $this->call( 'preview', array( 'intention_id' => $id, 'intention' => array( 'type' => 'deceased', 'reference_date' => '' ) ) );
+		$this->assertFalse( $result['ok'] );
+		$this->assertSame( 'invalid', $result['code'] );
+	}
+
+	/**
 	 * Reading another group's data is refused.
 	 */
 	public function test_other_group_cannot_be_read(): void {
@@ -210,6 +243,8 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'forbidden', $this->call( 'index', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'list', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'get', array( 'intention_id' => $id ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'preview', array( 'group_id' => $this->other, 'intention' => array( 'summary' => 'x' ) ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'preview', array( 'group_id' => $this->mine, 'intention_id' => $id, 'intention' => array( 'summary' => 'x' ) ) )['code'] );
 	}
 
 	/**

@@ -372,6 +372,169 @@ details.dfx-card > :not(summary) {
 	box-shadow: none;
 }
 
+/* Hidden fields stay hidden whatever their display. */
+[hidden] {
+	display: none !important;
+}
+
+/* The intention form: five steps ------------------------------------- */
+
+.dfx-form.dfx-steps {
+	display: grid;
+	gap: 14px;
+	padding: 0;
+	background: none;
+	box-shadow: none;
+}
+
+.dfx-step {
+	min-width: 0;
+	margin: 0;
+	padding: 14px 16px 4px;
+	border: 0;
+	border-radius: var(--radius);
+	background: var(--paper);
+	box-shadow: var(--shadow);
+}
+
+.dfx-step > legend,
+.dfx-step > summary {
+	float: left;
+	width: 100%;
+	margin-bottom: 12px;
+	padding: 0;
+	color: var(--navy);
+	font-family: var(--display);
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+}
+
+.dfx-step > legend + * {
+	clear: both;
+}
+
+.dfx-step-folded {
+	padding-bottom: 10px;
+}
+
+.dfx-step-folded > summary {
+	float: none;
+	margin: 0;
+	cursor: pointer;
+}
+
+.dfx-step-folded[open] > summary {
+	margin-bottom: 12px;
+}
+
+.dfx-step-number {
+	display: inline-grid;
+	place-items: center;
+	width: 24px;
+	height: 24px;
+	margin-right: 4px;
+	border-radius: 50%;
+	background: var(--maroon);
+	color: #fff;
+	font-size: 13px;
+	letter-spacing: 0;
+}
+
+.dfx-choices {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.dfx-choice {
+	position: relative;
+}
+
+.dfx-choice input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.dfx-choice span {
+	display: inline-block;
+	padding: 8px 14px;
+	border: 1.5px solid var(--line);
+	border-radius: 999px;
+	background: #fbfcfe;
+	color: var(--ink);
+	font-size: 15px;
+	cursor: pointer;
+}
+
+.dfx-choice input:checked + span {
+	border-color: var(--navy);
+	background: var(--navy);
+	color: #fff;
+	font-weight: 600;
+}
+
+.dfx-choice input:focus-visible + span {
+	box-shadow: 0 0 0 3px rgba(94, 154, 198, 0.35);
+}
+
+.dfx-hint {
+	display: block;
+	margin: -4px 0 12px;
+	color: var(--muted);
+	font-size: 14px;
+	font-style: italic;
+}
+
+.dfx-preview {
+	margin-bottom: 14px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: #eef2f9;
+}
+
+.dfx-preview-line {
+	margin: 0;
+	font-size: 17px;
+}
+
+.dfx-preview-line:empty::before {
+	content: "…";
+	color: var(--muted);
+}
+
+.dfx-preview-note {
+	display: block;
+	color: var(--maroon);
+	font-size: 14px;
+	font-style: italic;
+}
+
+.dfx-more {
+	margin-bottom: 12px;
+	padding-top: 10px;
+	border-top: 1px dashed var(--line);
+}
+
+.dfx-more > summary {
+	margin-bottom: 10px;
+	color: var(--navy);
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.dfx-hero-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
 /* Today's message ---------------------------------------------------- */
 
 .dfx-paper {

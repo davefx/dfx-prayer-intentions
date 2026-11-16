@@ -52,11 +52,15 @@ test( 'a leader adds an intention and follows it up', async ( { page } ) => {
 	await page.goto( APP );
 
 	await page.getByRole( 'button', { name: 'Add', exact: true } ).click();
-	await page.getByLabel( 'Requester', { exact: true } ).fill( 'Felipe Arizu' );
-	await page.getByLabel( 'Beneficiary', { exact: true } ).fill( 'Marina' );
-	await page.getByLabel( 'Relationship, e.g. mother of' ).fill( 'esposa de' );
-	await page.getByLabel( 'Summary for the index' ).fill( 'problemas de salud' );
-	await page.getByLabel( 'Full text' ).fill( 'En tratamiento.' );
+	const who = page.getByRole( 'group', { name: 'Who asks' } );
+	await who.getByLabel( 'Full name' ).fill( 'Felipe Arizu' );
+	await expect( who.getByLabel( 'How we call them' ) ).toHaveAttribute( 'placeholder', 'Felipe' );
+	const forWhom = page.getByRole( 'group', { name: 'Who we pray for' } );
+	await forWhom.getByLabel( 'Name', { exact: true } ).fill( 'Marina' );
+	await forWhom.getByLabel( 'What they are to Felipe' ).fill( 'esposa de' );
+	await page.getByLabel( 'What they told us' ).fill( 'En tratamiento.' );
+	await page.getByLabel( 'Summary' ).fill( 'problemas de salud' );
+	await expect( page.locator( '#dfx-preview' ) ).toHaveText( 'Marina, esposa de Felipe: problemas de salud' );
 	await page.getByRole( 'button', { name: 'Add intention' } ).click();
 
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marina, esposa de Felipe: problemas de salud' );
@@ -110,8 +114,8 @@ test( 'daily message and monthly list; the requester can be asked by WhatsApp', 
 	await page.locator( '.dfx-item', { hasText: 'Marina' } ).click();
 	await expect( page.getByRole( 'link', { name: 'Ask by WhatsApp how it goes' } ) ).toHaveAttribute( 'href', /^https:\/\/wa\.me\/34600998877\?text=/ );
 
-	await page.getByText( 'Edit', { exact: true } ).click();
-	await page.locator( '.dfx-edit select[name="scope"]' ).selectOption( 'monthly' );
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await page.getByLabel( 'Only the monthly list' ).check();
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfx-notice' ) ).toBeVisible();
 	await page.getByRole( 'button', { name: 'Today' } ).click();
@@ -137,7 +141,7 @@ test( 'the To ask tab groups by brother, with one WhatsApp question for all thei
 
 	await page.getByRole( 'button', { name: 'Intentions' } ).click();
 	await page.locator( '.dfx-item', { hasText: 'José' } ).click();
-	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
 	await page.getByLabel( 'Pending to ask', { exact: true } ).check();
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfx-hero .dfx-chip.is-ask' ) ).toHaveText( 'Pending to ask' );
@@ -174,6 +178,42 @@ test( 'the back button moves through the app and never leaves it for the login p
 	await expect( page.locator( '#dfx-message' ) ).toBeVisible();
 } );
 
+test( 'the intention form follows five steps and shows only the fields that apply', async ( { page } ) => {
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Add', exact: true } ).click();
+
+	await expect( page.locator( '.dfx-step > legend, .dfx-step > summary' ) ).toHaveText( [ /Who asks/, /Who we pray for/, /What is happening/, /How it appears in the message/, /Follow-up/ ] );
+
+	const who = page.getByRole( 'group', { name: 'Who asks' } );
+	await who.getByLabel( 'Full name' ).fill( 'Titón' );
+	await expect( who.getByLabel( 'How we call them' ) ).toBeHidden();
+	await who.getByLabel( 'Full name' ).fill( 'Titón Alonso' );
+	await expect( who.getByLabel( 'How we call them' ) ).toBeVisible();
+
+	const forWhom = page.getByRole( 'group', { name: 'Who we pray for' } );
+	await forWhom.getByLabel( 'For themselves' ).check();
+	await expect( forWhom.getByLabel( 'Name', { exact: true } ) ).toBeHidden();
+	await forWhom.getByLabel( 'For someone else' ).check();
+	await expect( forWhom.getByLabel( 'Name', { exact: true } ) ).toBeVisible();
+
+	const what = page.getByRole( 'group', { name: 'What is happening' } );
+	await expect( what.getByLabel( 'A situation' ) ).toBeChecked();
+	await expect( what.locator( 'input[name="reference_date"]' ) ).toBeHidden();
+	await what.getByLabel( 'A death' ).check();
+	await expect( what.getByLabel( 'Date of death' ) ).toBeVisible();
+	await expect( what.getByLabel( 'Remember it every year' ) ).toBeVisible();
+	await expect( what.getByLabel( 'Time' ) ).toBeHidden();
+	await what.getByLabel( 'Something with a date' ).check();
+	await expect( what.getByLabel( 'Date', { exact: true } ) ).toBeVisible();
+	await expect( what.getByLabel( 'Time' ) ).toBeVisible();
+	await expect( what.getByLabel( 'Remember it every year' ) ).toBeHidden();
+
+	await expect( page.locator( 'select[name="discretion"]' ) ).toBeHidden();
+	await page.getByText( 'Discretion and names' ).click();
+	await expect( page.locator( 'select[name="discretion"]' ) ).toBeVisible();
+} );
+
 test( 'every field of an active intention can be edited in the app', async ( { page } ) => {
 	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'member_prefix' => 'N.H.' ) ); echo 1;` );
 	createIntention( group.id, { requester_name: 'Luis Sebastián', beneficiary_name: 'Marta', relationship: 'tía de', summary: 'descanse en paz' } );
@@ -183,23 +223,28 @@ test( 'every field of an active intention can be edited in the app', async ( { p
 	await page.locator( '.dfx-item', { hasText: 'Marta' } ).click();
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía de Luis: descanse en paz' );
 
-	await page.getByText( 'Edit', { exact: true } ).click();
-	await page.getByLabel( 'How the requester is called' ).fill( 'Luis Sebastián' );
-	await page.getByLabel( 'The requester is a member of the group' ).check();
-	await page.getByLabel( 'Relationship, e.g. mother of' ).fill( 'tía materna de' );
-	await page.getByLabel( 'Full text' ).fill( 'Falleció el sábado.' );
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await page.goBack();
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía de Luis: descanse en paz' );
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	const who = page.getByRole( 'group', { name: 'Who asks' } );
+	await who.getByLabel( 'How we call them' ).fill( 'Luis Sebastián' );
+	await who.getByLabel( 'One of our group' ).check();
+	await page.getByLabel( /^What they are to/ ).fill( 'tía materna de' );
+	await page.getByLabel( 'What they told us' ).fill( 'Falleció el sábado.' );
+	await expect( page.locator( '#dfx-preview' ) ).toHaveText( 'Marta, tía materna de N.H. Luis Sebastián: descanse en paz' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de N.H. Luis Sebastián: descanse en paz' );
 	await expect( page.locator( '.dfx-body' ) ).toHaveText( 'Falleció el sábado.' );
 
-	await page.getByText( 'Edit', { exact: true } ).click();
-	await page.getByLabel( 'Date of the request' ).fill( '2026-09-14' );
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await page.getByLabel( 'When they asked' ).fill( '2026-09-14' );
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfx-created' ) ).toHaveText( 'Added on Monday, September 14, 2026' );
 
-	await page.getByText( 'Edit', { exact: true } ).click();
-	await page.getByLabel( 'The requester is a member of the group' ).uncheck();
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await page.getByRole( 'group', { name: 'Who asks' } ).getByLabel( 'One of our group' ).uncheck();
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de Luis Sebastián: descanse en paz' );
 } );
@@ -212,8 +257,9 @@ test( 'an intention prayed for until a day leaves the message by itself the day 
 	await page.getByRole( 'button', { name: 'Intentions' } ).click();
 	await page.locator( '.dfx-item', { hasText: 'Pontevedra' } ).click();
 
-	await page.getByText( 'Edit', { exact: true } ).click();
-	await page.getByLabel( 'Pray for it until' ).fill( '2026-09-27' );
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await page.getByLabel( 'Or pray for it only until' ).fill( '2026-09-27' );
+	await expect( page.getByLabel( 'Look at it again on' ) ).toBeDisabled();
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfx-hero .dfx-review' ) ).toHaveText( 'Until September 27' );
 
@@ -238,7 +284,7 @@ test( 'requests from the form are moderated in the app', async ( { page } ) => {
 
 	await page.getByRole( 'button', { name: 'Moderation' } ).click();
 	await page.locator( '.dfx-item', { hasText: 'Pedro' } ).click();
-	await page.locator( 'form', { has: page.getByRole( 'button', { name: 'Approve' } ) } ).getByLabel( 'Summary for the index' ).fill( 'busca trabajo' );
+	await page.locator( 'form', { has: page.getByRole( 'button', { name: 'Approve' } ) } ).getByLabel( 'Summary' ).fill( 'busca trabajo' );
 	await page.getByRole( 'button', { name: 'Approve' } ).click();
 
 	await expect( page.getByRole( 'heading', { name: 'Waiting for moderation' } ) ).toBeVisible();

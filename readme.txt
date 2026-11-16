@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.33
+Stable tag: 26.11.34
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.34 =
+* The intention form follows five steps, the same in the panel and in the app: who asks, who we pray for, what is happening, how it appears in the message and the follow-up. Fields that do not apply to the kind are hidden.
+* In the app, adding and editing share one form, opened from an Edit button, and the line it will show is previewed while it is written.
 
 = 26.11.33 =
 * An intention can be prayed for until a day: the day after, it leaves the messages and closes by itself, without going through review.

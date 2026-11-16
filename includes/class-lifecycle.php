@@ -43,6 +43,20 @@ final class DFXPRAY_Lifecycle {
 	}
 
 	/**
+	 * The kinds as the forms offer them, in everyday words.
+	 *
+	 * @return array<string, string> Type => label.
+	 */
+	public function kind_choices(): array {
+		return array(
+			'ongoing'      => __( 'A situation', 'dfx-prayer-intentions' ),
+			'event'        => __( 'Something with a date', 'dfx-prayer-intentions' ),
+			'deceased'     => __( 'A death', 'dfx-prayer-intentions' ),
+			'thanksgiving' => __( 'A thanksgiving', 'dfx-prayer-intentions' ),
+		);
+	}
+
+	/**
 	 * States.
 	 *
 	 * @return array<string, string> State => label.
