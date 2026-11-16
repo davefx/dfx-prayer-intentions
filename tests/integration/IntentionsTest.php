@@ -272,6 +272,45 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * An intention prayed for until a day leaves the lists the day after
+	 * and closes by itself as expired, without going through review.
+	 */
+	public function test_an_end_date_closes_the_intention_the_day_after(): void {
+		$id = $this->make_active( $this->group, array( 'type' => 'ongoing', 'ends_on' => '2026-09-27' ) );
+		$this->assertSame( '2026-09-27', $this->intentions->get( $id )['ends_on'] );
+		$this->assertSame( '2026-09-28', $this->intentions->get( $id )['next_review'] );
+
+		$this->freeze_time( '2026-09-27 23:00' );
+		$this->intentions->process_due();
+		$this->assertSame( 'active', $this->intentions->get( $id )['status'] );
+		$this->assertContains( $id, wp_list_pluck( $this->intentions->listable( $this->group ), 'id' ) );
+
+		$this->freeze_time( '2026-09-28 05:00' );
+		$this->assertNotContains( $id, wp_list_pluck( $this->intentions->listable( $this->group ), 'id' ), 'Gone from the messages even before the scheduler runs.' );
+		$this->intentions->process_due();
+		$this->assertSame( 'closed', $this->intentions->get( $id )['status'] );
+		$this->assertSame( 'expired', $this->intentions->get( $id )['close_reason'] );
+	}
+
+	/**
+	 * Setting or clearing the end date on an edit moves the review; a bad
+	 * date is refused.
+	 */
+	public function test_editing_the_end_date(): void {
+		$id = $this->make_active( $this->group, array( 'type' => 'ongoing' ) );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'ends_on' => '2026-10-04' ) ) );
+		$this->assertSame( '2026-10-05', $this->intentions->get( $id )['next_review'] );
+
+		$this->assertTrue( $this->intentions->update( $id, array( 'ends_on' => '' ) ) );
+		$this->assertNull( $this->intentions->get( $id )['ends_on'] );
+
+		$error = $this->intentions->update( $id, array( 'ends_on' => '2026-02-30' ) );
+		$this->assertWPError( $error );
+		$this->assertSame( 'dfxpray_date_invalid', $error->get_error_code() );
+	}
+
+	/**
 	 * Due intentions move to review; others stay.
 	 */
 	public function test_process_due_moves_to_review(): void {

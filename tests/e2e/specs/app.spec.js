@@ -1,7 +1,7 @@
 /**
  * The leaders' installable app, on a phone-sized screen.
  */
-const { test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
+const { test, expect, resetData, createGroup, createIntention, freeze, tick, login, php } = require( '../helpers' );
 
 const APP = '/prayer-requests-app/';
 
@@ -202,6 +202,33 @@ test( 'every field of an active intention can be edited in the app', async ( { p
 	await page.getByLabel( 'The requester is a member of the group' ).uncheck();
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de Luis Sebastián: descanse en paz' );
+} );
+
+test( 'an intention prayed for until a day leaves the message by itself the day after', async ( { page } ) => {
+	freeze( '2026-09-24 10:00' );
+	createIntention( group.id, { beneficiary_name: 'Pontevedra', relationship: '', summary: 'por sus frutos' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'Pontevedra' } ).click();
+
+	await page.getByText( 'Edit', { exact: true } ).click();
+	await page.getByLabel( 'Pray for it until' ).fill( '2026-09-27' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.dfx-hero .dfx-review' ) ).toHaveText( 'Until September 27' );
+
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await expect( page.locator( '.dfx-item', { hasText: 'Pontevedra' } ).locator( '.dfx-review' ) ).toHaveText( 'Until Sep 27' );
+	await page.getByRole( 'button', { name: 'Today' } ).click();
+	await expect( page.locator( '#dfx-message' ) ).toContainText( 'Pontevedra: por sus frutos' );
+
+	freeze( '2026-09-28 05:00' );
+	await page.reload();
+	await expect( page.locator( '#dfx-message' ) ).not.toContainText( 'Pontevedra' );
+	tick();
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await expect( page.locator( '.dfx-item', { hasText: 'Pontevedra' } ) ).toHaveCount( 0 );
+	freeze( null );
 } );
 
 test( 'requests from the form are moderated in the app', async ( { page } ) => {

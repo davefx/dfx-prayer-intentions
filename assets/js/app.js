@@ -150,6 +150,20 @@
 		} );
 	}
 
+	/**
+	 * "Until 27 Sep" for an intention prayed for until a day, otherwise
+	 * its next review.
+	 *
+	 * @param {Object} item  Intention.
+	 * @param {string} month Month format, 'short' or 'long'.
+	 */
+	function reviewNote( item, month ) {
+		if ( item.ends_on ) {
+			return h( 'small', { class: 'dfx-review' }, S.until + ' ' + formatDate( item.ends_on, { day: 'numeric', month } ) );
+		}
+		return item.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( item.next_review, { day: 'numeric', month } ) ) : null;
+	}
+
 	async function api( op, data, cacheKey ) {
 		const body = new URLSearchParams();
 		params( body, Object.assign( { action: C.action, _nonce: C.nonce, op }, data || {} ) );
@@ -393,7 +407,7 @@
 								{ class: 'dfx-item-meta' },
 								h( 'span', { class: 'dfx-chip is-' + item.status }, C.statuses[ item.status ] || '' ),
 								item.to_ask ? h( 'span', { class: 'dfx-chip is-ask' }, S.toAskMark ) : null,
-								item.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( item.next_review, { day: 'numeric', month: 'short' } ) ) : null
+								reviewNote( item, 'short' )
 							)
 						)
 					)
@@ -594,7 +608,7 @@
 					h( 'span', { class: 'dfx-chip is-' + it.status, id: 'dfx-status' }, C.statuses[ it.status ] ),
 					it.to_ask ? h( 'span', { class: 'dfx-chip is-ask' }, S.toAskMark ) : null,
 					h( 'span', { class: 'dfx-chip' }, C.types[ it.type ] ),
-					it.next_review ? h( 'small', { class: 'dfx-review' }, S.nextReview + ': ' + formatDate( it.next_review, { day: 'numeric', month: 'long' } ) ) : null
+					reviewNote( it, 'long' )
 				)
 			),
 			h( 'details', { class: 'dfx-card' }, h( 'summary', {}, S.fullText ), h( 'p', { class: 'dfx-body' }, it.body ), h( 'small', { class: 'dfx-muted' }, S.neverPublished ) ),
@@ -621,7 +635,7 @@
 			form(
 				( data ) => {
 					const intention = {};
-					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review', 'asked_on', 'scope', 'topic', 'requester_phone' ].forEach( ( key ) => {
+					[ 'requester_name', 'requester_first_name', 'requester_display_name', 'requester_contact', 'beneficiary_name', 'beneficiary_first_name', 'beneficiary_display_name', 'relationship', 'type', 'reference_date', 'reference_time', 'body', 'summary', 'discretion', 'priority', 'next_review', 'ends_on', 'asked_on', 'scope', 'topic', 'requester_phone' ].forEach( ( key ) => {
 						if ( data.has( key ) ) {
 							intention[ key ] = data.get( key );
 						}
@@ -662,6 +676,7 @@
 				field( S.message, select( 'scope', C.scopes, it.scope ) ),
 				field( S.topic, select( 'topic', C.topics, it.topic ) ),
 				'pending' !== it.status ? text( 'next_review', S.nextReview, it.next_review, { type: 'date' } ) : null,
+				field( S.endsOn, h( 'input', { name: 'ends_on', type: 'date', value: it.ends_on || '' } ), S.endsOnHelp ),
 				box( 'to_ask', S.toAskMark, it.to_ask ),
 				text( 'requester_display_name', S.visibleRequester, it.requester_display_name ),
 				field( S.visibleBeneficiary, h( 'input', { name: 'beneficiary_display_name', value: it.beneficiary_display_name || '' } ), S.descriptionHelp ),
@@ -703,6 +718,7 @@
 				check( S.member, h( 'input', { type: 'checkbox', name: 'beneficiary_is_member', value: '1' } ) ),
 				field( S.kind, select( 'type', C.types, 'ongoing' ) ),
 				field( S.referenceDate, h( 'input', { type: 'date', name: 'reference_date' } ) ),
+				field( S.endsOn, h( 'input', { type: 'date', name: 'ends_on' } ), S.endsOnHelp ),
 				field( S.summary, h( 'input', { name: 'summary', maxlength: 100, required: true } ) ),
 				field( S.fullText, h( 'textarea', { name: 'body', rows: 4, required: true } ), S.neverPublished ),
 				check( S.highPriority, h( 'input', { type: 'checkbox', name: 'priority', value: '1' } ) ),

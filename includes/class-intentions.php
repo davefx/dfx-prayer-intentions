@@ -52,6 +52,7 @@ final class DFXPRAY_Intentions {
 		'topic',
 		'requester_phone',
 		'to_ask',
+		'ends_on',
 	);
 
 	/**
@@ -387,6 +388,20 @@ final class DFXPRAY_Intentions {
 
 		$closed   = 0;
 		$settings = DFXPRAY_Settings::get_instance();
+		$ended    = $wpdb->get_col( // phpcs:ignore WordPress.DB
+			$wpdb->prepare(
+				"SELECT id FROM %i WHERE status IN ('active','review') AND ends_on IS NOT NULL AND ends_on < %s",
+				$this->tables()['intentions'],
+				DFXPRAY_Clock::get_instance()->today()
+			)
+		);
+
+		foreach ( $ended as $id ) {
+			if ( true === $this->close( (int) $id, 'expired' ) ) {
+				++$closed;
+			}
+		}
+
 		$deceased = $wpdb->get_results( // phpcs:ignore WordPress.DB
 			$wpdb->prepare(
 				"SELECT id, group_id, type FROM %i WHERE type IN ('deceased','thanksgiving') AND status IN ('active','review') AND next_review IS NOT NULL AND next_review <= %s",
@@ -705,7 +720,14 @@ final class DFXPRAY_Intentions {
 	 * @return array[]
 	 */
 	public function listable( int $group_id ): array {
-		return $this->query( $group_id, array( 'status' => self::LISTABLE_STATUSES ) );
+		$today = DFXPRAY_Clock::get_instance()->today();
+
+		return array_values(
+			array_filter(
+				$this->query( $group_id, array( 'status' => self::LISTABLE_STATUSES ) ),
+				static fn( array $intention ): bool => null === $intention['ends_on'] || $intention['ends_on'] >= $today
+			)
+		);
 	}
 
 	/**
@@ -836,6 +858,7 @@ final class DFXPRAY_Intentions {
 			'topic'                    => '',
 			'requester_phone'          => '',
 			'to_ask'                   => false,
+			'ends_on'                  => null,
 		);
 
 		$texts = array( 'requester_name', 'requester_contact', 'beneficiary_name', 'relationship', 'summary', 'requester_display_name', 'beneficiary_display_name', 'requester_first_name', 'beneficiary_first_name' );
@@ -876,7 +899,7 @@ final class DFXPRAY_Intentions {
 			}
 		}
 
-		foreach ( array( 'reference_date', 'reference_time', 'next_review' ) as $field ) {
+		foreach ( array( 'reference_date', 'reference_time', 'next_review', 'ends_on' ) as $field ) {
 			if ( array_key_exists( $field, $data ) ) {
 				$value       = trim( (string) $data[ $field ] );
 				$r[ $field ] = '' === $value ? null : $value;
@@ -970,6 +993,16 @@ final class DFXPRAY_Intentions {
 
 		if ( null !== $r['next_review'] && ! $this->is_valid_date( $r['next_review'] ) ) {
 			return new WP_Error( 'dfxpray_date_invalid', __( 'The date is not valid.', 'dfx-prayer-intentions' ) );
+		}
+
+		if ( null !== $r['ends_on'] ) {
+			if ( ! $this->is_valid_date( $r['ends_on'] ) ) {
+				return new WP_Error( 'dfxpray_date_invalid', __( 'The date is not valid.', 'dfx-prayer-intentions' ) );
+			}
+			if ( array_key_exists( 'ends_on', $data ) ) {
+				// No review before the end: the day after, it closes by itself.
+				$r['next_review'] = DFXPRAY_Clock::get_instance()->local( $r['ends_on'] )->modify( '+1 day' )->format( 'Y-m-d' );
+			}
 		}
 
 		if ( ! $discretion->shows_name( $r['discretion'] ) ) {
@@ -1167,6 +1200,7 @@ final class DFXPRAY_Intentions {
 			'topic'                    => $row['topic'],
 			'requester_phone'          => $row['requester_phone'],
 			'to_ask'                   => (bool) $row['to_ask'],
+			'ends_on'                  => $row['ends_on'],
 			'status'                   => $row['status'],
 			'close_reason'             => $row['close_reason'],
 			'next_review'              => $row['next_review'],
