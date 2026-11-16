@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.29
+Stable tag: 26.11.30
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The daily digest.
 
 == Changelog ==
+
+= 26.11.30 =
+* Members: a new tab keeps the members of each group, with how they are called, their phone and their birthday. On their birthday they open "Especially" in the daily message (a group setting). A member who has died is no longer mentioned on his birthday: he opens "Especially" every year on the anniversary of his death.
 
 = 26.11.29 =
 * The news of the day before (and of the same morning) goes first in the daily message, in "Especially", the departed too; from the next day on, each goes back to its place (a group setting).

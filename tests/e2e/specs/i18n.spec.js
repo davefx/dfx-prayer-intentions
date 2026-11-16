@@ -29,7 +29,7 @@ test( 'the index reads like the specification', async ( { page } ) => {
 	createIntention( group.id, { requester_name: 'Javier Pérez', beneficiary_name: 'Antonio Pérez', relationship: 'padre de', type: 'deceased', reference_date: '2026-09-20', summary: 'por su eterno descanso' } );
 
 	await login( page, 'leader1' );
-	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderación', 'Intenciones', 'Revisiones', 'Índice', 'Resumen diario', 'Ajustes del grupo', 'Actividad' ] );
+	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderación', 'Intenciones', 'Revisiones', 'Índice', 'Miembros', 'Resumen diario', 'Ajustes del grupo', 'Actividad' ] );
 	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ).first() ).toHaveText( 'Grupos' );
 	await page.goto( groupUrl( group.id, 'index' ) );
 

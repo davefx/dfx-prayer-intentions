@@ -53,6 +53,7 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | Text shared with the group (index, digest, alerts) | `DFXPRAY_Formatter`, `DFXPRAY_Index_Composer`, `DFXPRAY_Digest_Composer`, templates in `templates/` |
 | A setting | default and type in `DFXPRAY_Settings::defaults()`; add to `GLOBAL_ONLY` if leaders must not override it; field in `DFXPRAY_Admin::setting_fields()` and `setting_sections()` |
 | A delivery channel | a class implementing `DFXPRAY_Channel`, added in `DFXPRAY_Channels::all()` (third parties use the `dfxpray_channels` filter) |
+| The members of a group (how they are called, phone, birthday) | `DFXPRAY_Members`; the "Members" tab (`admin/views/members.php`) with the `save_member`/`delete_member` actions (scope `member_or_group`); their birthdays open "Especially" in `DFXPRAY_Index_Composer` |
 | Scheduled work | `DFXPRAY_Scheduler::tick()` (every five minutes) or `daily()` |
 | Schema change | `DFXPRAY_Installer::get_schema()`, and bump `DB_VERSION` so `maybe_upgrade()` runs |
 

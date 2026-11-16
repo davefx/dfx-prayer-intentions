@@ -390,6 +390,58 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The brothers who celebrate their birthday that day open "Especially",
+	 * unless the group turns it off.
+	 */
+	public function test_birthdays_open_the_daily_message(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		$members = DFXPRAY_Members::get_instance();
+		$members->create( $this->group, array( 'name' => 'Ramón García Sanz', 'called' => 'Ramón García', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create( $this->group, array( 'name' => 'Luis', 'birth_day' => '25', 'birth_month' => '9' ) );
+
+		$this->freeze_time( '2026-09-20 10:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Antonio', 'relationship' => '', 'summary' => 'tumor', 'priority' => 'high' ) );
+		$this->freeze_time( '2026-09-24 05:00' );
+
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*Especially*',
+					'• N.H. Ramón García: on his birthday',
+					'• N.H. Teo: on his birthday',
+					'• Antonio: tumor',
+				)
+			),
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+		$this->assertStringNotContainsString( 'birthday', DFXPRAY_Index_Composer::get_instance()->compose( $this->group, 'monthly' ) );
+
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'daily_birthdays' => false ) );
+		$this->assertStringNotContainsString( 'birthday', DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
+	 * A member who has died is remembered on the anniversary of his death,
+	 * not on his birthday.
+	 */
+	public function test_death_anniversaries_open_the_daily_message(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		$members = DFXPRAY_Members::get_instance();
+		$members->create( $this->group, array( 'name' => 'Juan Pérez', 'birth_day' => '24', 'birth_month' => '9', 'death_date' => '2025-03-10' ) );
+		$members->create( $this->group, array( 'name' => 'Pedro Gil', 'death_date' => '2024-09-24' ) );
+
+		$this->freeze_time( '2026-09-24 05:00' );
+		$this->assertSame(
+			"*Daily*\n\n*Especially*\n• N.H. Pedro: on the anniversary of his death († 2024)",
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+	}
+
+	/**
 	 * Other groups keep the layout by type, without member prefixes.
 	 */
 	public function test_layout_by_type_is_the_default(): void {

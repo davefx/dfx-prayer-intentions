@@ -17,7 +17,7 @@ test( 'a leader of a single group lands on that group, with its tabs and counter
 
 	expect( page.url() ).toContain( `admin.php?page=dfxpray-group-${ group.id }` );
 	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Santa Marta' );
-	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderation 1', 'Intentions', 'Reviews', 'Index', 'Daily digest', 'Group settings', 'Activity' ] );
+	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderation 1', 'Intentions', 'Reviews', 'Index', 'Members', 'Daily digest', 'Group settings', 'Activity' ] );
 	await expect( page.locator( '.dfxpray-tabs .nav-tab-active' ) ).toHaveText( /Moderation/ );
 	await expect( page.getByText( 'Pending one' ) ).toBeVisible();
 

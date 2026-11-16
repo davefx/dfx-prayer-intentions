@@ -142,7 +142,7 @@ final class DFXPRAY_Index_Composer {
 		$thanked   = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
 
 		return array(
-			'urgent'   => $this->grouped_lines( array_merge( $news, $buckets['urgent'] ) ),
+			'urgent'   => array_merge( $this->birthday_lines( $group_id ), $this->grouped_lines( array_merge( $news, $buckets['urgent'] ) ) ),
 			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
 			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),
@@ -184,6 +184,40 @@ final class DFXPRAY_Index_Composer {
 			'current'  => $lines( $buckets['current'] ),
 			'thanks'   => $lines( $buckets['thanks'] ),
 			'departed' => $lines( $buckets['departed'] ),
+		);
+	}
+
+	/**
+	 * The members who celebrate their birthday today, and those who died on
+	 * this day of an earlier year, unless the group turned it off:
+	 * "N.H. Ramón García: on his birthday", "N.H. Juan: on the anniversary
+	 * of his death († 2024)".
+	 *
+	 * @param int $group_id Group ID.
+	 * @return string[]
+	 */
+	private function birthday_lines( int $group_id ): array {
+		$settings = DFXPRAY_Settings::get_instance();
+		if ( ! $settings->get( 'daily_birthdays', $group_id ) ) {
+			return array();
+		}
+
+		$prefix  = trim( (string) $settings->get( 'member_prefix', $group_id ) );
+		$members = DFXPRAY_Members::get_instance();
+		$today   = DFXPRAY_Clock::get_instance()->today();
+		$name    = static fn( array $member ): string => trim( $prefix . ' ' . ( '' !== $member['called'] ? $member['called'] : (string) strtok( $member['name'], ' ' ) ) );
+
+		return array_merge(
+			array_map(
+				/* translators: %s: the member, as he is called ("N.H. Ramón"). */
+				static fn( array $member ): string => sprintf( __( '%s: on his birthday', 'dfx-prayer-intentions' ), $name( $member ) ),
+				$members->birthdays_on( $group_id, $today )
+			),
+			array_map(
+				/* translators: 1: the member, as he is called ("N.H. Juan"), 2: year of his death. */
+				static fn( array $member ): string => sprintf( __( '%1$s: on the anniversary of his death († %2$s)', 'dfx-prayer-intentions' ), $name( $member ), substr( $member['death_date'], 0, 4 ) ),
+				$members->death_anniversaries_on( $group_id, $today )
+			)
 		);
 	}
 

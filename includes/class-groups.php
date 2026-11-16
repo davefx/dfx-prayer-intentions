@@ -181,6 +181,7 @@ final class DFXPRAY_Groups {
 		$wpdb->delete( $t['group_leaders'], array( 'group_id' => $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$wpdb->delete( $t['groups'], array( 'id' => $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		DFXPRAY_Log::get_instance()->delete_for_group( $id );
+		DFXPRAY_Members::get_instance()->delete_for_group( $id );
 		delete_option( 'dfxpray_digest_' . $id );
 		delete_option( 'dfxpray_alerts_' . $id );
 		update_option( 'dfxpray_flush_rewrite', 1 );

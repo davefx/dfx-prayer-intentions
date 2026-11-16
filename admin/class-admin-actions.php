@@ -45,6 +45,8 @@ final class DFXPRAY_Admin_Actions {
 		'keep_active'          => 'intention',
 		'close'                => 'intention',
 		'reopen'               => 'intention',
+		'save_member'          => 'member_or_group',
+		'delete_member'        => 'member_or_group',
 		'save_group_settings'  => 'group',
 		'regenerate_slug'      => 'group',
 		'test_channel'         => 'group',
@@ -181,6 +183,13 @@ final class DFXPRAY_Admin_Actions {
 				}
 				return $this->can_manage_intention( (int) $request['intention_id'] );
 
+			case 'member_or_group':
+				if ( empty( $request['member_id'] ) ) {
+					return $permissions->can_manage_group( (int) ( $request['group_id'] ?? 0 ) );
+				}
+				$member = DFXPRAY_Members::get_instance()->get( (int) $request['member_id'] );
+				return $member && $permissions->can_manage_group( $member['group_id'] );
+
 			case 'comment':
 				$comment = DFXPRAY_Comments::get_instance()->get( (int) ( $request['comment_id'] ?? 0 ) );
 				return $comment && $this->can_manage_intention( $comment['intention_id'] );
@@ -263,6 +272,36 @@ final class DFXPRAY_Admin_Actions {
 		}
 
 		return $intentions->update( (int) $r['intention_id'], $data );
+	}
+
+	/**
+	 * Add or edit a brother of the group. When editing, the group is always
+	 * the member's own, whatever the request says.
+	 *
+	 * @param array $r Request.
+	 * @return int|true|WP_Error
+	 */
+	private function do_save_member( array $r ) {
+		$data    = (array) ( $r['member'] ?? array() );
+		$members = DFXPRAY_Members::get_instance();
+
+		if ( empty( $r['member_id'] ) ) {
+			return $members->create( (int) $r['group_id'], $data );
+		}
+
+		return $members->update( (int) $r['member_id'], $data );
+	}
+
+	/**
+	 * Delete a brother of the group.
+	 *
+	 * @param array $r Request.
+	 * @return true
+	 */
+	private function do_delete_member( array $r ): bool {
+		DFXPRAY_Members::get_instance()->delete( (int) $r['member_id'] );
+
+		return true;
 	}
 
 	/**
@@ -592,6 +631,8 @@ final class DFXPRAY_Admin_Actions {
 			'keep_active'          => __( 'Intention kept active.', 'dfx-prayer-intentions' ),
 			'close'                => __( 'Intention closed.', 'dfx-prayer-intentions' ),
 			'reopen'               => __( 'Intention reopened.', 'dfx-prayer-intentions' ),
+			'save_member'          => __( 'Member saved.', 'dfx-prayer-intentions' ),
+			'delete_member'        => __( 'Member deleted.', 'dfx-prayer-intentions' ),
 			'save_group_settings'  => __( 'Settings saved.', 'dfx-prayer-intentions' ),
 			'regenerate_slug'      => __( 'The form has a new address. The old one no longer works.', 'dfx-prayer-intentions' ),
 			'test_channel'         => __( 'Test message sent.', 'dfx-prayer-intentions' ),

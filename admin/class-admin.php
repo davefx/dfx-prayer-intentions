@@ -32,6 +32,7 @@ final class DFXPRAY_Admin {
 		'intentions' => 'intentions',
 		'reviews'    => 'reviews',
 		'index'      => 'index',
+		'members'    => 'members',
 		'digest'     => 'digest',
 		'settings'   => 'settings',
 		'log'        => 'log',
@@ -91,6 +92,7 @@ final class DFXPRAY_Admin {
 			'intentions' => __( 'Intentions', 'dfx-prayer-intentions' ),
 			'reviews'    => __( 'Reviews', 'dfx-prayer-intentions' ),
 			'index'      => __( 'Index', 'dfx-prayer-intentions' ),
+			'members'    => __( 'Members', 'dfx-prayer-intentions' ),
 			'digest'     => __( 'Daily digest', 'dfx-prayer-intentions' ),
 			'settings'   => __( 'Group settings', 'dfx-prayer-intentions' ),
 			'log'        => __( 'Activity', 'dfx-prayer-intentions' ),
@@ -456,6 +458,11 @@ final class DFXPRAY_Admin {
 				'label' => __( 'Daily message: news go first during (days)', 'dfx-prayer-intentions' ),
 				'help'  => __( 'What was registered the day before (and that morning) goes in “Especially”. 0: never.', 'dfx-prayer-intentions' ),
 			),
+			'daily_birthdays'          => array(
+				'type'  => 'checkbox',
+				'label' => __( 'Daily message: pray for the members on their birthday', 'dfx-prayer-intentions' ),
+				'help'  => __( 'They open “Especially”, and so do the members who have died, on the anniversary of their death. The dates are kept in the Members tab.', 'dfx-prayer-intentions' ),
+			),
 			'daily_thanks_days'        => array(
 				'type'  => 'number',
 				'label' => __( 'Daily message: thanksgivings during (days)', 'dfx-prayer-intentions' ),
@@ -599,7 +606,7 @@ final class DFXPRAY_Admin {
 	 */
 	public function setting_sections( string $scope ): array {
 		$sections = array(
-			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'daily_news_days', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days', 'recent_deceased_days' ),
+			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'daily_news_days', 'daily_birthdays', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days', 'recent_deceased_days' ),
 			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);

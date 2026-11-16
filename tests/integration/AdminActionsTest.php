@@ -132,6 +132,33 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Leaders add, edit and delete the brothers of their group; never those
+	 * of another group (IDOR), whatever group they claim.
+	 */
+	public function test_member_actions(): void {
+		$members = DFXPRAY_Members::get_instance();
+
+		$created = $this->run_action( 'save_member', array( 'group_id' => $this->mine, 'member' => array( 'name' => 'Ramón García', 'birth_day' => '24', 'birth_month' => '9' ) ) );
+		$this->assertTrue( $created['ok'] );
+		$id = (int) $created['id'];
+		$this->assertSame( $this->mine, $members->get( $id )['group_id'] );
+
+		$this->assertTrue( $this->run_action( 'save_member', array( 'member_id' => $id, 'member' => array( 'called' => 'Ramón García' ) ) )['ok'] );
+		$this->assertSame( 'Ramón García', $members->get( $id )['called'] );
+
+		$theirs = $members->create( $this->other, array( 'name' => 'Pedro' ) );
+		foreach ( array( 'save_member', 'delete_member' ) as $action ) {
+			$result = $this->run_action( $action, array( 'member_id' => $theirs, 'group_id' => $this->mine, 'member' => array( 'name' => 'Hacked' ) ) );
+			$this->assertSame( 'forbidden', $result['code'], $action );
+		}
+		$this->assertSame( 'Pedro', $members->get( $theirs )['name'] );
+		$this->assertSame( 'forbidden', $this->run_action( 'save_member', array( 'group_id' => $this->other, 'member' => array( 'name' => 'Intruso' ) ) )['code'] );
+
+		$this->assertTrue( $this->run_action( 'delete_member', array( 'member_id' => $id ) )['ok'] );
+		$this->assertNull( $members->get( $id ) );
+	}
+
+	/**
 	 * A wrong nonce stops everything.
 	 */
 	public function test_bad_nonce(): void {
