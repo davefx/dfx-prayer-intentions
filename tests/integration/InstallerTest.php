@@ -29,7 +29,13 @@ class InstallerTest extends DFXPRAY_Test_Case {
 		$role = get_role( 'dfxpray_leader' );
 
 		$this->assertNotNull( $role );
-		$this->assertEqualsCanonicalizing( array( 'dfxpray_manage' => true, 'read' => true ), $role->capabilities );
+		$this->assertEqualsCanonicalizing(
+			array(
+				'dfxpray_manage' => true,
+				'read'           => true,
+			),
+			$role->capabilities
+		);
 	}
 
 	/**

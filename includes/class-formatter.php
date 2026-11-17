@@ -100,6 +100,24 @@ final class DFXPRAY_Formatter {
 	}
 
 	/**
+	 * The requester's phone to show in the leaders' messages: the one kept,
+	 * or the contact when it is a phone; '' when unknown or when the group
+	 * keeps phones out of the leaders' digest.
+	 *
+	 * @param array $intention Intention.
+	 */
+	public function requester_phone( array $intention ): string {
+		$group_id = isset( $intention['group_id'] ) ? (int) $intention['group_id'] : null;
+		if ( ! DFXPRAY_Settings::get_instance()->get( 'digest_phones', $group_id ) ) {
+			return '';
+		}
+
+		$phone = (string) ( $intention['requester_phone'] ?? '' );
+
+		return '' !== $phone ? $phone : (string) $this->clean_phone( (string) ( $intention['requester_contact'] ?? '' ) );
+	}
+
+	/**
 	 * A WhatsApp link to ask the requester how the intention goes, with the
 	 * question already written; '' when there is no phone to call. National
 	 * numbers take the default country code.

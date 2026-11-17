@@ -187,11 +187,8 @@ final class DFXPRAY_Digest_Composer {
 				continue;
 			}
 
-			$phone = (string) $intention['requester_phone'];
-			if ( '' === $phone ) {
-				$phone = (string) $formatter->clean_phone( (string) $intention['requester_contact'] );
-			}
-			$who = trim( (string) $intention['requester_name'] ) . ( '' !== $phone ? ' (' . $phone . ')' : '' );
+			$phone = $formatter->requester_phone( $intention );
+			$who   = trim( (string) $intention['requester_name'] ) . ( '' !== $phone ? ' (' . $phone . ')' : '' );
 
 			$ask = $soon
 				/* translators: 1: who to ask, with their phone, 2: review date. */

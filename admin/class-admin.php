@@ -25,6 +25,11 @@ final class DFXPRAY_Admin {
 	private const GROUP_PAGE = 'dfxpray-group-';
 
 	/**
+	 * User meta marking that a leader acknowledged their duty of confidentiality.
+	 */
+	public const CONFIDENTIALITY_META = 'dfxpray_confidentiality_ack';
+
+	/**
 	 * Tabs of a group's page, mapped to their views, in display order.
 	 */
 	private const TABS = array(
@@ -182,6 +187,7 @@ final class DFXPRAY_Admin {
 
 		echo '<h1>' . esc_html( $group['name'] ) . '</h1>';
 		$this->render_notices();
+		$this->confidentiality_notice();
 
 		$counts = DFXPRAY_Intentions::get_instance()->counts( $group_id );
 		$badges = array(
@@ -205,6 +211,19 @@ final class DFXPRAY_Admin {
 				'tab'      => $tab,
 			)
 		);
+	}
+
+	/**
+	 * The duty of confidentiality, until the leader acknowledges it.
+	 */
+	private function confidentiality_notice(): void {
+		if ( get_user_meta( get_current_user_id(), self::CONFIDENTIALITY_META, true ) ) {
+			return;
+		}
+
+		echo '<div class="notice notice-info inline dfxpray-confidentiality"><p>' . esc_html__( 'As a leader of a group you will learn very sensitive data: illnesses, deaths, family situations. You have a duty of confidentiality: do not share anything outside the panel, except the discreet summary for the group, and keep this duty also when you stop being a leader.', 'dfx-prayer-intentions' ) . '</p>';
+		$this->form_open( 'ack_confidentiality' );
+		echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Understood', 'dfx-prayer-intentions' ) . '</button></p></form></div>';
 	}
 
 	/**
@@ -521,6 +540,15 @@ final class DFXPRAY_Admin {
 				'type'  => 'checkbox',
 				'label' => __( 'Include recent internal comments in the leaders’ digest', 'dfx-prayer-intentions' ),
 			),
+			'digest_phones'            => array(
+				'type'  => 'checkbox',
+				'label' => __( 'Include the requesters’ phones in the leaders’ digest', 'dfx-prayer-intentions' ),
+			),
+			'notice_full_text'         => array(
+				'type'  => 'checkbox',
+				'label' => __( 'Include the full text of new requests in the email notice', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Only by email, never in other channels. Without it, leaders read the text in the panel.', 'dfx-prayer-intentions' ),
+			),
 			'digest_time'              => array(
 				'type'  => 'time',
 				'label' => __( 'Daily digest at', 'dfx-prayer-intentions' ),
@@ -582,6 +610,21 @@ final class DFXPRAY_Admin {
 				'type'  => 'checkbox',
 				'label' => __( 'Delete all data when the plugin is uninstalled', 'dfx-prayer-intentions' ),
 			),
+			'privacy_controller'       => array(
+				'type'  => 'text',
+				'label' => __( 'Data controller', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Who is responsible for the data, e.g. the parish. Empty: the name of the site.', 'dfx-prayer-intentions' ),
+			),
+			'privacy_contact'          => array(
+				'type'  => 'text',
+				'label' => __( 'Contact for data protection', 'dfx-prayer-intentions' ),
+				'help'  => __( 'An email or address where people can exercise their rights.', 'dfx-prayer-intentions' ),
+			),
+			'consent_min_age'          => array(
+				'type'  => 'number',
+				'label' => __( 'Minimum age to send requests', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Age to consent on one’s own: 14 in Spain; 13 to 16 elsewhere in the EU.', 'dfx-prayer-intentions' ),
+			),
 		);
 	}
 
@@ -596,12 +639,13 @@ final class DFXPRAY_Admin {
 			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'daily_news_days', 'daily_birthdays', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days' ),
 			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
+			__( 'Personal data in messages', 'dfx-prayer-intentions' ) => array( 'notice_full_text', 'digest_phones' ),
 		);
 
 		if ( 'global' === $scope ) {
 			$sections = array_merge(
 				array(
-					__( 'Data and protection', 'dfx-prayer-intentions' ) => array( 'retention_days', 'phone_country_code', 'url_base', 'rate_limit_per_hour', 'turnstile_site_key', 'turnstile_secret', 'delete_data_on_uninstall' ),
+					__( 'Data and protection', 'dfx-prayer-intentions' ) => array( 'privacy_controller', 'privacy_contact', 'consent_min_age', 'retention_days', 'phone_country_code', 'url_base', 'rate_limit_per_hour', 'turnstile_site_key', 'turnstile_secret', 'delete_data_on_uninstall' ),
 				),
 				$sections
 			);
@@ -646,6 +690,7 @@ final class DFXPRAY_Admin {
 			'group_slug_regenerated'    => __( 'New form address', 'dfx-prayer-intentions' ),
 			'group_settings_saved'      => __( 'Settings saved', 'dfx-prayer-intentions' ),
 			'global_settings_saved'     => __( 'Global settings saved', 'dfx-prayer-intentions' ),
+			'privacy_erased'            => __( 'Personal data erased on request', 'dfx-prayer-intentions' ),
 		);
 
 		$text    = $labels[ $entry['action'] ] ?? $entry['action'];

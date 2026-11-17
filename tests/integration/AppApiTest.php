@@ -62,14 +62,27 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	 * @return array
 	 */
 	private function call( string $op, array $request = array() ): array {
-		return $this->api->respond( array_merge( array( 'op' => $op, '_nonce' => wp_create_nonce( DFXPRAY_App_API::NONCE ) ), $request ) );
+		return $this->api->respond(
+			array_merge(
+				array(
+					'op'     => $op,
+					'_nonce' => wp_create_nonce( DFXPRAY_App_API::NONCE ),
+				),
+				$request
+			)
+		);
 	}
 
 	/**
 	 * Without a valid nonce nothing is answered.
 	 */
 	public function test_nonce_required(): void {
-		$result = $this->api->respond( array( 'op' => 'bootstrap', '_nonce' => 'bogus' ) );
+		$result = $this->api->respond(
+			array(
+				'op'     => 'bootstrap',
+				'_nonce' => 'bogus',
+			)
+		);
 
 		$this->assertFalse( $result['ok'] );
 		$this->assertSame( 'nonce', $result['code'] );
@@ -109,7 +122,13 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertTrue( $result['ok'] );
 		$this->assertSame( DFXPRAY_Index_Composer::get_instance()->compose( $this->mine ), $result['data']['text'] );
 
-		$monthly = $this->call( 'index', array( 'group_id' => $this->mine, 'edition' => 'monthly' ) );
+		$monthly = $this->call(
+			'index',
+			array(
+				'group_id' => $this->mine,
+				'edition'  => 'monthly',
+			)
+		);
 		$this->assertSame( DFXPRAY_Index_Composer::get_instance()->compose( $this->mine, 'monthly' ), $monthly['data']['text'] );
 	}
 
@@ -117,7 +136,13 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	 * Lists by state, with the line the index would show, and a search.
 	 */
 	public function test_list(): void {
-		$active  = $this->make_active( $this->mine, array( 'beneficiary_name' => 'Carmen Ruiz', 'summary' => 'por su salud' ) );
+		$active  = $this->make_active(
+			$this->mine,
+			array(
+				'beneficiary_name' => 'Carmen Ruiz',
+				'summary'          => 'por su salud',
+			)
+		);
 		$pending = $this->make_pending( $this->mine, array( 'beneficiary_name' => 'Pedro Gil' ) );
 		$this->make_active( $this->other );
 
@@ -127,9 +152,43 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( '2026-09-24 10:00:00', $current['data']['items'][0]['created_at'] );
 		$this->assertSame( 'Luis Gómez', $current['data']['items'][0]['requester'] );
 
-		$this->assertSame( array( $pending ), array_column( $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'pending' ) )['data']['items'], 'id' ) );
-		$this->assertSame( array(), $this->call( 'list', array( 'group_id' => $this->mine, 'q' => 'Pedro' ) )['data']['items'] );
-		$this->assertSame( array( $pending ), array_column( $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'pending', 'q' => 'Pedro' ) )['data']['items'], 'id' ) );
+		$this->assertSame(
+			array( $pending ),
+			array_column(
+				$this->call(
+					'list',
+					array(
+						'group_id' => $this->mine,
+						'status'   => 'pending',
+					)
+				)['data']['items'],
+				'id'
+			)
+		);
+		$this->assertSame(
+			array(),
+			$this->call(
+				'list',
+				array(
+					'group_id' => $this->mine,
+					'q'        => 'Pedro',
+				)
+			)['data']['items']
+		);
+		$this->assertSame(
+			array( $pending ),
+			array_column(
+				$this->call(
+					'list',
+					array(
+						'group_id' => $this->mine,
+						'status'   => 'pending',
+						'q'        => 'Pedro',
+					)
+				)['data']['items'],
+				'id'
+			)
+		);
 	}
 
 	/**
@@ -137,12 +196,24 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_list_to_ask(): void {
 		$marked = $this->make_active( $this->mine, array( 'to_ask' => '1' ) );
-		$due    = $this->make_active( $this->mine, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$due    = $this->make_active(
+			$this->mine,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-01',
+			)
+		);
 		DFXPRAY_Intentions::get_instance()->process_due();
 		$this->make_active( $this->mine );
 		$this->make_active( $this->other, array( 'to_ask' => '1' ) );
 
-		$items = $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'ask' ) )['data']['items'];
+		$items = $this->call(
+			'list',
+			array(
+				'group_id' => $this->mine,
+				'status'   => 'ask',
+			)
+		)['data']['items'];
 
 		$this->assertEqualsCanonicalizing( array( $marked, $due ), array_column( $items, 'id' ) );
 		$this->assertArrayHasKey( 'ask', $items[0] );
@@ -152,11 +223,38 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	 * "To ask" also comes grouped by requester, with one question for all.
 	 */
 	public function test_to_ask_grouped_by_requester(): void {
-		$first  = $this->make_active( $this->mine, array( 'requester_name' => 'Titón Alonso', 'requester_phone' => '606453787', 'beneficiary_name' => 'Juan Pablo', 'to_ask' => '1' ) );
-		$second = $this->make_active( $this->mine, array( 'requester_name' => 'Titón Alonso', 'beneficiary_name' => 'Beatriz', 'to_ask' => '1' ) );
-		$other  = $this->make_active( $this->mine, array( 'requester_name' => 'Ramón García', 'to_ask' => '1' ) );
+		$first  = $this->make_active(
+			$this->mine,
+			array(
+				'requester_name'   => 'Titón Alonso',
+				'requester_phone'  => '606453787',
+				'beneficiary_name' => 'Juan Pablo',
+				'to_ask'           => '1',
+			)
+		);
+		$second = $this->make_active(
+			$this->mine,
+			array(
+				'requester_name'   => 'Titón Alonso',
+				'beneficiary_name' => 'Beatriz',
+				'to_ask'           => '1',
+			)
+		);
+		$other  = $this->make_active(
+			$this->mine,
+			array(
+				'requester_name' => 'Ramón García',
+				'to_ask'         => '1',
+			)
+		);
 
-		$groups = $this->call( 'list', array( 'group_id' => $this->mine, 'status' => 'ask' ) )['data']['groups'];
+		$groups = $this->call(
+			'list',
+			array(
+				'group_id' => $this->mine,
+				'status'   => 'ask',
+			)
+		)['data']['groups'];
 
 		$this->assertCount( 2, $groups );
 		$titon = current( array_filter( $groups, static fn( $g ) => 'Titón Alonso' === $g['requester'] ) );
@@ -172,11 +270,36 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	 * The list puts the urgent ones first, then the most recent requests.
 	 */
 	public function test_list_order(): void {
-		$old           = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-01', 'type' => 'deceased', 'reference_date' => '2026-09-01' ) );
-		$urgent        = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-05', 'priority' => 'high' ) );
+		$old           = $this->make_active(
+			$this->mine,
+			array(
+				'asked_on'       => '2026-09-01',
+				'type'           => 'deceased',
+				'reference_date' => '2026-09-01',
+			)
+		);
+		$urgent        = $this->make_active(
+			$this->mine,
+			array(
+				'asked_on' => '2026-09-05',
+				'priority' => 'high',
+			)
+		);
 		$recent        = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-20' ) );
-		$middle        = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-10', 'type' => 'thanksgiving' ) );
-		$urgent_recent = $this->make_active( $this->mine, array( 'asked_on' => '2026-09-15', 'priority' => 'high' ) );
+		$middle        = $this->make_active(
+			$this->mine,
+			array(
+				'asked_on' => '2026-09-10',
+				'type'     => 'thanksgiving',
+			)
+		);
+		$urgent_recent = $this->make_active(
+			$this->mine,
+			array(
+				'asked_on' => '2026-09-15',
+				'priority' => 'high',
+			)
+		);
 
 		$items = $this->call( 'list', array( 'group_id' => $this->mine ) )['data']['items'];
 		$this->assertSame( array( $urgent_recent, $urgent, $recent, $middle, $old ), array_column( $items, 'id' ) );
@@ -225,11 +348,26 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( array(), DFXPRAY_Intentions::get_instance()->query( $this->mine, array() ) );
 
 		$id     = $this->make_active( $this->mine, array( 'summary' => 'por su salud' ) );
-		$result = $this->call( 'preview', array( 'intention_id' => $id, 'intention' => array( 'summary' => 'ya en casa' ) ) );
+		$result = $this->call(
+			'preview',
+			array(
+				'intention_id' => $id,
+				'intention'    => array( 'summary' => 'ya en casa' ),
+			)
+		);
 		$this->assertSame( 'Carmen, madre de Luis: ya en casa', $result['data']['line'] );
 		$this->assertSame( 'por su salud', DFXPRAY_Intentions::get_instance()->get( $id )['summary'] );
 
-		$result = $this->call( 'preview', array( 'intention_id' => $id, 'intention' => array( 'type' => 'deceased', 'reference_date' => '' ) ) );
+		$result = $this->call(
+			'preview',
+			array(
+				'intention_id' => $id,
+				'intention'    => array(
+					'type'           => 'deceased',
+					'reference_date' => '',
+				),
+			)
+		);
 		$this->assertFalse( $result['ok'] );
 		$this->assertSame( 'invalid', $result['code'] );
 	}
@@ -238,8 +376,24 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	 * The members of a group, by their next birthday or anniversary.
 	 */
 	public function test_members(): void {
-		DFXPRAY_Members::get_instance()->create( $this->mine, array( 'name' => 'Teo Martín', 'phone' => '600 11 22 33', 'birth_day' => '30', 'birth_month' => '9', 'notes' => 'XI Retiro - Mesa 1' ) );
-		DFXPRAY_Members::get_instance()->create( $this->mine, array( 'name' => 'Luis Gómez', 'birth_day' => '25', 'birth_month' => '9' ) );
+		DFXPRAY_Members::get_instance()->create(
+			$this->mine,
+			array(
+				'name'        => 'Teo Martín',
+				'phone'       => '600 11 22 33',
+				'birth_day'   => '30',
+				'birth_month' => '9',
+				'notes'       => 'XI Retiro - Mesa 1',
+			)
+		);
+		DFXPRAY_Members::get_instance()->create(
+			$this->mine,
+			array(
+				'name'        => 'Luis Gómez',
+				'birth_day'   => '25',
+				'birth_month' => '9',
+			)
+		);
 
 		$result = $this->call( 'members', array( 'group_id' => $this->mine ) );
 
@@ -259,8 +413,27 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'forbidden', $this->call( 'list', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'get', array( 'intention_id' => $id ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'members', array( 'group_id' => $this->other ) )['code'] );
-		$this->assertSame( 'forbidden', $this->call( 'preview', array( 'group_id' => $this->other, 'intention' => array( 'summary' => 'x' ) ) )['code'] );
-		$this->assertSame( 'forbidden', $this->call( 'preview', array( 'group_id' => $this->mine, 'intention_id' => $id, 'intention' => array( 'summary' => 'x' ) ) )['code'] );
+		$this->assertSame(
+			'forbidden',
+			$this->call(
+				'preview',
+				array(
+					'group_id'  => $this->other,
+					'intention' => array( 'summary' => 'x' ),
+				)
+			)['code']
+		);
+		$this->assertSame(
+			'forbidden',
+			$this->call(
+				'preview',
+				array(
+					'group_id'     => $this->mine,
+					'intention_id' => $id,
+					'intention'    => array( 'summary' => 'x' ),
+				)
+			)['code']
+		);
 	}
 
 	/**
@@ -286,8 +459,24 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertTrue( $created['ok'], $created['message'] );
 		$id = $created['id'];
 
-		$this->assertTrue( $this->call( 'add_update', array( 'intention_id' => $id, 'body' => 'Mejor.' ) )['ok'] );
-		$this->assertTrue( $this->call( 'close', array( 'intention_id' => $id, 'reason' => 'expired' ) )['ok'] );
+		$this->assertTrue(
+			$this->call(
+				'add_update',
+				array(
+					'intention_id' => $id,
+					'body'         => 'Mejor.',
+				)
+			)['ok']
+		);
+		$this->assertTrue(
+			$this->call(
+				'close',
+				array(
+					'intention_id' => $id,
+					'reason'       => 'expired',
+				)
+			)['ok']
+		);
 		$this->assertTrue( $this->call( 'reopen', array( 'intention_id' => $id ) )['ok'] );
 		$this->assertSame( 'active', DFXPRAY_Intentions::get_instance()->get( $id )['status'] );
 

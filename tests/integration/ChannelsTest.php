@@ -26,8 +26,18 @@ class ChannelsTest extends DFXPRAY_Test_Case {
 	public function set_up(): void {
 		parent::set_up();
 		reset_phpmailer_instance();
-		$leader_a    = self::factory()->user->create( array( 'role' => 'dfxpray_leader', 'user_email' => 'ana@example.org' ) );
-		$leader_b    = self::factory()->user->create( array( 'role' => 'dfxpray_leader', 'user_email' => 'ben@example.org' ) );
+		$leader_a    = self::factory()->user->create(
+			array(
+				'role'       => 'dfxpray_leader',
+				'user_email' => 'ana@example.org',
+			)
+		);
+		$leader_b    = self::factory()->user->create(
+			array(
+				'role'       => 'dfxpray_leader',
+				'user_email' => 'ben@example.org',
+			)
+		);
 		$this->group = $this->make_group( 'Santa Marta', array( $leader_a, $leader_b ) );
 	}
 
@@ -97,7 +107,10 @@ class ChannelsTest extends DFXPRAY_Test_Case {
 		};
 		add_filter( 'dfxpray_channels', $filter );
 		$settings_filter = static function ( $config ) {
-			return array( 'digest' => true, 'variant' => 'shareable' );
+			return array(
+				'digest'  => true,
+				'variant' => 'shareable',
+			);
 		};
 		add_filter( 'dfxpray_channel_config_custom', $settings_filter );
 
@@ -177,7 +190,11 @@ class ChannelsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_telegram_splits_long_messages(): void {
 		$this->capture_http();
-		$config = array( 'token' => 't', 'chat_id' => 'c', 'variant' => 'shareable' );
+		$config = array(
+			'token'   => 't',
+			'chat_id' => 'c',
+			'variant' => 'shareable',
+		);
 		$text   = implode( "\n", array_fill( 0, 300, str_repeat( 'x', 30 ) ) );
 
 		DFXPRAY_Channel_Telegram::get_instance()->send( 'S', $text, $config, $this->group );
@@ -279,12 +296,23 @@ class ChannelsTest extends DFXPRAY_Test_Case {
 			array(
 				'headers'  => array(),
 				'body'     => '{"ok":false,"description":"chat not found"}',
-				'response' => array( 'code' => 400, 'message' => 'Bad Request' ),
+				'response' => array(
+					'code'    => 400,
+					'message' => 'Bad Request',
+				),
 				'cookies'  => array(),
 			)
 		);
 
-		$result = DFXPRAY_Channel_Telegram::get_instance()->send( 'S', 'T', array( 'token' => 't', 'chat_id' => 'c' ), $this->group );
+		$result = DFXPRAY_Channel_Telegram::get_instance()->send(
+			'S',
+			'T',
+			array(
+				'token'   => 't',
+				'chat_id' => 'c',
+			),
+			$this->group
+		);
 
 		$this->assertWPError( $result );
 		$this->assertStringContainsString( 'chat not found', $result->get_error_message() );
@@ -306,7 +334,17 @@ class ChannelsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_send_test_message(): void {
 		$this->capture_http();
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'channels' => array( 'telegram' => array( 'token' => 't', 'chat_id' => 'c' ) ) ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'channels' => array(
+					'telegram' => array(
+						'token'   => 't',
+						'chat_id' => 'c',
+					),
+				),
+			)
+		);
 
 		$this->assertTrue( DFXPRAY_Channels::get_instance()->send_test( $this->group, 'telegram' ) );
 		$this->assertWPError( DFXPRAY_Channels::get_instance()->send_test( $this->group, 'webhook' ) );

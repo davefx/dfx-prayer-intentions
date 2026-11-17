@@ -70,7 +70,13 @@ class MembersTest extends DFXPRAY_Test_Case {
 	 * Internal notes about a member (the retreat he walked, his table…).
 	 */
 	public function test_notes(): void {
-		$id = $this->members->create( $this->group, array( 'name' => 'Pablo Navarro', 'notes' => " Caminó en el XI Retiro (Mesa 4)\nCoro " ) );
+		$id = $this->members->create(
+			$this->group,
+			array(
+				'name'  => 'Pablo Navarro',
+				'notes' => " Caminó en el XI Retiro (Mesa 4)\nCoro ",
+			)
+		);
 		$this->assertSame( "Caminó en el XI Retiro (Mesa 4)\nCoro", $this->members->get( $id )['notes'] );
 
 		$this->assertTrue( $this->members->update( $id, array( 'called' => 'Pablo Navarro' ) ) );
@@ -82,10 +88,47 @@ class MembersTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_validation(): void {
 		$this->assertSame( 'dfxpray_member_name_required', $this->members->create( $this->group, array( 'name' => '' ) )->get_error_code() );
-		$this->assertSame( 'dfxpray_member_birthday_invalid', $this->members->create( $this->group, array( 'name' => 'Luis', 'birth_day' => '31', 'birth_month' => '2' ) )->get_error_code() );
-		$this->assertSame( 'dfxpray_member_birthday_invalid', $this->members->create( $this->group, array( 'name' => 'Luis', 'birth_day' => '12' ) )->get_error_code() );
-		$this->assertSame( 'dfxpray_phone_invalid', $this->members->create( $this->group, array( 'name' => 'Luis', 'phone' => 'call me' ) )->get_error_code() );
-		$this->assertIsInt( $this->members->create( $this->group, array( 'name' => 'Luis', 'birth_day' => '29', 'birth_month' => '2' ) ) );
+		$this->assertSame(
+			'dfxpray_member_birthday_invalid',
+			$this->members->create(
+				$this->group,
+				array(
+					'name'        => 'Luis',
+					'birth_day'   => '31',
+					'birth_month' => '2',
+				)
+			)->get_error_code()
+		);
+		$this->assertSame(
+			'dfxpray_member_birthday_invalid',
+			$this->members->create(
+				$this->group,
+				array(
+					'name'      => 'Luis',
+					'birth_day' => '12',
+				)
+			)->get_error_code()
+		);
+		$this->assertSame(
+			'dfxpray_phone_invalid',
+			$this->members->create(
+				$this->group,
+				array(
+					'name'  => 'Luis',
+					'phone' => 'call me',
+				)
+			)->get_error_code()
+		);
+		$this->assertIsInt(
+			$this->members->create(
+				$this->group,
+				array(
+					'name'        => 'Luis',
+					'birth_day'   => '29',
+					'birth_month' => '2',
+				)
+			)
+		);
 	}
 
 	/**
@@ -96,7 +139,16 @@ class MembersTest extends DFXPRAY_Test_Case {
 		$axel  = $this->members->create( $this->group, array( 'name' => 'Axel Jonás' ) );
 		$other = $this->members->create( $this->make_group( 'B' ), array( 'name' => 'Pedro' ) );
 
-		$this->assertTrue( $this->members->update( $luis, array( 'called' => 'Luis Sebastián', 'birth_day' => '3', 'birth_month' => '5' ) ) );
+		$this->assertTrue(
+			$this->members->update(
+				$luis,
+				array(
+					'called'      => 'Luis Sebastián',
+					'birth_day'   => '3',
+					'birth_month' => '5',
+				)
+			)
+		);
 		$this->assertSame( 3, $this->members->get( $luis )['birth_day'] );
 		$this->assertSame( 'Luis Sebastián', $this->members->get( $luis )['name'] );
 		$this->assertSame( array( $axel, $luis ), array_column( $this->members->for_group( $this->group ), 'id' ) );
@@ -112,11 +164,40 @@ class MembersTest extends DFXPRAY_Test_Case {
 	 * on the 28th in common years.
 	 */
 	public function test_birthdays_on(): void {
-		$today    = $this->members->create( $this->group, array( 'name' => 'Ramón', 'birth_day' => '24', 'birth_month' => '9', 'birth_year' => '1970' ) );
-		$this->members->create( $this->group, array( 'name' => 'Teo', 'birth_day' => '25', 'birth_month' => '9' ) );
+		$today = $this->members->create(
+			$this->group,
+			array(
+				'name'        => 'Ramón',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+				'birth_year'  => '1970',
+			)
+		);
+		$this->members->create(
+			$this->group,
+			array(
+				'name'        => 'Teo',
+				'birth_day'   => '25',
+				'birth_month' => '9',
+			)
+		);
 		$this->members->create( $this->group, array( 'name' => 'Sin fecha' ) );
-		$this->members->create( $this->make_group( 'B' ), array( 'name' => 'Otro', 'birth_day' => '24', 'birth_month' => '9' ) );
-		$leap = $this->members->create( $this->group, array( 'name' => 'Bisiesto', 'birth_day' => '29', 'birth_month' => '2' ) );
+		$this->members->create(
+			$this->make_group( 'B' ),
+			array(
+				'name'        => 'Otro',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
+		$leap = $this->members->create(
+			$this->group,
+			array(
+				'name'        => 'Bisiesto',
+				'birth_day'   => '29',
+				'birth_month' => '2',
+			)
+		);
 
 		$this->assertSame( array( $today ), array_column( $this->members->birthdays_on( $this->group, '2026-09-24' ), 'id' ) );
 		$this->assertSame( array( $leap ), array_column( $this->members->birthdays_on( $this->group, '2027-02-28' ), 'id' ) );
@@ -130,7 +211,15 @@ class MembersTest extends DFXPRAY_Test_Case {
 	 * anniversary of his death.
 	 */
 	public function test_death_date(): void {
-		$juan = $this->members->create( $this->group, array( 'name' => 'Juan', 'birth_day' => '24', 'birth_month' => '9', 'death_date' => '2024-03-10' ) );
+		$juan = $this->members->create(
+			$this->group,
+			array(
+				'name'        => 'Juan',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+				'death_date'  => '2024-03-10',
+			)
+		);
 		$this->assertSame( '2024-03-10', $this->members->get( $juan )['death_date'] );
 
 		$this->assertSame( array(), $this->members->birthdays_on( $this->group, '2026-09-24' ) );
@@ -154,12 +243,52 @@ class MembersTest extends DFXPRAY_Test_Case {
 	public function test_calendar(): void {
 		$m = $this->members;
 		$m->create( $this->group, array( 'name' => 'Zacarías Pérez' ) );
-		$m->create( $this->group, array( 'name' => 'Luis Gómez', 'birth_day' => '10', 'birth_month' => '1', 'birth_year' => '1960' ) );
-		$m->create( $this->group, array( 'name' => 'Ramón Vallvé', 'birth_day' => '5', 'birth_month' => '3', 'death_date' => '2023-12-27' ) );
+		$m->create(
+			$this->group,
+			array(
+				'name'        => 'Luis Gómez',
+				'birth_day'   => '10',
+				'birth_month' => '1',
+				'birth_year'  => '1960',
+			)
+		);
+		$m->create(
+			$this->group,
+			array(
+				'name'        => 'Ramón Vallvé',
+				'birth_day'   => '5',
+				'birth_month' => '3',
+				'death_date'  => '2023-12-27',
+			)
+		);
 		$m->create( $this->group, array( 'name' => 'Pepe Ruiz' ) );
-		$m->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '20', 'birth_month' => '11' ) );
-		$m->create( $this->group, array( 'name' => 'Javier López', 'called' => 'Javier López', 'birth_day' => '16', 'birth_month' => '11', 'birth_year' => '1972' ) );
-		$m->create( $this->group, array( 'name' => 'Bisiesto Feb', 'birth_day' => '29', 'birth_month' => '2', 'birth_year' => '1980' ) );
+		$m->create(
+			$this->group,
+			array(
+				'name'        => 'Teo Martín',
+				'birth_day'   => '20',
+				'birth_month' => '11',
+			)
+		);
+		$m->create(
+			$this->group,
+			array(
+				'name'        => 'Javier López',
+				'called'      => 'Javier López',
+				'birth_day'   => '16',
+				'birth_month' => '11',
+				'birth_year'  => '1972',
+			)
+		);
+		$m->create(
+			$this->group,
+			array(
+				'name'        => 'Bisiesto Feb',
+				'birth_day'   => '29',
+				'birth_month' => '2',
+				'birth_year'  => '1980',
+			)
+		);
 
 		$list = $m->calendar( $this->group, '2026-11-16' );
 

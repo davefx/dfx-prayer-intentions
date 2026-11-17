@@ -17,6 +17,9 @@
  * @var array  $levels      Discretion levels.
  * @var string $privacy_url Privacy policy URL.
  * @var string $site_key    Turnstile site key, if configured.
+ * @var string $controller  Data controller (the site's name when not set).
+ * @var string $contact     Contact for data protection, if any.
+ * @var int    $min_age     Minimum age to send a request.
  *
  * @package DFXPRAY
  */
@@ -120,20 +123,69 @@ $dfxpray_self  = ! empty( $draft['beneficiary_is_requester'] );
 			<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( $site_key ); ?>"></div>
 		<?php endif; ?>
 
+		<?php
+		$dfxpray_policy = $privacy_url
+			? '<a href="' . esc_url( $privacy_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'privacy policy', 'dfx-prayer-intentions' ) . '</a>'
+			: esc_html__( 'privacy policy', 'dfx-prayer-intentions' );
+		?>
+		<div class="dfxpray-form__privacy">
+			<p><strong><?php esc_html_e( 'Data protection', 'dfx-prayer-intentions' ); ?></strong></p>
+			<ul>
+				<li>
+					<strong><?php esc_html_e( 'Controller:', 'dfx-prayer-intentions' ); ?></strong>
+					<?php echo esc_html( '' !== $contact ? $controller . ' (' . $contact . ').' : $controller . '.' ); ?>
+				</li>
+				<li>
+					<strong><?php esc_html_e( 'Purpose:', 'dfx-prayer-intentions' ); ?></strong>
+					<?php
+					/* translators: %s: group name. */
+					echo esc_html( sprintf( __( 'to pray for your intention in the group “%s” and, if you leave a contact, to ask you how it goes.', 'dfx-prayer-intentions' ), $group['name'] ) );
+					?>
+				</li>
+				<li>
+					<strong><?php esc_html_e( 'Legal basis:', 'dfx-prayer-intentions' ); ?></strong>
+					<?php esc_html_e( 'your explicit consent (arts. 6.1.a and 9.2.a GDPR).', 'dfx-prayer-intentions' ); ?>
+				</li>
+				<li>
+					<strong><?php esc_html_e( 'Recipients:', 'dfx-prayer-intentions' ); ?></strong>
+					<?php esc_html_e( 'only the leaders of the group read your request. The group receives a short summary, with the names as you choose, through its messaging channel (for example WhatsApp or Telegram). It is not given to anyone else.', 'dfx-prayer-intentions' ); ?>
+				</li>
+				<li>
+					<strong><?php esc_html_e( 'Rights:', 'dfx-prayer-intentions' ); ?></strong>
+					<?php
+					printf(
+						/* translators: %s: link to the privacy policy. */
+						esc_html__( 'you can access, rectify or erase your data, restrict or object to its processing, withdraw your consent at any time and complain to the supervisory authority. More in the %s.', 'dfx-prayer-intentions' ),
+						$dfxpray_policy // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
+					);
+					?>
+				</li>
+			</ul>
+		</div>
+
 		<p class="dfxpray-form__consent">
 			<label class="dfxpray-form__inline">
 				<input type="checkbox" name="dfxpray_consent" value="1" required>
 				<span>
 					<?php
-					if ( $privacy_url ) {
-						printf(
-							/* translators: %s: link to the privacy policy. */
-							esc_html__( 'I agree that the leaders of this group use this information to pray for my intention, as explained in the %s.', 'dfx-prayer-intentions' ),
-							'<a href="' . esc_url( $privacy_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'privacy policy', 'dfx-prayer-intentions' ) . '</a>'
-						);
-					} else {
-						esc_html_e( 'I agree that the leaders of this group use this information to pray for my intention.', 'dfx-prayer-intentions' );
-					}
+					printf(
+						/* translators: %s: link to the privacy policy. */
+						esc_html__( 'I give my explicit consent for the leaders of this group to process the data of this request, including any about health or beliefs, and to share a discreet summary with the group, as explained in the %s.', 'dfx-prayer-intentions' ),
+						$dfxpray_policy // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
+					);
+					?>
+				</span>
+			</label>
+			<label class="dfxpray-form__inline">
+				<input type="checkbox" name="dfxpray_others" value="1" required>
+				<span><?php esc_html_e( 'If I ask for someone else, I have their permission or believe in good faith that they would give it, and I do not include details they would not want known.', 'dfx-prayer-intentions' ); ?></span>
+			</label>
+			<label class="dfxpray-form__inline">
+				<input type="checkbox" name="dfxpray_age" value="1" required>
+				<span>
+					<?php
+					/* translators: %d: minimum age. */
+					echo esc_html( sprintf( __( 'I am at least %d years old.', 'dfx-prayer-intentions' ), $min_age ) );
 					?>
 				</span>
 			</label>

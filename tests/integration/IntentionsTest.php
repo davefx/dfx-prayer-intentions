@@ -121,8 +121,21 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 			'bad type'              => array( array( 'type' => 'party' ), 'dfxpray_type_invalid' ),
 			'event without date'    => array( array( 'type' => 'event' ), 'dfxpray_date_required' ),
 			'deceased without date' => array( array( 'type' => 'deceased' ), 'dfxpray_date_required' ),
-			'bad date'              => array( array( 'type' => 'event', 'reference_date' => '2026-02-31' ), 'dfxpray_date_invalid' ),
-			'bad time'              => array( array( 'type' => 'event', 'reference_date' => '2026-09-28', 'reference_time' => '9h' ), 'dfxpray_time_invalid' ),
+			'bad date'              => array(
+				array(
+					'type'           => 'event',
+					'reference_date' => '2026-02-31',
+				),
+				'dfxpray_date_invalid',
+			),
+			'bad time'              => array(
+				array(
+					'type'           => 'event',
+					'reference_date' => '2026-09-28',
+					'reference_time' => '9h',
+				),
+				'dfxpray_time_invalid',
+			),
 			'bad discretion'        => array( array( 'discretion' => 'public' ), 'dfxpray_discretion_invalid' ),
 			'long summary'          => array( array( 'summary' => str_repeat( 'a', 101 ) ), 'dfxpray_summary_too_long' ),
 		);
@@ -166,8 +179,22 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * A time is kept only for events.
 	 */
 	public function test_time_only_for_events(): void {
-		$event    = $this->make_pending( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-28', 'reference_time' => '09:30' ) );
-		$deceased = $this->make_pending( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-09-20', 'reference_time' => '09:30' ) );
+		$event    = $this->make_pending(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-28',
+				'reference_time' => '09:30',
+			)
+		);
+		$deceased = $this->make_pending(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-09-20',
+				'reference_time' => '09:30',
+			)
+		);
 
 		$this->assertSame( '09:30', $this->intentions->get( $event )['reference_time'] );
 		$this->assertNull( $this->intentions->get( $deceased )['reference_time'] );
@@ -183,18 +210,39 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 				'type'           => 'deceased',
 				'reference_date' => '2026-09-20',
 				'key_dates'      => array(
-					array( 'date' => '2026-10-20', 'label' => 'Misa de mes' ),
-					array( 'date' => '2026-09-22', 'time' => '17:00', 'label' => 'Funeral' ),
-					array( 'date' => 'nope', 'label' => 'Bad' ),
-					array( 'date' => '2026-09-23', 'label' => '' ),
+					array(
+						'date'  => '2026-10-20',
+						'label' => 'Misa de mes',
+					),
+					array(
+						'date'  => '2026-09-22',
+						'time'  => '17:00',
+						'label' => 'Funeral',
+					),
+					array(
+						'date'  => 'nope',
+						'label' => 'Bad',
+					),
+					array(
+						'date'  => '2026-09-23',
+						'label' => '',
+					),
 				),
 			)
 		);
 
 		$this->assertSame(
 			array(
-				array( 'date' => '2026-09-22', 'time' => '17:00', 'label' => 'Funeral' ),
-				array( 'date' => '2026-10-20', 'time' => '', 'label' => 'Misa de mes' ),
+				array(
+					'date'  => '2026-09-22',
+					'time'  => '17:00',
+					'label' => 'Funeral',
+				),
+				array(
+					'date'  => '2026-10-20',
+					'time'  => '',
+					'label' => 'Misa de mes',
+				),
 			),
 			$this->intentions->get( $id )['key_dates']
 		);
@@ -245,7 +293,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_merge_duplicate(): void {
 		$existing  = $this->make_active( $this->group );
-		$duplicate = $this->make_pending( $this->group, array( 'body' => 'Same request again.', 'requester_name' => 'Ana' ) );
+		$duplicate = $this->make_pending(
+			$this->group,
+			array(
+				'body'           => 'Same request again.',
+				'requester_name' => 'Ana',
+			)
+		);
 
 		$this->assertTrue( $this->intentions->merge( $duplicate, $existing ) );
 
@@ -276,7 +330,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * and closes by itself as expired, without going through review.
 	 */
 	public function test_an_end_date_closes_the_intention_the_day_after(): void {
-		$id = $this->make_active( $this->group, array( 'type' => 'ongoing', 'ends_on' => '2026-09-27' ) );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'    => 'ongoing',
+				'ends_on' => '2026-09-27',
+			)
+		);
 		$this->assertSame( '2026-09-27', $this->intentions->get( $id )['ends_on'] );
 		$this->assertSame( '2026-09-28', $this->intentions->get( $id )['next_review'] );
 
@@ -314,9 +374,27 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * Due intentions move to review; others stay.
 	 */
 	public function test_process_due_moves_to_review(): void {
-		$due      = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-22' ) );
-		$not_due  = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-23' ) );
-		$pending  = $this->make_pending( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$due     = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-22',
+			)
+		);
+		$not_due = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-23',
+			)
+		);
+		$pending = $this->make_pending(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-01',
+			)
+		);
 
 		$this->assertSame( 1, $this->intentions->process_due() );
 
@@ -331,14 +409,38 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * already waiting in review; the rest still go to review.
 	 */
 	public function test_deceased_close_themselves(): void {
-		$recent  = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-09-10' ) );
-		$event   = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
-		$waiting = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-08-01' ) );
+		$recent  = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-09-10',
+			)
+		);
+		$event   = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-01',
+			)
+		);
+		$waiting = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-08-01',
+			)
+		);
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'deceased_auto_close' => false ) );
 		$this->intentions->process_due();
 		$this->assertSame( 'review', $this->intentions->get( $waiting )['status'] );
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'deceased_auto_close' => true ) );
-		$due = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-08-20' ) );
+		$due = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-08-20',
+			)
+		);
 
 		$this->intentions->process_due();
 
@@ -356,8 +458,20 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * deceased, unless the group turns it off.
 	 */
 	public function test_thanksgivings_close_themselves(): void {
-		$old    = $this->make_active( $this->group, array( 'type' => 'thanksgiving', 'reference_date' => '2026-09-10' ) );
-		$recent = $this->make_active( $this->group, array( 'type' => 'thanksgiving', 'reference_date' => '2026-09-23' ) );
+		$old    = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'thanksgiving',
+				'reference_date' => '2026-09-10',
+			)
+		);
+		$recent = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'thanksgiving',
+				'reference_date' => '2026-09-23',
+			)
+		);
 
 		$this->intentions->process_due();
 
@@ -366,7 +480,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'active', $this->intentions->get( $recent )['status'] );
 
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'thanksgiving_auto_close' => false ) );
-		$kept = $this->make_active( $this->group, array( 'type' => 'thanksgiving', 'reference_date' => '2026-09-10' ) );
+		$kept = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'thanksgiving',
+				'reference_date' => '2026-09-10',
+			)
+		);
 		$this->intentions->process_due();
 		$this->assertSame( 'review', $this->intentions->get( $kept )['status'] );
 	}
@@ -375,7 +495,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * "Still current" reactivates with a new review date.
 	 */
 	public function test_keep_active(): void {
-		$id = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-01',
+			)
+		);
 		$this->intentions->process_due();
 
 		$this->assertTrue( $this->intentions->keep_active( $id ) );
@@ -433,7 +559,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * A deceased intention cannot spawn a thanksgiving.
 	 */
 	public function test_deceased_cannot_spawn_thanksgiving(): void {
-		$id = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2026-09-20' ) );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-09-20',
+			)
+		);
 
 		$this->assertTrue( $this->intentions->close( $id, 'expired', true ) );
 	}
@@ -552,7 +684,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_query_order(): void {
 		$old    = $this->make_active( $this->group, array( 'asked_on' => '2026-09-01' ) );
-		$urgent = $this->make_active( $this->group, array( 'asked_on' => '2026-09-05', 'priority' => 'high' ) );
+		$urgent = $this->make_active(
+			$this->group,
+			array(
+				'asked_on' => '2026-09-05',
+				'priority' => 'high',
+			)
+		);
 		$recent = $this->make_active( $this->group, array( 'asked_on' => '2026-09-20' ) );
 
 		$this->assertSame( array( $recent, $urgent, $old ), array_column( $this->intentions->query( $this->group ), 'id' ) );
@@ -567,14 +705,31 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'daily', $this->intentions->get( $id )['scope'] );
 		$this->assertSame( '', $this->intentions->get( $id )['topic'] );
 
-		$this->assertTrue( $this->intentions->update( $id, array( 'scope' => 'monthly', 'topic' => 'health' ) ) );
+		$this->assertTrue(
+			$this->intentions->update(
+				$id,
+				array(
+					'scope' => 'monthly',
+					'topic' => 'health',
+				)
+			)
+		);
 		$this->assertSame( 'monthly', $this->intentions->get( $id )['scope'] );
 		$this->assertSame( 'health', $this->intentions->get( $id )['topic'] );
 
 		$this->assertSame( 'dfxpray_scope_invalid', $this->intentions->update( $id, array( 'scope' => 'weekly' ) )->get_error_code() );
 		$this->assertSame( 'dfxpray_topic_invalid', $this->intentions->update( $id, array( 'topic' => 'sports' ) )->get_error_code() );
 
-		$form = $this->make_pending( $this->group, array_merge( $this->form_data(), array( 'scope' => 'monthly', 'topic' => 'health' ) ) );
+		$form = $this->make_pending(
+			$this->group,
+			array_merge(
+				$this->form_data(),
+				array(
+					'scope' => 'monthly',
+					'topic' => 'health',
+				)
+			)
+		);
 		$this->assertSame( 'daily', $this->intentions->get( $form )['scope'] );
 		$this->assertSame( '', $this->intentions->get( $form )['topic'] );
 	}
@@ -584,7 +739,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * requests, so leaders can ask them by WhatsApp how it goes.
 	 */
 	public function test_requester_phone(): void {
-		$first = $this->make_active( $this->group, array( 'requester_name' => 'Ramón García', 'requester_phone' => '+34 600 11 22 33' ) );
+		$first = $this->make_active(
+			$this->group,
+			array(
+				'requester_name'  => 'Ramón García',
+				'requester_phone' => '+34 600 11 22 33',
+			)
+		);
 		$this->assertSame( '+34600112233', $this->intentions->get( $first )['requester_phone'] );
 
 		$next = $this->make_active( $this->group, array( 'requester_name' => 'ramón garcía' ) );
@@ -681,7 +842,13 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 * Changing the date of an active event recomputes the review date.
 	 */
 	public function test_update_date_recomputes_review(): void {
-		$id = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-28' ) );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-28',
+			)
+		);
 
 		$this->intentions->update( $id, array( 'reference_date' => '2026-10-05' ) );
 
@@ -744,7 +911,14 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_query_filters(): void {
 		$a = $this->make_active( $this->group, array( 'beneficiary_name' => 'Carmen' ) );
-		$b = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-30', 'beneficiary_name' => 'Pablo' ) );
+		$b = $this->make_active(
+			$this->group,
+			array(
+				'type'             => 'event',
+				'reference_date'   => '2026-09-30',
+				'beneficiary_name' => 'Pablo',
+			)
+		);
 		$this->intentions->set_priority( $b, 'high' );
 		$c     = $this->make_pending( $this->group );
 		$other = $this->make_active( $this->make_group( 'B' ) );
@@ -765,10 +939,34 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_counts(): void {
 		$this->make_pending( $this->group );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-24' ) );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25' ) );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25' ) );
-		$due = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-24',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-25',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-25',
+			)
+		);
+		$due = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-01',
+			)
+		);
 		$this->intentions->process_due();
 
 		$this->assertSame(

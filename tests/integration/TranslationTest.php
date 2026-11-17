@@ -103,8 +103,21 @@ class TranslationTest extends DFXPRAY_Test_Case {
 			)
 		);
 		DFXPRAY_Intentions::get_instance()->set_priority( $high, 'high' );
-		$this->make_active( $group, array( 'discretion' => 'anonymous', 'summary' => 'por su familia' ) );
-		$this->make_active( $group, array( 'type' => 'thanksgiving', 'discretion' => 'anonymous', 'summary' => 'Por el trabajo encontrado de Luis' ) );
+		$this->make_active(
+			$group,
+			array(
+				'discretion' => 'anonymous',
+				'summary'    => 'por su familia',
+			)
+		);
+		$this->make_active(
+			$group,
+			array(
+				'type'       => 'thanksgiving',
+				'discretion' => 'anonymous',
+				'summary'    => 'Por el trabajo encontrado de Luis',
+			)
+		);
 
 		$expected = implode(
 			"\n",

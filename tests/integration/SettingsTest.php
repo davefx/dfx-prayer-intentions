@@ -36,7 +36,12 @@ class SettingsTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_global_overrides_default(): void {
 		$settings = DFXPRAY_Settings::get_instance();
-		$settings->save_global( array( 'deceased_days' => 40, 'retention_days' => 60 ) );
+		$settings->save_global(
+			array(
+				'deceased_days'  => 40,
+				'retention_days' => 60,
+			)
+		);
 
 		$this->assertSame( 40, $settings->get( 'deceased_days' ) );
 		$this->assertSame( 60, $settings->get( 'retention_days' ) );
@@ -65,7 +70,13 @@ class SettingsTest extends DFXPRAY_Test_Case {
 		$a        = DFXPRAY_Groups::get_instance()->create( array( 'name' => 'A' ) );
 		$settings = DFXPRAY_Settings::get_instance();
 
-		$settings->save_group( $a, array( 'retention_days' => 5000, 'turnstile_secret' => 'x' ) );
+		$settings->save_group(
+			$a,
+			array(
+				'retention_days'   => 5000,
+				'turnstile_secret' => 'x',
+			)
+		);
 
 		$this->assertSame( 90, $settings->get( 'retention_days', $a ) );
 		$this->assertSame( array(), DFXPRAY_Groups::get_instance()->get_settings( $a ) );
@@ -131,5 +142,24 @@ class SettingsTest extends DFXPRAY_Test_Case {
 		$this->assertContains( 'channels', $keys );
 		$this->assertNotContains( 'retention_days', $keys );
 		$this->assertNotContains( 'turnstile_secret', $keys );
+		$this->assertContains( 'notice_full_text', $keys );
+		$this->assertContains( 'digest_phones', $keys );
+		foreach ( array( 'privacy_controller', 'privacy_contact', 'consent_min_age' ) as $key ) {
+			$this->assertNotContains( $key, $keys );
+		}
+	}
+
+	/**
+	 * Data protection defaults: no controller (the site stands for it), 14
+	 * years, and the leaders keep getting the text and the phones.
+	 */
+	public function test_data_protection_defaults(): void {
+		$settings = DFXPRAY_Settings::get_instance();
+
+		$this->assertSame( '', $settings->get( 'privacy_controller' ) );
+		$this->assertSame( '', $settings->get( 'privacy_contact' ) );
+		$this->assertSame( 14, $settings->get( 'consent_min_age' ) );
+		$this->assertTrue( $settings->get( 'notice_full_text' ) );
+		$this->assertTrue( $settings->get( 'digest_phones' ) );
 	}
 }

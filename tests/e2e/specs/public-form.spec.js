@@ -67,7 +67,11 @@ test( 'a visitor sends a request: it enters as pending and the leaders are told'
 	await page.getByLabel( 'Time (optional)' ).fill( '09:30' );
 	await page.getByLabel( 'Your intention' ).fill( 'Operación de cadera, que salga bien.' );
 	await page.getByLabel( 'Initials', { exact: true } ).check();
-	await page.getByLabel( /I agree/ ).check();
+	await expect( page.locator( '.dfxpray-form__privacy' ) ).toContainText( 'to pray for your intention in the group “Santa Marta”' );
+	await expect( page.locator( '.dfxpray-form__privacy' ) ).toContainText( 'your explicit consent (arts. 6.1.a and 9.2.a GDPR)' );
+	await page.getByLabel( /I give my explicit consent/ ).check();
+	await page.getByLabel( /If I ask for someone else/ ).check();
+	await page.getByLabel( 'I am at least 14 years old.' ).check();
 	await page.getByRole( 'button', { name: 'Send my request' } ).click();
 
 	await expect( page.getByText( 'Thank you. We have received your request' ) ).toBeVisible();
@@ -102,7 +106,7 @@ test( 'without consent the request goes back to the form, keeping what was typed
 	await page.getByLabel( 'Your intention' ).fill( 'Trabajo' );
 	await page.getByRole( 'button', { name: 'Send my request' } ).click();
 
-	await expect( page.getByRole( 'alert' ) ).toContainText( 'Please accept the privacy policy' );
+	await expect( page.getByRole( 'alert' ) ).toContainText( 'Please tick the three boxes about your data' );
 	await expect( page.getByLabel( 'Your name' ) ).toHaveValue( 'Luis' );
 	await expect( page.getByLabel( 'Your intention' ) ).toHaveValue( 'Trabajo' );
 	expect( php( `echo wp_json_encode( DFXPRAY_Intentions::get_instance()->query( ${ group.id } ) );` ) ).toHaveLength( 0 );
@@ -116,7 +120,9 @@ test( 'bots that fill the honeypot are told it worked, and nothing is stored', a
 	await page.getByLabel( 'For me' ).check();
 	await page.getByLabel( /a situation that goes on/ ).check();
 	await page.getByLabel( 'Your intention' ).fill( 'Buy pills' );
-	await page.getByLabel( /I agree/ ).check();
+	await page.getByLabel( /I give my explicit consent/ ).check();
+	await page.getByLabel( /If I ask for someone else/ ).check();
+	await page.getByLabel( 'I am at least 14 years old.' ).check();
 	await page.locator( '#dfxpray-website' ).evaluate( ( input ) => ( input.value = 'http://spam.example' ) );
 	await page.getByRole( 'button', { name: 'Send my request' } ).click();
 

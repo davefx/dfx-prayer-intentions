@@ -40,8 +40,22 @@ class PrivacyTest extends DFXPRAY_Test_Case {
 	 * Export finds requests by the requester's contact, case-insensitively.
 	 */
 	public function test_export_by_contact(): void {
-		$mine = $this->make_active( $this->group, array( 'requester_contact' => 'Luis@Example.org', 'body' => 'My text' ) );
+		$mine = $this->make_active(
+			$this->group,
+			array(
+				'requester_contact' => 'Luis@Example.org',
+				'body'              => 'My text',
+				'key_dates'         => array(
+					array(
+						'date'  => '2026-09-30',
+						'time'  => '12:00',
+						'label' => 'Funeral',
+					),
+				),
+			)
+		);
 		DFXPRAY_Updates::get_instance()->add( $mine, 'An update' );
+		DFXPRAY_Comments::get_instance()->add( $mine, 'Called him', 'call' );
 		$this->make_active( $this->group, array( 'requester_contact' => 'other@example.org' ) );
 
 		$result = DFXPRAY_Privacy::get_instance()->export( 'luis@example.org', 1 );
@@ -53,7 +67,92 @@ class PrivacyTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'dfxpray-intention-' . $mine, $item['item_id'] );
 		$this->assertSame( 'My text', $values['Intention'] );
 		$this->assertStringContainsString( 'An update', $values['Updates'] );
-		$this->assertArrayNotHasKey( 'Internal comments', $values );
+		$this->assertStringContainsString( 'Called him', $values['Leaders’ notes'] );
+		$this->assertStringContainsString( '2026-09-30 12:00 Funeral', $values['Key dates'] );
+	}
+
+	/**
+	 * Requests are found by the phone too, written in any format, whether it
+	 * was given as the contact or kept as the requester's phone.
+	 */
+	public function test_find_by_phone_in_any_format(): void {
+		$as_contact = $this->make_active( $this->group, array( 'requester_contact' => '600 11 12 22' ) );
+		$as_phone   = $this->make_active(
+			$this->group,
+			array(
+				'requester_contact' => '',
+				'requester_phone'   => '+34600111222',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_name'    => 'Ana Pérez',
+				'requester_contact' => '600 11 12 23',
+			)
+		);
+
+		foreach ( array( '600111222', '+34 600 11 12 22', '0034-600-111-222' ) as $phone ) {
+			$ids = array_map( static fn( $item ) => $item['item_id'], DFXPRAY_Privacy::get_instance()->export( $phone, 1 )['data'] );
+			sort( $ids );
+			$this->assertSame( array( 'dfxpray-intention-' . $as_contact, 'dfxpray-intention-' . $as_phone ), $ids, $phone );
+		}
+	}
+
+	/**
+	 * The members of a group, found by their phone, can see and erase their
+	 * data too.
+	 */
+	public function test_members_export_and_erase(): void {
+		$members = DFXPRAY_Members::get_instance();
+		$member  = $members->create(
+			$this->group,
+			array(
+				'name'        => 'Ramón García',
+				'called'      => 'Ramón',
+				'phone'       => '+34 629 04 26 26',
+				'birth_day'   => '5',
+				'birth_month' => '3',
+				'birth_year'  => '1970',
+				'notes'       => 'II Retiro',
+			)
+		);
+		$other   = $members->create(
+			$this->group,
+			array(
+				'name'  => 'Luis Pérez',
+				'phone' => '600 00 00 01',
+			)
+		);
+
+		$export = DFXPRAY_Privacy::get_instance()->export( '629042626', 1 );
+		$item   = array_values( array_filter( $export['data'], static fn( $i ) => 'dfxpray-member-' . $member === $i['item_id'] ) );
+		$this->assertCount( 1, $item );
+		$values = array_column( $item[0]['data'], 'value', 'name' );
+		$this->assertSame( 'Ramón García', $values['Name'] );
+		$this->assertSame( '5/3/1970', $values['Birthday'] );
+		$this->assertSame( 'II Retiro', $values['Notes'] );
+
+		$result = DFXPRAY_Privacy::get_instance()->erase( '+34629042626', 1 );
+
+		$this->assertTrue( $result['items_removed'] );
+		$this->assertNull( $members->get( $member ) );
+		$this->assertNotNull( $members->get( $other ) );
+	}
+
+	/**
+	 * An administrator can look a contact up and erase it from the global
+	 * settings, also by phone, which WordPress' own tools do not take.
+	 */
+	public function test_privacy_lookup_and_erase_action(): void {
+		$mine = $this->make_active( $this->group, array( 'requester_contact' => '600 11 12 22' ) );
+
+		$this->assertCount( 1, DFXPRAY_Privacy::get_instance()->export( '600111222', 1 )['data'] );
+
+		$result = DFXPRAY_Admin_Actions::get_instance()->run( 'privacy_erase', array( 'contact' => '+34 600111222' ) );
+
+		$this->assertTrue( $result['ok'], $result['message'] );
+		$this->assertNull( DFXPRAY_Intentions::get_instance()->get( $mine ) );
 	}
 
 	/**
@@ -86,10 +185,17 @@ class PrivacyTest extends DFXPRAY_Test_Case {
 	 * A policy text is suggested.
 	 */
 	public function test_policy_text(): void {
+		DFXPRAY_Settings::get_instance()->save_global(
+			array(
+				'privacy_controller' => 'Parroquia San Manuel González',
+				'privacy_contact'    => 'privacidad@example.org',
+			)
+		);
 		$text = DFXPRAY_Privacy::get_instance()->policy_text();
 
-		$this->assertStringContainsString( 'prayer', $text );
-		$this->assertStringContainsString( '90', $text );
+		foreach ( array( 'Parroquia San Manuel González', 'privacidad@example.org', 'prayer', '90 days', 'explicit consent', '9.2.a', 'WhatsApp', 'Telegram', 'Cloudflare', 'outside the European Union', 'art. 14.5.b', 'Members of the group', '9.2.d', 'at least 14 years old', 'withdraw your consent', 'supervisory authority' ) as $needle ) {
+			$this->assertStringContainsString( $needle, $text );
+		}
 		$this->assertNotFalse( has_action( 'admin_init', array( DFXPRAY_Privacy::get_instance(), 'add_policy_content' ) ) );
 	}
 }

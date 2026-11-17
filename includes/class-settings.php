@@ -40,6 +40,9 @@ final class DFXPRAY_Settings {
 		'rate_limit_per_hour',
 		'delete_data_on_uninstall',
 		'phone_country_code',
+		'privacy_controller',
+		'privacy_contact',
+		'consent_min_age',
 	);
 
 	/**
@@ -89,6 +92,9 @@ final class DFXPRAY_Settings {
 			'rate_limit_per_hour'      => 5,
 			'delete_data_on_uninstall' => true,
 			'phone_country_code'       => '34',
+			'privacy_controller'       => '',
+			'privacy_contact'          => '',
+			'consent_min_age'          => 14,
 
 			// Deadlines.
 			'event_grace_days'         => 2,
@@ -115,6 +121,8 @@ final class DFXPRAY_Settings {
 			'index_layout'             => 'by_type',
 			'member_prefix'            => '',
 			'digest_include_comments'  => false,
+			'digest_phones'            => true,
+			'notice_full_text'         => true,
 
 			// Schedules.
 			'digest_time'              => '07:00',

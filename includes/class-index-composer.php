@@ -129,11 +129,8 @@ final class DFXPRAY_Index_Composer {
 			return '';
 		}
 
-		$phone = (string) ( $intention['requester_phone'] ?? '' );
-		if ( '' === $phone ) {
-			$phone = (string) DFXPRAY_Formatter::get_instance()->clean_phone( (string) ( $intention['requester_contact'] ?? '' ) );
-		}
-		$who = trim( (string) $intention['requester_name'] ) . ( '' !== $phone ? ' · ' . $phone : '' );
+		$phone = DFXPRAY_Formatter::get_instance()->requester_phone( $intention );
+		$who   = trim( (string) $intention['requester_name'] ) . ( '' !== $phone ? ' · ' . $phone : '' );
 
 		/* translators: %s: who asks for the intention, with their phone when known ("Luis Gómez · +34600111222"). */
 		return ' _(' . sprintf( __( 'asked by %s', 'dfx-prayer-intentions' ), $who ) . ')_';

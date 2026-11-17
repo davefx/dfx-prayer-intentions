@@ -95,9 +95,24 @@ class PublicPageTest extends DFXPRAY_Test_Case {
 	 * Pages that embed the form are also kept out of search engines.
 	 */
 	public function test_pages_with_form_get_noindex(): void {
-		$with    = self::factory()->post->create( array( 'post_type' => 'page', 'post_content' => '[dfxpray_form]' ) );
-		$block   = self::factory()->post->create( array( 'post_type' => 'page', 'post_content' => '<!-- wp:dfxpray/form {"groupId":1} /-->' ) );
-		$without = self::factory()->post->create( array( 'post_type' => 'page', 'post_content' => 'Hello' ) );
+		$with    = self::factory()->post->create(
+			array(
+				'post_type'    => 'page',
+				'post_content' => '[dfxpray_form]',
+			)
+		);
+		$block   = self::factory()->post->create(
+			array(
+				'post_type'    => 'page',
+				'post_content' => '<!-- wp:dfxpray/form {"groupId":1} /-->',
+			)
+		);
+		$without = self::factory()->post->create(
+			array(
+				'post_type'    => 'page',
+				'post_content' => 'Hello',
+			)
+		);
 		$page    = DFXPRAY_Public_Page::get_instance();
 
 		$this->assertTrue( $page->post_has_form( get_post( $with ) ) );

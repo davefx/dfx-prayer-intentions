@@ -63,6 +63,7 @@ $dfxpray_fields = static function ( array $member, array $months, string $suffix
 };
 ?>
 <p class="description"><?php esc_html_e( 'The members of the group. On their birthday they open “Especially” in the daily message. Only the leaders see this list.', 'dfx-prayer-intentions' ); ?></p>
+<div class="notice notice-info inline"><p><?php esc_html_e( 'Write down only what is needed to name each brother and remember his birthday. Do not write health or other sensitive data in the notes. Each brother must know he is on this list and why; the privacy policy explains it.', 'dfx-prayer-intentions' ); ?></p></div>
 
 <?php if ( $dfxpray_members ) : ?>
 	<table class="widefat striped dfxpray-table dfxpray-members">

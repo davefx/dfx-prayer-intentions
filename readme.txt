@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.39
+Stable tag: 26.11.40
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,14 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 26.11.40 =
+* Data protection (GDPR): the form gives the basic information (controller, purpose, legal basis, recipients and rights) and asks for three things before sending: explicit consent for health and belief data and for sharing a discreet summary with the group, a statement about the person prayed for, and a minimum age (14 by default).
+* New global settings: data controller, contact for data protection and minimum age.
+* The suggested privacy policy covers everything the GDPR asks to tell: legal basis, recipients and services, international transfers, retention, the people prayed for, the members of the groups, minors and rights.
+* Exporting and erasing personal data finds a person by their phone too, written in any format, and includes the leaders' notes, key dates and the member records. Administrators can look a person up by email or phone in the global settings, hand over what is kept and erase it.
+* Each leader acknowledges once their duty of confidentiality, and the members tab reminds what may be written down.
+* Two group options: keep the full text out of the email notice, and keep the phones out of the leaders' digest (both on, as before).
 
 = 26.11.39 =
 * The "Daily digest" tab always shows the message as it is now, the same as the leaders' app, also after the day's digest went out; it still says when it was sent.

@@ -56,6 +56,8 @@ final class DFXPRAY_Admin_Actions {
 		'restore_group'        => 'admin',
 		'delete_group'         => 'admin',
 		'save_global_settings' => 'admin',
+		'privacy_erase'        => 'admin',
+		'ack_confidentiality'  => 'self',
 	);
 
 	/**
@@ -171,6 +173,9 @@ final class DFXPRAY_Admin_Actions {
 		}
 
 		switch ( $scope ) {
+			case 'self':
+				return true;
+
 			case 'admin':
 				return $permissions->is_admin();
 
@@ -555,6 +560,40 @@ final class DFXPRAY_Admin_Actions {
 	}
 
 	/**
+	 * Erase everything kept about a contact (email or phone): their requests
+	 * and their member records.
+	 *
+	 * @param array $r Request.
+	 * @return true|WP_Error
+	 */
+	private function do_privacy_erase( array $r ) {
+		$contact = sanitize_text_field( (string) ( $r['contact'] ?? '' ) );
+		if ( '' === trim( $contact ) ) {
+			return new WP_Error( 'dfxpray_privacy_contact', __( 'Write an email or a phone.', 'dfx-prayer-intentions' ) );
+		}
+
+		$privacy = DFXPRAY_Privacy::get_instance();
+		do {
+			$result = $privacy->erase( $contact, 1 );
+		} while ( ! $result['done'] );
+
+		DFXPRAY_Log::get_instance()->add( 'privacy_erased' );
+
+		return true;
+	}
+
+	/**
+	 * The current user acknowledges their duty of confidentiality.
+	 *
+	 * @return true
+	 */
+	private function do_ack_confidentiality(): bool {
+		update_user_meta( get_current_user_id(), DFXPRAY_Admin::CONFIDENTIALITY_META, DFXPRAY_Clock::get_instance()->mysql() );
+
+		return true;
+	}
+
+	/**
 	 * Save global settings.
 	 *
 	 * @param array $r Request.
@@ -642,6 +681,8 @@ final class DFXPRAY_Admin_Actions {
 			'restore_group'        => __( 'Group restored.', 'dfx-prayer-intentions' ),
 			'delete_group'         => __( 'Group deleted.', 'dfx-prayer-intentions' ),
 			'save_global_settings' => __( 'Settings saved.', 'dfx-prayer-intentions' ),
+			'privacy_erase'        => __( 'Personal data erased.', 'dfx-prayer-intentions' ),
+			'ack_confidentiality'  => __( 'Thank you.', 'dfx-prayer-intentions' ),
 		);
 
 		return $messages[ $action ] ?? __( 'Done.', 'dfx-prayer-intentions' );

@@ -136,6 +136,9 @@ final class DFXPRAY_Form {
 				'levels'      => DFXPRAY_Discretion::get_instance()->levels(),
 				'privacy_url' => get_privacy_policy_url(),
 				'site_key'    => $site_key,
+				'controller'  => DFXPRAY_Privacy::get_instance()->controller(),
+				'contact'     => (string) DFXPRAY_Settings::get_instance()->get( 'privacy_contact' ),
+				'min_age'     => (int) DFXPRAY_Settings::get_instance()->get( 'consent_min_age' ),
 			)
 		);
 	}
@@ -204,7 +207,7 @@ final class DFXPRAY_Form {
 			return $this->failure( 'captcha' );
 		}
 
-		if ( empty( $post['dfxpray_consent'] ) ) {
+		if ( empty( $post['dfxpray_consent'] ) || empty( $post['dfxpray_others'] ) || empty( $post['dfxpray_age'] ) ) {
 			return $this->failure( 'consent' );
 		}
 
@@ -410,7 +413,7 @@ final class DFXPRAY_Form {
 			'expired'      => __( 'The form expired. Please send it again.', 'dfx-prayer-intentions' ),
 			'rate_limited' => __( 'Too many requests from your connection. Please try again later.', 'dfx-prayer-intentions' ),
 			'captcha'      => __( 'We could not verify that you are a person. Please try again.', 'dfx-prayer-intentions' ),
-			'consent'      => __( 'Please accept the privacy policy to send your request.', 'dfx-prayer-intentions' ),
+			'consent'      => __( 'Please tick the three boxes about your data to send your request.', 'dfx-prayer-intentions' ),
 		);
 
 		return $messages[ $code ] ?? __( 'Please check the form and try again.', 'dfx-prayer-intentions' );

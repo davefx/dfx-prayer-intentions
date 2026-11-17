@@ -28,7 +28,12 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 		update_option( 'timezone_string', 'Europe/Madrid' );
 		reset_phpmailer_instance();
 		$this->freeze_time( '2026-09-24 06:00' );
-		$leader      = self::factory()->user->create( array( 'role' => 'dfxpray_leader', 'user_email' => 'ana@example.org' ) );
+		$leader      = self::factory()->user->create(
+			array(
+				'role'       => 'dfxpray_leader',
+				'user_email' => 'ana@example.org',
+			)
+		);
 		$this->group = $this->make_group( 'Santa Marta', array( $leader ) );
 		// Only alerts on email for these tests, so each send is one email.
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'channels' => array( 'email' => array( 'alerts' => true ) ) ) );
@@ -121,7 +126,13 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	 * The tick moves due intentions to review.
 	 */
 	public function test_tick_processes_expirations(): void {
-		$id = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-20' ) );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-20',
+			)
+		);
 		$this->freeze_time( '2026-09-24 06:10' );
 
 		DFXPRAY_Scheduler::get_instance()->tick();
@@ -134,7 +145,16 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_hour_alert_before_event(): void {
 		$this->freeze_time( '2026-09-24 05:00' );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-24', 'reference_time' => '09:30', 'summary' => 'operación', 'beneficiary_name' => 'Carmen' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'             => 'event',
+				'reference_date'   => '2026-09-24',
+				'reference_time'   => '09:30',
+				'summary'          => 'operación',
+				'beneficiary_name' => 'Carmen',
+			)
+		);
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_time' => '23:59' ) );
 		$scheduler = DFXPRAY_Scheduler::get_instance();
 
@@ -160,9 +180,22 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	 * Optional second alert at the exact time.
 	 */
 	public function test_exact_time_alert(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'alert_at_exact_time' => true, 'digest_time' => '23:59' ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'alert_at_exact_time' => true,
+				'digest_time'         => '23:59',
+			)
+		);
 		$this->freeze_time( '2026-09-24 05:00' );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-24', 'reference_time' => '09:30' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-24',
+				'reference_time' => '09:30',
+			)
+		);
 		$scheduler = DFXPRAY_Scheduler::get_instance();
 
 		$this->freeze_time( '2026-09-24 09:16' );
@@ -181,7 +214,14 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_quiet_hours(): void {
 		$this->freeze_time( '2026-09-23 12:00' );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-24', 'reference_time' => '06:30' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-24',
+				'reference_time' => '06:30',
+			)
+		);
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_time' => '23:59' ) );
 
 		$this->freeze_time( '2026-09-24 06:16' );
@@ -234,6 +274,20 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A group may keep the full text out of the email notice too.
+	 */
+	public function test_new_request_notice_without_the_text(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'notice_full_text' => false ) );
+
+		$this->make_pending( $this->group, array( 'body' => 'Secret health details' ) );
+
+		$mails = $this->sent_mails();
+		$this->assertCount( 1, $mails );
+		$this->assertStringNotContainsString( 'Secret health details', $mails[0]['body'] );
+		$this->assertStringContainsString( 'Moderate it:', $mails[0]['body'] );
+	}
+
+	/**
 	 * Manually created intentions do not notify.
 	 */
 	public function test_manual_creation_does_not_notify(): void {
@@ -272,8 +326,21 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_retention_keeps_anniversaries(): void {
 		$this->freeze_time( '2026-01-01 10:00' );
-		$remembered = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2025-12-30', 'anniversary' => true ) );
-		$forgotten  = $this->make_active( $this->group, array( 'type' => 'deceased', 'reference_date' => '2025-12-30' ) );
+		$remembered = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2025-12-30',
+				'anniversary'    => true,
+			)
+		);
+		$forgotten  = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2025-12-30',
+			)
+		);
 		DFXPRAY_Intentions::get_instance()->close( $remembered, 'expired' );
 		DFXPRAY_Intentions::get_instance()->close( $forgotten, 'expired' );
 

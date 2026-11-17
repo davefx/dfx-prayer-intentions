@@ -84,6 +84,14 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
   hours; the leaders' version of the previous digest lists them in "Without
   an hour alert", and if no digest did, an early alert goes out just before
   quiet hours.
+- **Data protection by design.** No request is stored without the three
+  boxes of the form (explicit consent for health and belief data, the
+  statement about the person prayed for, the minimum age). Whatever the
+  plugin keeps about a person, as requester or as member, can be found by
+  their email or phone in any format, exported and erased
+  (`DFXPRAY_Privacy`); a new personal field goes into the export too. The
+  suggested privacy policy (`DFXPRAY_Privacy::policy_text()`) must describe
+  every new use, recipient or service.
 - **The shareable digest is the app's message.** The daily and monthly
   digests share exactly what the leaders' app shows
   (`DFXPRAY_Index_Composer::compose()`); anything only for the leaders (who

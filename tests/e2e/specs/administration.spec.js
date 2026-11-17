@@ -1,7 +1,7 @@
 /**
  * The site administrator manages groups, leaders and global settings.
  */
-const { groupUrl, test, expect, resetData, createGroup, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
 
 test.beforeEach( () => resetData() );
 
@@ -89,4 +89,45 @@ test( 'global settings apply to groups unless a group overrides them', async ( {
 	await page.goto( groupUrl( group.id, 'settings' ) );
 	await expect( page.getByLabel( 'Deceased: days after the death' ) ).toHaveValue( '40' );
 	await expect( page.getByLabel( /Delete closed and discarded/ ) ).toHaveCount( 0 );
+} );
+
+test( 'the administrator looks a person up by phone, hands over their data and erases it', async ( { page } ) => {
+	const group = createGroup( 'Santa Marta', [ 'leader1' ] );
+	createIntention( group.id, { requester_contact: '600 11 12 22', body: 'Texto de Luis' } );
+	php( `DFXPRAY_Members::get_instance()->create( ${ group.id }, array( 'name' => 'Luis Gómez', 'phone' => '+34600111222' ) ); echo 1;` );
+
+	await login( page, 'admin' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray-global' );
+	await page.getByLabel( 'Data controller' ).fill( 'Parroquia San Manuel González' );
+	await page.getByLabel( 'Contact for data protection' ).fill( 'privacidad@example.org' );
+	await page.getByRole( 'button', { name: 'Save settings' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Settings saved.' );
+
+	await page.getByPlaceholder( 'Email or phone' ).fill( '+34 600 111 222' );
+	await page.getByRole( 'button', { name: 'Look up' } ).click();
+	await expect( page.locator( '#dfxpray-privacy-export' ) ).toHaveValue( /Texto de Luis/ );
+	await expect( page.locator( '#dfxpray-privacy-export' ) ).toHaveValue( /Name: Luis Gómez/ );
+
+	page.once( 'dialog', ( dialog ) => dialog.accept() );
+	await page.getByRole( 'button', { name: 'Erase everything found' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Personal data erased.' );
+	expect( php( `echo wp_json_encode( array( count( DFXPRAY_Intentions::get_instance()->query( ${ group.id } ) ), count( DFXPRAY_Members::get_instance()->for_group( ${ group.id } ) ) ) );` ) ).toEqual( [ 0, 0 ] );
+
+	const form = await page.request.get( `/${ group.slug }/` );
+	expect( await form.text() ).toContain( 'Parroquia San Manuel González (privacidad@example.org).' );
+} );
+
+test( 'each leader acknowledges the duty of confidentiality once', async ( { page } ) => {
+	createGroup( 'Santa Marta', [ 'leader1' ] );
+	php( "delete_user_meta( get_user_by( 'login', 'leader1' )->ID, DFXPRAY_Admin::CONFIDENTIALITY_META ); echo 1;" );
+	await login( page, 'leader1' );
+
+	const notice = page.locator( '.dfxpray-confidentiality' );
+	await expect( notice ).toContainText( 'You have a duty of confidentiality' );
+	await notice.getByRole( 'button', { name: 'Understood' } ).click();
+
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Thank you.' );
+	await expect( notice ).toHaveCount( 0 );
+	await page.reload();
+	await expect( notice ).toHaveCount( 0 );
 } );

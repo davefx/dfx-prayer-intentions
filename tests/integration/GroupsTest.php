@@ -16,7 +16,12 @@ class GroupsTest extends DFXPRAY_Test_Case {
 	public function test_create_generates_obfuscated_slug(): void {
 		$groups = DFXPRAY_Groups::get_instance();
 
-		$id    = $groups->create( array( 'name' => 'Grupo Santa Marta', 'description' => 'Internal' ) );
+		$id    = $groups->create(
+			array(
+				'name'        => 'Grupo Santa Marta',
+				'description' => 'Internal',
+			)
+		);
 		$group = $groups->get( $id );
 
 		$this->assertSame( 'Grupo Santa Marta', $group['name'] );
@@ -69,7 +74,13 @@ class GroupsTest extends DFXPRAY_Test_Case {
 		$groups = DFXPRAY_Groups::get_instance();
 		$id     = $groups->create( array( 'name' => 'A' ) );
 
-		$groups->update( $id, array( 'name' => 'B', 'description' => 'New' ) );
+		$groups->update(
+			$id,
+			array(
+				'name'        => 'B',
+				'description' => 'New',
+			)
+		);
 
 		$this->assertSame( 'B', $groups->get( $id )['name'] );
 		$this->assertSame( 'New', $groups->get( $id )['description'] );
@@ -151,8 +162,22 @@ class GroupsTest extends DFXPRAY_Test_Case {
 				)
 			);
 			$intention = $wpdb->insert_id;
-			$wpdb->insert( $tables['updates'], array( 'intention_id' => $intention, 'body' => 'u', 'created_at' => '2026-01-01' ) );
-			$wpdb->insert( $tables['comments'], array( 'intention_id' => $intention, 'body' => 'c', 'created_at' => '2026-01-01' ) );
+			$wpdb->insert(
+				$tables['updates'],
+				array(
+					'intention_id' => $intention,
+					'body'         => 'u',
+					'created_at'   => '2026-01-01',
+				)
+			);
+			$wpdb->insert(
+				$tables['comments'],
+				array(
+					'intention_id' => $intention,
+					'body'         => 'c',
+					'created_at'   => '2026-01-01',
+				)
+			);
 			DFXPRAY_Log::get_instance()->add( 'x', $group_id, $intention );
 		}
 

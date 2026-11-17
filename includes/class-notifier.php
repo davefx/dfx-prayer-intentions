@@ -37,7 +37,8 @@ final class DFXPRAY_Notifier {
 	}
 
 	/**
-	 * Send the new-request notice. The full text only goes by email.
+	 * Send the new-request notice. The full text only goes by email, and only
+	 * when the group keeps it in the notice.
 	 *
 	 * @param int $id Intention ID.
 	 * @return array Results per channel.
@@ -59,13 +60,15 @@ final class DFXPRAY_Notifier {
 
 		$leaders = implode(
 			"\n\n",
-			array(
-				/* translators: %s: group name. */
-				sprintf( __( '*New prayer request* in %s', 'dfx-prayer-intentions' ), $group['name'] ),
-				$who . ' – ' . ( $types[ $intention['type'] ] ?? $intention['type'] ),
-				$intention['body'],
-				/* translators: %s: link to the moderation screen. */
-				sprintf( __( 'Moderate it: %s', 'dfx-prayer-intentions' ), $url ),
+			array_filter(
+				array(
+					/* translators: %s: group name. */
+					sprintf( __( '*New prayer request* in %s', 'dfx-prayer-intentions' ), $group['name'] ),
+					$who . ' – ' . ( $types[ $intention['type'] ] ?? $intention['type'] ),
+					DFXPRAY_Settings::get_instance()->get( 'notice_full_text', $group['id'] ) ? $intention['body'] : '',
+					/* translators: %s: link to the moderation screen. */
+					sprintf( __( 'Moderate it: %s', 'dfx-prayer-intentions' ), $url ),
+				)
 			)
 		);
 

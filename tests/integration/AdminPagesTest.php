@@ -406,6 +406,61 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Each leader is reminded of their duty of confidentiality until they
+	 * acknowledge it, once.
+	 */
+	public function test_confidentiality_notice_until_acknowledged(): void {
+		$this->assertStringContainsString( 'duty of confidentiality', $this->tab( 'moderation' ) );
+
+		$result = DFXPRAY_Admin_Actions::get_instance()->run( 'ack_confidentiality', array() );
+
+		$this->assertTrue( $result['ok'] );
+		$this->assertStringNotContainsString( 'duty of confidentiality', $this->tab( 'moderation' ) );
+	}
+
+	/**
+	 * The members tab reminds what may be written down.
+	 */
+	public function test_members_privacy_reminder(): void {
+		$this->assertStringContainsString( 'Do not write health or other sensitive data in the notes.', $this->tab( 'members' ) );
+	}
+
+	/**
+	 * The global settings hold the controller, its contact and the minimum
+	 * age, and a lookup of a person's data by email or phone, with what was
+	 * found ready to hand over and a button to erase it.
+	 */
+	public function test_privacy_lookup_screen(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$this->make_active(
+			$this->mine,
+			array(
+				'requester_contact' => '600 11 12 22',
+				'body'              => 'Texto de Luis',
+			)
+		);
+		DFXPRAY_Members::get_instance()->create(
+			$this->mine,
+			array(
+				'name'  => 'Luis Gómez',
+				'phone' => '+34600111222',
+			)
+		);
+
+		$global = $this->render( 'dfxpray-global' );
+		$this->assertStringContainsString( 'name="settings[privacy_controller]"', $global );
+		$this->assertStringContainsString( 'name="settings[privacy_contact]"', $global );
+		$this->assertStringContainsString( 'name="settings[consent_min_age]"', $global );
+		$this->assertStringContainsString( 'name="privacy_lookup"', $global );
+
+		$found = $this->render( 'dfxpray-global', array( 'privacy_lookup' => '+34 600 111 222' ) );
+		$this->assertStringContainsString( 'Texto de Luis', $found );
+		$this->assertStringContainsString( 'Luis Gómez', $found );
+		$this->assertStringContainsString( 'id="dfxpray-privacy-export"', $found );
+		$this->assertStringContainsString( 'value="privacy_erase"', $found );
+	}
+
+	/**
 	 * Leaders land on the panel after logging in.
 	 */
 	public function test_login_redirect(): void {

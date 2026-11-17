@@ -83,6 +83,27 @@ class DigestComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A group may leave the phones out of the leaders' version.
+	 */
+	public function test_leaders_version_without_phones(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_phones' => false ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'summary'         => 'operación de cadera',
+				'requester_phone' => '+34 600 11 12 22',
+				'to_ask'          => true,
+			)
+		);
+
+		$leaders = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group )['leaders'];
+
+		$this->assertStringContainsString( 'operación de cadera _(asked by Luis Gómez)_', $leaders );
+		$this->assertStringContainsString( '– ask Luis Gómez', $leaders );
+		$this->assertStringNotContainsString( '600111222', $leaders );
+	}
+
+	/**
 	 * Without anything private, the leaders' version has no private block.
 	 */
 	public function test_no_private_block_when_there_is_nothing_private(): void {

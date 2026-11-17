@@ -51,6 +51,8 @@ class FormTest extends DFXPRAY_Test_Case {
 				'dfxpray_nonce'   => wp_create_nonce( 'dfxpray_submit_' . $this->group ),
 				'dfxpray_website' => '',
 				'dfxpray_consent' => '1',
+				'dfxpray_others'  => '1',
+				'dfxpray_age'     => '1',
 				'dfxpray'         => array(
 					'requester_name'    => 'Luis',
 					'requester_contact' => 'luis@example.org',
@@ -85,6 +87,8 @@ class FormTest extends DFXPRAY_Test_Case {
 			'dfxpray[body]',
 			'dfxpray[discretion]',
 			'dfxpray_consent',
+			'dfxpray_others',
+			'dfxpray_age',
 		);
 
 		$last = -1;
@@ -106,7 +110,13 @@ class FormTest extends DFXPRAY_Test_Case {
 	 * The consent links to the privacy policy.
 	 */
 	public function test_consent_links_privacy_policy(): void {
-		$page = self::factory()->post->create( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Privacy' ) );
+		$page = self::factory()->post->create(
+			array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'Privacy',
+			)
+		);
 		update_option( 'wp_page_for_privacy_policy', $page );
 
 		$html = DFXPRAY_Form::get_instance()->render( $this->group );
@@ -160,22 +170,63 @@ class FormTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Consent is required.
+	 * The explicit consent, the statement about the person prayed for and
+	 * the minimum age are all required.
 	 */
 	public function test_consent_required(): void {
-		$result = DFXPRAY_Form::get_instance()->handle( $this->post( array( 'dfxpray_consent' => '' ) ), '203.0.113.5' );
+		foreach ( array( 'dfxpray_consent', 'dfxpray_others', 'dfxpray_age' ) as $box ) {
+			$result = DFXPRAY_Form::get_instance()->handle( $this->post( array( $box => '' ) ), '203.0.113.5' );
 
-		$this->assertFalse( $result['ok'] );
-		$this->assertSame( 'consent', $result['code'] );
+			$this->assertFalse( $result['ok'], $box );
+			$this->assertSame( 'consent', $result['code'], $box );
+		}
+		$this->assertSame( array(), DFXPRAY_Intentions::get_instance()->query( $this->group ) );
+	}
+
+	/**
+	 * Before sending, the form gives the basic information on data
+	 * protection: controller, purpose, legal basis, recipients and rights,
+	 * and asks for explicit consent for health and belief data.
+	 */
+	public function test_basic_data_protection_information(): void {
+		DFXPRAY_Settings::get_instance()->save_global(
+			array(
+				'privacy_controller' => 'Parroquia San Manuel González',
+				'privacy_contact'    => 'privacidad@example.org',
+				'consent_min_age'    => 16,
+			)
+		);
+
+		$html = DFXPRAY_Form::get_instance()->render( $this->group );
+
+		$this->assertStringContainsString( 'Parroquia San Manuel González (privacidad@example.org)', $html );
+		$this->assertStringContainsString( 'to pray for your intention in the group “Santa Marta”', $html );
+		$this->assertStringContainsString( 'arts. 6.1.a and 9.2.a GDPR', $html );
+		$this->assertStringContainsString( 'including any about health or beliefs', $html );
+		$this->assertStringContainsString( 'I am at least 16 years old.', $html );
+		$this->assertStringContainsString( 'If I ask for someone else', $html );
+	}
+
+	/**
+	 * Without a controller set, the site's name stands for it and no contact
+	 * is shown; the minimum age is 14 by default.
+	 */
+	public function test_controller_defaults_to_the_site(): void {
+		update_option( 'blogname', 'Mi parroquia' );
+
+		$html = DFXPRAY_Form::get_instance()->render( $this->group );
+
+		$this->assertStringContainsString( 'Mi parroquia.', $html );
+		$this->assertStringContainsString( 'I am at least 14 years old.', $html );
 	}
 
 	/**
 	 * Validation errors come back with the intention's error code.
 	 */
 	public function test_validation_error(): void {
-		$post                       = $this->post();
-		$post['dfxpray']['body']    = '';
-		$result                     = DFXPRAY_Form::get_instance()->handle( $post, '203.0.113.5' );
+		$post                    = $this->post();
+		$post['dfxpray']['body'] = '';
+		$result                  = DFXPRAY_Form::get_instance()->handle( $post, '203.0.113.5' );
 
 		$this->assertFalse( $result['ok'] );
 		$this->assertSame( 'dfxpray_body_required', $result['code'] );
@@ -200,7 +251,12 @@ class FormTest extends DFXPRAY_Test_Case {
 	 * Turnstile, when configured, is verified with Cloudflare.
 	 */
 	public function test_turnstile(): void {
-		DFXPRAY_Settings::get_instance()->save_global( array( 'turnstile_site_key' => 'site', 'turnstile_secret' => 'secret' ) );
+		DFXPRAY_Settings::get_instance()->save_global(
+			array(
+				'turnstile_site_key' => 'site',
+				'turnstile_secret'   => 'secret',
+			)
+		);
 		$form = DFXPRAY_Form::get_instance();
 
 		$this->assertStringContainsString( 'cf-turnstile', $form->render( $this->group ) );
@@ -209,7 +265,10 @@ class FormTest extends DFXPRAY_Test_Case {
 			array(
 				'headers'  => array(),
 				'body'     => '{"success":false}',
-				'response' => array( 'code' => 200, 'message' => 'OK' ),
+				'response' => array(
+					'code'    => 200,
+					'message' => 'OK',
+				),
 				'cookies'  => array(),
 			)
 		);
@@ -223,7 +282,10 @@ class FormTest extends DFXPRAY_Test_Case {
 			array(
 				'headers'  => array(),
 				'body'     => '{"success":true}',
-				'response' => array( 'code' => 200, 'message' => 'OK' ),
+				'response' => array(
+					'code'    => 200,
+					'message' => 'OK',
+				),
 				'cookies'  => array(),
 			)
 		);
@@ -257,7 +319,7 @@ class FormTest extends DFXPRAY_Test_Case {
 	 * After an error, the draft is shown again with the message.
 	 */
 	public function test_draft_repopulates_after_error(): void {
-		$key = DFXPRAY_Form::get_instance()->store_draft( array( 'requester_name' => 'Luis & "Ana"' ) );
+		$key                   = DFXPRAY_Form::get_instance()->store_draft( array( 'requester_name' => 'Luis & "Ana"' ) );
 		$_GET['dfxpray_error'] = 'consent';
 		$_GET['dfxpray_draft'] = $key;
 

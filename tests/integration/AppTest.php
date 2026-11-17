@@ -97,9 +97,9 @@ class AppTest extends DFXPRAY_Test_Case {
 	public function test_rewrite_rules(): void {
 		$this->assertSame(
 			array(
-				'^prayer\\-requests\\-app/?$'                      => 'index.php?dfxpray_app=shell',
+				'^prayer\\-requests\\-app/?$'       => 'index.php?dfxpray_app=shell',
 				'^prayer\\-requests\\-app/manifest\\.webmanifest$' => 'index.php?dfxpray_app=manifest',
-				'^prayer\\-requests\\-app/sw\\.js$'                => 'index.php?dfxpray_app=worker',
+				'^prayer\\-requests\\-app/sw\\.js$' => 'index.php?dfxpray_app=worker',
 			),
 			$this->app->rules()
 		);
