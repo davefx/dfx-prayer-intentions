@@ -330,15 +330,21 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Once sent, the screen shows the digest that went out.
+	 * Even after today's digest went out, the screen shows the message as it
+	 * is now, the same one as the app, and says when the digest was sent.
 	 */
 	public function test_digest_screen_after_sending(): void {
 		$this->make_active( $this->mine, array( 'summary' => 'Sent summary' ) );
 		DFXPRAY_Scheduler::get_instance()->maybe_send_digest( $this->mine, true );
+		update_option( 'dfxpray_digest_' . $this->mine, array_merge( get_option( 'dfxpray_digest_' . $this->mine ), array( 'shareable' => 'Old format' ) ), false );
+		$this->make_active( $this->mine, array( 'summary' => 'Added later' ) );
 
 		$html = $this->tab( 'digest' );
 
-		$this->assertStringContainsString( 'Sent summary', $html );
+		$this->assertStringContainsString( 'Generated and sent on', $html );
+		$this->assertStringContainsString( esc_textarea( DFXPRAY_Index_Composer::get_instance()->compose( $this->mine ) ), $html );
+		$this->assertStringContainsString( 'Added later', $html );
+		$this->assertStringNotContainsString( 'Old format', $html );
 		$this->assertSame( 2, substr_count( $html, 'data-dfxpray-copy' ) );
 	}
 

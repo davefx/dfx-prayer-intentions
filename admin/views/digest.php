@@ -1,9 +1,11 @@
 <?php
 /**
- * Daily digest: last generated (or a preview), both variants, and recent hour alerts.
+ * Daily digest: both variants as they are now, when it was last sent, and
+ * recent hour alerts.
  *
- * The shareable version is the daily message of the leaders' app; the
- * leaders' one is the same message with who asks and a private block.
+ * The shareable version is the daily message of the leaders' app, always
+ * current like the app; the leaders' one is the same message with who asks
+ * and a private block.
  *
  * @var int $group_id Active group.
  *
@@ -18,7 +20,7 @@ $dfxpray_admin     = DFXPRAY_Admin::get_instance();
 $dfxpray_scheduler = DFXPRAY_Scheduler::get_instance();
 $dfxpray_stored    = $dfxpray_scheduler->get_stored_digest( $group_id );
 $dfxpray_is_today  = $dfxpray_stored && DFXPRAY_Clock::get_instance()->today() === $dfxpray_stored['date'];
-$dfxpray_digest    = $dfxpray_is_today ? $dfxpray_stored : DFXPRAY_Digest_Composer::get_instance()->compose( $group_id );
+$dfxpray_digest    = DFXPRAY_Digest_Composer::get_instance()->compose( $group_id );
 $dfxpray_time      = (string) DFXPRAY_Settings::get_instance()->get( 'digest_time', $group_id );
 $dfxpray_length    = mb_strlen( $dfxpray_digest['shareable'] );
 ?>

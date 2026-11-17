@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.38
+Stable tag: 26.11.39
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 26.11.39 =
+* The "Daily digest" tab always shows the message as it is now, the same as the leaders' app, also after the day's digest went out; it still says when it was sent.
 
 = 26.11.38 =
 * The "Daily digest" tab shares the same message as the leaders' app. The leaders' version is that message saying who asks for each intention (with their phone), followed by a leaders-only block: today's appointments, events without an hour alert, what waits in the panel, whom to ask and the news of the last 24 hours.
