@@ -28,27 +28,60 @@ final class DFXPRAY_Index_Composer {
 	);
 
 	/**
+	 * Whether lines say who asks for each intention (the leaders' edition).
+	 *
+	 * @var bool
+	 */
+	private bool $for_leaders = false;
+
+	/**
 	 * Compose the index of a group.
 	 *
 	 * The daily edition leaves out the intentions kept for the monthly list;
-	 * the monthly one has them all, by topic.
+	 * the monthly one has them all, by topic. The leaders' edition is the same
+	 * text saying, after each person, who asks and their phone.
 	 *
-	 * @param int    $group_id Group ID.
-	 * @param string $edition  'daily' or 'monthly'.
+	 * @param int    $group_id    Group ID.
+	 * @param string $edition     'daily' or 'monthly'.
+	 * @param bool   $for_leaders Whether to say who asks for each intention.
 	 */
-	public function compose( int $group_id, string $edition = 'daily' ): string {
-		$settings  = DFXPRAY_Settings::get_instance();
-		$formatter = DFXPRAY_Formatter::get_instance();
-		$emojis    = (bool) $settings->get( 'index_section_emojis', $group_id );
-		$listable  = DFXPRAY_Intentions::get_instance()->listable( $group_id );
-		$monthly   = 'monthly' === $edition;
+	public function compose( int $group_id, string $edition = 'daily', bool $for_leaders = false ): string {
+		$settings = DFXPRAY_Settings::get_instance();
+		$monthly  = 'monthly' === $edition;
+
+		return DFXPRAY_Templates::get_instance()->render(
+			'index.php',
+			array(
+				'header'        => DFXPRAY_Formatter::get_instance()->fill( (string) $settings->get( $monthly ? 'monthly_header' : 'index_header', $group_id ) ),
+				'footer'        => DFXPRAY_Formatter::get_instance()->fill( (string) $settings->get( 'index_footer', $group_id ) ),
+				'sections'      => $this->sections( $group_id, $edition, $for_leaders ),
+				'empty_message' => __( 'There are no active intentions.', 'dfx-prayer-intentions' ),
+			)
+		);
+	}
+
+	/**
+	 * The sections of the index of a group, filtered, without the empty ones.
+	 *
+	 * @param int    $group_id    Group ID.
+	 * @param string $edition     'daily' or 'monthly'.
+	 * @param bool   $for_leaders Whether to say who asks for each intention.
+	 * @return array[] Sections: key, title, emoji, lines.
+	 */
+	public function sections( int $group_id, string $edition = 'daily', bool $for_leaders = false ): array {
+		$settings          = DFXPRAY_Settings::get_instance();
+		$emojis            = (bool) $settings->get( 'index_section_emojis', $group_id );
+		$listable          = DFXPRAY_Intentions::get_instance()->listable( $group_id );
+		$monthly           = 'monthly' === $edition;
+		$this->for_leaders = $for_leaders;
 
 		if ( $monthly ) {
 			$raw = $this->monthly_sections( $listable, $group_id );
 		} else {
 			$daily = array_values( array_filter( $listable, static fn( $i ) => 'monthly' !== $i['scope'] ) );
-			$raw   = 'proposals' === $settings->get( 'index_layout', $group_id ) ? $this->proposal_sections( $daily, $group_id ) : $this->type_sections( $daily );
+			$raw   = 'proposals' === $settings->get( 'index_layout', $group_id ) ? $this->proposal_sections( $daily, $group_id ) : $this->type_sections( $daily, $group_id );
 		}
+		$this->for_leaders = false;
 
 		$sections = array();
 		foreach ( $raw as $key => $lines ) {
@@ -81,28 +114,82 @@ final class DFXPRAY_Index_Composer {
 		 * @param array[] $sections Sections.
 		 * @param int     $group_id Group ID.
 		 */
-		$sections = apply_filters( 'dfxpray_index_sections', $sections, $group_id );
+		return apply_filters( 'dfxpray_index_sections', $sections, $group_id );
+	}
 
-		return DFXPRAY_Templates::get_instance()->render(
-			'index.php',
-			array(
-				'header'        => $formatter->fill( (string) $settings->get( $monthly ? 'monthly_header' : 'index_header', $group_id ) ),
-				'footer'        => $formatter->fill( (string) $settings->get( 'index_footer', $group_id ) ),
-				'sections'      => $sections,
-				'empty_message' => __( 'There are no active intentions.', 'dfx-prayer-intentions' ),
-			)
-		);
+	/**
+	 * In the leaders' edition, who asks for an intention and their phone,
+	 * to go after the person: " _(asked by Luis Gómez · +34600111222)_".
+	 * Empty in the shared edition.
+	 *
+	 * @param array $intention Intention.
+	 */
+	private function asked_by( array $intention ): string {
+		if ( ! $this->for_leaders ) {
+			return '';
+		}
+
+		$phone = (string) ( $intention['requester_phone'] ?? '' );
+		if ( '' === $phone ) {
+			$phone = (string) DFXPRAY_Formatter::get_instance()->clean_phone( (string) ( $intention['requester_contact'] ?? '' ) );
+		}
+		$who = trim( (string) $intention['requester_name'] ) . ( '' !== $phone ? ' · ' . $phone : '' );
+
+		/* translators: %s: who asks for the intention, with their phone when known ("Luis Gómez · +34600111222"). */
+		return ' _(' . sprintf( __( 'asked by %s', 'dfx-prayer-intentions' ), $who ) . ')_';
+	}
+
+	/**
+	 * A full line, and in the leaders' edition who asks.
+	 *
+	 * @param array $intention     Intention.
+	 * @param bool  $priority_mark Whether high priority is marked.
+	 */
+	private function line( array $intention, bool $priority_mark = true ): string {
+		return DFXPRAY_Formatter::get_instance()->line( $intention, $priority_mark ) . $this->asked_by( $intention );
+	}
+
+	/**
+	 * The person of a line, and in the leaders' edition who asks.
+	 *
+	 * @param array $intention Intention.
+	 */
+	private function person( array $intention ): string {
+		return DFXPRAY_Formatter::get_instance()->person( $intention ) . $this->asked_by( $intention );
+	}
+
+	/**
+	 * The departed (not members) whose anniversary is remembered today, even
+	 * after their intention closed: "Abuela, madre de Luis: on the
+	 * anniversary of their death († 2025)".
+	 *
+	 * @param int $group_id Group ID.
+	 * @return string[]
+	 */
+	private function intention_anniversary_lines( int $group_id ): array {
+		$today = DFXPRAY_Clock::get_instance()->today();
+		$lines = array();
+
+		foreach ( DFXPRAY_Intentions::get_instance()->anniversaries( $group_id ) as $intention ) {
+			$date = (string) $intention['reference_date'];
+			if ( '' !== $date && substr( $date, 5 ) === substr( $today, 5 ) && $date < $today ) {
+				/* translators: 1: the departed person, 2: year of the death. */
+				$lines[] = sprintf( __( '%1$s: on the anniversary of their death († %2$s)', 'dfx-prayer-intentions' ), $this->person( $intention ), substr( $date, 0, 4 ) );
+			}
+		}
+
+		return $lines;
 	}
 
 	/**
 	 * Lines of the layout by type: one section per kind of intention.
 	 *
 	 * @param array[] $intentions Listable intentions.
+	 * @param int     $group_id   Group ID.
 	 * @return array<string, string[]> Section key => lines.
 	 */
-	private function type_sections( array $intentions ): array {
-		$formatter = DFXPRAY_Formatter::get_instance();
-		$by_type   = array_fill_keys( array_values( self::SECTIONS ), array() );
+	private function type_sections( array $intentions, int $group_id ): array {
+		$by_type = array_fill_keys( array_values( self::SECTIONS ), array() );
 
 		foreach ( $intentions as $intention ) {
 			$by_type[ $intention['type'] ][] = $intention;
@@ -110,8 +197,9 @@ final class DFXPRAY_Index_Composer {
 
 		$sections = array();
 		foreach ( self::SECTIONS as $key => $type ) {
-			$sections[ $key ] = array_map( array( $formatter, 'line' ), $this->sort( $by_type[ $type ] ) );
+			$sections[ $key ] = array_map( array( $this, 'line' ), $this->sort( $by_type[ $type ] ) );
 		}
+		$sections['deceased'] = array_merge( $this->intention_anniversary_lines( $group_id ), $sections['deceased'] );
 
 		return $sections;
 	}
@@ -130,28 +218,27 @@ final class DFXPRAY_Index_Composer {
 	 * @return array<string, string[]> Section key => lines.
 	 */
 	private function proposal_sections( array $intentions, int $group_id ): array {
-		$formatter = DFXPRAY_Formatter::get_instance();
-		$since     = (int) DFXPRAY_Settings::get_instance()->get( 'daily_news_days', $group_id ) > 0 ? $this->departed_since( 'daily_news_days', $group_id ) : '9999-12-31';
-		$is_news   = static fn( $i ) => 'thanksgiving' !== $i['type'] && substr( (string) $i['created_at'], 0, 10 ) >= $since;
-		$news      = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
-		$buckets   = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
-		$thanks    = $this->departed_since( 'daily_thanks_days', $group_id );
-		$thanked   = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
+		$since   = (int) DFXPRAY_Settings::get_instance()->get( 'daily_news_days', $group_id ) > 0 ? $this->departed_since( 'daily_news_days', $group_id ) : '9999-12-31';
+		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && substr( (string) $i['created_at'], 0, 10 ) >= $since;
+		$news    = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
+		$buckets = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
+		$thanks  = $this->departed_since( 'daily_thanks_days', $group_id );
+		$thanked = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
 
 		$news_departed = array_values( array_filter( $news, static fn( $i ) => 'deceased' === $i['type'] ) );
 		$news_serious  = array_values( array_filter( $news, static fn( $i ) => 'deceased' !== $i['type'] ) );
 
 		return array(
 			'urgent'   => $this->apart(
-				array_merge( $this->grouped_lines( $news_departed ), $this->anniversary_lines( $group_id ) ),
+				array_merge( $this->grouped_lines( $news_departed ), $this->anniversary_lines( $group_id ), $this->intention_anniversary_lines( $group_id ) ),
 				$this->birthday_lines( $group_id ),
 				array_merge( $this->grouped_lines( $news_serious ), $this->grouped_lines( $buckets['urgent'] ) )
 			),
-			'health'   => array_map( array( $formatter, 'person' ), $buckets['health'] ),
+			'health'   => array_map( array( $this, 'person' ), $buckets['health'] ),
 			'others'   => $this->grouped_lines( array_merge( $buckets['general'], $buckets['studies'], $buckets['economic'] ) ),
 			'current'  => $this->grouped_lines( $buckets['current'] ),
 			'thanks'   => $this->grouped_lines( $thanked ),
-			'departed' => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $buckets['departed'] ),
+			'departed' => array_map( fn( $intention ) => $this->line( $intention, false ), $buckets['departed'] ),
 		);
 	}
 
@@ -166,18 +253,17 @@ final class DFXPRAY_Index_Composer {
 	 * @return array<string, string[]> Section key => lines.
 	 */
 	private function monthly_sections( array $intentions, int $group_id ): array {
-		$formatter = DFXPRAY_Formatter::get_instance();
-		$since     = $this->departed_since( 'monthly_thanks_days', $group_id );
-		$closed    = DFXPRAY_Intentions::get_instance()->query(
+		$since   = $this->departed_since( 'monthly_thanks_days', $group_id );
+		$closed  = DFXPRAY_Intentions::get_instance()->query(
 			$group_id,
 			array(
 				'status' => 'closed',
 				'type'   => 'thanksgiving',
 			)
 		);
-		$closed    = array_filter( $closed, static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $since );
-		$buckets   = $this->buckets( array_merge( $intentions, $closed ), $this->departed_since( 'deceased_days', $group_id ) );
-		$lines     = static fn( array $items ): array => array_map( static fn( $intention ) => $formatter->line( $intention, false ), $items );
+		$closed  = array_filter( $closed, static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $since );
+		$buckets = $this->buckets( array_merge( $intentions, $closed ), $this->departed_since( 'deceased_days', $group_id ) );
+		$lines   = fn( array $items ): array => array_map( fn( $intention ) => $this->line( $intention, false ), $items );
 
 		return array(
 			'urgent'   => $lines( $buckets['urgent'] ),
@@ -345,12 +431,12 @@ final class DFXPRAY_Index_Composer {
 		$lines = array();
 		foreach ( $groups as $group ) {
 			if ( 1 === count( $group ) ) {
-				$lines[] = $formatter->line( $group[0], false );
+				$lines[] = $this->line( $group[0], false );
 				continue;
 			}
 
 			$summary = trim( $group[0]['summary'] );
-			$lines[] = mb_strtoupper( mb_substr( $summary, 0, 1 ) ) . mb_substr( $summary, 1 ) . ': ' . implode( '; ', array_map( array( $formatter, 'person' ), $group ) );
+			$lines[] = mb_strtoupper( mb_substr( $summary, 0, 1 ) ) . mb_substr( $summary, 1 ) . ': ' . implode( '; ', array_map( array( $this, 'person' ), $group ) );
 		}
 
 		return $lines;

@@ -1,8 +1,8 @@
 <?php
 /**
- * Hour alerts that fall in quiet hours are never lost: the next digest lists
- * them, whatever time it goes out; if no digest did, an early alert goes out
- * just before quiet hours begin.
+ * Hour alerts that fall in quiet hours are never lost: the leaders' version
+ * of the next digest lists them, whatever time it goes out; if no digest did,
+ * an early alert goes out just before quiet hours begin.
  *
  * @package DFXPRAY
  */
@@ -30,7 +30,12 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 		update_option( 'timezone_string', 'Europe/Madrid' );
 		reset_phpmailer_instance();
 		$this->freeze_time( '2026-09-24 12:00' );
-		$leader      = self::factory()->user->create( array( 'role' => 'dfxpray_leader', 'user_email' => 'ana@example.org' ) );
+		$leader      = self::factory()->user->create(
+			array(
+				'role'       => 'dfxpray_leader',
+				'user_email' => 'ana@example.org',
+			)
+		);
 		$this->group = $this->make_group( 'Santa Marta', array( $leader ) );
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'channels' => array( 'email' => array( 'alerts' => true ) ) ) );
 		$this->capture_http();
@@ -55,33 +60,61 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * A late-night digest lists tonight's silent events in their own section,
-	 * and they are not listed twice.
+	 * A late-night digest tells the leaders tonight's silent events in their
+	 * own section, once; the shareable message is the app's, untouched.
 	 */
 	public function test_late_night_digest_lists_silent_events(): void {
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_time' => '23:30' ) );
 		$this->freeze_time( '2026-09-20 12:00' ); // Old enough not to be news.
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'reference_time' => '06:30', 'summary' => 'operación', 'beneficiary_name' => 'Carmen' ) );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'reference_time' => '10:00', 'summary' => 'examen', 'beneficiary_name' => 'Pablo' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'             => 'event',
+				'reference_date'   => '2026-09-25',
+				'reference_time'   => '06:30',
+				'summary'          => 'operación',
+				'beneficiary_name' => 'Carmen',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'type'             => 'event',
+				'reference_date'   => '2026-09-25',
+				'reference_time'   => '10:00',
+				'summary'          => 'examen',
+				'beneficiary_name' => 'Pablo',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 23:31' );
 		$digest = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group );
 
-		$this->assertStringContainsString( "*Without an hour alert*\n• tomorrow, 6:30 – Carmen, madre de Luis: operación", $digest['shareable'] );
-		$this->assertSame( 1, substr_count( $digest['shareable'], 'operación' ) );
-		$this->assertStringContainsString( "*Tomorrow*\n• 10:00 – Pablo, madre de Luis: examen", $digest['shareable'] );
+		$private = substr( $digest['leaders'], strpos( $digest['leaders'], 'Leaders only' ) );
+		$this->assertStringContainsString( "*Without an hour alert*\n• tomorrow, 6:30 – Carmen, madre de Luis: operación", $private );
+		$this->assertSame( 1, substr_count( $private, 'operación' ) );
+		$this->assertStringNotContainsString( 'Without an hour alert', $digest['shareable'] );
 	}
 
 	/**
 	 * A morning digest lists tonight's late event, which would get no alert.
 	 */
 	public function test_morning_digest_lists_tonights_late_event(): void {
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'reference_time' => '23:30', 'summary' => 'viaje', 'beneficiary_name' => 'Rosa' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'             => 'event',
+				'reference_date'   => '2026-09-25',
+				'reference_time'   => '23:30',
+				'summary'          => 'viaje',
+				'beneficiary_name' => 'Rosa',
+			)
+		);
 
 		$this->freeze_time( '2026-09-25 07:05' );
 		$digest = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group );
 
-		$this->assertStringContainsString( "*Without an hour alert*\n• today, 23:30 – Rosa, madre de Luis: viaje", $digest['shareable'] );
+		$this->assertStringContainsString( "*Without an hour alert*\n• today, 23:30 – Rosa, madre de Luis: viaje", $digest['leaders'] );
 		$this->assertFalse( $digest['is_empty'] );
 	}
 
@@ -89,12 +122,20 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 	 * Events beyond the next digest are left for that digest.
 	 */
 	public function test_only_until_the_next_digest(): void {
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-26', 'reference_time' => '06:30', 'summary' => 'lejos' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-26',
+				'reference_time' => '06:30',
+				'summary'        => 'lejos',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 23:31' );
 		$digest = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group );
 
-		$this->assertStringNotContainsString( 'Without an hour alert', $digest['shareable'] );
+		$this->assertStringNotContainsString( 'Without an hour alert', $digest['leaders'] );
 	}
 
 	/**
@@ -102,7 +143,15 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_no_early_alert_when_a_digest_covered_it(): void {
 		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_time' => '21:00' ) );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'reference_time' => '06:30', 'summary' => 'operación' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-25',
+				'reference_time' => '06:30',
+				'summary'        => 'operación',
+			)
+		);
 		$scheduler = DFXPRAY_Scheduler::get_instance();
 
 		$this->freeze_time( '2026-09-24 21:02' );
@@ -127,7 +176,16 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 
 		// Added after this morning's digest, for tomorrow before the next one.
 		$this->freeze_time( '2026-09-24 15:00' );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'reference_time' => '06:30', 'summary' => 'operación', 'beneficiary_name' => 'Carmen' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'             => 'event',
+				'reference_date'   => '2026-09-25',
+				'reference_time'   => '06:30',
+				'summary'          => 'operación',
+				'beneficiary_name' => 'Carmen',
+			)
+		);
 		$scheduler = DFXPRAY_Scheduler::get_instance();
 
 		$this->freeze_time( '2026-09-24 22:20' );
@@ -149,12 +207,25 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 	 * One early alert per event, even with the exact-time alert also silenced.
 	 */
 	public function test_one_early_alert_per_event(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_time' => '07:00', 'alert_at_exact_time' => true ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'digest_time'         => '07:00',
+				'alert_at_exact_time' => true,
+			)
+		);
 		$this->freeze_time( '2026-09-24 07:05' );
 		DFXPRAY_Scheduler::get_instance()->tick();
 		reset_phpmailer_instance();
 		$this->freeze_time( '2026-09-24 15:00' );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'reference_time' => '05:00' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-25',
+				'reference_time' => '05:00',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 22:40' );
 		DFXPRAY_Scheduler::get_instance()->tick();
@@ -171,9 +242,9 @@ class QuietHoursTest extends DFXPRAY_Test_Case {
 	 */
 	public function provide_quiet_starts(): array {
 		return array(
-			'after midnight' => array( '2026-09-25 06:15', '23:00', '07:00', '2026-09-24 23:00' ),
+			'after midnight'  => array( '2026-09-25 06:15', '23:00', '07:00', '2026-09-24 23:00' ),
 			'before midnight' => array( '2026-09-24 23:15', '23:00', '07:00', '2026-09-24 23:00' ),
-			'same-day range' => array( '2026-09-24 14:00', '13:00', '16:00', '2026-09-24 13:00' ),
+			'same-day range'  => array( '2026-09-24 14:00', '13:00', '16:00', '2026-09-24 13:00' ),
 		);
 	}
 

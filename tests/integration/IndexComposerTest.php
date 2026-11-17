@@ -122,7 +122,14 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_only_listable_intentions_of_the_group(): void {
 		$this->make_active( $this->group, array( 'summary' => 'Visible' ) );
-		$review = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-01', 'summary' => 'In review' ) );
+		$review = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-01',
+				'summary'        => 'In review',
+			)
+		);
 		DFXPRAY_Intentions::get_instance()->process_due();
 		$this->make_pending( $this->group );
 		$closed = $this->make_active( $this->group, array( 'summary' => 'Closed' ) );
@@ -143,9 +150,30 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * High priority first, then by reference date.
 	 */
 	public function test_ordering_within_section(): void {
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-26', 'summary' => 'Second' ) );
-		$this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-09-25', 'summary' => 'First' ) );
-		$high = $this->make_active( $this->group, array( 'type' => 'event', 'reference_date' => '2026-10-10', 'summary' => 'Urgent' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-26',
+				'summary'        => 'Second',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-09-25',
+				'summary'        => 'First',
+			)
+		);
+		$high = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-10-10',
+				'summary'        => 'Urgent',
+			)
+		);
 		DFXPRAY_Intentions::get_instance()->set_priority( $high, 'high' );
 
 		$text = DFXPRAY_Index_Composer::get_instance()->compose( $this->group );
@@ -192,14 +220,87 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 		);
 		$member = array( 'requester_is_member' => true );
 
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'summary' => 'tumor de páncreas', 'priority' => 'high' ) );
-		$this->make_active( $this->group, array( 'requester_name' => 'Luis Gómez', 'beneficiary_name' => 'Carmen', 'relationship' => 'madre de', 'type' => 'event', 'reference_date' => '2026-09-28', 'reference_time' => '09:30', 'summary' => 'operación' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Ramón', 'beneficiary_is_requester' => true, 'summary' => 'problemas en el hombro' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Felipe Arizu', 'beneficiary_name' => 'Marina', 'relationship' => 'esposa de', 'summary' => 'problemas de salud' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'David Marín', 'beneficiary_name' => 'Irene', 'relationship' => 'hija de', 'summary' => 'problemas de salud' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Álvaro Linares', 'beneficiary_name' => 'Argeme', 'relationship' => 'amiga de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-24', 'summary' => 'salió muy bien de su operación' ) );
-		$this->make_active( $this->group, array( 'requester_name' => 'Alberto', 'beneficiary_name' => 'Isabel', 'relationship' => 'madre de un amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-20', 'summary' => 'descanse en paz' ) );
-		$this->make_active( $this->group, array( 'requester_name' => 'Pedro', 'beneficiary_name' => 'Juana', 'relationship' => 'abuela de', 'type' => 'deceased', 'reference_date' => '2026-08-01', 'summary' => 'descanse en paz' ) );
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Javier Cavallé',
+				'beneficiary_name' => 'Antonio',
+				'relationship'     => 'amigo de',
+				'summary'          => 'tumor de páncreas',
+				'priority'         => 'high',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_name'   => 'Luis Gómez',
+				'beneficiary_name' => 'Carmen',
+				'relationship'     => 'madre de',
+				'type'             => 'event',
+				'reference_date'   => '2026-09-28',
+				'reference_time'   => '09:30',
+				'summary'          => 'operación',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'           => 'Ramón',
+				'beneficiary_is_requester' => true,
+				'summary'                  => 'problemas en el hombro',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Felipe Arizu',
+				'beneficiary_name' => 'Marina',
+				'relationship'     => 'esposa de',
+				'summary'          => 'problemas de salud',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'David Marín',
+				'beneficiary_name' => 'Irene',
+				'relationship'     => 'hija de',
+				'summary'          => 'problemas de salud',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Álvaro Linares',
+				'beneficiary_name' => 'Argeme',
+				'relationship'     => 'amiga de',
+				'type'             => 'thanksgiving',
+				'reference_date'   => '2026-09-24',
+				'summary'          => 'salió muy bien de su operación',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_name'   => 'Alberto',
+				'beneficiary_name' => 'Isabel',
+				'relationship'     => 'madre de un amigo de',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-20',
+				'summary'          => 'descanse en paz',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_name'   => 'Pedro',
+				'beneficiary_name' => 'Juana',
+				'relationship'     => 'abuela de',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-08-01',
+				'summary'          => 'descanse en paz',
+			)
+		);
 
 		$expected = implode(
 			"\n",
@@ -250,17 +351,120 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 		);
 		$member = array( 'requester_is_member' => true );
 
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'summary' => 'tumor de páncreas', 'priority' => 'high', 'topic' => 'health' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Felipe Arizu', 'beneficiary_name' => 'Marina', 'relationship' => 'esposa de', 'summary' => 'problemas de salud', 'topic' => 'health' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Ramón', 'beneficiary_is_requester' => true, 'summary' => 'problemas en el hombro', 'topic' => 'health' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Manolo', 'beneficiary_name' => 'Fátima', 'relationship' => 'sobrina de', 'summary' => 'quimioterapia', 'topic' => 'health', 'scope' => 'monthly' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Axel', 'beneficiary_name' => 'Lucía', 'relationship' => 'hija de', 'summary' => 'depresión' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Alejandro', 'beneficiary_is_requester' => true, 'summary' => 'su academia', 'topic' => 'economic', 'scope' => 'monthly' ) );
-		$this->make_active( $this->group, array( 'requester_name' => 'Javier Cavallé', 'beneficiary_name' => 'Ceuta', 'relationship' => '', 'summary' => 'por los ceutíes', 'topic' => 'current' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Álvaro', 'beneficiary_name' => 'Argeme', 'relationship' => 'amiga de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-24', 'summary' => 'salió bien' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Alejandro', 'beneficiary_name' => 'Pilar', 'relationship' => 'esposa de', 'type' => 'thanksgiving', 'reference_date' => '2026-09-21', 'summary' => 'ya tiene el alta' ) );
-		$this->make_active( $this->group, array( 'requester_name' => 'Alberto', 'beneficiary_name' => 'Isabel', 'relationship' => 'madre de un amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-20', 'summary' => 'descanse en paz' ) );
-		$this->make_active( $this->group, $member + array( 'requester_name' => 'Teo', 'beneficiary_name' => 'Antonio', 'relationship' => 'amigo de', 'type' => 'deceased', 'reference_date' => '2026-09-10', 'summary' => 'descanse en paz' ) );
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Javier Cavallé',
+				'beneficiary_name' => 'Antonio',
+				'relationship'     => 'amigo de',
+				'summary'          => 'tumor de páncreas',
+				'priority'         => 'high',
+				'topic'            => 'health',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Felipe Arizu',
+				'beneficiary_name' => 'Marina',
+				'relationship'     => 'esposa de',
+				'summary'          => 'problemas de salud',
+				'topic'            => 'health',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'           => 'Ramón',
+				'beneficiary_is_requester' => true,
+				'summary'                  => 'problemas en el hombro',
+				'topic'                    => 'health',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Manolo',
+				'beneficiary_name' => 'Fátima',
+				'relationship'     => 'sobrina de',
+				'summary'          => 'quimioterapia',
+				'topic'            => 'health',
+				'scope'            => 'monthly',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Axel',
+				'beneficiary_name' => 'Lucía',
+				'relationship'     => 'hija de',
+				'summary'          => 'depresión',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'           => 'Alejandro',
+				'beneficiary_is_requester' => true,
+				'summary'                  => 'su academia',
+				'topic'                    => 'economic',
+				'scope'                    => 'monthly',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_name'   => 'Javier Cavallé',
+				'beneficiary_name' => 'Ceuta',
+				'relationship'     => '',
+				'summary'          => 'por los ceutíes',
+				'topic'            => 'current',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Álvaro',
+				'beneficiary_name' => 'Argeme',
+				'relationship'     => 'amiga de',
+				'type'             => 'thanksgiving',
+				'reference_date'   => '2026-09-24',
+				'summary'          => 'salió bien',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Alejandro',
+				'beneficiary_name' => 'Pilar',
+				'relationship'     => 'esposa de',
+				'type'             => 'thanksgiving',
+				'reference_date'   => '2026-09-21',
+				'summary'          => 'ya tiene el alta',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_name'   => 'Alberto',
+				'beneficiary_name' => 'Isabel',
+				'relationship'     => 'madre de un amigo de',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-20',
+				'summary'          => 'descanse en paz',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			$member + array(
+				'requester_name'   => 'Teo',
+				'beneficiary_name' => 'Antonio',
+				'relationship'     => 'amigo de',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-10',
+				'summary'          => 'descanse en paz',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 10:00' );
 		$composer = DFXPRAY_Index_Composer::get_instance();
@@ -339,8 +543,26 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 */
 	public function test_monthly_list_recovers_the_thanks_of_the_month(): void {
 		$intentions = DFXPRAY_Intentions::get_instance();
-		$recent     = $this->make_active( $this->group, array( 'beneficiary_name' => 'Argeme', 'relationship' => '', 'type' => 'thanksgiving', 'reference_date' => '2026-09-05', 'summary' => 'salió bien' ) );
-		$old        = $this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'relationship' => '', 'type' => 'thanksgiving', 'reference_date' => '2026-08-10', 'summary' => 'ya en casa' ) );
+		$recent     = $this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Argeme',
+				'relationship'     => '',
+				'type'             => 'thanksgiving',
+				'reference_date'   => '2026-09-05',
+				'summary'          => 'salió bien',
+			)
+		);
+		$old        = $this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Rosa',
+				'relationship'     => '',
+				'type'             => 'thanksgiving',
+				'reference_date'   => '2026-08-10',
+				'summary'          => 'ya en casa',
+			)
+		);
 		$intentions->close( $recent, 'expired' );
 		$intentions->close( $old, 'expired' );
 
@@ -357,13 +579,43 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * their place.
 	 */
 	public function test_news_of_the_day_before_go_first(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout' => 'proposals',
+				'index_header' => '*Daily*',
+				'index_footer' => '',
+			)
+		);
 
 		$this->freeze_time( '2026-09-20 10:00' );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'relationship' => '', 'summary' => 'de antes' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Rosa',
+				'relationship'     => '',
+				'summary'          => 'de antes',
+			)
+		);
 		$this->freeze_time( '2026-09-23 21:00' );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Pedro', 'relationship' => '', 'type' => 'deceased', 'reference_date' => '2026-09-22', 'summary' => 'descanse en paz' ) );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Lucía', 'relationship' => '', 'summary' => 'operación' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Pedro',
+				'relationship'     => '',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-22',
+				'summary'          => 'descanse en paz',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Lucía',
+				'relationship'     => '',
+				'summary'          => 'operación',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 05:00' );
 		$this->assertSame(
@@ -395,16 +647,63 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * unless the group turns it off.
 	 */
 	public function test_birthdays_open_the_daily_message(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'  => 'proposals',
+				'member_prefix' => 'N.H.',
+				'index_header'  => '*Daily*',
+				'index_footer'  => '',
+			)
+		);
 		$members = DFXPRAY_Members::get_instance();
-		$members->create( $this->group, array( 'name' => 'Ramón García Sanz', 'called' => 'Ramón García', 'birth_day' => '24', 'birth_month' => '9' ) );
-		$members->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '24', 'birth_month' => '9' ) );
-		$members->create( $this->group, array( 'name' => 'Luis', 'birth_day' => '25', 'birth_month' => '9' ) );
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Ramón García Sanz',
+				'called'      => 'Ramón García',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Teo Martín',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Luis',
+				'birth_day'   => '25',
+				'birth_month' => '9',
+			)
+		);
 
 		$this->freeze_time( '2026-09-20 10:00' );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Antonio', 'relationship' => '', 'summary' => 'tumor', 'priority' => 'high' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Antonio',
+				'relationship'     => '',
+				'summary'          => 'tumor',
+				'priority'         => 'high',
+			)
+		);
 		$this->freeze_time( '2026-09-23 21:00' );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Pedro', 'relationship' => '', 'type' => 'deceased', 'reference_date' => '2026-09-23', 'summary' => 'descanse en paz' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Pedro',
+				'relationship'     => '',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-23',
+				'summary'          => 'descanse en paz',
+			)
+		);
 		$this->freeze_time( '2026-09-24 05:00' );
 
 		$this->assertSame(
@@ -434,13 +733,49 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * Cuenca", "Javier López"; the others keep theirs.
 	 */
 	public function test_birthdays_tell_namesakes_apart(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'  => 'proposals',
+				'member_prefix' => 'N.H.',
+				'index_header'  => '*Daily*',
+				'index_footer'  => '',
+			)
+		);
 		$members = DFXPRAY_Members::get_instance();
-		$members->create( $this->group, array( 'name' => 'Juan Carlos Cuenca Alcázar', 'called' => 'Juan Carlos', 'birth_day' => '24', 'birth_month' => '9' ) );
-		$members->create( $this->group, array( 'name' => 'Juan Carlos Espidel', 'called' => 'Juan Carlos' ) );
-		$members->create( $this->group, array( 'name' => 'Javier de la Torre', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Juan Carlos Cuenca Alcázar',
+				'called'      => 'Juan Carlos',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
+		$members->create(
+			$this->group,
+			array(
+				'name'   => 'Juan Carlos Espidel',
+				'called' => 'Juan Carlos',
+			)
+		);
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Javier de la Torre',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
 		$members->create( $this->group, array( 'name' => 'Javier López' ) );
-		$members->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '24', 'birth_month' => '9' ) );
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Teo Martín',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 05:00' );
 		$this->assertSame(
@@ -454,10 +789,32 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * not on his birthday.
 	 */
 	public function test_death_anniversaries_open_the_daily_message(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'  => 'proposals',
+				'member_prefix' => 'N.H.',
+				'index_header'  => '*Daily*',
+				'index_footer'  => '',
+			)
+		);
 		$members = DFXPRAY_Members::get_instance();
-		$members->create( $this->group, array( 'name' => 'Juan Pérez', 'birth_day' => '24', 'birth_month' => '9', 'death_date' => '2025-03-10' ) );
-		$members->create( $this->group, array( 'name' => 'Pedro Gil', 'death_date' => '2024-09-24' ) );
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Juan Pérez',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+				'death_date'  => '2025-03-10',
+			)
+		);
+		$members->create(
+			$this->group,
+			array(
+				'name'       => 'Pedro Gil',
+				'death_date' => '2024-09-24',
+			)
+		);
 
 		$this->freeze_time( '2026-09-24 05:00' );
 		$this->assertSame(
@@ -472,16 +829,61 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	 * death goes with the departed, never next to a birthday.
 	 */
 	public function test_especially_keeps_its_cases_apart(): void {
-		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals', 'member_prefix' => 'N.H.', 'index_header' => '*Daily*', 'index_footer' => '' ) );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'  => 'proposals',
+				'member_prefix' => 'N.H.',
+				'index_header'  => '*Daily*',
+				'index_footer'  => '',
+			)
+		);
 		$members = DFXPRAY_Members::get_instance();
-		$members->create( $this->group, array( 'name' => 'Teo Martín', 'birth_day' => '24', 'birth_month' => '9' ) );
-		$members->create( $this->group, array( 'name' => 'Pedro Gil', 'death_date' => '2024-09-24' ) );
+		$members->create(
+			$this->group,
+			array(
+				'name'        => 'Teo Martín',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
+		$members->create(
+			$this->group,
+			array(
+				'name'       => 'Pedro Gil',
+				'death_date' => '2024-09-24',
+			)
+		);
 
 		$this->freeze_time( '2026-09-20 10:00' );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Antonio', 'relationship' => '', 'summary' => 'tumor', 'priority' => 'high' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Antonio',
+				'relationship'     => '',
+				'summary'          => 'tumor',
+				'priority'         => 'high',
+			)
+		);
 		$this->freeze_time( '2026-09-23 21:00' );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'relationship' => '', 'type' => 'deceased', 'reference_date' => '2026-09-23', 'summary' => 'descanse en paz' ) );
-		$this->make_active( $this->group, array( 'beneficiary_name' => 'Lucía', 'relationship' => '', 'summary' => 'operación' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Rosa',
+				'relationship'     => '',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-23',
+				'summary'          => 'descanse en paz',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Lucía',
+				'relationship'     => '',
+				'summary'          => 'operación',
+			)
+		);
 		$this->freeze_time( '2026-09-24 05:00' );
 
 		$this->assertSame(
@@ -505,10 +907,124 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A departed whose anniversary is remembered goes with the departed on
+	 * that day, even after the intention closed, in both layouts.
+	 */
+	public function test_anniversaries_of_the_departed(): void {
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'type'             => 'deceased',
+				'reference_date'   => '2025-09-24',
+				'anniversary'      => true,
+				'beneficiary_name' => 'Abuela Pilar',
+				'summary'          => 'descanso',
+			)
+		);
+		DFXPRAY_Intentions::get_instance()->close( $id, 'expired' );
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_header' => '*Daily*',
+				'index_footer' => '',
+			)
+		);
+		$this->freeze_time( '2026-09-24 05:00' );
+
+		$this->assertSame(
+			"*Daily*\n\n*For our departed*\n• Abuela, madre de Luis: on the anniversary of their death († 2025)",
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'index_layout' => 'proposals' ) );
+		$this->assertSame(
+			"*Daily*\n\n*Especially*\n• Abuela, madre de Luis: on the anniversary of their death († 2025)",
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+	}
+
+	/**
+	 * The leaders' edition says, after each person, who asks and their phone;
+	 * the shared one never does.
+	 */
+	public function test_leaders_edition_says_who_asks(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout' => 'proposals',
+				'index_header' => '*Daily*',
+				'index_footer' => '',
+			)
+		);
+		$this->freeze_time( '2026-09-10 10:00' ); // Old enough not to be news.
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Marina',
+				'requester_name'   => 'Felipe Arizu',
+				'relationship'     => 'esposa de',
+				'summary'          => 'cáncer',
+				'topic'            => 'health',
+				'requester_phone'  => '+34600111222',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Irene',
+				'requester_name'   => 'David Marín',
+				'relationship'     => 'hija de',
+				'summary'          => 'problemas de salud',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Laura',
+				'requester_name'   => 'Eduardo Ruiz',
+				'relationship'     => 'cuñada de',
+				'summary'          => 'problemas de salud',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Pablo',
+				'summary'          => 'trabajo',
+			)
+		);
+		$this->freeze_time( '2026-09-24 05:00' );
+
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*For the health of*',
+					'• Marina, esposa de Felipe _(asked by Felipe Arizu · +34600111222)_',
+					'',
+					'*Also for*',
+					'• Problemas de salud: Irene, hija de David _(asked by David Marín)_; Laura, cuñada de Eduardo _(asked by Eduardo Ruiz)_',
+					'• Pablo, madre de Luis: trabajo _(asked by Luis Gómez)_',
+				)
+			),
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group, 'daily', true )
+		);
+		$this->assertStringNotContainsString( 'asked by', DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
 	 * Other groups keep the layout by type, without member prefixes.
 	 */
 	public function test_layout_by_type_is_the_default(): void {
-		$this->make_active( $this->group, array( 'requester_is_member' => true, 'summary' => 'por su salud' ) );
+		$this->make_active(
+			$this->group,
+			array(
+				'requester_is_member' => true,
+				'summary'             => 'por su salud',
+			)
+		);
 
 		$text = DFXPRAY_Index_Composer::get_instance()->compose( $this->group );
 

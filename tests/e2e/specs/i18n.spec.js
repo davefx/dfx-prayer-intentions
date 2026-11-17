@@ -29,11 +29,11 @@ test( 'the index reads like the specification', async ( { page } ) => {
 	createIntention( group.id, { requester_name: 'Javier Pérez', beneficiary_name: 'Antonio Pérez', relationship: 'padre de', type: 'deceased', reference_date: '2026-09-20', summary: 'por su eterno descanso' } );
 
 	await login( page, 'leader1' );
-	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderación', 'Intenciones', 'Revisiones', 'Índice', 'Miembros', 'Resumen diario', 'Ajustes del grupo', 'Actividad' ] );
+	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderación', 'Intenciones', 'Revisiones', 'Resumen diario', 'Resumen mensual', 'Miembros', 'Ajustes del grupo', 'Actividad' ] );
 	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ).first() ).toHaveText( 'Grupos' );
-	await page.goto( groupUrl( group.id, 'index' ) );
+	await page.goto( groupUrl( group.id, 'digest' ) );
 
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue(
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue(
 		[
 			'🙏 *Intenciones activas* – 24/09',
 			'',
@@ -45,5 +45,5 @@ test( 'the index reads like the specification', async ( { page } ) => {
 			'• Antonio, padre de Javier: por su eterno descanso († 20/09)',
 		].join( '\n' )
 	);
-	await expect( page.locator( '[data-dfxpray-copy="dfxpray-index-text"]' ) ).toHaveText( 'Copiar' );
+	await expect( page.locator( '[data-dfxpray-copy="dfxpray-digest-shareable"]' ) ).toHaveText( 'Copiar' );
 } );

@@ -20,7 +20,6 @@ class SettingsTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 30, $settings->get( 'deceased_days' ) );
 		$this->assertSame( 30, $settings->get( 'ongoing_review_days' ) );
 		$this->assertSame( 7, $settings->get( 'thanksgiving_days' ) );
-		$this->assertSame( 3, $settings->get( 'recent_deceased_days' ) );
 		$this->assertSame( 90, $settings->get( 'retention_days' ) );
 		$this->assertSame( '07:00', $settings->get( 'digest_time' ) );
 		$this->assertSame( 15, $settings->get( 'alert_lead_minutes' ) );

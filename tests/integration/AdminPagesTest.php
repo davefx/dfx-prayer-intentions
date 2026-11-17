@@ -129,10 +129,11 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$html = $this->tab( 'moderation' );
 
 		$this->assertStringContainsString( '<h1>Mine</h1>', $html );
-		foreach ( array( 'moderation', 'intentions', 'reviews', 'index', 'digest', 'settings', 'log' ) as $tab ) {
+		foreach ( array( 'moderation', 'intentions', 'reviews', 'digest', 'monthly', 'settings', 'log' ) as $tab ) {
 			$this->assertStringContainsString( 'page=dfxpray-group-' . $this->mine . '&#038;tab=' . $tab, $html );
 		}
 		$this->assertMatchesRegularExpression( '/nav-tab nav-tab-active"[^>]*>Moderation/', $html );
+		$this->assertStringNotContainsString( '&#038;tab=index', $html );
 	}
 
 	/**
@@ -202,7 +203,13 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	public function test_detail_of_foreign_intention_refused(): void {
 		$foreign = $this->make_active( $this->other, array( 'body' => 'Foreign secret' ) );
 
-		$html = $this->tab( 'intentions', array( 'view' => 'edit', 'id' => $foreign ) );
+		$html = $this->tab(
+			'intentions',
+			array(
+				'view' => 'edit',
+				'id'   => $foreign,
+			)
+		);
 
 		$this->assertStringNotContainsString( 'Foreign secret', $html );
 		$this->assertStringContainsString( 'not allowed', $html );
@@ -212,11 +219,23 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	 * The detail screen shows everything a leader needs.
 	 */
 	public function test_detail_screen(): void {
-		$id = $this->make_active( $this->mine, array( 'body' => 'Full text', 'requester_contact' => '600 000 000' ) );
+		$id = $this->make_active(
+			$this->mine,
+			array(
+				'body'              => 'Full text',
+				'requester_contact' => '600 000 000',
+			)
+		);
 		DFXPRAY_Updates::get_instance()->add( $id, 'An update', true );
 		DFXPRAY_Comments::get_instance()->add( $id, 'A comment', 'call' );
 
-		$html = $this->tab( 'intentions', array( 'view' => 'edit', 'id' => $id ) );
+		$html = $this->tab(
+			'intentions',
+			array(
+				'view' => 'edit',
+				'id'   => $id,
+			)
+		);
 
 		foreach ( array( 'Full text', '600 000 000', 'An update', 'A comment', 'value="add_comment"', 'value="add_update"', 'value="set_priority"', 'value="postpone"', 'value="ack_sent"', 'value="close"' ) as $needle ) {
 			$this->assertStringContainsString( $needle, $html );
@@ -231,7 +250,16 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$this->make_group( 'Second', array( $this->leader ) );
 		$id = $this->make_active( $this->mine );
 
-		$this->assertStringContainsString( 'value="transfer"', $this->tab( 'intentions', array( 'view' => 'edit', 'id' => $id ) ) );
+		$this->assertStringContainsString(
+			'value="transfer"',
+			$this->tab(
+				'intentions',
+				array(
+					'view' => 'edit',
+					'id'   => $id,
+				)
+			)
+		);
 	}
 
 	/**
@@ -248,33 +276,90 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Index screen: text ready to copy, and a warning when too long.
+	 * The intentions list and the reviews link each intention to its card in
+	 * the group's page, never to a page that no longer exists.
 	 */
-	public function test_index_screen(): void {
+	public function test_lists_link_to_the_card_in_the_group(): void {
+		$listed = $this->make_active( $this->mine, array( 'summary' => 'Listed' ) );
+		$review = $this->make_active(
+			$this->mine,
+			array(
+				'type'           => 'event',
+				'reference_date' => '2026-01-01',
+				'summary'        => 'Past',
+			)
+		);
+		DFXPRAY_Intentions::get_instance()->process_due();
+
+		$card = fn( int $id ) => esc_url(
+			DFXPRAY_Admin::get_instance()->group_url(
+				$this->mine,
+				'intentions',
+				array(
+					'view' => 'edit',
+					'id'   => $id,
+				)
+			)
+		);
+
+		$this->assertStringContainsString( $card( $listed ), $this->tab( 'intentions' ) );
+		$this->assertStringContainsString( $card( $review ), $this->tab( 'reviews' ) );
+		$this->assertStringNotContainsString( 'page=dfxpray-intentions', $this->tab( 'intentions' ) . $this->tab( 'reviews' ) );
+	}
+
+	/**
+	 * Daily digest screen: the app's message to share and the leaders'
+	 * version, the link to the app, and a warning when too long.
+	 */
+	public function test_digest_screen(): void {
 		$this->make_active( $this->mine, array( 'summary' => 'Visible summary' ) );
 
-		$html = $this->tab( 'index' );
+		$html = $this->tab( 'digest' );
 
 		$this->assertStringContainsString( 'Visible summary', $html );
-		$this->assertStringContainsString( 'data-dfxpray-copy', $html );
+		$this->assertStringContainsString( 'asked by Luis Gómez', $html );
+		$this->assertStringContainsString( 'id="dfxpray-digest-shareable"', $html );
+		$this->assertStringContainsString( 'id="dfxpray-digest-leaders"', $html );
+		$this->assertStringContainsString( DFXPRAY_App::get_instance()->url(), $html );
 		$this->assertStringNotContainsString( '4,000', $html );
 
 		for ( $i = 0; $i < 60; $i++ ) {
 			$this->make_active( $this->mine, array( 'summary' => str_repeat( 'x', 90 ) ) );
 		}
-		$this->assertStringContainsString( '4,000', $this->tab( 'index' ) );
+		$this->assertStringContainsString( '4,000', $this->tab( 'digest' ) );
 	}
 
 	/**
-	 * Digest screen shows both variants of the last digest and recent alerts.
+	 * Once sent, the screen shows the digest that went out.
 	 */
-	public function test_digest_screen(): void {
+	public function test_digest_screen_after_sending(): void {
+		$this->make_active( $this->mine, array( 'summary' => 'Sent summary' ) );
 		DFXPRAY_Scheduler::get_instance()->maybe_send_digest( $this->mine, true );
 
 		$html = $this->tab( 'digest' );
 
-		$this->assertStringContainsString( 'Prayer digest', $html );
+		$this->assertStringContainsString( 'Sent summary', $html );
 		$this->assertSame( 2, substr_count( $html, 'data-dfxpray-copy' ) );
+	}
+
+	/**
+	 * Monthly digest screen: the monthly list to share and the leaders' one.
+	 */
+	public function test_monthly_screen(): void {
+		$this->make_active(
+			$this->mine,
+			array(
+				'summary' => 'Long situation',
+				'scope'   => 'monthly',
+			)
+		);
+
+		$html = $this->tab( 'monthly' );
+
+		$this->assertStringContainsString( 'id="dfxpray-monthly-shareable"', $html );
+		$this->assertStringContainsString( 'id="dfxpray-monthly-leaders"', $html );
+		$this->assertStringContainsString( 'Long situation', $html );
+		$this->assertStringContainsString( 'asked by Luis Gómez', $html );
 	}
 
 	/**
@@ -381,7 +466,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 			'groups' => array( 'dfxpray', '' ),
 			'global' => array( 'dfxpray-global', '' ),
 		);
-		foreach ( array( 'moderation', 'intentions', 'reviews', 'index', 'digest', 'settings', 'log' ) as $tab ) {
+		foreach ( array( 'moderation', 'intentions', 'reviews', 'digest', 'monthly', 'settings', 'log' ) as $tab ) {
 			$pages[ $tab ] = array( 'group', $tab );
 		}
 

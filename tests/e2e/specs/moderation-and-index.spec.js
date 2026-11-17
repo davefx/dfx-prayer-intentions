@@ -17,7 +17,7 @@ test( 'a leader of a single group lands on that group, with its tabs and counter
 
 	expect( page.url() ).toContain( `admin.php?page=dfxpray-group-${ group.id }` );
 	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'Santa Marta' );
-	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderation 1', 'Intentions', 'Reviews', 'Index', 'Members', 'Daily digest', 'Group settings', 'Activity' ] );
+	await expect( page.locator( '.dfxpray-tabs a' ) ).toHaveText( [ 'Moderation 1', 'Intentions', 'Reviews', 'Daily digest', 'Monthly digest', 'Members', 'Group settings', 'Activity' ] );
 	await expect( page.locator( '.dfxpray-tabs .nav-tab-active' ) ).toHaveText( /Moderation/ );
 	await expect( page.getByText( 'Pending one' ) ).toBeVisible();
 
@@ -25,9 +25,9 @@ test( 'a leader of a single group lands on that group, with its tabs and counter
 	await expect( submenu ).toHaveText( [ 'Groups', 'Santa Marta 1' ] );
 	await expect( page.locator( '#adminmenu .awaiting-mod' ).first() ).toHaveText( '1' );
 
-	await page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Index' } ).click();
-	expect( page.url() ).toContain( `page=dfxpray-group-${ group.id }&tab=index` );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toBeVisible();
+	await page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Daily digest' } ).click();
+	expect( page.url() ).toContain( `page=dfxpray-group-${ group.id }&tab=digest` );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toBeVisible();
 
 	await submenu.filter( { hasText: 'Groups' } ).click();
 	await expect( page.locator( '[data-count="pending"]' ) ).toHaveText( '1' );
@@ -60,12 +60,12 @@ test( 'approving with a summary activates the intention and puts it in the index
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention approved.' );
 	await expect( page.getByText( 'Nothing waiting for moderation.' ) ).toBeVisible();
 
-	await page.goto( groupUrl( group.id, 'index' ) );
-	const index = page.locator( '#dfxpray-index-text' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	const index = page.locator( '#dfxpray-digest-shareable' );
 	await expect( index ).toHaveValue( /\*The sick and difficult situations\*\n• Carmen, madre de Luis: por su salud/ );
 	await expect( index ).not.toHaveValue( /enferma/ );
 
-	await page.locator( '[data-dfxpray-copy="dfxpray-index-text"]' ).click();
+	await page.locator( '[data-dfxpray-copy="dfxpray-digest-shareable"]' ).click();
 	await expect( page.getByRole( 'button', { name: 'Copied!' } ) ).toBeVisible();
 	const clipboard = await page.evaluate( () => navigator.clipboard.readText() );
 	expect( clipboard ).toContain( '• Carmen, madre de Luis: por su salud' );
@@ -125,10 +125,11 @@ test( 'a group shares its index as prayer proposals, with members marked', async
 	await page.getByRole( 'button', { name: 'Save changes' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Marina, esposa de N.H. Felipe: problemas de salud' );
 
-	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue(
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue(
 		/^\*Propuestas de oración\*\n_\w+, \w+ \d+, \d{4}_\n\n\*Especially\*\n• Antonio, amigo de N\.H\. Javier: tumor de páncreas\n\n\*Also for\*\n• Marina, esposa de N\.H\. Felipe: problemas de salud$/
 	);
+	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /• Antonio, amigo de N\.H\. Javier: tumor de páncreas _\(asked by Javier Cavallé\)_/ );
 } );
 
 test( 'the index warns when it is too long for one message', async ( { page } ) => {
@@ -137,7 +138,7 @@ test( 'the index warns when it is too long for one message', async ( { page } ) 
 	}
 	await login( page, 'leader1' );
 
-	await page.goto( groupUrl( group.id, 'index' ) );
+	await page.goto( groupUrl( group.id, 'digest' ) );
 
 	await expect( page.locator( '.notice-warning:not(.update-nag)' ) ).toContainText( 'over 4,000' );
 } );

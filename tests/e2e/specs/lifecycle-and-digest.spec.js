@@ -21,8 +21,8 @@ test( 'due intentions go to review and stay in the index until a leader decides'
 	await login( page, 'leader1' );
 
 	await expect( page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Reviews' } ) ).toHaveText( 'Reviews 1' );
-	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /examen de Pablo/ );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /examen de Pablo/ );
 
 	await page.goto( groupUrl( group.id, 'reviews' ) );
 	await page.getByRole( 'button', { name: 'Still current' } ).click();
@@ -65,9 +65,12 @@ test( 'the daily digest goes out at its time, once, and is kept in the panel', a
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'digest' ) );
 	await expect( page.getByText( /Generated and sent on/ ) ).toBeVisible();
-	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /\*Today\*\n• 9:30 – Carmen, madre de Luis: operación/ );
-	await expect( page.locator( '#dfxpray-digest-shareable' ) ).not.toHaveValue( /Leaders only/ );
-	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /Pending moderation: 1/ );
+	const message = php( `echo wp_json_encode( DFXPRAY_Index_Composer::get_instance()->compose( ${ group.id } ) );` );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( message );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /• Carmen, madre de Luis: operación _\(today, 9:30\)_/ );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).not.toHaveValue( /Leaders only|asked by/ );
+	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /• Carmen, madre de Luis: operación _\(today, 9:30\)_ _\(asked by Luis Gómez\)_/ );
+	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /\*🔒 Leaders only\*\n\n\*Today\*\n• 9:30 – Carmen, madre de Luis: operación\n\n\*Pending in the panel\*\n• Pending moderation: 1/ );
 } );
 
 test( 'hour alerts, enabled from the group settings, go out before the event', async ( { page } ) => {
@@ -93,7 +96,7 @@ test( 'hour alerts, enabled from the group settings, go out before the event', a
 	await expect( page.locator( '#dfxpray-alert-0' ) ).toHaveValue( /At 9:30/ );
 } );
 
-test( 'a late-night digest tells the group about tonight’s events, which get no alert', async ( { page } ) => {
+test( 'a late-night digest tells the leaders about tonight’s events, which get no alert', async ( { page } ) => {
 	freeze( '2026-09-20 12:00' );
 	createIntention( group.id, { type: 'event', reference_date: '2026-09-25', reference_time: '06:30', summary: 'operación', beneficiary_name: 'Carmen' } );
 
@@ -149,5 +152,6 @@ test( 'the digest can be generated and sent on demand', async ( { page } ) => {
 
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Digest generated and sent.' );
 	await expect( page.getByText( /Generated and sent on/ ) ).toBeVisible();
-	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /\*News\*\n• Carmen, madre de Luis: recién llegada/ );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /• Carmen, madre de Luis: recién llegada$/m );
+	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /\*News of the last 24 hours\*\n• Carmen, madre de Luis: recién llegada/ );
 } );

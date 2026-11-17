@@ -31,9 +31,9 @@ final class DFXPRAY_Admin {
 		'moderation' => 'moderation',
 		'intentions' => 'intentions',
 		'reviews'    => 'reviews',
-		'index'      => 'index',
-		'members'    => 'members',
 		'digest'     => 'digest',
+		'monthly'    => 'monthly',
+		'members'    => 'members',
 		'settings'   => 'settings',
 		'log'        => 'log',
 	);
@@ -91,9 +91,9 @@ final class DFXPRAY_Admin {
 			'moderation' => __( 'Moderation', 'dfx-prayer-intentions' ),
 			'intentions' => __( 'Intentions', 'dfx-prayer-intentions' ),
 			'reviews'    => __( 'Reviews', 'dfx-prayer-intentions' ),
-			'index'      => __( 'Index', 'dfx-prayer-intentions' ),
-			'members'    => __( 'Members', 'dfx-prayer-intentions' ),
 			'digest'     => __( 'Daily digest', 'dfx-prayer-intentions' ),
+			'monthly'    => __( 'Monthly digest', 'dfx-prayer-intentions' ),
+			'members'    => __( 'Members', 'dfx-prayer-intentions' ),
 			'settings'   => __( 'Group settings', 'dfx-prayer-intentions' ),
 			'log'        => __( 'Activity', 'dfx-prayer-intentions' ),
 		);
@@ -481,10 +481,6 @@ final class DFXPRAY_Admin {
 				'type'  => 'number',
 				'label' => __( '“Still current”: days until the next review', 'dfx-prayer-intentions' ),
 			),
-			'recent_deceased_days'     => array(
-				'type'  => 'number',
-				'label' => __( 'Digest: recently departed during (days)', 'dfx-prayer-intentions' ),
-			),
 			'confirmation_message'     => array(
 				'type'  => 'textarea',
 				'label' => __( 'Message after sending the form', 'dfx-prayer-intentions' ),
@@ -520,15 +516,6 @@ final class DFXPRAY_Admin {
 				'type'  => 'text',
 				'label' => __( 'Prefix for members of the group', 'dfx-prayer-intentions' ),
 				'help'  => __( 'Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix.', 'dfx-prayer-intentions' ),
-			),
-			'digest_header'            => array(
-				'type'  => 'text',
-				'label' => __( 'Digest header', 'dfx-prayer-intentions' ),
-				'help'  => __( '{date} is replaced with the date.', 'dfx-prayer-intentions' ),
-			),
-			'digest_footer'            => array(
-				'type'  => 'textarea',
-				'label' => __( 'Digest footer', 'dfx-prayer-intentions' ),
 			),
 			'digest_include_comments'  => array(
 				'type'  => 'checkbox',
@@ -606,8 +593,8 @@ final class DFXPRAY_Admin {
 	 */
 	public function setting_sections( string $scope ): array {
 		$sections = array(
-			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'daily_news_days', 'daily_birthdays', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days', 'recent_deceased_days' ),
-			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_header', 'digest_footer', 'digest_include_comments' ),
+			__( 'Deadlines', 'dfx-prayer-intentions' ) => array( 'event_grace_days', 'deceased_days', 'daily_deceased_days', 'daily_news_days', 'daily_birthdays', 'deceased_auto_close', 'ongoing_review_days', 'thanksgiving_days', 'daily_thanks_days', 'monthly_thanks_days', 'thanksgiving_auto_close', 'keep_active_days' ),
+			__( 'Texts', 'dfx-prayer-intentions' )     => array( 'confirmation_message', 'index_header', 'monthly_header', 'index_footer', 'index_section_emojis', 'index_layout', 'member_prefix', 'digest_include_comments' ),
 			__( 'Schedules', 'dfx-prayer-intentions' ) => array( 'digest_time', 'digest_when_empty', 'alert_lead_minutes', 'alert_at_exact_time', 'quiet_start', 'quiet_end' ),
 		);
 

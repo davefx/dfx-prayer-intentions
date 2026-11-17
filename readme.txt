@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.37
+Stable tag: 26.11.38
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -27,9 +27,9 @@ DFX Prayer Intentions gives the leaders of each group a private panel for that j
 
 * A moderation inbox: approve with a short summary written by a leader (the only text the group will ever see), discard spam, or merge duplicates.
 * A lifecycle by type. One-off events go to review two days after the date; the departed after 30 days; ongoing situations are reviewed every 30 days; thanksgivings last a week. Intentions in review stay in the index until a leader decides, so nobody stops praying for an administrative oversight. All deadlines are configurable.
-* The index of active intentions, formatted for WhatsApp, with a Copy button.
-* A daily digest at the time each group chooses: today's events and key dates (funerals, month's mind Masses, appointments), news, high priority, tomorrow, the recently departed, and a leaders-only section.
-* Hour alerts before timed events, so the group can pray at that very moment. Nothing is sent in quiet hours: the digest before them lists those events, and if none did, an early alert goes out just before quiet hours begin.
+* A daily digest at the time each group chooses, formatted for WhatsApp with a Copy button: the shareable version is the message of the leaders' app, and the leaders' version is that same message saying who asks for each intention, followed by today's appointments, events without an hour alert, what waits in the panel, whom to ask and the news of the last day.
+* A monthly digest with the monthly list, to read at the monthly adoration, in both versions.
+* Hour alerts before timed events, so the group can pray at that very moment. Nothing is sent in quiet hours: the leaders' version of the digest before them lists those events, and if none did, an early alert goes out just before quiet hours begin.
 * Delivery by email, Telegram or a signed webhook (Slack, Discord, n8n…), besides copy and paste to WhatsApp.
 * Internal comments for calls, visits and contacts, which never leave the panel, and updates that reach the group as news.
 * Several independent groups in one site, each with its own leaders, form, index, digest and settings. With a single group, the plugin behaves as if groups did not exist.
@@ -80,10 +80,19 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 
 1. The public form.
 2. The moderation inbox.
-3. The index, ready to paste into WhatsApp.
-4. The daily digest.
+3. The daily digest, ready to paste into WhatsApp.
+4. The monthly digest.
 
 == Changelog ==
+
+= 26.11.38 =
+* The "Daily digest" tab shares the same message as the leaders' app. The leaders' version is that message saying who asks for each intention (with their phone), followed by a leaders-only block: today's appointments, events without an hour alert, what waits in the panel, whom to ask and the news of the last 24 hours.
+* New "Monthly digest" tab: the monthly list to share, and the leaders' version with who asks, what waits in the panel and whom to ask.
+* The "Index" tab is gone: its message, length warning and link to the app are in the daily digest.
+* The anniversaries of the departed whose anniversary is remembered appear in the daily message, with the departed.
+* Events without an hour alert during quiet hours are told to the leaders, in their version of the digest.
+* Removed the digest header, footer and "recently departed" settings, no longer used.
+* Fixed: the intentions list and the reviews linked each intention to a page that no longer exists ("not allowed"); they open its card in the group again.
 
 = 26.11.37 =
 * In the daily message, "Especially" keeps its cases apart, with a blank line between them: first the departed (deaths reported the day before and anniversaries of a member's death), then the birthdays, then the serious intentions.

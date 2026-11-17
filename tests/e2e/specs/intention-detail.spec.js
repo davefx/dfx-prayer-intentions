@@ -10,6 +10,17 @@ test.beforeEach( () => {
 	group = createGroup( 'Santa Marta', [ 'leader1', 'leader2' ] );
 } );
 
+test( 'an intention opens from the list of the group', async ( { page } ) => {
+	const id = createIntention( group.id, { summary: 'desde la lista' } );
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'intentions' ) );
+
+	await page.getByRole( 'link', { name: 'Carmen Ruiz' } ).click();
+
+	expect( page.url() ).toContain( `page=dfxpray-group-${ group.id }&tab=intentions&view=edit&id=${ id }` );
+	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( 'Carmen, madre de Luis: desde la lista' );
+} );
+
 test( 'comments are shared among leaders, signed when edited, and can become updates', async ( { page, browser } ) => {
 	const id = createIntention( group.id );
 	await login( page, 'leader1' );
@@ -117,9 +128,11 @@ test( 'the panel keeps the edition, topic and phone, and shows both messages', a
 	await expect( page.locator( '.notice-success' ) ).toBeVisible();
 	await expect( page.getByRole( 'link', { name: 'Ask by WhatsApp how it goes' } ) ).toHaveAttribute( 'href', /^https:\/\/wa\.me\/34611223344\?text=/ );
 
-	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).not.toHaveValue( /Fátima/ );
-	await expect( page.locator( '#dfxpray-monthly-text' ) ).toHaveValue( /Fátima, sobrina de Luis: quimioterapia/ );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).not.toHaveValue( /Fátima/ );
+	await page.goto( groupUrl( group.id, 'monthly' ) );
+	await expect( page.locator( '#dfxpray-monthly-shareable' ) ).toHaveValue( /Fátima, sobrina de Luis: quimioterapia$/m );
+	await expect( page.locator( '#dfxpray-monthly-leaders' ) ).toHaveValue( /Fátima, sobrina de Luis: quimioterapia _\(asked by Luis Gómez · \+34611223344\)_/ );
 } );
 
 test( 'the panel form follows the five steps and shows only the fields that apply', async ( { page } ) => {
@@ -190,8 +203,8 @@ test( 'closing as answered adds a linked thanksgiving to the index', async ( { p
 	await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention closed.' );
 
-	await page.goto( groupUrl( group.id, 'index' ) );
-	const index = page.locator( '#dfxpray-index-text' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	const index = page.locator( '#dfxpray-digest-shareable' );
 	await expect( index ).toHaveValue( /\*Thanksgiving\*\n• Pablo: por el trabajo encontrado/ );
 	await expect( index ).not.toHaveValue( /busca trabajo/ );
 } );
@@ -211,8 +224,8 @@ test( 'an intention closed by mistake can be reopened', async ( { page } ) => {
 	await expect( page.locator( '.dfxpray-status' ) ).toHaveText( 'Active' );
 	await expect( page.locator( 'table.dfxpray-table' ).last() ).toContainText( 'Reopened' );
 
-	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /Carmen, madre de Luis: quimioterapia/ );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /Carmen, madre de Luis: quimioterapia/ );
 } );
 
 test( 'the list filters by kind, status and name', async ( { page } ) => {

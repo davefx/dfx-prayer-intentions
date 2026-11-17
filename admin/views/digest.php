@@ -2,6 +2,9 @@
 /**
  * Daily digest: last generated (or a preview), both variants, and recent hour alerts.
  *
+ * The shareable version is the daily message of the leaders' app; the
+ * leaders' one is the same message with who asks and a private block.
+ *
  * @var int $group_id Active group.
  *
  * @package DFXPRAY
@@ -17,6 +20,7 @@ $dfxpray_stored    = $dfxpray_scheduler->get_stored_digest( $group_id );
 $dfxpray_is_today  = $dfxpray_stored && DFXPRAY_Clock::get_instance()->today() === $dfxpray_stored['date'];
 $dfxpray_digest    = $dfxpray_is_today ? $dfxpray_stored : DFXPRAY_Digest_Composer::get_instance()->compose( $group_id );
 $dfxpray_time      = (string) DFXPRAY_Settings::get_instance()->get( 'digest_time', $group_id );
+$dfxpray_length    = mb_strlen( $dfxpray_digest['shareable'] );
 ?>
 <p class="description">
 	<?php
@@ -29,49 +33,50 @@ $dfxpray_time      = (string) DFXPRAY_Settings::get_instance()->get( 'digest_tim
 	}
 	?>
 </p>
+<p class="dfxpray-app-link">
+	<?php
+	printf(
+		/* translators: %s: link to the leaders' app. */
+		esc_html__( 'On your phone: %s (you can add it to the home screen).', 'dfx-prayer-intentions' ),
+		'<a href="' . esc_url( DFXPRAY_App::get_instance()->url() ) . '">' . esc_html__( 'open the leaders’ app', 'dfx-prayer-intentions' ) . '</a>'
+	);
+	?>
+</p>
 
 <?php $dfxpray_admin->form_open( 'send_digest_now', array( 'group_id' => $group_id ) ); ?>
 	<p><button type="submit" class="button"><?php esc_html_e( 'Generate and send now', 'dfx-prayer-intentions' ); ?></button></p>
 </form>
 
-<div class="dfxpray-columns dfxpray-columns--even">
-	<div>
-		<h2><?php esc_html_e( 'Shareable version', 'dfx-prayer-intentions' ); ?></h2>
-		<?php
-		if ( '' === $dfxpray_digest['shareable'] ) {
-			echo '<p class="dfxpray-empty">' . esc_html__( 'Nothing to share today.', 'dfx-prayer-intentions' ) . '</p>';
-		} else {
-			$dfxpray_admin->view(
-				'partials/copy-box',
-				array(
-					'id'    => 'dfxpray-digest-shareable',
-					'label' => __( 'Shareable version', 'dfx-prayer-intentions' ),
-					'text'  => $dfxpray_digest['shareable'],
-					'rows'  => 16,
-				)
+<?php if ( DFXPRAY_Index_Composer::get_instance()->is_too_long( $dfxpray_digest['shareable'] ) ) : ?>
+	<div class="notice notice-warning inline">
+		<p>
+			<?php
+			printf(
+				/* translators: 1: length, 2: limit. */
+				esc_html__( 'The message is %1$s characters long, over %2$s: it may be too long to read comfortably in one message.', 'dfx-prayer-intentions' ),
+				esc_html( number_format_i18n( $dfxpray_length ) ),
+				esc_html( number_format_i18n( DFXPRAY_Settings::INDEX_LENGTH_WARNING ) )
 			);
-		}
-		?>
+			?>
+		</p>
 	</div>
-	<div>
-		<h2><?php esc_html_e( 'Leaders’ version', 'dfx-prayer-intentions' ); ?></h2>
-		<?php
-		if ( '' === $dfxpray_digest['leaders'] ) {
-			echo '<p class="dfxpray-empty">' . esc_html__( 'Nothing for the leaders today.', 'dfx-prayer-intentions' ) . '</p>';
-		} else {
-			$dfxpray_admin->view(
-				'partials/copy-box',
-				array(
-					'id'    => 'dfxpray-digest-leaders',
-					'label' => __( 'Leaders’ version', 'dfx-prayer-intentions' ),
-					'text'  => $dfxpray_digest['leaders'],
-					'rows'  => 16,
-				)
-			);
-		}
-		?>
-	</div>
-</div>
+<?php endif; ?>
+
+<?php
+$dfxpray_admin->view(
+	'partials/digest-variants',
+	array(
+		'prefix' => 'dfxpray-digest',
+		'digest' => $dfxpray_digest,
+	)
+);
+?>
+<p class="dfxpray-meta">
+	<?php
+	/* translators: %s: number of characters. */
+	printf( esc_html__( '%s characters', 'dfx-prayer-intentions' ), esc_html( number_format_i18n( $dfxpray_length ) ) );
+	?>
+</p>
 
 <?php $dfxpray_alerts = $dfxpray_scheduler->get_recent_alerts( $group_id ); ?>
 <?php if ( $dfxpray_alerts ) : ?>

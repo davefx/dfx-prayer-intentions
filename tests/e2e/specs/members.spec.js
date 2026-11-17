@@ -34,8 +34,8 @@ test( 'leaders keep the brothers, and those whose birthday it is open the daily 
 	await expect( page.locator( '.dfxpray-member-notes' ) ).toHaveText( 'XI Retiro - Mesa 1' );
 
 	createIntention( group.id, { beneficiary_name: 'Antonio', relationship: '', summary: 'tumor', priority: 'high' } );
-	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( /\*Especially\*\n• N\.H\. Ramón García: on his birthday\n\n• Antonio: tumor/ );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /\*Especially\*\n• N\.H\. Ramón García: on his birthday\n\n• Antonio: tumor/ );
 
 	await page.goto( groupUrl( group.id, 'members' ) );
 	await page.getByText( 'Edit', { exact: true } ).click();
@@ -48,9 +48,9 @@ test( 'leaders keep the brothers, and those whose birthday it is open the daily 
 	await page.locator( 'details.dfxpray-edit-member' ).getByLabel( 'Date of death' ).fill( deathDay );
 	await page.locator( 'details.dfxpray-edit-member' ).getByRole( 'button', { name: 'Save' } ).click();
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Member saved.' );
-	await page.goto( groupUrl( group.id, 'index' ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).toHaveValue( new RegExp( `• N\\.H\\. Ramón: on the anniversary of his death \\(† ${ deathDay.slice( 0, 4 ) }\\)` ) );
-	await expect( page.locator( '#dfxpray-index-text' ) ).not.toHaveValue( /on his birthday/ );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( new RegExp( `• N\\.H\\. Ramón: on the anniversary of his death \\(† ${ deathDay.slice( 0, 4 ) }\\)` ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).not.toHaveValue( /on his birthday/ );
 
 	await page.goto( groupUrl( group.id, 'members' ) );
 	await page.getByText( 'Edit', { exact: true } ).click();

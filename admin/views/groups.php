@@ -49,7 +49,6 @@ if ( ! $dfxpray_ids ) {
 				<?php endforeach; ?>
 			</ul>
 			<p>
-				<a class="button" href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, 'index' ) ); ?>"><?php esc_html_e( 'Index', 'dfx-prayer-intentions' ); ?></a>
 				<a class="button" href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, 'digest' ) ); ?>"><?php esc_html_e( 'Daily digest', 'dfx-prayer-intentions' ); ?></a>
 				<a class="button" href="<?php echo esc_url( $dfxpray_admin->group_url( $dfxpray_id, 'intentions', array( 'view' => 'new' ) ) ); ?>"><?php esc_html_e( 'Add intention', 'dfx-prayer-intentions' ); ?></a>
 			</p>

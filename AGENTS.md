@@ -47,7 +47,7 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | --- | --- |
 | Business rule (lifecycle, discretion, validation) | the service in `includes/` (`DFXPRAY_Intentions`, `DFXPRAY_Lifecycle`, `DFXPRAY_Discretion`…) |
 | Anything a leader does in the panel | a `do_<action>()` in `admin/class-admin-actions.php`, registered in `ACTIONS` with its permission scope; the view only renders a form through `DFXPRAY_Admin::form_open()` |
-| A task on a group (moderation, index…) | a tab: `admin/views/<name>.php`, registered in `DFXPRAY_Admin::TABS` and `tab_titles()`; link to it with `DFXPRAY_Admin::group_url( $group_id, $tab )` |
+| A task on a group (moderation, digests…) | a tab: `admin/views/<name>.php`, registered in `DFXPRAY_Admin::TABS` and `tab_titles()`; link to it with `DFXPRAY_Admin::group_url( $group_id, $tab )` |
 | A site-wide screen | `DFXPRAY_Admin::render_page()` and `register_menu()`; the menu only holds "Groups", "Global settings" and one entry per group |
 | Anything a leader does in the app | the screen in `assets/js/app.js`; a write is a panel action (add it to `DFXPRAY_App_API::WRITES`), a read an `op` in `DFXPRAY_App_API::respond()`, scoped with `DFXPRAY_Permissions`; add it to the IDOR provider in `AppApiTest` |
 | Text shared with the group (index, digest, alerts) | `DFXPRAY_Formatter`, `DFXPRAY_Index_Composer`, `DFXPRAY_Digest_Composer`, templates in `templates/` |
@@ -81,8 +81,14 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
   never data; the app keeps on the device only the message and the lists
   (summaries), never the full text of a request.
 - **No timed event is left without notice.** Alerts are never sent in quiet
-  hours; the previous digest lists them in "Without an hour alert", and if no
-  digest did, an early alert goes out just before quiet hours.
+  hours; the leaders' version of the previous digest lists them in "Without
+  an hour alert", and if no digest did, an early alert goes out just before
+  quiet hours.
+- **The shareable digest is the app's message.** The daily and monthly
+  digests share exactly what the leaders' app shows
+  (`DFXPRAY_Index_Composer::compose()`); anything only for the leaders (who
+  asks, phones, the panel, today's appointments, news) goes in the leaders'
+  version, built from the same text.
 - **Time comes from `DFXPRAY_Clock`**, in the site timezone. Never call
   `time()`, `date()` or `current_time()` for anything the plugin reasons
   about (the only exception is handing WP-Cron its real timestamps); tests

@@ -89,8 +89,9 @@ $dfxpray_rows = DFXPRAY_Intentions::get_instance()->query( $group_id, array_filt
 					<a href="
 					<?php
 					echo esc_url(
-						$dfxpray_admin->url(
-							'dfxpray-intentions',
+						$dfxpray_admin->group_url(
+							$group_id,
+							'intentions',
 							array(
 								'view' => 'edit',
 								'id'   => $dfxpray_row['id'],

@@ -50,7 +50,7 @@ final class DFXPRAY_Settings {
 	/**
 	 * Keys holding multi-line text.
 	 */
-	private const TEXT_KEYS = array( 'confirmation_message', 'index_header', 'index_footer', 'digest_header', 'digest_footer' );
+	private const TEXT_KEYS = array( 'confirmation_message', 'index_header', 'index_footer' );
 
 	/**
 	 * Allowed values for enumerated keys.
@@ -103,7 +103,6 @@ final class DFXPRAY_Settings {
 			'monthly_thanks_days'      => 30,
 			'thanksgiving_auto_close'  => true,
 			'keep_active_days'         => 30,
-			'recent_deceased_days'     => 3,
 
 			// Templates.
 			'confirmation_message'     => __( 'Thank you. We have received your request and will pray for it.', 'dfx-prayer-intentions' ),
@@ -115,9 +114,6 @@ final class DFXPRAY_Settings {
 			'index_section_emojis'     => false,
 			'index_layout'             => 'by_type',
 			'member_prefix'            => '',
-			/* translators: {date} is replaced with the day and month. */
-			'digest_header'            => __( '🙏 *Prayer digest* – {date}', 'dfx-prayer-intentions' ),
-			'digest_footer'            => '',
 			'digest_include_comments'  => false,
 
 			// Schedules.

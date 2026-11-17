@@ -2,8 +2,8 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.34\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/proposals-index\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.37\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish (Spain)\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-16T10:53:22+00:00\n"
+"POT-Creation-Date: 2026-11-17T09:14:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -208,20 +208,18 @@ msgstr "Revisiones"
 
 #: admin/class-admin.php:94
 #: admin/views/groups.php:52
-#: admin/views/index.php:49
-msgid "Index"
-msgstr "Índice"
-
-#: admin/class-admin.php:95
-#: includes/class-app.php:353
-msgid "Members"
-msgstr "Miembros"
-
-#: admin/class-admin.php:96
-#: admin/views/groups.php:53
 #: admin/views/settings.php:25
 msgid "Daily digest"
 msgstr "Resumen diario"
+
+#: admin/class-admin.php:95
+msgid "Monthly digest"
+msgstr "Resumen mensual"
+
+#: admin/class-admin.php:96
+#: includes/class-app.php:353
+msgid "Members"
+msgstr "Miembros"
 
 #: admin/class-admin.php:97
 msgid "Group settings"
@@ -345,342 +343,330 @@ msgid "“Still current”: days until the next review"
 msgstr "«Sigue vigente»: días hasta la próxima revisión"
 
 #: admin/class-admin.php:486
-msgid "Digest: recently departed during (days)"
-msgstr "Resumen: difuntos recientes durante (días)"
-
-#: admin/class-admin.php:490
 msgid "Message after sending the form"
 msgstr "Mensaje tras enviar el formulario"
 
-#: admin/class-admin.php:494
+#: admin/class-admin.php:490
 msgid "Index header"
 msgstr "Encabezado del índice"
 
-#: admin/class-admin.php:495
+#: admin/class-admin.php:491
 msgid "{date} is replaced with the date, and {long_date} with the date and weekday in full."
 msgstr "{date} se sustituye por la fecha y {long_date}, por la fecha completa con el día de la semana."
 
-#: admin/class-admin.php:499
+#: admin/class-admin.php:495
 msgid "Monthly list header"
 msgstr "Encabezado de la lista mensual"
 
-#: admin/class-admin.php:500
+#: admin/class-admin.php:496
 msgid "Placeholders: {date}, {long_date}."
 msgstr "Marcadores: {date}, {long_date}."
 
-#: admin/class-admin.php:504
+#: admin/class-admin.php:500
 msgid "Index footer"
 msgstr "Pie del índice"
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:501
 msgid "For example, a short prayer."
 msgstr "Por ejemplo, una jaculatoria."
 
-#: admin/class-admin.php:509
+#: admin/class-admin.php:505
 msgid "Emojis in the index sections"
 msgstr "Emojis en las secciones del índice"
 
-#: admin/class-admin.php:513
+#: admin/class-admin.php:509
 msgid "Index layout"
 msgstr "Formato del índice"
 
-#: admin/class-admin.php:515
+#: admin/class-admin.php:511
 msgid "By kind: events, the departed, ongoing situations, thanksgiving"
 msgstr "Por tipo: eventos, difuntos, situaciones prolongadas y acción de gracias"
 
-#: admin/class-admin.php:516
+#: admin/class-admin.php:512
 msgid "Prayer proposals: especially, also for, we give thanks, the recently departed"
 msgstr "Propuestas de oración: especialmente, también por, damos gracias y difuntos recientes"
 
-#: admin/class-admin.php:521
+#: admin/class-admin.php:517
 msgid "Prefix for members of the group"
 msgstr "Prefijo para los miembros del grupo"
 
-#: admin/class-admin.php:522
+#: admin/class-admin.php:518
 msgid "Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix."
 msgstr "Se escribe delante del nombre de quienes estén marcados como miembros; por ejemplo, «N.H.». Vacío: sin prefijo."
 
-#: admin/class-admin.php:526
-msgid "Digest header"
-msgstr "Encabezado del resumen"
-
-#: admin/class-admin.php:527
-msgid "{date} is replaced with the date."
-msgstr "{date} se sustituye por la fecha."
-
-#: admin/class-admin.php:531
-msgid "Digest footer"
-msgstr "Pie del resumen"
-
-#: admin/class-admin.php:535
+#: admin/class-admin.php:522
 msgid "Include recent internal comments in the leaders’ digest"
 msgstr "Incluir los comentarios internos recientes en el resumen de líderes"
 
-#: admin/class-admin.php:539
+#: admin/class-admin.php:526
 msgid "Daily digest at"
 msgstr "Resumen diario a las"
 
-#: admin/class-admin.php:543
+#: admin/class-admin.php:530
 msgid "When there is nothing new"
 msgstr "Cuando no hay novedades"
 
-#: admin/class-admin.php:545
+#: admin/class-admin.php:532
 msgid "Send a short version"
 msgstr "Enviar una versión breve"
 
-#: admin/class-admin.php:546
+#: admin/class-admin.php:533
 msgid "Send nothing"
 msgstr "No enviar nada"
 
-#: admin/class-admin.php:551
+#: admin/class-admin.php:538
 msgid "Hour alerts: minutes before"
 msgstr "Avisos de hora: minutos antes"
 
-#: admin/class-admin.php:555
+#: admin/class-admin.php:542
 msgid "Second alert at the exact time"
 msgstr "Segundo aviso a la hora exacta"
 
-#: admin/class-admin.php:559
+#: admin/class-admin.php:546
 msgid "Quiet hours from"
 msgstr "Horario de silencio desde"
 
-#: admin/class-admin.php:560
+#: admin/class-admin.php:547
 msgid "Alerts are never sent in quiet hours. The digest before them lists those events; if none did, an early alert goes out just before quiet hours begin."
 msgstr "En horario de silencio nunca se envían avisos. El resumen anterior incluye esos eventos; si ninguno lo hizo, sale un aviso anticipado justo antes de que empiece el silencio."
 
-#: admin/class-admin.php:564
+#: admin/class-admin.php:551
 msgid "Quiet hours until"
 msgstr "Horario de silencio hasta"
 
-#: admin/class-admin.php:568
+#: admin/class-admin.php:555
 msgid "Delete closed and discarded intentions after (days)"
 msgstr "Borrar las intenciones cerradas y descartadas a los (días)"
 
-#: admin/class-admin.php:569
+#: admin/class-admin.php:556
 msgid "Including their updates, comments and history."
 msgstr "Incluidas sus actualizaciones, comentarios e historial."
 
-#: admin/class-admin.php:573
+#: admin/class-admin.php:560
 msgid "Country code for phone numbers"
 msgstr "Prefijo de país de los teléfonos"
 
-#: admin/class-admin.php:574
+#: admin/class-admin.php:561
 msgid "Added to numbers written without one, for the WhatsApp links. 34 is Spain."
 msgstr "Se añade a los números escritos sin prefijo, para los enlaces de WhatsApp. 34 es España."
 
-#: admin/class-admin.php:578
+#: admin/class-admin.php:565
 msgid "Beginning of the form addresses"
 msgstr "Comienzo de las direcciones del formulario"
 
-#: admin/class-admin.php:579
+#: admin/class-admin.php:566
 msgid "Applies to new addresses. A random part is always added."
 msgstr "Se aplica a las direcciones nuevas. Siempre se añade una parte aleatoria."
 
-#: admin/class-admin.php:583
+#: admin/class-admin.php:570
 msgid "Maximum requests per hour from one connection"
 msgstr "Máximo de peticiones por hora desde una misma conexión"
 
-#: admin/class-admin.php:587
+#: admin/class-admin.php:574
 msgid "Cloudflare Turnstile site key"
 msgstr "Clave de sitio de Cloudflare Turnstile"
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:575
 msgid "Optional. Leave both keys empty to disable it."
 msgstr "Opcional. Deja las dos claves vacías para desactivarlo."
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:579
 msgid "Cloudflare Turnstile secret key"
 msgstr "Clave secreta de Cloudflare Turnstile"
 
-#: admin/class-admin.php:596
+#: admin/class-admin.php:583
 msgid "Delete all data when the plugin is uninstalled"
 msgstr "Borrar todos los datos al desinstalar el plugin"
 
-#: admin/class-admin.php:609
+#: admin/class-admin.php:596
 msgid "Deadlines"
 msgstr "Plazos"
 
-#: admin/class-admin.php:610
+#: admin/class-admin.php:597
 msgid "Texts"
 msgstr "Textos"
 
-#: admin/class-admin.php:611
+#: admin/class-admin.php:598
 msgid "Schedules"
 msgstr "Horarios"
 
-#: admin/class-admin.php:617
+#: admin/class-admin.php:604
 msgid "Data and protection"
 msgstr "Datos y protección"
 
-#: admin/class-admin.php:633
+#: admin/class-admin.php:620
 msgid "Request received from the form"
 msgstr "Petición recibida desde el formulario"
 
-#: admin/class-admin.php:634
+#: admin/class-admin.php:621
 msgid "Intention added"
 msgstr "Intención añadida"
 
-#: admin/class-admin.php:635
+#: admin/class-admin.php:622
 msgid "Approved"
 msgstr "Aprobada"
 
-#: admin/class-admin.php:636
+#: admin/class-admin.php:623
 #: includes/class-lifecycle.php:70
 msgid "Discarded"
 msgstr "Descartada"
 
-#: admin/class-admin.php:637
+#: admin/class-admin.php:624
 msgid "Duplicate merged into it"
 msgstr "Se le fusionó un duplicado"
 
-#: admin/class-admin.php:638
+#: admin/class-admin.php:625
 msgid "Edited"
 msgstr "Editada"
 
-#: admin/class-admin.php:639
+#: admin/class-admin.php:626
 msgid "Description changed"
 msgstr "Descripción cambiada"
 
-#: admin/class-admin.php:640
+#: admin/class-admin.php:627
 msgid "Review date reached"
 msgstr "Llegó la fecha de revisión"
 
-#: admin/class-admin.php:641
+#: admin/class-admin.php:628
 msgid "Kept active"
 msgstr "Sigue vigente"
 
-#: admin/class-admin.php:642
+#: admin/class-admin.php:629
 msgid "Reopened"
 msgstr "Reabierta"
 
-#: admin/class-admin.php:643
+#: admin/class-admin.php:630
 #: includes/class-lifecycle.php:69
 msgid "Closed"
 msgstr "Cerrada"
 
-#: admin/class-admin.php:644
+#: admin/class-admin.php:631
 #: admin/views/intention-edit.php:72
 #: admin/views/intention-edit.php:454
 msgid "Acknowledgement sent"
 msgstr "Acuse enviado"
 
-#: admin/class-admin.php:645
+#: admin/class-admin.php:632
 msgid "Moved to another group"
 msgstr "Trasladada a otro grupo"
 
-#: admin/class-admin.php:646
+#: admin/class-admin.php:633
 msgid "Received from another group"
 msgstr "Recibida de otro grupo"
 
-#: admin/class-admin.php:647
+#: admin/class-admin.php:634
 msgid "Update added"
 msgstr "Actualización añadida"
 
-#: admin/class-admin.php:648
+#: admin/class-admin.php:635
 msgid "Comment added"
 msgstr "Comentario añadido"
 
-#: admin/class-admin.php:649
+#: admin/class-admin.php:636
 msgid "Comment edited"
 msgstr "Comentario editado"
 
-#: admin/class-admin.php:650
+#: admin/class-admin.php:637
 msgid "Comment deleted"
 msgstr "Comentario borrado"
 
-#: admin/class-admin.php:651
+#: admin/class-admin.php:638
 msgid "Comment turned into an update"
 msgstr "Comentario convertido en actualización"
 
-#: admin/class-admin.php:652
+#: admin/class-admin.php:639
 msgid "Delivered"
 msgstr "Entregado"
 
-#: admin/class-admin.php:653
+#: admin/class-admin.php:640
 msgid "Delivery failed"
 msgstr "Envío fallido"
 
-#: admin/class-admin.php:654
+#: admin/class-admin.php:641
 msgid "Group created"
 msgstr "Grupo creado"
 
-#: admin/class-admin.php:655
+#: admin/class-admin.php:642
 msgid "Group edited"
 msgstr "Grupo editado"
 
-#: admin/class-admin.php:656
+#: admin/class-admin.php:643
 msgid "Group archived"
 msgstr "Grupo archivado"
 
-#: admin/class-admin.php:657
+#: admin/class-admin.php:644
 msgid "Group restored"
 msgstr "Grupo restaurado"
 
-#: admin/class-admin.php:658
+#: admin/class-admin.php:645
 msgid "Leaders changed"
 msgstr "Líderes cambiados"
 
-#: admin/class-admin.php:659
+#: admin/class-admin.php:646
 msgid "New form address"
 msgstr "Nueva dirección del formulario"
 
-#: admin/class-admin.php:660
+#: admin/class-admin.php:647
 msgid "Settings saved"
 msgstr "Ajustes guardados"
 
-#: admin/class-admin.php:661
+#: admin/class-admin.php:648
 msgid "Global settings saved"
 msgstr "Ajustes globales guardados"
 
-#: admin/class-admin.php:675
+#: admin/class-admin.php:662
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr "Spam"
 
-#: admin/class-admin.php:676
+#: admin/class-admin.php:663
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr "Duplicado"
 
 #. translators: %s: date and time.
-#: admin/views/digest.php:25
+#: admin/views/digest.php:29
 #, php-format
 msgid "Generated and sent on %s."
 msgstr "Generado y enviado el %s."
 
 #. translators: %s: time of day.
-#: admin/views/digest.php:28
+#: admin/views/digest.php:32
 #, php-format
 msgid "Preview: today’s digest has not been sent yet. It goes out every day at %s."
 msgstr "Vista previa: el resumen de hoy aún no se ha enviado. Sale cada día a las %s."
 
-#: admin/views/digest.php:34
+#. translators: %s: link to the leaders' app.
+#: admin/views/digest.php:40
+#, php-format
+msgid "On your phone: %s (you can add it to the home screen)."
+msgstr "En el móvil: %s (puedes añadirla a la pantalla de inicio)."
+
+#: admin/views/digest.php:41
+msgid "open the leaders’ app"
+msgstr "abre la app de líderes"
+
+#: admin/views/digest.php:47
 msgid "Generate and send now"
 msgstr "Generar y enviar ahora"
 
-#: admin/views/digest.php:39
-#: admin/views/digest.php:48
-msgid "Shareable version"
-msgstr "Versión para compartir"
+#. translators: 1: length, 2: limit.
+#: admin/views/digest.php:56
+#, php-format
+msgid "The message is %1$s characters long, over %2$s: it may be too long to read comfortably in one message."
+msgstr "El mensaje tiene %1$s caracteres, más de %2$s: puede ser demasiado largo para leerlo cómodamente de una vez."
 
-#: admin/views/digest.php:42
-msgid "Nothing to share today."
-msgstr "Hoy no hay nada que compartir."
+#. translators: %s: number of characters.
+#: admin/views/digest.php:77
+#, php-format
+msgid "%s characters"
+msgstr "%s caracteres"
 
-#: admin/views/digest.php:57
-#: admin/views/digest.php:66
-msgid "Leaders’ version"
-msgstr "Versión de líderes"
-
-#: admin/views/digest.php:60
-msgid "Nothing for the leaders today."
-msgstr "Hoy no hay nada para los líderes."
-
-#: admin/views/digest.php:78
+#: admin/views/digest.php:83
 msgid "Recent hour alerts"
 msgstr "Avisos de hora recientes"
 
-#: admin/views/digest.php:86
+#: admin/views/digest.php:91
 msgid "Hour alert"
 msgstr "Aviso de hora"
 
@@ -727,102 +713,66 @@ msgstr "Eventos de mañana"
 msgid "You are not assigned to any group yet. Ask the site administrator."
 msgstr "Todavía no estás asignado a ningún grupo. Pídeselo al administrador del sitio."
 
-#: admin/views/groups.php:54
+#: admin/views/groups.php:53
 #: admin/views/intention-edit.php:322
 #: admin/views/intentions.php:42
 #: includes/class-app.php:365
 msgid "Add intention"
 msgstr "Añadir intención"
 
-#: admin/views/groups.php:64
+#: admin/views/groups.php:63
 msgid "Manage groups"
 msgstr "Gestionar grupos"
 
-#: admin/views/groups.php:78
+#: admin/views/groups.php:77
 #: admin/views/intention-edit.php:142
 #: includes/class-app.php:328
 msgid "Name"
 msgstr "Nombre"
 
-#: admin/views/groups.php:79
+#: admin/views/groups.php:78
 msgid "Internal description"
 msgstr "Descripción interna"
 
-#: admin/views/groups.php:81
+#: admin/views/groups.php:80
 msgid "Leaders"
 msgstr "Líderes"
 
-#: admin/views/groups.php:83
+#: admin/views/groups.php:82
 msgid "No users can lead groups yet. Give someone the “Prayer leader” role first."
 msgstr "Todavía nadie puede dirigir grupos. Da antes a alguien el rol «Líder de oración»."
 
-#: admin/views/groups.php:89
+#: admin/views/groups.php:88
 msgid "Save group"
 msgstr "Guardar grupo"
 
-#: admin/views/groups.php:89
+#: admin/views/groups.php:88
 msgid "Create group"
 msgstr "Crear grupo"
 
-#: admin/views/groups.php:94
+#: admin/views/groups.php:93
 msgid "Each group is independent: its own leaders, form, index and digest. No data crosses from one group to another."
 msgstr "Cada grupo es independiente: sus líderes, su formulario, su índice y su resumen. Ningún dato pasa de un grupo a otro."
 
-#: admin/views/groups.php:101
+#: admin/views/groups.php:100
 msgid "Archived"
 msgstr "Archivado"
 
-#: admin/views/groups.php:109
+#: admin/views/groups.php:108
 msgid "Archive"
 msgstr "Archivar"
 
-#: admin/views/groups.php:113
+#: admin/views/groups.php:112
 msgid "Restore"
 msgstr "Restaurar"
 
-#: admin/views/groups.php:117
+#: admin/views/groups.php:116
 msgid "Delete group and all its intentions"
 msgstr "Eliminar el grupo y todas sus intenciones"
 
-#: admin/views/groups.php:124
+#: admin/views/groups.php:123
 msgid "New group"
 msgstr "Nuevo grupo"
-
-#: admin/views/index.php:18
-msgid "Active and in-review intentions, formatted for WhatsApp. Copy it and paste it into the group."
-msgstr "Intenciones activas y en revisión, con formato de WhatsApp. Cópialo y pégalo en el grupo."
-
-#. translators: %s: link to the leaders' app.
-#: admin/views/index.php:23
-#, php-format
-msgid "On your phone: %s (you can add it to the home screen)."
-msgstr "En el móvil: %s (puedes añadirla a la pantalla de inicio)."
-
-#: admin/views/index.php:24
-msgid "open the leaders’ app"
-msgstr "abre la app de líderes"
-
-#. translators: 1: length, 2: limit.
-#: admin/views/index.php:35
-#, php-format
-msgid "The index is %1$s characters long, over %2$s: it may be too long to read comfortably in one message."
-msgstr "El índice tiene %1$s caracteres, más de %2$s: puede ser demasiado largo para leerlo cómodamente en un solo mensaje."
-
-#. translators: %s: number of characters.
-#: admin/views/index.php:58
-#, php-format
-msgid "%s characters"
-msgstr "%s caracteres"
-
-#: admin/views/index.php:62
-#: admin/views/index.php:69
-#: includes/class-app.php:377
-msgid "Monthly list"
-msgstr "Lista mensual"
-
-#: admin/views/index.php:63
-msgid "Every active intention, by topic, to read at the monthly adoration."
-msgstr "Todas las intenciones activas, por temas, para leer en la adoración mensual."
 
 #: admin/views/intention-edit.php:60
 msgid "Back to the list"
@@ -1453,6 +1403,10 @@ msgstr "Intención existente"
 msgid "Merge as duplicate"
 msgstr "Fusionar como duplicado"
 
+#: admin/views/monthly.php:15
+msgid "Every active intention, by topic, to read at the monthly adoration."
+msgstr "Todas las intenciones activas, por temas, para leer en la adoración mensual."
+
 #: admin/views/partials/close-form.php:16
 #: includes/class-app.php:306
 msgid "Close as"
@@ -1472,6 +1426,22 @@ msgstr "Resumen de la acción de gracias"
 #: includes/class-app.php:307
 msgid "Close"
 msgstr "Cerrar"
+
+#: admin/views/partials/digest-variants.php:16
+msgid "Shareable version"
+msgstr "Versión para compartir"
+
+#: admin/views/partials/digest-variants.php:16
+msgid "Nothing to share today."
+msgstr "Hoy no hay nada que compartir."
+
+#: admin/views/partials/digest-variants.php:17
+msgid "Leaders’ version"
+msgstr "Versión de líderes"
+
+#: admin/views/partials/digest-variants.php:17
+msgid "Nothing for the leaders today."
+msgstr "Hoy no hay nada para los líderes."
 
 #: admin/views/partials/intention-facts.php:24
 msgid "Themselves"
@@ -1647,7 +1617,7 @@ msgid "Prayer"
 msgstr "Oración"
 
 #: includes/class-app.php:283
-#: includes/class-digest-composer.php:103
+#: includes/class-digest-composer.php:132
 msgid "Today"
 msgstr "Hoy"
 
@@ -1732,7 +1702,6 @@ msgid "Anniversary of his death"
 msgstr "Aniversario de su fallecimiento"
 
 #: includes/class-app.php:358
-#: includes/class-digest-composer.php:107
 msgid "Tomorrow"
 msgstr "Mañana"
 
@@ -1753,7 +1722,6 @@ msgid "Full text"
 msgstr "Texto completo"
 
 #: includes/class-app.php:364
-#: includes/class-digest-composer.php:106
 msgid "High priority"
 msgstr "Prioridad alta"
 
@@ -1791,6 +1759,10 @@ msgstr "Pide"
 #: includes/class-app.php:376
 msgid "Daily"
 msgstr "Diario"
+
+#: includes/class-app.php:377
+msgid "Monthly list"
+msgstr "Lista mensual"
 
 #: includes/class-app.php:379
 msgid "To ask"
@@ -1865,47 +1837,54 @@ msgstr "La intención no existe."
 msgid "The comment does not exist."
 msgstr "El comentario no existe."
 
-#: includes/class-digest-composer.php:64
-msgid "Nothing new today. Let us keep praying for all our intentions."
-msgstr "Hoy no hay novedades. Sigamos rezando por todas nuestras intenciones."
-
-#: includes/class-digest-composer.php:104
+#: includes/class-digest-composer.php:133
 msgid "Without an hour alert"
 msgstr "Sin aviso de hora"
 
-#: includes/class-digest-composer.php:105
-msgid "News"
-msgstr "Novedades"
+#: includes/class-digest-composer.php:134
+msgid "Pending in the panel"
+msgstr "Pendiente en el panel"
 
-#: includes/class-digest-composer.php:108
-msgid "Recently departed"
-msgstr "Difuntos recientes"
+#: includes/class-digest-composer.php:135
+msgctxt "section of the leaders’ digest"
+msgid "To ask"
+msgstr "Por preguntar"
 
-#: includes/class-digest-composer.php:109
+#: includes/class-digest-composer.php:136
+msgid "News of the last 24 hours"
+msgstr "Novedades de las últimas 24 h"
+
+#: includes/class-digest-composer.php:137
 msgid "Leaders only"
 msgstr "Solo para líderes"
 
+#. translators: 1: who to ask, with their phone, 2: review date.
+#: includes/class-digest-composer.php:198
+#, php-format
+msgid "ask %1$s, review on %2$s"
+msgstr "preguntar a %1$s, revisión el %2$s"
+
+#. translators: %s: who to ask, with their phone.
+#: includes/class-digest-composer.php:200
+#, php-format
+msgid "ask %s"
+msgstr "preguntar a %s"
+
 #. translators: 1: key date label (funeral, appointment…), 2: person.
-#: includes/class-digest-composer.php:195
+#: includes/class-digest-composer.php:235
 #, php-format
 msgctxt "key date label and person"
 msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
 
-#. translators: %s: person.
-#: includes/class-digest-composer.php:206
-#, php-format
-msgid "Anniversary: %s"
-msgstr "Aniversario: %s"
-
 #. translators: 1: number of pending intentions, 2: link to the panel.
-#: includes/class-digest-composer.php:322
+#: includes/class-digest-composer.php:341
 #, php-format
 msgid "Pending moderation: %1$d – %2$s"
 msgstr "Pendientes de moderar: %1$d – %2$s"
 
 #. translators: 1: number of intentions in review, 2: link to the panel.
-#: includes/class-digest-composer.php:327
+#: includes/class-digest-composer.php:346
 #, php-format
 msgid "Reviews due: %1$d – %2$s"
 msgstr "Revisiones vencidas: %1$d – %2$s"
@@ -2075,85 +2054,97 @@ msgstr "l, j \d\e F \d\e Y"
 msgid "The group needs a name."
 msgstr "El grupo necesita un nombre."
 
-#: includes/class-index-composer.php:92
+#: includes/class-index-composer.php:58
 msgid "There are no active intentions."
 msgstr "No hay intenciones activas."
 
-#: includes/class-index-composer.php:181
+#. translators: %s: who asks for the intention, with their phone when known ("Luis Gómez · +34600111222").
+#: includes/class-index-composer.php:139
+#, php-format
+msgid "asked by %s"
+msgstr "pide %s"
+
+#. translators: 1: the departed person, 2: year of the death.
+#: includes/class-index-composer.php:177
+#, php-format
+msgid "%1$s: on the anniversary of their death († %2$s)"
+msgstr "%1$s: en el aniversario de su muerte († %2$s)"
+
+#: includes/class-index-composer.php:271
 msgid "For those who study, sit exams or look for work"
 msgstr "Por quienes estudian, se examinan, opositan o buscan trabajo"
 
 #. translators: %s: the member, as he is called ("N.H. Ramón").
-#: includes/class-index-composer.php:216
+#: includes/class-index-composer.php:337
 #, php-format
 msgid "%s: on his birthday"
 msgstr "%s: en su cumpleaños"
 
 #. translators: 1: members, separated by commas ("N.H. Ramón, N.H. Teo"), 2: the last member ("N.H. Luis").
-#: includes/class-index-composer.php:220
+#: includes/class-index-composer.php:342
 #, php-format
 msgid "%1$s and %2$s: on their birthday"
 msgstr "%1$s y %2$s: en su cumpleaños"
 
 #. translators: 1: the member, as he is called ("N.H. Juan"), 2: year of his death.
-#: includes/class-index-composer.php:225
+#: includes/class-index-composer.php:363
 #, php-format
 msgid "%1$s: on the anniversary of his death († %2$s)"
 msgstr "%1$s: en el aniversario de su fallecimiento († %2$s)"
 
-#: includes/class-index-composer.php:324
+#: includes/class-index-composer.php:461
 msgid "Upcoming events"
 msgstr "Eventos próximos"
 
-#: includes/class-index-composer.php:325
-#: includes/class-index-composer.php:331
+#: includes/class-index-composer.php:462
+#: includes/class-index-composer.php:468
 msgid "For our departed"
 msgstr "Por nuestros difuntos"
 
-#: includes/class-index-composer.php:326
+#: includes/class-index-composer.php:463
 msgid "The sick and difficult situations"
 msgstr "Enfermos y situaciones difíciles"
 
-#: includes/class-index-composer.php:327
+#: includes/class-index-composer.php:464
 #: includes/class-lifecycle.php:41
 msgid "Thanksgiving"
 msgstr "Acción de gracias"
 
-#: includes/class-index-composer.php:328
+#: includes/class-index-composer.php:465
 msgid "Especially"
 msgstr "Especialmente"
 
-#: includes/class-index-composer.php:329
+#: includes/class-index-composer.php:466
 msgid "Also for"
 msgstr "También por"
 
-#: includes/class-index-composer.php:330
+#: includes/class-index-composer.php:467
 msgid "We give thanks"
 msgstr "Damos gracias"
 
-#: includes/class-index-composer.php:332
+#: includes/class-index-composer.php:469
 msgid "For the health of"
 msgstr "Por la salud de"
 
-#: includes/class-index-composer.php:333
+#: includes/class-index-composer.php:470
 msgctxt "heading of the current affairs section"
 msgid "We also pray for"
 msgstr "Y también pedimos por"
 
-#: includes/class-index-composer.php:334
+#: includes/class-index-composer.php:471
 msgid "For the sick"
 msgstr "Por los enfermos"
 
-#: includes/class-index-composer.php:335
+#: includes/class-index-composer.php:472
 msgid "Studies, exams and job interviews"
 msgstr "Estudios, exámenes, oposiciones y entrevistas de trabajo"
 
-#: includes/class-index-composer.php:336
+#: includes/class-index-composer.php:473
 #: includes/class-intentions.php:91
 msgid "Economic or legal problems"
 msgstr "Problemas económicos o legales"
 
-#: includes/class-index-composer.php:337
+#: includes/class-index-composer.php:474
 msgid "Other intentions"
 msgstr "Otras intenciones"
 
@@ -2445,26 +2436,21 @@ msgctxt "Base of the public form URL"
 msgid "prayer-requests"
 msgstr "peticiones"
 
-#: includes/class-settings.php:109
+#: includes/class-settings.php:108
 msgid "Thank you. We have received your request and will pray for it."
 msgstr "Gracias. Hemos recibido tu petición y rezaremos por ella."
 
 #. translators: {date} is replaced with the day and month.
-#: includes/class-settings.php:111
+#: includes/class-settings.php:110
 msgid "🙏 *Active intentions* – {date}"
 msgstr "🙏 *Intenciones activas* – {date}"
 
 #. translators: {long_date} is replaced with the full date.
-#: includes/class-settings.php:114
+#: includes/class-settings.php:113
 msgid ""
 "*Prayer intentions of the month*\n"
 "_{long_date}_"
 msgstr "*Intenciones del mes*\n_{long_date}_"
-
-#. translators: {date} is replaced with the day and month.
-#: includes/class-settings.php:119
-msgid "🙏 *Prayer digest* – {date}"
-msgstr "🙏 *Resumen de oración* – {date}"
 
 #: includes/class-updates.php:34
 msgid "The update is empty."
