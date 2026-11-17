@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 26.11.40
+Stable tag: 1.0.2611170
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,13 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611170 =
+* New version numbers: MAJOR.MINOR.YYMMDDN (SemVer, with the release date and the number of the release that day as the patch). This is the first one; it follows 26.11.41.
+* Data protection for sites that serve several parishes or groups: each group has its own data controller, contact and, optionally, its own privacy policy, set by the administrator in the groups page; the global ones are only the default.
+* New global settings for the provider of the service (data processor): name, tax ID, address, email and subprocessors. The form then says that the provider offers the tool free of charge to the group's controller as data processor.
+* Each group has its data processing agreement (art. 28 of the GDPR) ready to copy, with both parties named, and the date it was accepted. Until a group has its controller and accepted agreement, its panel says so.
+* The suggested privacy policy describes the site as a platform run by the provider for each controller, with the subprocessors.
 
 = 26.11.40 =
 * Data protection (GDPR): the form gives the basic information (controller, purpose, legal basis, recipients and rights) and asks for three things before sending: explicit consent for health and belief data and for sharing a discreet summary with the group, a statement about the person prayed for, and a minimum age (14 by default).

@@ -91,7 +91,9 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
   their email or phone in any format, exported and erased
   (`DFXPRAY_Privacy`); a new personal field goes into the export too. The
   suggested privacy policy (`DFXPRAY_Privacy::policy_text()`) must describe
-  every new use, recipient or service.
+  every new use, recipient or service. Each group has its own controller
+  (set by administrators only, `save_group_privacy()`); the site's provider
+  is a processor for each of them, with a processing agreement per group.
 - **The shareable digest is the app's message.** The daily and monthly
   digests share exactly what the leaders' app shows
   (`DFXPRAY_Index_Composer::compose()`); anything only for the leaders (who
@@ -133,8 +135,12 @@ specification's own index example, character for character, in Spanish.
 
 1. Bump the version in `dfx-prayer-intentions.php` (header and
    `DFXPRAY_VERSION`), `blocks/form/block.json`, `blocks/form/editor.asset.php`
-   and `readme.txt` (Stable tag and changelog). Versions follow the DFX
-   family: `YY.MM.DD`.
+   and `readme.txt` (Stable tag and changelog). Versions are
+   `MAJOR.MINOR.YYMMDDN`: SemVer, where MAJOR changes when something breaks
+   compatibility, MINOR with new features, and the patch is the release date
+   plus the number of the release that day (0–9): `1.0.2611170`,
+   `1.0.2611171`, then `1.0.2611180` the next day. `bin/build-zip.sh` and
+   `ReleasePackageTest` check the format.
 2. Everything green (see ground rule 4).
 3. `bin/build-zip.sh`, then run Plugin Check on the unpacked zip in the E2E
    site (`wp plugin install plugin-check`, `wp plugin check dfx-prayer-intentions`).

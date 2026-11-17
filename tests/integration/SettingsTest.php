@@ -144,9 +144,43 @@ class SettingsTest extends DFXPRAY_Test_Case {
 		$this->assertNotContains( 'turnstile_secret', $keys );
 		$this->assertContains( 'notice_full_text', $keys );
 		$this->assertContains( 'digest_phones', $keys );
-		foreach ( array( 'privacy_controller', 'privacy_contact', 'consent_min_age' ) as $key ) {
+		foreach ( array( 'privacy_controller', 'privacy_contact', 'privacy_policy_url', 'dpa_accepted_on', 'consent_min_age', 'provider_name', 'provider_tax_id', 'provider_address', 'provider_email', 'subprocessors' ) as $key ) {
 			$this->assertNotContains( $key, $keys );
 		}
+	}
+
+	/**
+	 * Each group has its own controller, contact, policy and date of the
+	 * processing agreement, set apart from the leaders' settings; the global
+	 * controller is only the default.
+	 */
+	public function test_group_privacy_settings(): void {
+		$settings = DFXPRAY_Settings::get_instance();
+		$group    = DFXPRAY_Groups::get_instance()->create( array( 'name' => 'A' ) );
+		$other    = DFXPRAY_Groups::get_instance()->create( array( 'name' => 'B' ) );
+		$settings->save_global( array( 'privacy_controller' => 'Default' ) );
+
+		$settings->save_group_privacy(
+			$group,
+			array(
+				'privacy_controller' => 'Parroquia A',
+				'privacy_contact'    => 'a@example.org',
+				'privacy_policy_url' => 'javascript:alert(1)',
+				'dpa_accepted_on'    => '2026-11-17',
+				'digest_time'        => '05:00',
+			)
+		);
+		$settings->save_group( $group, array( 'privacy_controller' => 'Hijacked by a leader' ) );
+
+		$this->assertSame( 'Parroquia A', $settings->get( 'privacy_controller', $group ) );
+		$this->assertSame( 'a@example.org', $settings->get( 'privacy_contact', $group ) );
+		$this->assertSame( '', $settings->get( 'privacy_policy_url', $group ) );
+		$this->assertSame( '2026-11-17', $settings->get( 'dpa_accepted_on', $group ) );
+		$this->assertSame( '07:00', $settings->get( 'digest_time', $group ) );
+		$this->assertSame( 'Default', $settings->get( 'privacy_controller', $other ) );
+
+		$settings->save_group_privacy( $group, array( 'dpa_accepted_on' => 'yesterday' ) );
+		$this->assertSame( '', $settings->get( 'dpa_accepted_on', $group ) );
 	}
 
 	/**

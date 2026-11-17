@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.39\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.40\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-17T11:13:45+00:00\n"
+"POT-Creation-Date: 2026-11-17T11:52:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -59,124 +59,124 @@ msgstr ""
 msgid "The group does not exist."
 msgstr ""
 
-#: admin/class-admin-actions.php:572
+#: admin/class-admin-actions.php:576
 msgid "Write an email or a phone."
 msgstr ""
 
-#: admin/class-admin-actions.php:657
+#: admin/class-admin-actions.php:661
 msgid "Intention approved."
 msgstr ""
 
-#: admin/class-admin-actions.php:658
+#: admin/class-admin-actions.php:662
 msgid "Intention discarded."
 msgstr ""
 
-#: admin/class-admin-actions.php:659
+#: admin/class-admin-actions.php:663
 msgid "Duplicate merged."
 msgstr ""
 
-#: admin/class-admin-actions.php:660
+#: admin/class-admin-actions.php:664
 msgid "Intention saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:661
+#: admin/class-admin-actions.php:665
 msgid "Comment added."
 msgstr ""
 
-#: admin/class-admin-actions.php:662
+#: admin/class-admin-actions.php:666
 msgid "Comment updated."
 msgstr ""
 
-#: admin/class-admin-actions.php:663
+#: admin/class-admin-actions.php:667
 msgid "Comment deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:664
+#: admin/class-admin-actions.php:668
 msgid "Comment turned into an update."
 msgstr ""
 
-#: admin/class-admin-actions.php:665
+#: admin/class-admin-actions.php:669
 msgid "Update added."
 msgstr ""
 
-#: admin/class-admin-actions.php:666
+#: admin/class-admin-actions.php:670
 msgid "Priority changed."
 msgstr ""
 
-#: admin/class-admin-actions.php:667
+#: admin/class-admin-actions.php:671
 msgid "Review postponed."
 msgstr ""
 
-#: admin/class-admin-actions.php:668
+#: admin/class-admin-actions.php:672
 msgid "Acknowledgement marked as sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:669
+#: admin/class-admin-actions.php:673
 msgid "Intention moved to the other group."
 msgstr ""
 
-#: admin/class-admin-actions.php:670
+#: admin/class-admin-actions.php:674
 msgid "Intention kept active."
 msgstr ""
 
-#: admin/class-admin-actions.php:671
+#: admin/class-admin-actions.php:675
 msgid "Intention closed."
 msgstr ""
 
-#: admin/class-admin-actions.php:672
+#: admin/class-admin-actions.php:676
 msgid "Intention reopened."
 msgstr ""
 
-#: admin/class-admin-actions.php:673
+#: admin/class-admin-actions.php:677
 msgid "Member saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:674
+#: admin/class-admin-actions.php:678
 msgid "Member deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:675
-#: admin/class-admin-actions.php:683
+#: admin/class-admin-actions.php:679
+#: admin/class-admin-actions.php:687
 msgid "Settings saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:676
+#: admin/class-admin-actions.php:680
 msgid "The form has a new address. The old one no longer works."
 msgstr ""
 
-#: admin/class-admin-actions.php:677
+#: admin/class-admin-actions.php:681
 msgid "Test message sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:678
+#: admin/class-admin-actions.php:682
 msgid "Digest generated and sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:679
+#: admin/class-admin-actions.php:683
 msgid "Group saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:680
+#: admin/class-admin-actions.php:684
 msgid "Group archived."
 msgstr ""
 
-#: admin/class-admin-actions.php:681
+#: admin/class-admin-actions.php:685
 msgid "Group restored."
 msgstr ""
 
-#: admin/class-admin-actions.php:682
+#: admin/class-admin-actions.php:686
 msgid "Group deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:684
+#: admin/class-admin-actions.php:688
 msgid "Personal data erased."
 msgstr ""
 
-#: admin/class-admin-actions.php:685
+#: admin/class-admin-actions.php:689
 msgid "Thank you."
 msgstr ""
 
-#: admin/class-admin-actions.php:688
+#: admin/class-admin-actions.php:692
 msgid "Done."
 msgstr ""
 
@@ -188,7 +188,7 @@ msgstr ""
 #: includes/class-app.php:282
 #: includes/class-privacy.php:48
 #: includes/class-privacy.php:63
-#: includes/class-privacy.php:128
+#: includes/class-privacy.php:222
 msgid "Prayer intentions"
 msgstr ""
 
@@ -249,439 +249,471 @@ msgstr ""
 msgid "https://davefx.com/en/wordpress-plugins/"
 msgstr ""
 
-#: admin/class-admin.php:198
+#: admin/class-admin.php:199
 msgid "Group sections"
 msgstr ""
 
-#: admin/class-admin.php:224
+#: admin/class-admin.php:225
 msgid "As a leader of a group you will learn very sensitive data: illnesses, deaths, family situations. You have a duty of confidentiality: do not share anything outside the panel, except the discreet summary for the group, and keep this duty also when you stop being a leader."
 msgstr ""
 
-#: admin/class-admin.php:226
+#: admin/class-admin.php:227
 msgid "Understood"
 msgstr ""
 
-#: admin/class-admin.php:260
+#: admin/class-admin.php:240
+msgid "Data protection: this group still lacks its data controller or the accepted processing agreement. The administrator of the site records them in the groups page."
+msgstr ""
+
+#: admin/class-admin.php:274
 msgid "You are not allowed to see this."
 msgstr ""
 
-#: admin/class-admin.php:363
+#: admin/class-admin.php:377
 #: includes/class-app.php:289
 msgid "Copied!"
 msgstr ""
 
-#: admin/class-admin.php:364
+#: admin/class-admin.php:378
 #: admin/views/partials/copy-box.php:20
 #: includes/class-app.php:288
 msgid "Copy"
 msgstr ""
 
-#: admin/class-admin.php:365
+#: admin/class-admin.php:379
 msgid "This cannot be undone. Continue?"
 msgstr ""
 
-#: admin/class-admin.php:437
+#: admin/class-admin.php:451
 msgid "Prayer leader"
 msgstr ""
 
-#: admin/class-admin.php:450
+#: admin/class-admin.php:464
 msgid "One-off events: days after the date"
 msgstr ""
 
-#: admin/class-admin.php:451
+#: admin/class-admin.php:465
 msgid "After that, the intention goes to review."
 msgstr ""
 
-#: admin/class-admin.php:455
+#: admin/class-admin.php:469
 msgid "Deceased: days after the death"
 msgstr ""
 
-#: admin/class-admin.php:459
+#: admin/class-admin.php:473
 msgid "Daily message: departed during (days)"
 msgstr ""
 
-#: admin/class-admin.php:460
+#: admin/class-admin.php:474
 msgid "The monthly list keeps them for the whole deceased deadline."
 msgstr ""
 
-#: admin/class-admin.php:464
+#: admin/class-admin.php:478
 msgid "Close the deceased when that time is over"
 msgstr ""
 
-#: admin/class-admin.php:465
+#: admin/class-admin.php:479
 msgid "Instead of waiting in review. Those whose anniversary is remembered are kept."
 msgstr ""
 
-#: admin/class-admin.php:469
+#: admin/class-admin.php:483
 msgid "Ongoing situations: review every (days)"
 msgstr ""
 
-#: admin/class-admin.php:473
+#: admin/class-admin.php:487
 msgid "Thanksgiving: days"
 msgstr ""
 
-#: admin/class-admin.php:477
+#: admin/class-admin.php:491
 msgid "Daily message: news go first during (days)"
 msgstr ""
 
-#: admin/class-admin.php:478
+#: admin/class-admin.php:492
 msgid "What was registered the day before (and that morning) goes in “Especially”. 0: never."
 msgstr ""
 
-#: admin/class-admin.php:482
+#: admin/class-admin.php:496
 msgid "Daily message: pray for the members on their birthday"
 msgstr ""
 
-#: admin/class-admin.php:483
+#: admin/class-admin.php:497
 msgid "They open “Especially”, and so do the members who have died, on the anniversary of their death. The dates are kept in the Members tab."
 msgstr ""
 
-#: admin/class-admin.php:487
+#: admin/class-admin.php:501
 msgid "Daily message: thanksgivings during (days)"
 msgstr ""
 
-#: admin/class-admin.php:488
+#: admin/class-admin.php:502
 msgid "Counted from the day of the good news: 1 means only the next message. The monthly list keeps them."
 msgstr ""
 
-#: admin/class-admin.php:492
+#: admin/class-admin.php:506
 msgid "Monthly list: thanksgivings of the last (days)"
 msgstr ""
 
-#: admin/class-admin.php:493
+#: admin/class-admin.php:507
 msgid "Also those already closed, to give thanks again at the monthly adoration."
 msgstr ""
 
-#: admin/class-admin.php:497
+#: admin/class-admin.php:511
 msgid "Close thanksgivings when their days are over"
 msgstr ""
 
-#: admin/class-admin.php:501
+#: admin/class-admin.php:515
 msgid "“Still current”: days until the next review"
 msgstr ""
 
-#: admin/class-admin.php:505
+#: admin/class-admin.php:519
 msgid "Message after sending the form"
 msgstr ""
 
-#: admin/class-admin.php:509
+#: admin/class-admin.php:523
 msgid "Index header"
 msgstr ""
 
-#: admin/class-admin.php:510
+#: admin/class-admin.php:524
 msgid "{date} is replaced with the date, and {long_date} with the date and weekday in full."
 msgstr ""
 
-#: admin/class-admin.php:514
+#: admin/class-admin.php:528
 msgid "Monthly list header"
 msgstr ""
 
-#: admin/class-admin.php:515
+#: admin/class-admin.php:529
 msgid "Placeholders: {date}, {long_date}."
 msgstr ""
 
-#: admin/class-admin.php:519
+#: admin/class-admin.php:533
 msgid "Index footer"
 msgstr ""
 
-#: admin/class-admin.php:520
+#: admin/class-admin.php:534
 msgid "For example, a short prayer."
 msgstr ""
 
-#: admin/class-admin.php:524
+#: admin/class-admin.php:538
 msgid "Emojis in the index sections"
 msgstr ""
 
-#: admin/class-admin.php:528
+#: admin/class-admin.php:542
 msgid "Index layout"
 msgstr ""
 
-#: admin/class-admin.php:530
+#: admin/class-admin.php:544
 msgid "By kind: events, the departed, ongoing situations, thanksgiving"
 msgstr ""
 
-#: admin/class-admin.php:531
+#: admin/class-admin.php:545
 msgid "Prayer proposals: especially, also for, we give thanks, the recently departed"
 msgstr ""
 
-#: admin/class-admin.php:536
+#: admin/class-admin.php:550
 msgid "Prefix for members of the group"
 msgstr ""
 
-#: admin/class-admin.php:537
+#: admin/class-admin.php:551
 msgid "Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix."
 msgstr ""
 
-#: admin/class-admin.php:541
+#: admin/class-admin.php:555
 msgid "Include recent internal comments in the leaders’ digest"
 msgstr ""
 
-#: admin/class-admin.php:545
+#: admin/class-admin.php:559
 msgid "Include the requesters’ phones in the leaders’ digest"
 msgstr ""
 
-#: admin/class-admin.php:549
+#: admin/class-admin.php:563
 msgid "Include the full text of new requests in the email notice"
 msgstr ""
 
-#: admin/class-admin.php:550
+#: admin/class-admin.php:564
 msgid "Only by email, never in other channels. Without it, leaders read the text in the panel."
 msgstr ""
 
-#: admin/class-admin.php:554
+#: admin/class-admin.php:568
 msgid "Daily digest at"
 msgstr ""
 
-#: admin/class-admin.php:558
+#: admin/class-admin.php:572
 msgid "When there is nothing new"
 msgstr ""
 
-#: admin/class-admin.php:560
+#: admin/class-admin.php:574
 msgid "Send a short version"
 msgstr ""
 
-#: admin/class-admin.php:561
+#: admin/class-admin.php:575
 msgid "Send nothing"
 msgstr ""
 
-#: admin/class-admin.php:566
+#: admin/class-admin.php:580
 msgid "Hour alerts: minutes before"
 msgstr ""
 
-#: admin/class-admin.php:570
+#: admin/class-admin.php:584
 msgid "Second alert at the exact time"
 msgstr ""
 
-#: admin/class-admin.php:574
+#: admin/class-admin.php:588
 msgid "Quiet hours from"
 msgstr ""
 
-#: admin/class-admin.php:575
+#: admin/class-admin.php:589
 msgid "Alerts are never sent in quiet hours. The digest before them lists those events; if none did, an early alert goes out just before quiet hours begin."
 msgstr ""
 
-#: admin/class-admin.php:579
+#: admin/class-admin.php:593
 msgid "Quiet hours until"
 msgstr ""
 
-#: admin/class-admin.php:583
+#: admin/class-admin.php:597
 msgid "Delete closed and discarded intentions after (days)"
 msgstr ""
 
-#: admin/class-admin.php:584
+#: admin/class-admin.php:598
 msgid "Including their updates, comments and history."
 msgstr ""
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:602
 msgid "Country code for phone numbers"
 msgstr ""
 
-#: admin/class-admin.php:589
+#: admin/class-admin.php:603
 msgid "Added to numbers written without one, for the WhatsApp links. 34 is Spain."
 msgstr ""
 
-#: admin/class-admin.php:593
+#: admin/class-admin.php:607
 msgid "Beginning of the form addresses"
 msgstr ""
 
-#: admin/class-admin.php:594
+#: admin/class-admin.php:608
 msgid "Applies to new addresses. A random part is always added."
 msgstr ""
 
-#: admin/class-admin.php:598
+#: admin/class-admin.php:612
 msgid "Maximum requests per hour from one connection"
 msgstr ""
 
-#: admin/class-admin.php:602
+#: admin/class-admin.php:616
 msgid "Cloudflare Turnstile site key"
 msgstr ""
 
-#: admin/class-admin.php:603
+#: admin/class-admin.php:617
 msgid "Optional. Leave both keys empty to disable it."
 msgstr ""
 
-#: admin/class-admin.php:607
+#: admin/class-admin.php:621
 msgid "Cloudflare Turnstile secret key"
 msgstr ""
 
-#: admin/class-admin.php:611
+#: admin/class-admin.php:625
 msgid "Delete all data when the plugin is uninstalled"
 msgstr ""
 
-#: admin/class-admin.php:615
-msgid "Data controller"
+#: admin/class-admin.php:629
+msgid "Default data controller"
 msgstr ""
 
-#: admin/class-admin.php:616
-msgid "Who is responsible for the data, e.g. the parish. Empty: the name of the site."
+#: admin/class-admin.php:630
+msgid "Each group sets its own in the groups page; this one is for groups that have none. Empty: the name of the site."
 msgstr ""
 
-#: admin/class-admin.php:620
-msgid "Contact for data protection"
+#: admin/class-admin.php:634
+msgid "Default contact for data protection"
 msgstr ""
 
-#: admin/class-admin.php:621
+#: admin/class-admin.php:635
 msgid "An email or address where people can exercise their rights."
 msgstr ""
 
-#: admin/class-admin.php:625
-msgid "Minimum age to send requests"
-msgstr ""
-
-#: admin/class-admin.php:626
-msgid "Age to consent on one’s own: 14 in Spain; 13 to 16 elsewhere in the EU."
-msgstr ""
-
 #: admin/class-admin.php:639
-msgid "Deadlines"
+msgid "Provider of the service (data processor)"
 msgstr ""
 
 #: admin/class-admin.php:640
-msgid "Texts"
+msgid "Who runs this site for the parishes and groups: a person, a company or an association. Empty: the site itself is the controller."
 msgstr ""
 
-#: admin/class-admin.php:641
-msgid "Schedules"
-msgstr ""
-
-#: admin/class-admin.php:642
-msgid "Personal data in messages"
+#: admin/class-admin.php:644
+msgid "Tax ID of the provider"
 msgstr ""
 
 #: admin/class-admin.php:648
+msgid "Address of the provider"
+msgstr ""
+
+#: admin/class-admin.php:652
+msgid "Email of the provider for data protection"
+msgstr ""
+
+#: admin/class-admin.php:656
+msgid "Subprocessors"
+msgstr ""
+
+#: admin/class-admin.php:657
+msgid "One per line: who and for what, and where, e.g. “Hosting: Hetzner (Germany)”."
+msgstr ""
+
+#: admin/class-admin.php:661
+msgid "Minimum age to send requests"
+msgstr ""
+
+#: admin/class-admin.php:662
+msgid "Age to consent on one’s own: 14 in Spain; 13 to 16 elsewhere in the EU."
+msgstr ""
+
+#: admin/class-admin.php:675
+msgid "Deadlines"
+msgstr ""
+
+#: admin/class-admin.php:676
+msgid "Texts"
+msgstr ""
+
+#: admin/class-admin.php:677
+msgid "Schedules"
+msgstr ""
+
+#: admin/class-admin.php:678
+msgid "Personal data in messages"
+msgstr ""
+
+#: admin/class-admin.php:684
 msgid "Data and protection"
 msgstr ""
 
-#: admin/class-admin.php:664
+#: admin/class-admin.php:700
 msgid "Request received from the form"
 msgstr ""
 
-#: admin/class-admin.php:665
+#: admin/class-admin.php:701
 msgid "Intention added"
 msgstr ""
 
-#: admin/class-admin.php:666
+#: admin/class-admin.php:702
 msgid "Approved"
 msgstr ""
 
-#: admin/class-admin.php:667
+#: admin/class-admin.php:703
 #: includes/class-lifecycle.php:70
 msgid "Discarded"
 msgstr ""
 
-#: admin/class-admin.php:668
+#: admin/class-admin.php:704
 msgid "Duplicate merged into it"
 msgstr ""
 
-#: admin/class-admin.php:669
+#: admin/class-admin.php:705
 msgid "Edited"
 msgstr ""
 
-#: admin/class-admin.php:670
+#: admin/class-admin.php:706
 msgid "Description changed"
 msgstr ""
 
-#: admin/class-admin.php:671
+#: admin/class-admin.php:707
 msgid "Review date reached"
 msgstr ""
 
-#: admin/class-admin.php:672
+#: admin/class-admin.php:708
 msgid "Kept active"
 msgstr ""
 
-#: admin/class-admin.php:673
+#: admin/class-admin.php:709
 msgid "Reopened"
 msgstr ""
 
-#: admin/class-admin.php:674
+#: admin/class-admin.php:710
 #: includes/class-lifecycle.php:69
 msgid "Closed"
 msgstr ""
 
-#: admin/class-admin.php:675
+#: admin/class-admin.php:711
 #: admin/views/intention-edit.php:72
 #: admin/views/intention-edit.php:454
 msgid "Acknowledgement sent"
 msgstr ""
 
-#: admin/class-admin.php:676
+#: admin/class-admin.php:712
 msgid "Moved to another group"
 msgstr ""
 
-#: admin/class-admin.php:677
+#: admin/class-admin.php:713
 msgid "Received from another group"
 msgstr ""
 
-#: admin/class-admin.php:678
+#: admin/class-admin.php:714
 msgid "Update added"
 msgstr ""
 
-#: admin/class-admin.php:679
+#: admin/class-admin.php:715
 msgid "Comment added"
 msgstr ""
 
-#: admin/class-admin.php:680
+#: admin/class-admin.php:716
 msgid "Comment edited"
 msgstr ""
 
-#: admin/class-admin.php:681
+#: admin/class-admin.php:717
 msgid "Comment deleted"
 msgstr ""
 
-#: admin/class-admin.php:682
+#: admin/class-admin.php:718
 msgid "Comment turned into an update"
 msgstr ""
 
-#: admin/class-admin.php:683
+#: admin/class-admin.php:719
 msgid "Delivered"
 msgstr ""
 
-#: admin/class-admin.php:684
+#: admin/class-admin.php:720
 msgid "Delivery failed"
 msgstr ""
 
-#: admin/class-admin.php:685
+#: admin/class-admin.php:721
 msgid "Group created"
 msgstr ""
 
-#: admin/class-admin.php:686
+#: admin/class-admin.php:722
 msgid "Group edited"
 msgstr ""
 
-#: admin/class-admin.php:687
+#: admin/class-admin.php:723
 msgid "Group archived"
 msgstr ""
 
-#: admin/class-admin.php:688
+#: admin/class-admin.php:724
 msgid "Group restored"
 msgstr ""
 
-#: admin/class-admin.php:689
+#: admin/class-admin.php:725
 msgid "Leaders changed"
 msgstr ""
 
-#: admin/class-admin.php:690
+#: admin/class-admin.php:726
 msgid "New form address"
 msgstr ""
 
-#: admin/class-admin.php:691
+#: admin/class-admin.php:727
 msgid "Settings saved"
 msgstr ""
 
-#: admin/class-admin.php:692
+#: admin/class-admin.php:728
 msgid "Global settings saved"
 msgstr ""
 
-#: admin/class-admin.php:693
+#: admin/class-admin.php:729
 msgid "Personal data erased on request"
 msgstr ""
 
-#: admin/class-admin.php:707
+#: admin/class-admin.php:743
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr ""
 
-#: admin/class-admin.php:708
+#: admin/class-admin.php:744
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr ""
@@ -828,7 +860,7 @@ msgstr ""
 #: admin/views/groups.php:77
 #: admin/views/intention-edit.php:142
 #: includes/class-app.php:328
-#: includes/class-privacy.php:142
+#: includes/class-privacy.php:236
 msgid "Name"
 msgstr ""
 
@@ -844,35 +876,69 @@ msgstr ""
 msgid "No users can lead groups yet. Give someone the “Prayer leader” role first."
 msgstr ""
 
-#: admin/views/groups.php:88
-msgid "Save group"
+#: admin/views/groups.php:90
+#: templates/form.php:133
+msgid "Data protection"
 msgstr ""
 
-#: admin/views/groups.php:88
-msgid "Create group"
+#: admin/views/groups.php:91
+msgid "Data controller"
+msgstr ""
+
+#: admin/views/groups.php:91
+msgid "e.g. the parish"
+msgstr ""
+
+#: admin/views/groups.php:92
+msgid "Contact for data protection"
 msgstr ""
 
 #: admin/views/groups.php:93
+msgid "Own privacy policy (URL, optional)"
+msgstr ""
+
+#: admin/views/groups.php:94
+msgid "Processing agreement accepted on"
+msgstr ""
+
+#: admin/views/groups.php:96
+msgid "Save group"
+msgstr ""
+
+#: admin/views/groups.php:96
+msgid "Create group"
+msgstr ""
+
+#: admin/views/groups.php:101
 msgid "Each group is independent: its own leaders, form, index and digest. No data crosses from one group to another."
 msgstr ""
 
-#: admin/views/groups.php:100
+#: admin/views/groups.php:108
 msgid "Archived"
 msgstr ""
 
-#: admin/views/groups.php:108
+#: admin/views/groups.php:114
+#: admin/views/groups.php:121
+msgid "Data processing agreement of this group"
+msgstr ""
+
+#: admin/views/groups.php:115
+msgid "Copy it, have it accepted or signed by the controller of the group, and record the date above."
+msgstr ""
+
+#: admin/views/groups.php:131
 msgid "Archive"
 msgstr ""
 
-#: admin/views/groups.php:112
+#: admin/views/groups.php:135
 msgid "Restore"
 msgstr ""
 
-#: admin/views/groups.php:116
+#: admin/views/groups.php:139
 msgid "Delete group and all its intentions"
 msgstr ""
 
-#: admin/views/groups.php:123
+#: admin/views/groups.php:146
 msgid "New group"
 msgstr ""
 
@@ -994,7 +1060,7 @@ msgstr ""
 #: admin/views/intentions.php:53
 #: admin/views/intentions.php:75
 #: admin/views/partials/intention-facts.php:28
-#: includes/class-privacy.php:116
+#: includes/class-privacy.php:210
 msgid "Kind"
 msgstr ""
 
@@ -1007,8 +1073,8 @@ msgstr ""
 #: admin/views/intention-edit.php:208
 #: admin/views/intentions.php:76
 #: includes/class-app.php:344
-#: includes/class-privacy.php:117
-#: templates/form.php:95
+#: includes/class-privacy.php:211
+#: templates/form.php:96
 msgid "Date"
 msgstr ""
 
@@ -1034,7 +1100,7 @@ msgid "Remember it every year"
 msgstr ""
 
 #: admin/views/intention-edit.php:192
-#: includes/class-privacy.php:118
+#: includes/class-privacy.php:212
 msgid "Key dates"
 msgstr ""
 
@@ -1067,7 +1133,7 @@ msgstr ""
 
 #: admin/views/intention-edit.php:229
 #: includes/class-app.php:319
-#: includes/class-privacy.php:120
+#: includes/class-privacy.php:214
 msgid "Summary"
 msgstr ""
 
@@ -1119,7 +1185,7 @@ msgstr ""
 #: admin/views/moderation.php:43
 #: admin/views/partials/intention-facts.php:35
 #: includes/class-app.php:391
-#: includes/class-privacy.php:121
+#: includes/class-privacy.php:215
 msgid "Discretion"
 msgstr ""
 
@@ -1191,7 +1257,7 @@ msgstr ""
 
 #: admin/views/intention-edit.php:326
 #: includes/class-app.php:301
-#: includes/class-privacy.php:124
+#: includes/class-privacy.php:218
 msgid "Updates"
 msgstr ""
 
@@ -1329,7 +1395,7 @@ msgstr ""
 
 #: admin/views/intentions.php:47
 #: admin/views/intentions.php:77
-#: includes/class-privacy.php:122
+#: includes/class-privacy.php:216
 msgid "Status"
 msgstr ""
 
@@ -1408,7 +1474,7 @@ msgstr ""
 #: admin/views/members.php:43
 #: admin/views/members.php:74
 #: includes/class-app.php:354
-#: includes/class-privacy.php:145
+#: includes/class-privacy.php:239
 msgid "Birthday"
 msgstr ""
 
@@ -1437,7 +1503,7 @@ msgid "He is then no longer mentioned on his birthday, and we pray especially fo
 msgstr ""
 
 #: admin/views/members.php:59
-#: includes/class-privacy.php:146
+#: includes/class-privacy.php:240
 msgid "Notes"
 msgstr ""
 
@@ -1458,8 +1524,8 @@ msgid "Member"
 msgstr ""
 
 #: admin/views/members.php:73
-#: includes/class-privacy.php:112
-#: includes/class-privacy.php:144
+#: includes/class-privacy.php:206
+#: includes/class-privacy.php:238
 msgid "Phone"
 msgstr ""
 
@@ -1836,8 +1902,8 @@ msgid "High priority"
 msgstr ""
 
 #: includes/class-app.php:366
-#: includes/class-privacy.php:109
-#: includes/class-privacy.php:141
+#: includes/class-privacy.php:203
+#: includes/class-privacy.php:235
 #: blocks/form/editor.js:28
 msgid "Group"
 msgstr ""
@@ -1916,7 +1982,7 @@ msgid "Unknown error"
 msgstr ""
 
 #: includes/class-comments.php:27
-#: includes/class-privacy.php:111
+#: includes/class-privacy.php:205
 msgid "Contact"
 msgstr ""
 
@@ -2032,67 +2098,67 @@ msgid "How someone is called cannot be longer than %d characters."
 msgstr ""
 
 #: includes/class-form.php:100
-#: includes/class-form.php:412
+#: includes/class-form.php:413
 msgid "This form is not available."
 msgstr ""
 
-#: includes/class-form.php:303
+#: includes/class-form.php:304
 msgid "a moment in particular"
 msgstr ""
 
-#: includes/class-form.php:304
+#: includes/class-form.php:305
 msgid "an operation, an interview, an exam…"
 msgstr ""
 
-#: includes/class-form.php:305
+#: includes/class-form.php:306
 msgid "When is it?"
 msgstr ""
 
-#: includes/class-form.php:308
+#: includes/class-form.php:309
 msgid "a death"
 msgstr ""
 
-#: includes/class-form.php:309
+#: includes/class-form.php:310
 msgid "for the eternal rest of someone who has died"
 msgstr ""
 
-#: includes/class-form.php:310
+#: includes/class-form.php:311
 msgid "When did they pass away?"
 msgstr ""
 
-#: includes/class-form.php:313
+#: includes/class-form.php:314
 msgid "a situation that goes on"
 msgstr ""
 
-#: includes/class-form.php:314
+#: includes/class-form.php:315
 msgid "an illness, family, work, money…"
 msgstr ""
 
-#: includes/class-form.php:318
+#: includes/class-form.php:319
 msgid "giving thanks"
 msgstr ""
 
-#: includes/class-form.php:319
+#: includes/class-form.php:320
 msgid "for a grace received"
 msgstr ""
 
-#: includes/class-form.php:413
+#: includes/class-form.php:414
 msgid "The form expired. Please send it again."
 msgstr ""
 
-#: includes/class-form.php:414
+#: includes/class-form.php:415
 msgid "Too many requests from your connection. Please try again later."
 msgstr ""
 
-#: includes/class-form.php:415
+#: includes/class-form.php:416
 msgid "We could not verify that you are a person. Please try again."
 msgstr ""
 
-#: includes/class-form.php:416
+#: includes/class-form.php:417
 msgid "Please tick the three boxes about your data to send your request."
 msgstr ""
 
-#: includes/class-form.php:419
+#: includes/class-form.php:420
 msgid "Please check the form and try again."
 msgstr ""
 
@@ -2499,155 +2565,228 @@ msgstr ""
 msgid "Every five minutes"
 msgstr ""
 
-#: includes/class-privacy.php:110
-#: templates/form.php:55
+#: includes/class-privacy.php:125
+msgid "the hosting and email providers of this site."
+msgstr ""
+
+#. translators: %s: group name.
+#: includes/class-privacy.php:155
+#, php-format
+msgid "DATA PROCESSING AGREEMENT (art. 28 of the GDPR) for the prayer group “%s”."
+msgstr ""
+
+#. translators: 1: data controller, 2: provider with its identification.
+#: includes/class-privacy.php:157
+#, php-format
+msgid "1. Parties. %1$s, as data controller, and %2$s, as data processor."
+msgstr ""
+
+#: includes/class-privacy.php:158
+msgid "2. Object and duration. The processor hosts and runs the tool with which the group receives, moderates and shares its prayer requests and keeps its list of members, for as long as the group uses the service."
+msgstr ""
+
+#: includes/class-privacy.php:159
+msgid "3. Data and data subjects. People who send prayer requests (name, contact, phone and the text of the request, which may include data about health and religious beliefs, special categories of data); the people prayed for (name, relationship and the circumstances told); the members of the group (name, how they are called, phone, birthday, date of death and notes)."
+msgstr ""
+
+#: includes/class-privacy.php:160
+msgid "4. Obligations of the processor. a) To process the data only on the documented instructions of the controller, which are the configuration of the group and what its leaders ask; b) to ensure the confidentiality of everyone who processes them; c) to apply the security measures of art. 32: access restricted to each group, encryption in transit, backups and scheduled deletion; d) to use only the following subprocessors, informing the controller of any change so that it can object:"
+msgstr ""
+
+#: includes/class-privacy.php:161
+msgid "e) To help the controller to answer the exercise of rights, and with security and impact assessments; f) to notify the controller without undue delay of any personal data breach; g) to make available the information needed to demonstrate compliance; h) at the end of the service, to delete all the data of the group, unless the controller asks for them first."
+msgstr ""
+
+#: includes/class-privacy.php:162
+msgid "5. Obligations of the controller. To have a legal basis and inform the data subjects (the request form does so), to appoint the leaders of the group, who are bound to confidentiality, and to give its instructions through the leaders or in writing."
+msgstr ""
+
+#: includes/class-privacy.php:163
+msgid "6. The service is provided free of charge."
+msgstr ""
+
+#. translators: %s: date.
+#: includes/class-privacy.php:166
+#, php-format
+msgid "7. Accepted on %s by both parties."
+msgstr ""
+
+#: includes/class-privacy.php:167
+msgid "7. Accepted on ____ by both parties. Signed: for the controller ____________; for the processor ____________."
+msgstr ""
+
+#: includes/class-privacy.php:204
+#: templates/form.php:56
 msgid "Your name"
 msgstr ""
 
-#: includes/class-privacy.php:113
+#: includes/class-privacy.php:207
 msgid "Beneficiary"
 msgstr ""
 
-#: includes/class-privacy.php:114
+#: includes/class-privacy.php:208
 msgid "Relationship"
 msgstr ""
 
-#: includes/class-privacy.php:115
+#: includes/class-privacy.php:209
 msgid "Names to show"
 msgstr ""
 
-#: includes/class-privacy.php:119
+#: includes/class-privacy.php:213
 msgid "Intention"
 msgstr ""
 
-#: includes/class-privacy.php:123
+#: includes/class-privacy.php:217
 msgid "Sent on"
 msgstr ""
 
-#: includes/class-privacy.php:125
+#: includes/class-privacy.php:219
 msgid "Leaders’ notes"
 msgstr ""
 
-#: includes/class-privacy.php:138
+#: includes/class-privacy.php:232
 msgid "Member of a prayer group"
 msgstr ""
 
-#: includes/class-privacy.php:143
+#: includes/class-privacy.php:237
 msgid "Called"
 msgstr ""
 
-#: includes/class-privacy.php:212
+#: includes/class-privacy.php:306
 msgid "DFX Prayer Intentions"
 msgstr ""
 
-#: includes/class-privacy.php:229
+#: includes/class-privacy.php:322
+msgid "Who runs this site."
+msgstr ""
+
+#. translators: %s: provider of the service, with its identification.
+#: includes/class-privacy.php:324
+#, php-format
+msgid "%s provides this service free of charge to parishes and prayer groups to manage their prayer requests. It acts as data processor (art. 28 of the GDPR): it processes the data only on behalf of and on the instructions of each controller, and never for purposes of its own."
+msgstr ""
+
+#: includes/class-privacy.php:325
+#: includes/class-privacy.php:327
 msgid "Who is responsible."
 msgstr ""
 
+#: includes/class-privacy.php:326
+msgid "The controller of each prayer request, and of the data of the members of each group, is the parish or body shown on the form of that group, with its contact for data protection."
+msgstr ""
+
 #. translators: %s: data controller (a parish, an association…).
-#: includes/class-privacy.php:231
+#: includes/class-privacy.php:329
 #, php-format
 msgid "%s is responsible for the prayer requests sent through this site and for the data of the members of its prayer groups."
 msgstr ""
 
 #. translators: %s: email or address for data protection.
-#: includes/class-privacy.php:233
+#: includes/class-privacy.php:331
 #, php-format
 msgid "You can write to %s about your data."
 msgstr ""
 
-#: includes/class-privacy.php:234
+#: includes/class-privacy.php:334
+msgid "You can access your data, rectify it, erase it, restrict or object to its processing, ask for its portability and withdraw your consent at any time, before the controller of your group (in the contact shown on its form) or writing to the provider of the service, who will pass your request on to it. You can also complain to the data protection supervisory authority (in Spain, the Agencia Española de Protección de Datos)."
+msgstr ""
+
+#: includes/class-privacy.php:335
+msgid "You can access your data, rectify it, erase it, restrict or object to its processing, ask for its portability and withdraw your consent at any time, writing to the contact above or with the contact or phone you gave in the form. You can also complain to the data protection supervisory authority (in Spain, the Agencia Española de Protección de Datos)."
+msgstr ""
+
+#: includes/class-privacy.php:341
 msgid "What data we collect."
 msgstr ""
 
-#: includes/class-privacy.php:235
+#: includes/class-privacy.php:342
 msgid "When you send a prayer request we collect your name, a way to contact you if you give it (email or phone), the name of the person you ask us to pray for, your relationship with them, the text of your intention, the dates you give and how the names may appear. It may include data about health or religious beliefs, which are special categories of personal data."
 msgstr ""
 
-#: includes/class-privacy.php:236
+#: includes/class-privacy.php:343
 msgid "Purpose and legal basis."
 msgstr ""
 
-#: includes/class-privacy.php:237
+#: includes/class-privacy.php:344
 msgid "We use these data only to pray for your intention in the group you write to and, if you left a contact, to ask you how it goes. The legal basis is your explicit consent (arts. 6.1.a and 9.2.a of the GDPR)."
 msgstr ""
 
-#: includes/class-privacy.php:238
+#: includes/class-privacy.php:345
 msgid "Who sees them."
 msgstr ""
 
-#: includes/class-privacy.php:239
+#: includes/class-privacy.php:346
 msgid "Only the leaders of the group read your request: in their private panel, in their app and, if the group keeps it so, in an email notice. The group receives a short summary written by the leaders, with the names only as you chose (full name, first name, initials or anonymous), through its messaging channel. The full text is never shared with the group."
 msgstr ""
 
-#: includes/class-privacy.php:240
+#: includes/class-privacy.php:347
 msgid "Services that take part."
 msgstr ""
 
-#: includes/class-privacy.php:241
+#: includes/class-privacy.php:348
 msgid "The summaries reach the group through messaging services such as WhatsApp or Telegram, and the notices for the leaders by email and, if configured, by Telegram or a webhook. If the form uses Cloudflare Turnstile against abuse, Cloudflare receives your IP address. Some of these services may process data outside the European Union, under the safeguards each of them offers, such as the EU–US Data Privacy Framework or standard contractual clauses."
 msgstr ""
 
-#: includes/class-privacy.php:242
+#: includes/class-privacy.php:349
+msgid "The provider of the service relies on these subprocessors:"
+msgstr ""
+
+#: includes/class-privacy.php:350
 msgid "How long we keep them."
 msgstr ""
 
 #. translators: %d: number of days.
-#: includes/class-privacy.php:244
+#: includes/class-privacy.php:352
 #, php-format
 msgid "While we pray for your intention and until the leaders close it; then it is deleted, with its updates and notes, %d days later. To stop abuse, your IP address is kept only as a one-way hash for one hour, and what you typed is kept for a few minutes if the form has to be shown again after an error."
 msgstr ""
 
-#: includes/class-privacy.php:245
+#: includes/class-privacy.php:353
 msgid "People we pray for."
 msgstr ""
 
-#: includes/class-privacy.php:246
+#: includes/class-privacy.php:354
 msgid "When you ask for someone else, we do not inform them directly, because it would be impossible or would require a disproportionate effort (art. 14.5.b of the GDPR). To protect them, the group only receives a discreet summary without diagnoses, with their name as you chose, and they can exercise the same rights as you."
 msgstr ""
 
-#: includes/class-privacy.php:247
+#: includes/class-privacy.php:355
 msgid "Members of the group."
 msgstr ""
 
-#: includes/class-privacy.php:248
+#: includes/class-privacy.php:356
 msgid "For the members of each group the leaders keep their name, how they are called, their phone, their birthday, the date of their death and short notes, to name them correctly and to remember their birthdays and the anniversaries of their death in the daily message. The legal basis is the legitimate interest of the group and, as members of a religious body, art. 9.2.d of the GDPR: these data are not disclosed outside it without their consent. They are kept while they belong to the group, and any member can ask to see them or to have them erased."
 msgstr ""
 
-#: includes/class-privacy.php:249
+#: includes/class-privacy.php:357
 msgid "Minors."
 msgstr ""
 
 #. translators: %d: minimum age.
-#: includes/class-privacy.php:251
+#: includes/class-privacy.php:359
 #, php-format
 msgid "You must be at least %d years old to send a request on your own."
 msgstr ""
 
-#: includes/class-privacy.php:252
+#: includes/class-privacy.php:360
 msgid "Your rights."
 msgstr ""
 
-#: includes/class-privacy.php:253
-msgid "You can access your data, rectify it, erase it, restrict or object to its processing, ask for its portability and withdraw your consent at any time, writing to the contact above or with the contact or phone you gave in the form. You can also complain to the data protection supervisory authority (in Spain, the Agencia Española de Protección de Datos)."
-msgstr ""
-
-#: includes/class-settings.php:89
+#: includes/class-settings.php:108
 msgctxt "Base of the public form URL"
 msgid "prayer-requests"
 msgstr ""
 
-#: includes/class-settings.php:114
+#: includes/class-settings.php:140
 msgid "Thank you. We have received your request and will pray for it."
 msgstr ""
 
 #. translators: {date} is replaced with the day and month.
-#: includes/class-settings.php:116
+#: includes/class-settings.php:142
 msgid "🙏 *Active intentions* – {date}"
 msgstr ""
 
 #. translators: {long_date} is replaced with the full date.
-#: includes/class-settings.php:119
+#: includes/class-settings.php:145
 msgid ""
 "*Prayer intentions of the month*\n"
 "_{long_date}_"
@@ -2665,132 +2804,138 @@ msgstr ""
 msgid "Tell us your prayer intention. The group leaders will read it and we will pray for it together."
 msgstr ""
 
-#: templates/form.php:48
+#: templates/form.php:49
 msgid "Leave this field empty"
 msgstr ""
 
-#: templates/form.php:53
+#: templates/form.php:54
 msgid "About you"
 msgstr ""
 
-#: templates/form.php:59
+#: templates/form.php:60
 msgid "A way to contact you (optional)"
 msgstr ""
 
-#: templates/form.php:61
+#: templates/form.php:62
 msgid "Email or phone. Only the group leaders will see it."
 msgstr ""
 
-#: templates/form.php:66
+#: templates/form.php:67
 msgid "Who are we praying for?"
 msgstr ""
 
-#: templates/form.php:70
+#: templates/form.php:71
 msgid "For me"
 msgstr ""
 
-#: templates/form.php:75
+#: templates/form.php:76
 msgid "Their name"
 msgstr ""
 
-#: templates/form.php:79
+#: templates/form.php:80
 msgid "Their relationship to you"
 msgstr ""
 
-#: templates/form.php:80
+#: templates/form.php:81
 msgid "e.g. mother of, friend of"
 msgstr ""
 
-#: templates/form.php:86
+#: templates/form.php:87
 msgid "What is it about?"
 msgstr ""
 
-#: templates/form.php:99
+#: templates/form.php:100
 msgid "Time (optional)"
 msgstr ""
 
-#: templates/form.php:101
+#: templates/form.php:102
 msgid "If you know what time it is, we will pray at that moment."
 msgstr ""
 
-#: templates/form.php:107
+#: templates/form.php:108
 msgid "Your intention"
 msgstr ""
 
-#: templates/form.php:109
+#: templates/form.php:110
 msgid "There is no need to include diagnoses or surnames: the leaders will write a short, discreet summary for the group."
 msgstr ""
 
-#: templates/form.php:113
+#: templates/form.php:114
 msgid "How should the names appear to the group?"
 msgstr ""
 
-#: templates/form.php:128
 #: templates/form.php:129
+#: templates/form.php:130
 msgid "privacy policy"
 msgstr ""
 
-#: templates/form.php:132
-msgid "Data protection"
-msgstr ""
-
-#: templates/form.php:135
+#: templates/form.php:136
 msgid "Controller:"
 msgstr ""
 
-#: templates/form.php:139
+#: templates/form.php:141
+msgid "Service:"
+msgstr ""
+
+#. translators: 1: provider of the service, 2: data controller.
+#: templates/form.php:144
+#, php-format
+msgid "%1$s provides this tool free of charge to %2$s as data processor, and only processes your data on its behalf."
+msgstr ""
+
+#: templates/form.php:149
 msgid "Purpose:"
 msgstr ""
 
 #. translators: %s: group name.
-#: templates/form.php:142
+#: templates/form.php:152
 #, php-format
 msgid "to pray for your intention in the group “%s” and, if you leave a contact, to ask you how it goes."
 msgstr ""
 
-#: templates/form.php:146
+#: templates/form.php:156
 msgid "Legal basis:"
 msgstr ""
 
-#: templates/form.php:147
+#: templates/form.php:157
 msgid "your explicit consent (arts. 6.1.a and 9.2.a GDPR)."
 msgstr ""
 
-#: templates/form.php:150
+#: templates/form.php:160
 msgid "Recipients:"
 msgstr ""
 
-#: templates/form.php:151
+#: templates/form.php:161
 msgid "only the leaders of the group read your request. The group receives a short summary, with the names as you choose, through its messaging channel (for example WhatsApp or Telegram). It is not given to anyone else."
 msgstr ""
 
-#: templates/form.php:154
+#: templates/form.php:164
 msgid "Rights:"
 msgstr ""
 
 #. translators: %s: link to the privacy policy.
-#: templates/form.php:158
+#: templates/form.php:168
 #, php-format
 msgid "you can access, rectify or erase your data, restrict or object to its processing, withdraw your consent at any time and complain to the supervisory authority. More in the %s."
 msgstr ""
 
 #. translators: %s: link to the privacy policy.
-#: templates/form.php:173
+#: templates/form.php:183
 #, php-format
 msgid "I give my explicit consent for the leaders of this group to process the data of this request, including any about health or beliefs, and to share a discreet summary with the group, as explained in the %s."
 msgstr ""
 
-#: templates/form.php:181
+#: templates/form.php:191
 msgid "If I ask for someone else, I have their permission or believe in good faith that they would give it, and I do not include details they would not want known."
 msgstr ""
 
 #. translators: %d: minimum age.
-#: templates/form.php:188
+#: templates/form.php:198
 #, php-format
 msgid "I am at least %d years old."
 msgstr ""
 
-#: templates/form.php:194
+#: templates/form.php:204
 msgid "Send my request"
 msgstr ""
 

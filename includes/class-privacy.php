@@ -68,12 +68,106 @@ final class DFXPRAY_Privacy {
 	}
 
 	/**
-	 * Who is responsible for the data: the configured controller, or the site.
+	 * Who is responsible for a group's data: its controller, the default one,
+	 * or the site.
+	 *
+	 * @param int|null $group_id Group ID; null for the default.
 	 */
-	public function controller(): string {
-		$controller = trim( (string) DFXPRAY_Settings::get_instance()->get( 'privacy_controller' ) );
+	public function controller( ?int $group_id = null ): string {
+		$controller = trim( (string) DFXPRAY_Settings::get_instance()->get( 'privacy_controller', $group_id ) );
 
 		return '' !== $controller ? $controller : (string) get_bloginfo( 'name' );
+	}
+
+	/**
+	 * Contact for data protection of a group, or ''.
+	 *
+	 * @param int|null $group_id Group ID; null for the default.
+	 */
+	public function contact( ?int $group_id = null ): string {
+		return trim( (string) DFXPRAY_Settings::get_instance()->get( 'privacy_contact', $group_id ) );
+	}
+
+	/**
+	 * The privacy policy of a group: its own, or the site's; '' when none.
+	 *
+	 * @param int $group_id Group ID.
+	 */
+	public function policy_url( int $group_id ): string {
+		$own = (string) DFXPRAY_Settings::get_instance()->get( 'privacy_policy_url', $group_id );
+
+		return '' !== $own ? $own : (string) get_privacy_policy_url();
+	}
+
+	/**
+	 * Who provides the service as processor, '' when not set.
+	 */
+	public function provider(): string {
+		return trim( (string) DFXPRAY_Settings::get_instance()->get( 'provider_name' ) );
+	}
+
+	/**
+	 * The provider with its identification: "Name (tax ID, address, email)".
+	 */
+	private function provider_identified(): string {
+		$settings = DFXPRAY_Settings::get_instance();
+		$details  = array_filter( array_map( 'trim', array( (string) $settings->get( 'provider_tax_id' ), (string) $settings->get( 'provider_address' ), (string) $settings->get( 'provider_email' ) ) ) );
+
+		return $this->provider() . ( $details ? ' (' . implode( ', ', $details ) . ')' : '' );
+	}
+
+	/**
+	 * The subprocessors, as configured (one per line), or a generic line.
+	 */
+	private function subprocessors(): string {
+		$list = trim( (string) DFXPRAY_Settings::get_instance()->get( 'subprocessors' ) );
+
+		return '' !== $list ? $list : __( 'the hosting and email providers of this site.', 'dfx-prayer-intentions' );
+	}
+
+	/**
+	 * Whether a group still lacks a controller of its own or an accepted
+	 * processing agreement (only when a provider is set: otherwise the site
+	 * itself is responsible).
+	 *
+	 * @param int $group_id Group ID.
+	 */
+	public function agreement_pending( int $group_id ): bool {
+		$settings = DFXPRAY_Settings::get_instance();
+
+		return '' === trim( (string) $settings->get( 'privacy_controller', $group_id ) ) || ( '' !== $this->provider() && '' === (string) $settings->get( 'dpa_accepted_on', $group_id ) );
+	}
+
+	/**
+	 * The data processing agreement (art. 28 of the GDPR) between a group's
+	 * controller and the provider, ready to accept.
+	 *
+	 * @param int $group_id Group ID.
+	 */
+	public function processing_agreement( int $group_id ): string {
+		$group      = DFXPRAY_Groups::get_instance()->get( $group_id );
+		$controller = $this->controller( $group_id );
+		$provider   = '' !== $this->provider() ? $this->provider_identified() : (string) get_bloginfo( 'name' );
+		$accepted   = (string) DFXPRAY_Settings::get_instance()->get( 'dpa_accepted_on', $group_id );
+
+		$clauses = array(
+			/* translators: %s: group name. */
+			sprintf( __( 'DATA PROCESSING AGREEMENT (art. 28 of the GDPR) for the prayer group “%s”.', 'dfx-prayer-intentions' ), $group ? $group['name'] : '' ),
+			/* translators: 1: data controller, 2: provider with its identification. */
+			sprintf( __( '1. Parties. %1$s, as data controller, and %2$s, as data processor.', 'dfx-prayer-intentions' ), $controller, $provider ),
+			__( '2. Object and duration. The processor hosts and runs the tool with which the group receives, moderates and shares its prayer requests and keeps its list of members, for as long as the group uses the service.', 'dfx-prayer-intentions' ),
+			__( '3. Data and data subjects. People who send prayer requests (name, contact, phone and the text of the request, which may include data about health and religious beliefs, special categories of data); the people prayed for (name, relationship and the circumstances told); the members of the group (name, how they are called, phone, birthday, date of death and notes).', 'dfx-prayer-intentions' ),
+			__( '4. Obligations of the processor. a) To process the data only on the documented instructions of the controller, which are the configuration of the group and what its leaders ask; b) to ensure the confidentiality of everyone who processes them; c) to apply the security measures of art. 32: access restricted to each group, encryption in transit, backups and scheduled deletion; d) to use only the following subprocessors, informing the controller of any change so that it can object:', 'dfx-prayer-intentions' ) . "\n" . $this->subprocessors(),
+			__( 'e) To help the controller to answer the exercise of rights, and with security and impact assessments; f) to notify the controller without undue delay of any personal data breach; g) to make available the information needed to demonstrate compliance; h) at the end of the service, to delete all the data of the group, unless the controller asks for them first.', 'dfx-prayer-intentions' ),
+			__( '5. Obligations of the controller. To have a legal basis and inform the data subjects (the request form does so), to appoint the leaders of the group, who are bound to confidentiality, and to give its instructions through the leaders or in writing.', 'dfx-prayer-intentions' ),
+			__( '6. The service is provided free of charge.', 'dfx-prayer-intentions' ),
+			'' !== $accepted
+				/* translators: %s: date. */
+				? sprintf( __( '7. Accepted on %s by both parties.', 'dfx-prayer-intentions' ), $accepted )
+				: __( '7. Accepted on ____ by both parties. Signed: for the controller ____________; for the processor ____________.', 'dfx-prayer-intentions' ),
+		);
+
+		return implode( "\n\n", $clauses );
 	}
 
 	/**
@@ -214,23 +308,36 @@ final class DFXPRAY_Privacy {
 	}
 
 	/**
-	 * Suggested privacy policy text: everything article 13 of the GDPR asks
-	 * to tell, for the people who send requests, those prayed for and the
-	 * members of the groups.
+	 * Suggested privacy policy text for the site: who runs it as processor,
+	 * that each group's controller is on its form, and everything article 13
+	 * of the GDPR asks to tell, for those who send requests, those prayed for
+	 * and the members of the groups.
 	 */
 	public function policy_text(): string {
 		$settings = DFXPRAY_Settings::get_instance();
-		$contact  = trim( (string) $settings->get( 'privacy_contact' ) );
 		$title    = static fn( string $text ): string => '<strong>' . $text . '</strong> ';
+		$provider = $this->provider();
+
+		$who = '' !== $provider
+			? $title( __( 'Who runs this site.', 'dfx-prayer-intentions' ) )
+				/* translators: %s: provider of the service, with its identification. */
+				. sprintf( __( '%s provides this service free of charge to parishes and prayer groups to manage their prayer requests. It acts as data processor (art. 28 of the GDPR): it processes the data only on behalf of and on the instructions of each controller, and never for purposes of its own.', 'dfx-prayer-intentions' ), $this->provider_identified() )
+				. "\n\n" . $title( __( 'Who is responsible.', 'dfx-prayer-intentions' ) )
+				. __( 'The controller of each prayer request, and of the data of the members of each group, is the parish or body shown on the form of that group, with its contact for data protection.', 'dfx-prayer-intentions' )
+			: $title( __( 'Who is responsible.', 'dfx-prayer-intentions' ) )
+				/* translators: %s: data controller (a parish, an association…). */
+				. sprintf( __( '%s is responsible for the prayer requests sent through this site and for the data of the members of its prayer groups.', 'dfx-prayer-intentions' ), $this->controller() )
+				/* translators: %s: email or address for data protection. */
+				. ( '' !== $this->contact() ? ' ' . sprintf( __( 'You can write to %s about your data.', 'dfx-prayer-intentions' ), $this->contact() ) : '' );
+
+		$rights = '' !== $provider
+			? __( 'You can access your data, rectify it, erase it, restrict or object to its processing, ask for its portability and withdraw your consent at any time, before the controller of your group (in the contact shown on its form) or writing to the provider of the service, who will pass your request on to it. You can also complain to the data protection supervisory authority (in Spain, the Agencia Española de Protección de Datos).', 'dfx-prayer-intentions' )
+			: __( 'You can access your data, rectify it, erase it, restrict or object to its processing, ask for its portability and withdraw your consent at any time, writing to the contact above or with the contact or phone you gave in the form. You can also complain to the data protection supervisory authority (in Spain, the Agencia Española de Protección de Datos).', 'dfx-prayer-intentions' );
 
 		return implode(
 			"\n\n",
 			array(
-				$title( __( 'Who is responsible.', 'dfx-prayer-intentions' ) )
-				/* translators: %s: data controller (a parish, an association…). */
-				. sprintf( __( '%s is responsible for the prayer requests sent through this site and for the data of the members of its prayer groups.', 'dfx-prayer-intentions' ), $this->controller() )
-				/* translators: %s: email or address for data protection. */
-				. ( '' !== $contact ? ' ' . sprintf( __( 'You can write to %s about your data.', 'dfx-prayer-intentions' ), $contact ) : '' ),
+				$who,
 				$title( __( 'What data we collect.', 'dfx-prayer-intentions' ) )
 				. __( 'When you send a prayer request we collect your name, a way to contact you if you give it (email or phone), the name of the person you ask us to pray for, your relationship with them, the text of your intention, the dates you give and how the names may appear. It may include data about health or religious beliefs, which are special categories of personal data.', 'dfx-prayer-intentions' ),
 				$title( __( 'Purpose and legal basis.', 'dfx-prayer-intentions' ) )
@@ -238,7 +345,8 @@ final class DFXPRAY_Privacy {
 				$title( __( 'Who sees them.', 'dfx-prayer-intentions' ) )
 				. __( 'Only the leaders of the group read your request: in their private panel, in their app and, if the group keeps it so, in an email notice. The group receives a short summary written by the leaders, with the names only as you chose (full name, first name, initials or anonymous), through its messaging channel. The full text is never shared with the group.', 'dfx-prayer-intentions' ),
 				$title( __( 'Services that take part.', 'dfx-prayer-intentions' ) )
-				. __( 'The summaries reach the group through messaging services such as WhatsApp or Telegram, and the notices for the leaders by email and, if configured, by Telegram or a webhook. If the form uses Cloudflare Turnstile against abuse, Cloudflare receives your IP address. Some of these services may process data outside the European Union, under the safeguards each of them offers, such as the EU–US Data Privacy Framework or standard contractual clauses.', 'dfx-prayer-intentions' ),
+				. __( 'The summaries reach the group through messaging services such as WhatsApp or Telegram, and the notices for the leaders by email and, if configured, by Telegram or a webhook. If the form uses Cloudflare Turnstile against abuse, Cloudflare receives your IP address. Some of these services may process data outside the European Union, under the safeguards each of them offers, such as the EU–US Data Privacy Framework or standard contractual clauses.', 'dfx-prayer-intentions' )
+				. ( '' !== $provider ? "\n\n" . __( 'The provider of the service relies on these subprocessors:', 'dfx-prayer-intentions' ) . "\n" . $this->subprocessors() : '' ),
 				$title( __( 'How long we keep them.', 'dfx-prayer-intentions' ) )
 				/* translators: %d: number of days. */
 				. sprintf( __( 'While we pray for your intention and until the leaders close it; then it is deleted, with its updates and notes, %d days later. To stop abuse, your IP address is kept only as a one-way hash for one hour, and what you typed is kept for a few minutes if the form has to be shown again after an error.', 'dfx-prayer-intentions' ), (int) $settings->get( 'retention_days' ) ),
@@ -249,8 +357,7 @@ final class DFXPRAY_Privacy {
 				$title( __( 'Minors.', 'dfx-prayer-intentions' ) )
 				/* translators: %d: minimum age. */
 				. sprintf( __( 'You must be at least %d years old to send a request on your own.', 'dfx-prayer-intentions' ), (int) $settings->get( 'consent_min_age' ) ),
-				$title( __( 'Your rights.', 'dfx-prayer-intentions' ) )
-				. __( 'You can access your data, rectify it, erase it, restrict or object to its processing, ask for its portability and withdraw your consent at any time, writing to the contact above or with the contact or phone you gave in the form. You can also complain to the data protection supervisory authority (in Spain, the Agencia Española de Protección de Datos).', 'dfx-prayer-intentions' ),
+				$title( __( 'Your rights.', 'dfx-prayer-intentions' ) ) . $rights,
 			)
 		);
 	}

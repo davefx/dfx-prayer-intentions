@@ -191,15 +191,26 @@ class FormTest extends DFXPRAY_Test_Case {
 	public function test_basic_data_protection_information(): void {
 		DFXPRAY_Settings::get_instance()->save_global(
 			array(
+				'privacy_controller' => 'Default parish',
+				'consent_min_age'    => 16,
+				'provider_name'      => 'David Marín Carreño',
+			)
+		);
+		DFXPRAY_Settings::get_instance()->save_group_privacy(
+			$this->group,
+			array(
 				'privacy_controller' => 'Parroquia San Manuel González',
 				'privacy_contact'    => 'privacidad@example.org',
-				'consent_min_age'    => 16,
+				'privacy_policy_url' => 'https://example.org/privacidad-smg/',
 			)
 		);
 
 		$html = DFXPRAY_Form::get_instance()->render( $this->group );
 
 		$this->assertStringContainsString( 'Parroquia San Manuel González (privacidad@example.org)', $html );
+		$this->assertStringNotContainsString( 'Default parish', $html );
+		$this->assertStringContainsString( 'David Marín Carreño provides this tool free of charge to Parroquia San Manuel González as data processor, and only processes your data on its behalf.', $html );
+		$this->assertStringContainsString( 'href="https://example.org/privacidad-smg/"', $html );
 		$this->assertStringContainsString( 'to pray for your intention in the group “Santa Marta”', $html );
 		$this->assertStringContainsString( 'arts. 6.1.a and 9.2.a GDPR', $html );
 		$this->assertStringContainsString( 'including any about health or beliefs', $html );
@@ -218,6 +229,7 @@ class FormTest extends DFXPRAY_Test_Case {
 
 		$this->assertStringContainsString( 'Mi parroquia.', $html );
 		$this->assertStringContainsString( 'I am at least 14 years old.', $html );
+		$this->assertStringNotContainsString( 'as data processor', $html );
 	}
 
 	/**

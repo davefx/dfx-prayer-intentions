@@ -182,20 +182,46 @@ class PrivacyTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * A policy text is suggested.
+	 * The suggested policy describes the platform: who runs the site as
+	 * processor, that each group's controller is on its form, the
+	 * subprocessors, and everything else the GDPR asks to tell.
 	 */
 	public function test_policy_text(): void {
 		DFXPRAY_Settings::get_instance()->save_global(
 			array(
-				'privacy_controller' => 'Parroquia San Manuel González',
-				'privacy_contact'    => 'privacidad@example.org',
+				'provider_name'    => 'David Marín Carreño',
+				'provider_tax_id'  => '12345678Z',
+				'provider_address' => 'Calle Mayor 1, Madrid',
+				'provider_email'   => 'privacidad@example.org',
+				'subprocessors'    => "Hosting: Hetzner (Germany)\nEmail: Brevo (France)",
 			)
 		);
 		$text = DFXPRAY_Privacy::get_instance()->policy_text();
 
-		foreach ( array( 'Parroquia San Manuel González', 'privacidad@example.org', 'prayer', '90 days', 'explicit consent', '9.2.a', 'WhatsApp', 'Telegram', 'Cloudflare', 'outside the European Union', 'art. 14.5.b', 'Members of the group', '9.2.d', 'at least 14 years old', 'withdraw your consent', 'supervisory authority' ) as $needle ) {
+		foreach ( array( 'David Marín Carreño (12345678Z, Calle Mayor 1, Madrid, privacidad@example.org)', 'data processor (art. 28 of the GDPR)', 'shown on the form of that group', 'Hosting: Hetzner (Germany)', 'Email: Brevo (France)', 'prayer', '90 days', 'explicit consent', '9.2.a', 'WhatsApp', 'Telegram', 'Cloudflare', 'outside the European Union', 'art. 14.5.b', 'Members of the group', '9.2.d', 'at least 14 years old', 'withdraw your consent', 'supervisory authority' ) as $needle ) {
 			$this->assertStringContainsString( $needle, $text );
 		}
 		$this->assertNotFalse( has_action( 'admin_init', array( DFXPRAY_Privacy::get_instance(), 'add_policy_content' ) ) );
+	}
+
+	/**
+	 * The data processing agreement of a group, ready to accept, names both
+	 * parties and covers what article 28 requires.
+	 */
+	public function test_processing_agreement(): void {
+		DFXPRAY_Settings::get_instance()->save_global(
+			array(
+				'provider_name'   => 'David Marín Carreño',
+				'provider_tax_id' => '12345678Z',
+				'subprocessors'   => 'Hosting: Hetzner (Germany)',
+			)
+		);
+		DFXPRAY_Settings::get_instance()->save_group_privacy( $this->group, array( 'privacy_controller' => 'Parroquia San Manuel González' ) );
+
+		$text = DFXPRAY_Privacy::get_instance()->processing_agreement( $this->group );
+
+		foreach ( array( 'Parroquia San Manuel González', 'David Marín Carreño (12345678Z)', 'documented instructions', 'confidentiality', 'art. 32', 'Hosting: Hetzner (Germany)', 'without undue delay', 'delete all the data of the group', 'free of charge', 'health', 'religious beliefs' ) as $needle ) {
+			$this->assertStringContainsString( $needle, $text );
+		}
 	}
 }

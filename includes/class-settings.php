@@ -42,7 +42,26 @@ final class DFXPRAY_Settings {
 		'phone_country_code',
 		'privacy_controller',
 		'privacy_contact',
+		'privacy_policy_url',
+		'dpa_accepted_on',
 		'consent_min_age',
+		'provider_name',
+		'provider_tax_id',
+		'provider_address',
+		'provider_email',
+		'subprocessors',
+	);
+
+	/**
+	 * Keys each group has of its own but only the administrator sets: who is
+	 * responsible for its data, and when it accepted the processing
+	 * agreement. The global value of the first two is the default.
+	 */
+	private const GROUP_PRIVACY_KEYS = array(
+		'privacy_controller',
+		'privacy_contact',
+		'privacy_policy_url',
+		'dpa_accepted_on',
 	);
 
 	/**
@@ -53,7 +72,7 @@ final class DFXPRAY_Settings {
 	/**
 	 * Keys holding multi-line text.
 	 */
-	private const TEXT_KEYS = array( 'confirmation_message', 'index_header', 'index_footer' );
+	private const TEXT_KEYS = array( 'confirmation_message', 'index_header', 'index_footer', 'subprocessors' );
 
 	/**
 	 * Allowed values for enumerated keys.
@@ -94,7 +113,14 @@ final class DFXPRAY_Settings {
 			'phone_country_code'       => '34',
 			'privacy_controller'       => '',
 			'privacy_contact'          => '',
+			'privacy_policy_url'       => '',
+			'dpa_accepted_on'          => '',
 			'consent_min_age'          => 14,
+			'provider_name'            => '',
+			'provider_tax_id'          => '',
+			'provider_address'         => '',
+			'provider_email'           => '',
+			'subprocessors'            => '',
 
 			// Deadlines.
 			'event_grace_days'         => 2,
@@ -217,6 +243,22 @@ final class DFXPRAY_Settings {
 	}
 
 	/**
+	 * Save who is responsible for a group's data (administrators only):
+	 * controller, contact, own privacy policy and date of the processing
+	 * agreement.
+	 *
+	 * @param int   $group_id Group ID.
+	 * @param array $input    Raw input; other keys are ignored.
+	 */
+	public function save_group_privacy( int $group_id, array $input ): void {
+		$groups = DFXPRAY_Groups::get_instance();
+		$stored = $groups->get_settings( $group_id );
+
+		$groups->save_settings( $group_id, $this->merge( $stored, $this->sanitize( $input, self::GROUP_PRIVACY_KEYS ) ) );
+		$this->flush_cache();
+	}
+
+	/**
 	 * Save a group's overrides (leaders).
 	 *
 	 * @param int   $group_id Group ID.
@@ -303,6 +345,15 @@ final class DFXPRAY_Settings {
 
 		if ( isset( self::ENUMS[ $key ] ) ) {
 			return in_array( $value, self::ENUMS[ $key ], true ) ? $value : $fallback;
+		}
+
+		if ( 'privacy_policy_url' === $key ) {
+			return (string) esc_url_raw( $value, array( 'http', 'https' ) );
+		}
+
+		if ( 'dpa_accepted_on' === $key ) {
+			$date = DateTime::createFromFormat( '!Y-m-d', $value );
+			return $date && $date->format( 'Y-m-d' ) === $value ? $value : '';
 		}
 
 		if ( 'url_base' === $key ) {

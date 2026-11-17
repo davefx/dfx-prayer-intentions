@@ -520,6 +520,10 @@ final class DFXPRAY_Admin_Actions {
 
 		$groups->set_leaders( $id, array_map( 'intval', (array) ( $r['leaders'] ?? array() ) ) );
 
+		if ( isset( $r['privacy'] ) ) {
+			DFXPRAY_Settings::get_instance()->save_group_privacy( $id, (array) $r['privacy'] );
+		}
+
 		return $id;
 	}
 

@@ -25,7 +25,7 @@ fail() {
 
 # 1. One version everywhere.
 VERSION="$(sed -n "s/^define( 'DFXPRAY_VERSION', '\(.*\)' );$/\1/p" "${ROOT}/${SLUG}.php")"
-[[ "${VERSION}" =~ ^[0-9]{2}\.[0-9]{2}\.[0-9]{2}$ ]] || fail "DFXPRAY_VERSION '${VERSION}' is not YY.MM.DD."
+[[ "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.[1-9][0-9](0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[0-9]$ ]] || fail "DFXPRAY_VERSION '${VERSION}' is not MAJOR.MINOR.YYMMDDN."
 
 grep -qE "^ \* Version: +${VERSION}$" "${ROOT}/${SLUG}.php" || fail "Plugin header Version is not ${VERSION}."
 grep -q "\"version\": \"${VERSION}\"" "${ROOT}/blocks/form/block.json" || fail "blocks/form/block.json version is not ${VERSION}."

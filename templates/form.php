@@ -19,6 +19,7 @@
  * @var string $site_key    Turnstile site key, if configured.
  * @var string $controller  Data controller (the site's name when not set).
  * @var string $contact     Contact for data protection, if any.
+ * @var string $provider    Who provides the service as data processor, if any.
  * @var int    $min_age     Minimum age to send a request.
  *
  * @package DFXPRAY
@@ -135,6 +136,15 @@ $dfxpray_self  = ! empty( $draft['beneficiary_is_requester'] );
 					<strong><?php esc_html_e( 'Controller:', 'dfx-prayer-intentions' ); ?></strong>
 					<?php echo esc_html( '' !== $contact ? $controller . ' (' . $contact . ').' : $controller . '.' ); ?>
 				</li>
+				<?php if ( '' !== $provider ) : ?>
+					<li>
+						<strong><?php esc_html_e( 'Service:', 'dfx-prayer-intentions' ); ?></strong>
+						<?php
+						/* translators: 1: provider of the service, 2: data controller. */
+						echo esc_html( sprintf( __( '%1$s provides this tool free of charge to %2$s as data processor, and only processes your data on its behalf.', 'dfx-prayer-intentions' ), $provider, $controller ) );
+						?>
+					</li>
+				<?php endif; ?>
 				<li>
 					<strong><?php esc_html_e( 'Purpose:', 'dfx-prayer-intentions' ); ?></strong>
 					<?php

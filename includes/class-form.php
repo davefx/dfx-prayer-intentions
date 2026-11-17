@@ -134,10 +134,11 @@ final class DFXPRAY_Form {
 				'nonce'       => wp_create_nonce( 'dfxpray_submit_' . $group_id ),
 				'types'       => $this->type_choices(),
 				'levels'      => DFXPRAY_Discretion::get_instance()->levels(),
-				'privacy_url' => get_privacy_policy_url(),
+				'privacy_url' => DFXPRAY_Privacy::get_instance()->policy_url( $group_id ),
 				'site_key'    => $site_key,
-				'controller'  => DFXPRAY_Privacy::get_instance()->controller(),
-				'contact'     => (string) DFXPRAY_Settings::get_instance()->get( 'privacy_contact' ),
+				'controller'  => DFXPRAY_Privacy::get_instance()->controller( $group_id ),
+				'contact'     => DFXPRAY_Privacy::get_instance()->contact( $group_id ),
+				'provider'    => DFXPRAY_Privacy::get_instance()->provider(),
 				'min_age'     => (int) DFXPRAY_Settings::get_instance()->get( 'consent_min_age' ),
 			)
 		);

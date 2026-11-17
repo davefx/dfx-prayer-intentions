@@ -419,6 +419,39 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A group without a controller or an accepted processing agreement tells
+	 * its leaders; the administrator records both in the groups page, where
+	 * the agreement is ready to copy.
+	 */
+	public function test_processing_agreement_pending_and_recorded(): void {
+		$this->assertStringContainsString( 'processing agreement', $this->tab( 'moderation' ) );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$groups = $this->render( 'dfxpray' );
+		$this->assertStringContainsString( 'name="privacy[privacy_controller]"', $groups );
+		$this->assertStringContainsString( 'name="privacy[dpa_accepted_on]"', $groups );
+		$this->assertStringContainsString( 'id="dfxpray-agreement-' . $this->mine . '"', $groups );
+
+		$result = DFXPRAY_Admin_Actions::get_instance()->run(
+			'save_group',
+			array(
+				'group_id' => $this->mine,
+				'name'     => 'Mine',
+				'leaders'  => array( $this->leader ),
+				'privacy'  => array(
+					'privacy_controller' => 'Parroquia San Manuel González',
+					'dpa_accepted_on'    => '2026-11-17',
+				),
+			)
+		);
+		$this->assertTrue( $result['ok'], $result['message'] );
+
+		wp_set_current_user( $this->leader );
+		$this->assertStringNotContainsString( 'processing agreement', $this->tab( 'moderation' ) );
+		$this->assertSame( 'Parroquia San Manuel González', DFXPRAY_Settings::get_instance()->get( 'privacy_controller', $this->mine ) );
+	}
+
+	/**
 	 * The members tab reminds what may be written down.
 	 */
 	public function test_members_privacy_reminder(): void {
@@ -448,8 +481,10 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		);
 
 		$global = $this->render( 'dfxpray-global' );
+		$this->assertStringContainsString( 'name="settings[provider_name]"', $global );
+		$this->assertStringContainsString( 'name="settings[provider_tax_id]"', $global );
+		$this->assertStringContainsString( 'name="settings[subprocessors]"', $global );
 		$this->assertStringContainsString( 'name="settings[privacy_controller]"', $global );
-		$this->assertStringContainsString( 'name="settings[privacy_contact]"', $global );
 		$this->assertStringContainsString( 'name="settings[consent_min_age]"', $global );
 		$this->assertStringContainsString( 'name="privacy_lookup"', $global );
 

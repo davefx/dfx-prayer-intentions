@@ -82,7 +82,9 @@ class ReleasePackageTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Every place that states the version agrees.
+	 * Every place that states the version agrees, and it follows the scheme:
+	 * MAJOR.MINOR.YYMMDDN (SemVer, with the release date and the number of the
+	 * release that day as the patch, e.g. 1.0.2611170).
 	 */
 	public function test_versions_agree(): void {
 		$root    = self::$root;
@@ -92,7 +94,7 @@ class ReleasePackageTest extends DFXPRAY_Test_Case {
 		$asset   = require $root . '/blocks/form/editor.asset.php';
 		$readme  = (string) file_get_contents( $root . '/readme.txt' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
-		$this->assertMatchesRegularExpression( '/^\d{2}\.\d{2}\.\d{2}$/', $version );
+		$this->assertMatchesRegularExpression( '/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.[1-9]\d(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d$/', $version );
 		$this->assertSame( $version, $header );
 		$this->assertSame( $version, $block['version'] );
 		$this->assertSame( $version, $asset['version'] );

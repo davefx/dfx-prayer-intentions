@@ -85,6 +85,14 @@ $dfxpray_group_form = static function ( ?array $group ) use ( $dfxpray_admin, $d
 				<label class="dfxpray-leader"><input type="checkbox" name="leaders[]" value="<?php echo esc_attr( (string) $user->ID ); ?>" <?php checked( in_array( $user->ID, $leaders, true ) ); ?>> <?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?></label>
 			<?php endforeach; ?>
 		</fieldset>
+		<?php $privacy = DFXPRAY_Settings::get_instance()->all( $group['id'] ?? null ); ?>
+		<fieldset>
+			<legend><?php esc_html_e( 'Data protection', 'dfx-prayer-intentions' ); ?></legend>
+			<p><label><?php esc_html_e( 'Data controller', 'dfx-prayer-intentions' ); ?><br><input type="text" class="regular-text" name="privacy[privacy_controller]" value="<?php echo esc_attr( $group ? $privacy['privacy_controller'] : '' ); ?>" placeholder="<?php esc_attr_e( 'e.g. the parish', 'dfx-prayer-intentions' ); ?>"></label></p>
+			<p><label><?php esc_html_e( 'Contact for data protection', 'dfx-prayer-intentions' ); ?><br><input type="text" class="regular-text" name="privacy[privacy_contact]" value="<?php echo esc_attr( $group ? $privacy['privacy_contact'] : '' ); ?>"></label></p>
+			<p><label><?php esc_html_e( 'Own privacy policy (URL, optional)', 'dfx-prayer-intentions' ); ?><br><input type="url" class="regular-text" name="privacy[privacy_policy_url]" value="<?php echo esc_attr( $group ? $privacy['privacy_policy_url'] : '' ); ?>"></label></p>
+			<p><label><?php esc_html_e( 'Processing agreement accepted on', 'dfx-prayer-intentions' ); ?><br><input type="date" name="privacy[dpa_accepted_on]" value="<?php echo esc_attr( $group ? $privacy['dpa_accepted_on'] : '' ); ?>"></label></p>
+		</fieldset>
 		<p><button type="submit" class="button button-primary"><?php echo $group ? esc_html__( 'Save group', 'dfx-prayer-intentions' ) : esc_html__( 'Create group', 'dfx-prayer-intentions' ); ?></button></p>
 	</form>
 	<?php
@@ -102,6 +110,21 @@ $dfxpray_group_form = static function ( ?array $group ) use ( $dfxpray_admin, $d
 		</h2>
 		<p><code><?php echo esc_html( home_url( '/' . $dfxpray_group['slug'] . '/' ) ); ?></code></p>
 		<?php $dfxpray_group_form( $dfxpray_group ); ?>
+		<details class="dfxpray-agreement">
+			<summary><?php esc_html_e( 'Data processing agreement of this group', 'dfx-prayer-intentions' ); ?></summary>
+			<p class="description"><?php esc_html_e( 'Copy it, have it accepted or signed by the controller of the group, and record the date above.', 'dfx-prayer-intentions' ); ?></p>
+			<?php
+			$dfxpray_admin->view(
+				'partials/copy-box',
+				array(
+					'id'    => 'dfxpray-agreement-' . $dfxpray_group['id'],
+					'label' => __( 'Data processing agreement of this group', 'dfx-prayer-intentions' ),
+					'text'  => DFXPRAY_Privacy::get_instance()->processing_agreement( $dfxpray_group['id'] ),
+					'rows'  => 16,
+				)
+			);
+			?>
+		</details>
 		<div class="dfxpray-inline-forms">
 			<?php if ( 'active' === $dfxpray_group['status'] ) : ?>
 				<?php $dfxpray_admin->form_open( 'archive_group', array( 'group_id' => $dfxpray_group['id'] ) ); ?>

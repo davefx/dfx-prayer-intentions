@@ -97,9 +97,15 @@ test( 'the administrator looks a person up by phone, hands over their data and e
 	php( `DFXPRAY_Members::get_instance()->create( ${ group.id }, array( 'name' => 'Luis Gómez', 'phone' => '+34600111222' ) ); echo 1;` );
 
 	await login( page, 'admin' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
+	const card = page.locator( '.dfxpray-group', { hasText: 'Santa Marta' } );
+	await card.getByLabel( 'Data controller' ).fill( 'Parroquia San Manuel González' );
+	await card.getByLabel( 'Contact for data protection' ).fill( 'privacidad@example.org' );
+	await card.getByRole( 'button', { name: 'Save group' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Group saved.' );
+
 	await page.goto( '/wp-admin/admin.php?page=dfxpray-global' );
-	await page.getByLabel( 'Data controller' ).fill( 'Parroquia San Manuel González' );
-	await page.getByLabel( 'Contact for data protection' ).fill( 'privacidad@example.org' );
+	await page.getByLabel( 'Provider of the service (data processor)' ).fill( 'David Marín Carreño' );
 	await page.getByRole( 'button', { name: 'Save settings' } ).click();
 	await expect( page.locator( '.notice-success' ) ).toContainText( 'Settings saved.' );
 
@@ -114,7 +120,12 @@ test( 'the administrator looks a person up by phone, hands over their data and e
 	expect( php( `echo wp_json_encode( array( count( DFXPRAY_Intentions::get_instance()->query( ${ group.id } ) ), count( DFXPRAY_Members::get_instance()->for_group( ${ group.id } ) ) ) );` ) ).toEqual( [ 0, 0 ] );
 
 	const form = await page.request.get( `/${ group.slug }/` );
-	expect( await form.text() ).toContain( 'Parroquia San Manuel González (privacidad@example.org).' );
+	const html = await form.text();
+	expect( html ).toContain( 'Parroquia San Manuel González (privacidad@example.org).' );
+	expect( html ).toContain( 'David Marín Carreño provides this tool free of charge to Parroquia San Manuel González as data processor' );
+
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
+	await expect( page.locator( `#dfxpray-agreement-${ group.id }` ) ).toHaveValue( /1\. Parties\. Parroquia San Manuel González, as data controller, and David Marín Carreño, as data processor\./ );
 } );
 
 test( 'each leader acknowledges the duty of confidentiality once', async ( { page } ) => {

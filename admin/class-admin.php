@@ -188,6 +188,7 @@ final class DFXPRAY_Admin {
 		echo '<h1>' . esc_html( $group['name'] ) . '</h1>';
 		$this->render_notices();
 		$this->confidentiality_notice();
+		$this->agreement_notice( $group_id );
 
 		$counts = DFXPRAY_Intentions::get_instance()->counts( $group_id );
 		$badges = array(
@@ -224,6 +225,19 @@ final class DFXPRAY_Admin {
 		echo '<div class="notice notice-info inline dfxpray-confidentiality"><p>' . esc_html__( 'As a leader of a group you will learn very sensitive data: illnesses, deaths, family situations. You have a duty of confidentiality: do not share anything outside the panel, except the discreet summary for the group, and keep this duty also when you stop being a leader.', 'dfx-prayer-intentions' ) . '</p>';
 		$this->form_open( 'ack_confidentiality' );
 		echo '<p><button type="submit" class="button button-primary">' . esc_html__( 'Understood', 'dfx-prayer-intentions' ) . '</button></p></form></div>';
+	}
+
+	/**
+	 * A group without its controller or an accepted processing agreement.
+	 *
+	 * @param int $group_id Group ID.
+	 */
+	private function agreement_notice( int $group_id ): void {
+		if ( ! DFXPRAY_Privacy::get_instance()->agreement_pending( $group_id ) ) {
+			return;
+		}
+
+		echo '<div class="notice notice-info inline dfxpray-agreement-pending"><p>' . esc_html__( 'Data protection: this group still lacks its data controller or the accepted processing agreement. The administrator of the site records them in the groups page.', 'dfx-prayer-intentions' ) . '</p></div>';
 	}
 
 	/**
@@ -612,13 +626,35 @@ final class DFXPRAY_Admin {
 			),
 			'privacy_controller'       => array(
 				'type'  => 'text',
-				'label' => __( 'Data controller', 'dfx-prayer-intentions' ),
-				'help'  => __( 'Who is responsible for the data, e.g. the parish. Empty: the name of the site.', 'dfx-prayer-intentions' ),
+				'label' => __( 'Default data controller', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Each group sets its own in the groups page; this one is for groups that have none. Empty: the name of the site.', 'dfx-prayer-intentions' ),
 			),
 			'privacy_contact'          => array(
 				'type'  => 'text',
-				'label' => __( 'Contact for data protection', 'dfx-prayer-intentions' ),
+				'label' => __( 'Default contact for data protection', 'dfx-prayer-intentions' ),
 				'help'  => __( 'An email or address where people can exercise their rights.', 'dfx-prayer-intentions' ),
+			),
+			'provider_name'            => array(
+				'type'  => 'text',
+				'label' => __( 'Provider of the service (data processor)', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Who runs this site for the parishes and groups: a person, a company or an association. Empty: the site itself is the controller.', 'dfx-prayer-intentions' ),
+			),
+			'provider_tax_id'          => array(
+				'type'  => 'text',
+				'label' => __( 'Tax ID of the provider', 'dfx-prayer-intentions' ),
+			),
+			'provider_address'         => array(
+				'type'  => 'text',
+				'label' => __( 'Address of the provider', 'dfx-prayer-intentions' ),
+			),
+			'provider_email'           => array(
+				'type'  => 'text',
+				'label' => __( 'Email of the provider for data protection', 'dfx-prayer-intentions' ),
+			),
+			'subprocessors'            => array(
+				'type'  => 'textarea',
+				'label' => __( 'Subprocessors', 'dfx-prayer-intentions' ),
+				'help'  => __( 'One per line: who and for what, and where, e.g. “Hosting: Hetzner (Germany)”.', 'dfx-prayer-intentions' ),
 			),
 			'consent_min_age'          => array(
 				'type'  => 'number',
@@ -645,7 +681,7 @@ final class DFXPRAY_Admin {
 		if ( 'global' === $scope ) {
 			$sections = array_merge(
 				array(
-					__( 'Data and protection', 'dfx-prayer-intentions' ) => array( 'privacy_controller', 'privacy_contact', 'consent_min_age', 'retention_days', 'phone_country_code', 'url_base', 'rate_limit_per_hour', 'turnstile_site_key', 'turnstile_secret', 'delete_data_on_uninstall' ),
+					__( 'Data and protection', 'dfx-prayer-intentions' ) => array( 'provider_name', 'provider_tax_id', 'provider_address', 'provider_email', 'subprocessors', 'privacy_controller', 'privacy_contact', 'consent_min_age', 'retention_days', 'phone_country_code', 'url_base', 'rate_limit_per_hour', 'turnstile_site_key', 'turnstile_secret', 'delete_data_on_uninstall' ),
 				),
 				$sections
 			);
