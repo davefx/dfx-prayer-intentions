@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611170
+Stable tag: 1.0.2611171
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611171 =
+* Fixed: "To ask", in the leaders' digest, no longer lists the departed and thanksgivings whose review is near when the group closes them automatically: they close by themselves and there is nothing to ask. Those marked "Pending to ask" still appear.
 
 = 1.0.2611170 =
 * New version numbers: MAJOR.MINOR.YYMMDDN (SemVer, with the release date and the number of the release that day as the patch). This is the first one; it follows 26.11.41.

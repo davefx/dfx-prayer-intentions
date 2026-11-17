@@ -168,8 +168,25 @@ final class DFXPRAY_Digest_Composer {
 	}
 
 	/**
+	 * Whether an intention closes by itself at its review (the departed and
+	 * the thanksgivings, when the group closes them automatically), so there
+	 * is nothing to ask about it.
+	 *
+	 * @param array $intention Intention.
+	 */
+	private function closes_by_itself( array $intention ): bool {
+		$setting = array(
+			'deceased'     => 'deceased_auto_close',
+			'thanksgiving' => 'thanksgiving_auto_close',
+		)[ $intention['type'] ] ?? '';
+
+		return '' !== $setting && (bool) DFXPRAY_Settings::get_instance()->get( $setting, (int) $intention['group_id'] );
+	}
+
+	/**
 	 * Intentions to ask the requester about: those marked so, and the active
-	 * ones whose review comes in the next days, with whom to ask.
+	 * ones whose review comes in the next days (except those that close by
+	 * themselves), with whom to ask.
 	 *
 	 * @param array[] $intentions Listable intentions, sorted.
 	 * @return string[]
@@ -182,7 +199,7 @@ final class DFXPRAY_Digest_Composer {
 
 		foreach ( $intentions as $intention ) {
 			$review = (string) $intention['next_review'];
-			$soon   = 'active' === $intention['status'] && '' !== $review && $review <= $until;
+			$soon   = 'active' === $intention['status'] && '' !== $review && $review <= $until && ! $this->closes_by_itself( $intention );
 			if ( ! $intention['to_ask'] && ! $soon ) {
 				continue;
 			}

@@ -181,6 +181,30 @@ class DigestComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The departed and thanksgivings that close by themselves at their review
+	 * are nothing to ask about, unless a leader marked them so or the group
+	 * keeps them open.
+	 */
+	public function test_nothing_to_ask_about_what_closes_by_itself(): void {
+		$intentions = DFXPRAY_Intentions::get_instance();
+		$departed   = $this->make_active( $this->group, array( 'beneficiary_name' => 'Jaime', 'type' => 'deceased', 'reference_date' => '2026-08-23', 'summary' => 'descanso' ) );
+		$thanks     = $this->make_active( $this->group, array( 'beneficiary_name' => 'Lucía', 'type' => 'thanksgiving', 'summary' => 'salió bien' ) );
+		$marked     = $this->make_active( $this->group, array( 'beneficiary_name' => 'Pedro', 'type' => 'deceased', 'reference_date' => '2026-08-23', 'summary' => 'fecha dudosa', 'to_ask' => true ) );
+		foreach ( array( $departed, $thanks, $marked ) as $id ) {
+			$intentions->postpone( $id, '2026-09-21' );
+		}
+
+		$leaders = DFXPRAY_Digest_Composer::get_instance()->compose( $this->group )['leaders'];
+
+		$this->assertStringNotContainsString( 'descanso –', $leaders );
+		$this->assertStringNotContainsString( 'salió bien –', $leaders );
+		$this->assertStringContainsString( 'fecha dudosa († 23/08) – ask Luis Gómez', $leaders );
+
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'deceased_auto_close' => false ) );
+		$this->assertStringContainsString( 'descanso († 23/08) – ask Luis Gómez, review on 21/09', DFXPRAY_Digest_Composer::get_instance()->compose( $this->group )['leaders'] );
+	}
+
+	/**
 	 * News of the last 24 hours only reach the leaders.
 	 */
 	public function test_news_of_the_last_day_for_leaders(): void {
