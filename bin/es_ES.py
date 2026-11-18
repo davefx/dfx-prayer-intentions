@@ -144,7 +144,7 @@ T = {
 "With “first name” discretion, the description cannot include surnames.": "Con discreción «nombre de pila», la descripción no puede incluir apellidos.",
 "How someone is called cannot be longer than %d characters.": "Cómo se nombra a alguien no puede tener más de %d caracteres.",
 "Daily message: thanksgivings during (days)": "Mensaje diario: acciones de gracias durante (días)",
-"Counted from the day of the good news: 1 means only the next message. The monthly list keeps them.": "Desde el día de la buena noticia: 1 significa solo el mensaje siguiente. La lista mensual las conserva.",
+"How many daily messages carry it, from the day of the good news, or from the day it reaches the list if later: 1 means a single message. The monthly list keeps them.": "En cuántos mensajes diarios sale, desde el día de la buena noticia, o desde que entra en la lista si es después: 1 significa un solo mensaje. La lista mensual las conserva.",
 "Monthly list: thanksgivings of the last (days)": "Lista mensual: acciones de gracias de los últimos (días)",
 "Also those already closed, to give thanks again at the monthly adoration.": "También las ya cerradas, para volver a dar gracias en la adoración mensual.",
 "Close thanksgivings when their days are over": "Cerrar las acciones de gracias al cumplirse su plazo",

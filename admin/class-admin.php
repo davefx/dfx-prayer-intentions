@@ -499,7 +499,7 @@ final class DFXPRAY_Admin {
 			'daily_thanks_days'        => array(
 				'type'  => 'number',
 				'label' => __( 'Daily message: thanksgivings during (days)', 'dfx-prayer-intentions' ),
-				'help'  => __( 'Counted from the day of the good news: 1 means only the next message. The monthly list keeps them.', 'dfx-prayer-intentions' ),
+				'help'  => __( 'How many daily messages carry it, from the day of the good news, or from the day it reaches the list if later: 1 means a single message. The monthly list keeps them.', 'dfx-prayer-intentions' ),
 			),
 			'monthly_thanks_days'      => array(
 				'type'  => 'number',

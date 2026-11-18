@@ -702,6 +702,42 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * With one day, a thanksgiving goes in exactly one daily message:
+	 * the one of the day of the good news, or of the day it reaches the
+	 * list, if it is written down later.
+	 */
+	public function test_thanksgivings_appear_once_counted_from_when_they_reach_the_list(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'      => 'proposals',
+				'index_header'      => '',
+				'index_footer'      => '',
+				'daily_thanks_days' => 1,
+			)
+		);
+		$thanks = array(
+			'relationship' => '',
+			'type'         => 'thanksgiving',
+		);
+
+		$this->freeze_time( '2026-09-17 05:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Luis', 'summary' => 'salió bien', 'reference_date' => '2026-09-17' ) + $thanks );
+		$this->freeze_time( '2026-09-18 05:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Manolo', 'summary' => 'todo muy bien', 'reference_date' => '2026-09-17' ) + $thanks );
+
+		$composer = DFXPRAY_Index_Composer::get_instance();
+		$this->freeze_time( '2026-09-17 05:00' );
+		$this->assertStringContainsString( '• Luis: salió bien', $composer->compose( $this->group ) );
+		$this->freeze_time( '2026-09-18 05:00' );
+		$text = $composer->compose( $this->group );
+		$this->assertStringNotContainsString( 'Luis', $text );
+		$this->assertStringContainsString( '• Manolo: todo muy bien', $text );
+		$this->freeze_time( '2026-09-19 05:00' );
+		$this->assertStringNotContainsString( 'Manolo', $composer->compose( $this->group ) );
+	}
+
+	/**
 	 * The brothers who celebrate their birthday that day open "Especially",
 	 * unless the group turns it off.
 	 */

@@ -223,8 +223,10 @@ final class DFXPRAY_Index_Composer {
 		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && ( $arrived( $i ) >= $since || isset( $revived[ $i['id'] ] ) );
 		$news    = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
 		$buckets = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
-		$thanks  = $this->departed_since( 'daily_thanks_days', $group_id );
-		$thanked = array_values( array_filter( $buckets['thanks'], static fn( $i ) => ( $i['reference_date'] ?? substr( (string) $i['created_at'], 0, 10 ) ) >= $thanks ) );
+		// A thanksgiving goes in as many daily messages as the setting says: 1, only one.
+		$thanks = DFXPRAY_Clock::get_instance()->local( DFXPRAY_Clock::get_instance()->today() )->modify( '-' . ( (int) DFXPRAY_Settings::get_instance()->get( 'daily_thanks_days', $group_id ) - 1 ) . ' days' )->format( 'Y-m-d' );
+		// From the day of the good news, or from the day it reached the list if later.
+		$thanked = array_values( array_filter( $buckets['thanks'], static fn( $i ) => max( (string) ( $i['reference_date'] ?? '' ), substr( max( (string) $i['created_at'], (string) $i['activated_at'] ), 0, 10 ) ) >= $thanks ) );
 
 		$news_departed = array_values( array_filter( $news, static fn( $i ) => 'deceased' === $i['type'] ) );
 		$news_serious  = array_values( array_filter( $news, static fn( $i ) => 'deceased' !== $i['type'] ) );

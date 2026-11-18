@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611180
+Stable tag: 1.0.2611181
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611181 =
+* Changed: "Daily message: thanksgivings during (days)" is now the number of daily messages that carry a thanksgiving (1: only one), counted from the day of the good news, or from the day it reaches the list if it is written down later.
 
 = 1.0.2611180 =
 * Fixed: the daily message brings back to "Especially" what turns serious again: an intention that gets an update marked as news, or that is reopened, goes there with its summary for the same days as a new one. Whatever reaches the list counts as news from that day, however old the request: approved in moderation, or written down late by a leader.
