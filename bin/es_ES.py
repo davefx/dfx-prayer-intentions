@@ -127,7 +127,7 @@ T = {
 "Write the name of the member.": "Escribe el nombre del miembro.",
 "The birthday is not a valid day.": "El cumpleaños no es un día válido.",
 "Daily message: news go first during (days)": "Mensaje diario: las novedades van primero durante (días)",
-"What was registered the day before (and that morning) goes in “Especially”. 0: never.": "Lo registrado el día anterior (y esa misma mañana) va en «Especialmente». 0: nunca.",
+"What reached the list (registered or approved, however old the request) or was reopened the day before (and that morning), and what got an update marked as news, goes in “Especially”. 0: never.": "Lo que entró en la lista (registrado o aprobado, aunque la petición sea antigua) o se reabrió el día anterior (y esa misma mañana), y lo que recibió una actualización marcada como novedad, va en «Especialmente». 0: nunca.",
 "Description changed": "Descripción cambiada",
 "How we call them: Toni, Javi Cavallé…": "Cómo se le nombra: Toni, Javi Cavallé…",
 "How the requester is called": "Cómo se nombra a quien lo pide",

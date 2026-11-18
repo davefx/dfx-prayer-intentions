@@ -1,7 +1,7 @@
 /**
  * A leader moderates requests and shares the index.
  */
-const { groupUrl, test, expect, resetData, createGroup, createIntention, login, php } = require( '../helpers' );
+const { groupUrl, test, expect, resetData, createGroup, createIntention, freeze, login, php } = require( '../helpers' );
 
 let group;
 
@@ -108,7 +108,9 @@ test( 'spam is discarded and duplicates are merged into the existing intention',
 } );
 
 test( 'a group shares its index as prayer proposals, with members marked', async ( { page } ) => {
+	freeze( '2026-01-02 10:00' ); // Registered long ago: not news.
 	const marina = createIntention( group.id, { requester_name: 'Felipe Arizu', beneficiary_name: 'Marina', relationship: 'esposa de', summary: 'problemas de salud', asked_on: '2026-01-02' } );
+	freeze( null );
 	createIntention( group.id, { requester_name: 'Javier Cavallé', requester_is_member: true, beneficiary_name: 'Antonio', relationship: 'amigo de', summary: 'tumor de páncreas', priority: 'high' } );
 	await login( page, 'leader1' );
 
@@ -141,4 +143,30 @@ test( 'the index warns when it is too long for one message', async ( { page } ) 
 	await page.goto( groupUrl( group.id, 'digest' ) );
 
 	await expect( page.locator( '.notice-warning:not(.update-nag)' ) ).toContainText( 'over 4,000' );
+} );
+
+test( 'what reaches the list today, however old, or gets news goes in “Especially” of the daily message', async ( { page } ) => {
+	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'index_layout' => 'proposals', 'index_header' => '*Daily*', 'index_footer' => '' ) ); echo 1;` );
+	freeze( '2026-01-02 10:00' ); // A request waiting since then, and two intentions on the list since then.
+	createIntention( group.id, { beneficiary_name: 'Carmen', relationship: '' }, 'form' );
+	const ignacio = createIntention( group.id, { beneficiary_name: 'Ignacio', relationship: '', summary: 'reingresado', topic: 'health' } );
+	createIntention( group.id, { beneficiary_name: 'Rosa', relationship: '', summary: 'sigue igual', topic: 'health' } );
+	freeze( null );
+	createIntention( group.id, { beneficiary_name: 'Pepe', relationship: '', summary: 'apuntado tarde', topic: 'health', asked_on: '2026-01-02' } );
+	await login( page, 'leader1' );
+
+	await page.goto( groupUrl( group.id, 'moderation' ) );
+	const item = page.locator( '.dfxpray-moderation-item' );
+	await item.getByLabel( 'Summary for the index' ).fill( 'por su salud' );
+	await item.getByRole( 'button', { name: 'Approve' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention approved.' );
+
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: ignacio } ) );
+	await page.getByLabel( 'New update' ).fill( 'Lo han vuelto a ingresar' );
+	await expect( page.getByLabel( 'Show as news in the daily digest' ) ).toBeChecked();
+	await page.getByRole( 'button', { name: 'Add update' } ).click();
+
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	const message = await page.locator( '#dfxpray-digest-shareable' ).inputValue();
+	expect( message ).toMatch( /\*Especially\*\n(• (Ignacio: reingresado|Carmen: por su salud|Pepe: apuntado tarde)\n){3}\n\*For the health of\*\n• Rosa/ );
 } );

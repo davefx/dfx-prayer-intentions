@@ -203,7 +203,8 @@ final class DFXPRAY_Index_Composer {
 
 	/**
 	 * Lines of the "prayer proposals" layout, the daily message: in
-	 * "Especially", the departed of the day before and the anniversaries of
+	 * "Especially", the news (registered, approved, reopened or with a news
+	 * update since the day before): the departed of the day before and the anniversaries of
 	 * a death, then the birthdays, then the other news and the urgent ones
 	 * (high priority), each block apart; the people whose health we pray for (only their
 	 * names, our brothers first), the rest, current affairs, the thanksgivings
@@ -216,7 +217,10 @@ final class DFXPRAY_Index_Composer {
 	 */
 	private function proposal_sections( array $intentions, int $group_id ): array {
 		$since   = (int) DFXPRAY_Settings::get_instance()->get( 'daily_news_days', $group_id ) > 0 ? $this->departed_since( 'daily_news_days', $group_id ) : '9999-12-31';
-		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && substr( (string) $i['created_at'], 0, 10 ) >= $since;
+		$revived = $this->revived_since( $group_id, $since );
+		// News from the day it reaches the list: approved, or written down by a leader, however old the request.
+		$arrived = static fn( $i ) => substr( max( (string) $i['created_at'], (string) $i['activated_at'] ), 0, 10 );
+		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && ( $arrived( $i ) >= $since || isset( $revived[ $i['id'] ] ) );
 		$news    = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
 		$buckets = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
 		$thanks  = $this->departed_since( 'daily_thanks_days', $group_id );
@@ -237,6 +241,26 @@ final class DFXPRAY_Index_Composer {
 			'thanks'   => $this->grouped_lines( $thanked ),
 			'departed' => array_map( fn( $intention ) => $this->line( $intention, false ), $buckets['departed'] ),
 		);
+	}
+
+	/**
+	 * The intentions that are news again since a day: they got an update
+	 * marked as news, or were reopened.
+	 *
+	 * @param int    $group_id Group ID.
+	 * @param string $since    Y-m-d.
+	 * @return array<int, true> Intention ID => true.
+	 */
+	private function revived_since( int $group_id, string $since ): array {
+		$ids = array_column( DFXPRAY_Updates::get_instance()->news_since( $group_id, $since . ' 00:00:00' ), 'intention_id' );
+
+		foreach ( DFXPRAY_Log::get_instance()->for_group( $group_id, array( 'intention_reopened' ) ) as $entry ) {
+			if ( substr( (string) $entry['created_at'], 0, 10 ) >= $since ) {
+				$ids[] = $entry['intention_id'];
+			}
+		}
+
+		return array_fill_keys( array_map( 'intval', $ids ), true );
 	}
 
 	/**

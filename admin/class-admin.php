@@ -489,7 +489,7 @@ final class DFXPRAY_Admin {
 			'daily_news_days'          => array(
 				'type'  => 'number',
 				'label' => __( 'Daily message: news go first during (days)', 'dfx-prayer-intentions' ),
-				'help'  => __( 'What was registered the day before (and that morning) goes in “Especially”. 0: never.', 'dfx-prayer-intentions' ),
+				'help'  => __( 'What reached the list (registered or approved, however old the request) or was reopened the day before (and that morning), and what got an update marked as news, goes in “Especially”. 0: never.', 'dfx-prayer-intentions' ),
 			),
 			'daily_birthdays'          => array(
 				'type'  => 'checkbox',

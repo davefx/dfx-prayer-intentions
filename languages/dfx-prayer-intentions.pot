@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 26.11.40\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611180\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-17T11:52:05+00:00\n"
+"POT-Creation-Date: 2026-11-18T05:14:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -329,7 +329,7 @@ msgid "Daily message: news go first during (days)"
 msgstr ""
 
 #: admin/class-admin.php:492
-msgid "What was registered the day before (and that morning) goes in “Especially”. 0: never."
+msgid "What reached the list (registered or approved, however old the request) or was reopened the day before (and that morning), and what got an update marked as news, goes in “Especially”. 0: never."
 msgstr ""
 
 #: admin/class-admin.php:496
@@ -2036,32 +2036,32 @@ msgid "Leaders only"
 msgstr ""
 
 #. translators: 1: who to ask, with their phone, 2: review date.
-#: includes/class-digest-composer.php:195
+#: includes/class-digest-composer.php:212
 #, php-format
 msgid "ask %1$s, review on %2$s"
 msgstr ""
 
 #. translators: %s: who to ask, with their phone.
-#: includes/class-digest-composer.php:197
+#: includes/class-digest-composer.php:214
 #, php-format
 msgid "ask %s"
 msgstr ""
 
 #. translators: 1: key date label (funeral, appointment…), 2: person.
-#: includes/class-digest-composer.php:232
+#: includes/class-digest-composer.php:249
 #, php-format
 msgctxt "key date label and person"
 msgid "%1$s: %2$s"
 msgstr ""
 
 #. translators: 1: number of pending intentions, 2: link to the panel.
-#: includes/class-digest-composer.php:338
+#: includes/class-digest-composer.php:355
 #, php-format
 msgid "Pending moderation: %1$d – %2$s"
 msgstr ""
 
 #. translators: 1: number of intentions in review, 2: link to the panel.
-#: includes/class-digest-composer.php:343
+#: includes/class-digest-composer.php:360
 #, php-format
 msgid "Reviews due: %1$d – %2$s"
 msgstr ""
@@ -2247,81 +2247,81 @@ msgstr ""
 msgid "%1$s: on the anniversary of their death († %2$s)"
 msgstr ""
 
-#: includes/class-index-composer.php:268
+#: includes/class-index-composer.php:292
 msgid "For those who study, sit exams or look for work"
 msgstr ""
 
 #. translators: %s: the member, as he is called ("N.H. Ramón").
-#: includes/class-index-composer.php:334
+#: includes/class-index-composer.php:358
 #, php-format
 msgid "%s: on his birthday"
 msgstr ""
 
 #. translators: 1: members, separated by commas ("N.H. Ramón, N.H. Teo"), 2: the last member ("N.H. Luis").
-#: includes/class-index-composer.php:339
+#: includes/class-index-composer.php:363
 #, php-format
 msgid "%1$s and %2$s: on their birthday"
 msgstr ""
 
 #. translators: 1: the member, as he is called ("N.H. Juan"), 2: year of his death.
-#: includes/class-index-composer.php:360
+#: includes/class-index-composer.php:384
 #, php-format
 msgid "%1$s: on the anniversary of his death († %2$s)"
 msgstr ""
 
-#: includes/class-index-composer.php:458
+#: includes/class-index-composer.php:482
 msgid "Upcoming events"
 msgstr ""
 
-#: includes/class-index-composer.php:459
-#: includes/class-index-composer.php:465
+#: includes/class-index-composer.php:483
+#: includes/class-index-composer.php:489
 msgid "For our departed"
 msgstr ""
 
-#: includes/class-index-composer.php:460
+#: includes/class-index-composer.php:484
 msgid "The sick and difficult situations"
 msgstr ""
 
-#: includes/class-index-composer.php:461
+#: includes/class-index-composer.php:485
 #: includes/class-lifecycle.php:41
 msgid "Thanksgiving"
 msgstr ""
 
-#: includes/class-index-composer.php:462
+#: includes/class-index-composer.php:486
 msgid "Especially"
 msgstr ""
 
-#: includes/class-index-composer.php:463
+#: includes/class-index-composer.php:487
 msgid "Also for"
 msgstr ""
 
-#: includes/class-index-composer.php:464
+#: includes/class-index-composer.php:488
 msgid "We give thanks"
 msgstr ""
 
-#: includes/class-index-composer.php:466
+#: includes/class-index-composer.php:490
 msgid "For the health of"
 msgstr ""
 
-#: includes/class-index-composer.php:467
+#: includes/class-index-composer.php:491
 msgctxt "heading of the current affairs section"
 msgid "We also pray for"
 msgstr ""
 
-#: includes/class-index-composer.php:468
+#: includes/class-index-composer.php:492
 msgid "For the sick"
 msgstr ""
 
-#: includes/class-index-composer.php:469
+#: includes/class-index-composer.php:493
 msgid "Studies, exams and job interviews"
 msgstr ""
 
-#: includes/class-index-composer.php:470
+#: includes/class-index-composer.php:494
 #: includes/class-intentions.php:91
 msgid "Economic or legal problems"
 msgstr ""
 
-#: includes/class-index-composer.php:471
+#: includes/class-index-composer.php:495
 msgid "Other intentions"
 msgstr ""
 

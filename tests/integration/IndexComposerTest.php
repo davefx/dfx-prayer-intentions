@@ -643,6 +643,65 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * An old intention that turns serious again is news too: a news update
+	 * or a reopening bring it to "Especially" with its summary for the same
+	 * days as a new one, and so do a request approved in moderation days
+	 * after it was sent and an old case a leader writes down late. An update not marked as news leaves it in its place.
+	 */
+	public function test_news_updates_reopenings_and_approvals_go_first(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout' => 'proposals',
+				'index_header' => '*Daily*',
+				'index_footer' => '',
+			)
+		);
+
+		$this->freeze_time( '2026-09-01 10:00' );
+		$health    = array(
+			'relationship' => '',
+			'topic'        => 'health',
+		);
+		$readmit   = $this->make_active( $this->group, array( 'beneficiary_name' => 'Ignacio', 'summary' => 'reingresado por una infección' ) + $health );
+		$quiet     = $this->make_active( $this->group, array( 'beneficiary_name' => 'Rosa', 'summary' => 'sigue igual' ) + $health );
+		$reopened  = $this->make_active( $this->group, array( 'beneficiary_name' => 'Carlos', 'summary' => 'nueva cura' ) + $health );
+		$intention = DFXPRAY_Intentions::get_instance();
+		$intention->close( $reopened, 'expired' );
+		$approved = $this->make_pending( $this->group, array( 'beneficiary_name' => 'Luisa', 'relationship' => '' ) );
+
+		$this->freeze_time( '2026-09-23 21:00' );
+		$this->assertTrue( $intention->approve( $approved, array( 'summary' => 'pide oración', 'topic' => 'health' ) ) );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Pepe', 'summary' => 'apuntado tarde', 'asked_on' => '2026-08-01' ) + $health );
+		DFXPRAY_Updates::get_instance()->add( $readmit, 'Lo han vuelto a ingresar', true );
+		DFXPRAY_Updates::get_instance()->add( $quiet, 'Sin cambios', false );
+		$this->assertTrue( $intention->reopen( $reopened ) );
+
+		$this->freeze_time( '2026-09-24 05:00' );
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*Especially*',
+					'• Ignacio: reingresado por una infección',
+					'• Carlos: nueva cura',
+					'• Luisa: pide oración',
+					'• Pepe: apuntado tarde',
+					'',
+					'*For the health of*',
+					'• Rosa',
+				)
+			),
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+
+		$this->freeze_time( '2026-09-25 05:00' );
+		$this->assertStringNotContainsString( '*Especially*', DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
 	 * The brothers who celebrate their birthday that day open "Especially",
 	 * unless the group turns it off.
 	 */

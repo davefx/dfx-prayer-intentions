@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611171
+Stable tag: 1.0.2611180
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611180 =
+* Fixed: the daily message brings back to "Especially" what turns serious again: an intention that gets an update marked as news, or that is reopened, goes there with its summary for the same days as a new one. Whatever reaches the list counts as news from that day, however old the request: approved in moderation, or written down late by a leader.
 
 = 1.0.2611171 =
 * Fixed: "To ask", in the leaders' digest, no longer lists the departed and thanksgivings whose review is near when the group closes them automatically: they close by themselves and there is nothing to ask. Those marked "Pending to ask" still appear.
