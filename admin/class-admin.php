@@ -728,6 +728,9 @@ final class DFXPRAY_Admin {
 			'group_settings_saved'      => __( 'Settings saved', 'dfx-prayer-intentions' ),
 			'global_settings_saved'     => __( 'Global settings saved', 'dfx-prayer-intentions' ),
 			'privacy_erased'            => __( 'Personal data erased on request', 'dfx-prayer-intentions' ),
+			'invitation_sent'           => __( 'Invitation to lead the group sent', 'dfx-prayer-intentions' ),
+			'invitation_withdrawn'      => __( 'Invitation to lead the group withdrawn', 'dfx-prayer-intentions' ),
+			'invitation_accepted'       => __( 'Invitation accepted: new leader', 'dfx-prayer-intentions' ),
 		);
 
 		$text    = $labels[ $entry['action'] ] ?? $entry['action'];

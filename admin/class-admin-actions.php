@@ -26,7 +26,8 @@ final class DFXPRAY_Admin_Actions {
 	 * Actions: method and the scope used for the permission check.
 	 *
 	 * Scopes: intention (intention_id), comment (comment_id), group (group_id),
-	 * admin (administrator only).
+	 * invitation (invitation_id: the invitation's own group), admin
+	 * (administrator only).
 	 */
 	private const ACTIONS = array(
 		'approve'              => 'intention',
@@ -51,6 +52,8 @@ final class DFXPRAY_Admin_Actions {
 		'regenerate_slug'      => 'group',
 		'test_channel'         => 'group',
 		'send_digest_now'      => 'group',
+		'invite_leader'        => 'group',
+		'withdraw_invitation'  => 'invitation',
 		'save_group'           => 'admin',
 		'archive_group'        => 'admin',
 		'restore_group'        => 'admin',
@@ -194,6 +197,10 @@ final class DFXPRAY_Admin_Actions {
 				}
 				$member = DFXPRAY_Members::get_instance()->get( (int) $request['member_id'] );
 				return $member && $permissions->can_manage_group( $member['group_id'] );
+
+			case 'invitation':
+				$invitation = DFXPRAY_Invitations::get_instance()->get( (int) ( $request['invitation_id'] ?? 0 ) );
+				return $invitation && $permissions->can_manage_group( $invitation['group_id'] );
 
 			case 'comment':
 				$comment = DFXPRAY_Comments::get_instance()->get( (int) ( $request['comment_id'] ?? 0 ) );
@@ -491,6 +498,26 @@ final class DFXPRAY_Admin_Actions {
 	}
 
 	/**
+	 * Invite someone to lead the group.
+	 *
+	 * @param array $r Request.
+	 * @return int|WP_Error
+	 */
+	private function do_invite_leader( array $r ) {
+		return DFXPRAY_Invitations::get_instance()->invite( (int) $r['group_id'], (string) ( $r['name'] ?? '' ), (string) ( $r['email'] ?? '' ) );
+	}
+
+	/**
+	 * Withdraw a pending invitation. Its group is its own, never the request's.
+	 *
+	 * @param array $r Request.
+	 * @return true|WP_Error
+	 */
+	private function do_withdraw_invitation( array $r ) {
+		return DFXPRAY_Invitations::get_instance()->withdraw( (int) $r['invitation_id'] );
+	}
+
+	/**
 	 * Create or edit a group, with its leaders.
 	 *
 	 * @param array $r Request.
@@ -680,6 +707,8 @@ final class DFXPRAY_Admin_Actions {
 			'regenerate_slug'      => __( 'The form has a new address. The old one no longer works.', 'dfx-prayer-intentions' ),
 			'test_channel'         => __( 'Test message sent.', 'dfx-prayer-intentions' ),
 			'send_digest_now'      => __( 'Digest generated and sent.', 'dfx-prayer-intentions' ),
+			'invite_leader'        => __( 'Invitation sent.', 'dfx-prayer-intentions' ),
+			'withdraw_invitation'  => __( 'Invitation withdrawn.', 'dfx-prayer-intentions' ),
 			'save_group'           => __( 'Group saved.', 'dfx-prayer-intentions' ),
 			'archive_group'        => __( 'Group archived.', 'dfx-prayer-intentions' ),
 			'restore_group'        => __( 'Group restored.', 'dfx-prayer-intentions' ),

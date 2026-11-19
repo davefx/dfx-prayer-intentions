@@ -182,6 +182,7 @@ final class DFXPRAY_Groups {
 		$wpdb->delete( $t['groups'], array( 'id' => $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		DFXPRAY_Log::get_instance()->delete_for_group( $id );
 		DFXPRAY_Members::get_instance()->delete_for_group( $id );
+		DFXPRAY_Invitations::get_instance()->delete_for_group( $id );
 		delete_option( 'dfxpray_digest_' . $id );
 		delete_option( 'dfxpray_alerts_' . $id );
 		update_option( 'dfxpray_flush_rewrite', 1 );
@@ -210,6 +211,28 @@ final class DFXPRAY_Groups {
 		}
 
 		DFXPRAY_Log::get_instance()->add( 'group_leaders_set', $group_id, null, array( 'users' => array_values( $user_ids ) ) );
+	}
+
+	/**
+	 * Make a user a leader of a group, keeping the others.
+	 *
+	 * @param int $group_id Group ID.
+	 * @param int $user_id  User ID.
+	 */
+	public function add_leader( int $group_id, int $user_id ): void {
+		global $wpdb;
+
+		if ( in_array( $user_id, $this->get_leaders( $group_id ), true ) ) {
+			return;
+		}
+
+		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$this->tables()['group_leaders'],
+			array(
+				'group_id' => $group_id,
+				'user_id'  => $user_id,
+			)
+		);
 	}
 
 	/**

@@ -56,15 +56,24 @@ class PermissionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Administrators manage every group.
+	 * Administrators manage the groups as such (Manage groups), but only see
+	 * and work in the groups they lead, exactly like leaders.
 	 */
-	public function test_admin_manages_all_groups(): void {
+	public function test_admin_sees_only_the_groups_they_lead(): void {
 		$admin       = self::factory()->user->create( array( 'role' => 'administrator' ) );
 		$permissions = DFXPRAY_Permissions::get_instance();
 
 		$this->assertTrue( $permissions->is_admin( $admin ) );
-		$this->assertTrue( $permissions->can_manage_group( $this->b, $admin ) );
-		$this->assertEqualsCanonicalizing( array( $this->a, $this->b ), $permissions->group_ids_for_user( $admin ) );
+		$this->assertTrue( $permissions->can_access_panel( $admin ) );
+		$this->assertFalse( $permissions->can_manage_group( $this->a, $admin ) );
+		$this->assertFalse( $permissions->can_manage_group( $this->b, $admin ) );
+		$this->assertSame( array(), $permissions->group_ids_for_user( $admin ) );
+
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->a, array( $this->leader, $admin ) );
+
+		$this->assertTrue( $permissions->can_manage_group( $this->a, $admin ) );
+		$this->assertFalse( $permissions->can_manage_group( $this->b, $admin ) );
+		$this->assertSame( array( $this->a ), $permissions->group_ids_for_user( $admin ) );
 	}
 
 	/**
@@ -92,14 +101,16 @@ class PermissionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Archived groups disappear for leaders but not for administrators.
+	 * Archived groups disappear for everyone, administrators who lead them
+	 * included: they are only handled from Manage groups.
 	 */
-	public function test_archived_groups_hidden_from_leaders(): void {
+	public function test_archived_groups_hidden(): void {
 		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->a, array( $this->leader, $admin ) );
 		DFXPRAY_Groups::get_instance()->archive( $this->a );
 
 		$this->assertFalse( DFXPRAY_Permissions::get_instance()->can_manage_group( $this->a, $this->leader ) );
-		$this->assertTrue( DFXPRAY_Permissions::get_instance()->can_manage_group( $this->a, $admin ) );
+		$this->assertFalse( DFXPRAY_Permissions::get_instance()->can_manage_group( $this->a, $admin ) );
 	}
 
 	/**

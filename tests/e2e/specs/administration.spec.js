@@ -20,7 +20,8 @@ test( 'the administrator creates a group, assigns a leader, and the leader sees 
 	const url = ( await card.locator( 'code' ).textContent() ).trim();
 	expect( url ).toMatch( /\/prayer-requests-[a-z0-9]{8}\/$/ );
 
-	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings', 'Grupo San José' ] );
+	// The administrator manages the group but, not leading it, does not see its data.
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings' ] );
 
 	const leader = await browser.newPage();
 	await login( leader, 'leader1' );
@@ -29,6 +30,34 @@ test( 'the administrator creates a group, assigns a leader, and the leader sees 
 
 	const form = await page.request.get( url );
 	expect( form.status() ).toBe( 200 );
+} );
+
+test( 'an administrator only sees the groups they lead, and manages the others from Manage groups', async ( { page } ) => {
+	const mine = createGroup( 'Santa Marta', [ 'leader1', 'admin' ] );
+	const other = createGroup( 'San Pablo', [ 'leader1' ] );
+	createIntention( other.id, { summary: 'de otro grupo' }, 'form' );
+	await login( page, 'admin' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
+
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings', 'Santa Marta' ] );
+	await expect( page.locator( '#toplevel_page_dfxpray .awaiting-mod' ) ).toHaveCount( 0 );
+	await expect( page.locator( '.dfxpray-group-card' ) ).toHaveCount( 1 );
+	await expect( page.locator( '.dfxpray-group-card' ) ).toContainText( 'Santa Marta' );
+
+	for ( const tab of [ 'moderation', 'intentions', 'members', 'settings', 'log' ] ) {
+		await page.goto( groupUrl( other.id, tab ) );
+		await expect( page.locator( 'body' ) ).toContainText( /not allowed/ );
+		await expect( page.locator( 'body' ) ).not.toContainText( 'de otro grupo' );
+	}
+	await page.goto( groupUrl( mine.id, 'settings' ) );
+	await expect( page.locator( '.dfxpray-leaders' ) ).toContainText( 'Leader One' );
+
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
+	const card = page.locator( '.dfxpray-group', { hasText: 'San Pablo' } );
+	await card.getByLabel( 'Internal description' ).fill( 'Jueves' );
+	await card.getByRole( 'button', { name: 'Save group' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Group saved.' );
+	expect( php( `echo wp_json_encode( DFXPRAY_Groups::get_instance()->get( ${ other.id } )['description'] );` ) ).toBe( 'Jueves' );
 } );
 
 test( 'archiving a group closes its form; restoring opens it again', async ( { page } ) => {
@@ -76,7 +105,7 @@ test( 'a new address can be generated; the old one stops working', async ( { pag
 } );
 
 test( 'global settings apply to groups unless a group overrides them', async ( { page } ) => {
-	const group = createGroup( 'Santa Marta', [ 'leader1' ] );
+	const group = createGroup( 'Santa Marta', [ 'leader1', 'admin' ] );
 	await login( page, 'admin' );
 	await page.goto( '/wp-admin/admin.php?page=dfxpray-global' );
 

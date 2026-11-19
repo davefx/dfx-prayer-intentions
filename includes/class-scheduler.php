@@ -56,7 +56,8 @@ final class DFXPRAY_Scheduler {
 	}
 
 	/**
-	 * Daily work: delete closed and discarded intentions past retention.
+	 * Daily work: delete closed and discarded intentions past retention, and
+	 * invitations to lead a group that expired or were accepted a week ago.
 	 *
 	 * @return int How many intentions were deleted.
 	 */
@@ -76,6 +77,7 @@ final class DFXPRAY_Scheduler {
 		);
 
 		DFXPRAY_Intentions::get_instance()->delete( $ids );
+		DFXPRAY_Invitations::get_instance()->cleanup();
 
 		return count( $ids );
 	}

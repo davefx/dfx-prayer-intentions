@@ -112,6 +112,22 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * An administrator's app shows and reaches only the groups they lead.
+	 */
+	public function test_admin_app_is_scoped_to_groups_they_lead(): void {
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->leader, $admin ) );
+		$id = $this->make_active( $this->other );
+		wp_set_current_user( $admin );
+
+		$this->assertSame( array( $this->mine ), array_column( $this->call( 'bootstrap' )['data']['groups'], 'id' ) );
+		$this->assertTrue( $this->call( 'index', array( 'group_id' => $this->mine ) )['ok'] );
+		$this->assertSame( 'forbidden', $this->call( 'index', array( 'group_id' => $this->other ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'add_update', array( 'intention_id' => $id, 'body' => 'x' ) )['code'] );
+		$this->assertSame( array(), DFXPRAY_Updates::get_instance()->for_intention( $id ) );
+	}
+
+	/**
 	 * The message of the day is the group's index.
 	 */
 	public function test_index(): void {

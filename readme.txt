@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611191
+Stable tag: 1.0.2611192
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -33,6 +33,7 @@ DFX Prayer Intentions gives the leaders of each group a private panel for that j
 * Delivery by email, Telegram or a signed webhook (Slack, Discord, n8n…), besides copy and paste to WhatsApp.
 * Internal comments for calls, visits and contacts, which never leave the panel, and updates that reach the group as news.
 * Several independent groups in one site, each with its own leaders, form, index, digest and settings. With a single group, the plugin behaves as if groups did not exist.
+* Leaders invite new leaders of their group by email, from the group settings.
 
 **Privacy by design**
 
@@ -40,7 +41,7 @@ Prayer requests often carry health and religious information about third parties
 
 **Roles**
 
-The plugin adds a *Prayer leader* role whose only capability is access to the panel. Leaders only ever see the groups they are assigned to. Administrators manage groups, leaders and global settings, and can give panel access to other roles.
+The plugin adds a *Prayer leader* role whose only capability is access to the panel. Leaders only ever see the groups they are assigned to, and so do administrators: they create, edit, archive and delete every group and assign its leaders, keep the global settings and answer requests about personal data, and can give panel access to other roles, but they only see the requests of the groups they lead. A leader can invite someone by email to lead their group: the invitation is valid for seven days, and on accepting it the person becomes a leader at once, with an account if they had none. Only administrators remove leaders.
 
 == External services ==
 
@@ -84,6 +85,12 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611192 =
+* New: leaders invite other people to lead their group, by name and email, from "Group settings". The invitation lasts seven days; accepting it (with a button, never just by opening the link) makes the person a leader at once, with a new account if they had none, and tells the site's administrator. Only administrators remove leaders.
+* New: the "Leaders" section in "Group settings" shows the group's leaders and pending invitations. Leaders see only their co-leaders' names, never other users of the site, and inviting answers the same whether or not the email has an account.
+* Changed: administrators only see and open the groups they lead. They still manage every group (name, leaders, data protection, archive) from "Groups", and answer personal data requests across all groups from "Global settings".
+* Changed: invitations are included in personal data export and erasure, and in the suggested privacy policy.
 
 = 1.0.2611191 =
 * New: routines. A script can keep a group up to date through one REST route (`dfxpray/v1/<op>`), with the same operations and permissions as the leaders' app. It answers only to application passwords, never anonymously or to a browser session.

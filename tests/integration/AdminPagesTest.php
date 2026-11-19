@@ -97,10 +97,12 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 
 		$menu    = array();
 		$submenu = array();
-		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $second, array( $this->leader, $admin ) );
+		wp_set_current_user( $admin );
 		DFXPRAY_Admin::get_instance()->register_menu();
 		$this->assertSame(
-			array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $this->mine, 'dfxpray-group-' . $this->other, 'dfxpray-group-' . $second ),
+			array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $second ),
 			array_column( $submenu['dfxpray'], 2 )
 		);
 	}
@@ -380,6 +382,101 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$this->assertStringContainsString( 'name="settings[digest_time]"', $html );
 		$this->assertStringContainsString( 'name="settings[channels][telegram][token]"', $html );
 		$this->assertStringNotContainsString( 'name="settings[retention_days]"', $html );
+	}
+
+	/**
+	 * The group settings start with its leaders, the pending invitations
+	 * with a button to withdraw them, and the form to invite someone.
+	 */
+	public function test_settings_screen_leaders(): void {
+		$service = self::factory()->user->create(
+			array(
+				'role'         => 'dfxpray_leader',
+				'display_name' => 'Rutina',
+				'user_email'   => 'bot@example.org',
+			)
+		);
+		DFXPRAY_Service_Accounts::get_instance()->set( $service, true );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->leader, $service ) );
+		self::factory()->user->create(
+			array(
+				'role'         => 'dfxpray_leader',
+				'display_name' => 'Outsider',
+				'user_email'   => 'outsider@example.org',
+			)
+		);
+		$id = DFXPRAY_Invitations::get_instance()->invite( $this->mine, 'Pedro Gil', 'pedro@example.org' );
+		DFXPRAY_Invitations::get_instance()->invite( $this->other, 'Juan', 'juan@example.org' );
+		$leader = get_userdata( $this->leader );
+
+		$html = $this->tab( 'settings' );
+
+		$this->assertLessThan( strpos( $html, 'Public form' ), strpos( $html, 'dfxpray-leaders' ) );
+		$this->assertStringContainsString( esc_html( $leader->display_name ), $html );
+		$this->assertStringContainsString( 'Rutina', $html );
+		$this->assertStringNotContainsString( 'bot@example.org', $html );
+		$this->assertStringNotContainsString( esc_html( $leader->user_email ), $html );
+		$this->assertStringNotContainsString( 'Outsider', $html );
+		$this->assertStringNotContainsString( 'outsider@example.org', $html );
+		$this->assertStringContainsString( ' · service account', $html );
+		$this->assertStringContainsString( 'Pedro Gil', $html );
+		$this->assertStringContainsString( 'pedro@example.org', $html );
+		$this->assertStringContainsString( 'expires on', $html );
+		$this->assertStringContainsString( 'name="dfxpray_action" value="withdraw_invitation"', $html );
+		$this->assertStringContainsString( 'name="invitation_id" value="' . $id . '"', $html );
+		$this->assertStringContainsString( 'name="dfxpray_action" value="invite_leader"', $html );
+		$this->assertStringContainsString( 'Send invitation', $html );
+		$this->assertStringContainsString( 'Only the administrator of the site can remove leaders.', $html );
+		$this->assertStringNotContainsString( 'juan@example.org', $html );
+
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->leader, $service, $admin ) );
+		wp_set_current_user( $admin );
+		$this->assertStringContainsString( 'bot@example.org', $this->tab( 'settings' ) );
+	}
+
+	/**
+	 * An administrator who leads one group gets a menu entry, a card and the
+	 * tabs of that group only; the other is only in Manage groups.
+	 */
+	public function test_admin_sees_only_the_groups_they_lead(): void {
+		global $submenu, $menu;
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->leader, $admin ) );
+		$this->make_pending( $this->other );
+		wp_set_current_user( $admin );
+		$menu    = array();
+		$submenu = array();
+
+		DFXPRAY_Admin::get_instance()->register_menu();
+
+		$this->assertSame( array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $this->mine ), array_column( $submenu['dfxpray'], 2 ) );
+		$this->assertStringNotContainsString( 'awaiting-mod', $menu[ array_key_last( $menu ) ][0] );
+
+		foreach ( array( 'moderation', 'intentions', 'reviews', 'digest', 'monthly', 'members', 'settings', 'log' ) as $tab ) {
+			$this->assertStringContainsString( 'not allowed', $this->tab( $tab, array(), $this->other ), $tab );
+			$this->assertStringNotContainsString( 'not allowed', $this->tab( $tab ), $tab );
+		}
+
+		$groups = $this->render( 'dfxpray' );
+		$this->assertSame( 1, substr_count( $groups, 'dfxpray-group-card' ) );
+		$this->assertStringContainsString( 'Manage groups', $groups );
+		$this->assertStringContainsString( 'value="' . $this->other . '"', $groups );
+		$this->assertStringContainsString( 'Other', $groups );
+	}
+
+	/**
+	 * An administrator who leads no group is told so, above Manage groups.
+	 */
+	public function test_admin_leading_nothing(): void {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+
+		$groups = $this->render( 'dfxpray' );
+
+		$this->assertStringContainsString( 'You are not assigned to any group yet.', $groups );
+		$this->assertStringNotContainsString( 'dfxpray-group-card', $groups );
+		$this->assertStringContainsString( 'Manage groups', $groups );
+		$this->assertStringContainsString( 'Mine', $groups );
 	}
 
 	/**

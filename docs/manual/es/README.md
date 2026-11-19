@@ -15,7 +15,7 @@ Las intenciones llegan de palabra, por mensaje o en un papel. Unas son para la o
 | Pieza | Quién la usa | Para qué |
 | --- | --- | --- |
 | Formulario de peticiones | Cualquiera que tenga la dirección | Pedir oración, eligiendo cómo puede aparecer su nombre |
-| Panel del grupo (escritorio de WordPress) | Responsables y administradores | Moderar, llevar las intenciones, preparar el mensaje y el resumen |
+| Panel del grupo (escritorio de WordPress) | Los líderes de cada grupo (también los administradores, solo en los grupos que llevan) | Moderar, llevar las intenciones, preparar el mensaje y el resumen |
 | App para responsables (PWA) | Responsables, desde el móvil | Lo mismo que el panel, en el bolsillo y sin conexión |
 | Resumen diario y avisos | Responsables, por correo, Telegram o webhook | Saber cada día qué hay, y rezar a la hora de cada acontecimiento |
 | Rutinas | Un programa del propio responsable | Mantener la lista al día de forma automática |
@@ -39,7 +39,7 @@ Al activarlo, crea sus tablas, el rol «Líder de oración» y dos tareas progra
 ### Primeros pasos del administrador
 
 1. Da el rol «Líder de oración» a quienes van a llevar un grupo.
-2. En «Intenciones de oración › Grupos», crea el grupo y marca sus líderes.
+2. En «Intenciones de oración › Grupos», crea el grupo y marca sus líderes. Si tú también vas a llevarlo, márcate: un administrador solo ve las intenciones de los grupos de los que es líder.
 3. Rellena en ese mismo grupo los datos de «Protección de datos» (ver *Protección de datos*).
 4. Comparte la dirección del formulario, que aparece en la ficha del grupo y en «Ajustes del grupo».
 5. Configura en el servidor un cron real que llame a `wp-cron.php` cada cinco minutos. Sin él, WordPress solo ejecuta las tareas cuando alguien visita la web, y el resumen y los avisos pueden llegar tarde.
@@ -47,9 +47,9 @@ Al activarlo, crea sus tablas, el rol «Líder de oración» y dos tareas progra
 ### El menú
 
 - **«Intenciones de oración»**, con un globo que cuenta las peticiones pendientes de tus grupos.
-- **«Grupos»**: una tarjeta por grupo con sus contadores («Pendientes», «En revisión», «Eventos de hoy», «Eventos de mañana») y los botones «Resumen diario» y «Añadir intención».
+- **«Grupos»**: una tarjeta por cada grupo que llevas con sus contadores («Pendientes», «En revisión», «Eventos de hoy», «Eventos de mañana») y los botones «Resumen diario» y «Añadir intención».
 - **«Ajustes globales»**, solo para administradores.
-- **Una entrada por grupo**, con su propio globo de pendientes.
+- **Una entrada por cada grupo que llevas**, con su propio globo de pendientes. Esto vale también para los administradores: los grupos que no llevan solo aparecen en «Gestionar grupos».
 
 ![La página «Grupos» vista por un administrador](img/02-grupos.png)
 
@@ -68,8 +68,8 @@ Cada grupo es independiente: sus líderes, su formulario, su mensaje y su resume
 
 | Persona | Ve | Puede |
 | --- | --- | --- |
-| Administrador | Todos los grupos activos | Crear, archivar y borrar grupos; asignar líderes; ajustes globales; solicitudes de datos personales; marcar cuentas de servicio |
-| Líder de oración | Solo sus grupos | Todo dentro de ellos: moderar, intenciones, resúmenes, miembros y «Ajustes del grupo» (canales, plazos, nueva dirección del formulario) |
+| Administrador | Los grupos activos de los que es líder, como cualquier líder; el resto solo en «Gestionar grupos» (nombre, líderes, protección de datos), sin sus intenciones | Crear, editar, archivar y borrar cualquier grupo; asignar y quitar líderes; ajustes globales; solicitudes de datos personales de cualquier grupo; marcar cuentas de servicio |
+| Líder de oración | Solo sus grupos | Todo dentro de ellos: moderar, intenciones, resúmenes, miembros, «Ajustes del grupo» (canales, plazos, nueva dirección del formulario) e invitar a nuevos líderes |
 | Otros roles con acceso al panel | Solo los grupos a los que se les asigne | Lo mismo que un líder |
 
 El rol «Líder de oración» solo da acceso al panel y al propio perfil. Quien solo tiene acceso al panel entra directamente en su grupo al iniciar sesión, sin pasar por el escritorio de WordPress. En «Ajustes globales › Acceso al panel» el administrador puede dar acceso a otros roles.
@@ -84,6 +84,20 @@ En «Grupos › Gestionar grupos» (solo administradores) cada grupo tiene una f
 - **«Encargo de tratamiento de este grupo»**: el texto del contrato (artículo 28 del RGPD) listo para copiar.
 
 La tarjeta «Nuevo grupo», al final, crea uno nuevo.
+
+### Invitar a un líder
+
+Cualquier líder de un grupo puede invitar a otra persona a llevarlo, sin pasar por el administrador. Se hace en «Ajustes del grupo › Líderes»:
+
+1. Arriba aparece la lista de los líderes del grupo (solo sus nombres; los administradores ven también su correo) y las «Invitaciones pendientes», cada una con su fecha de caducidad.
+2. En «Invitar a un líder», escribe el «Nombre» y el «Correo» de la persona y pulsa «Enviar invitación». El panel responde «Invitación enviada.»; si esa persona ya era líder del grupo, no cambia nada.
+3. La persona recibe un correo, «Invitación a ser líder de…», que le recuerda que los líderes ven información muy sensible y deben guardar confidencialidad, con un enlace para aceptar. **El enlace caduca a los 7 días.** Si se vuelve a invitar al mismo correo, se envía un enlace nuevo y el anterior deja de valer.
+4. Al abrir el enlace ve la invitación y el botón «Aceptar la invitación». Abrir el enlace no acepta nada: hay que pulsar el botón.
+5. Al aceptar pasa a ser líder del grupo en el acto. Si no tenía cuenta en el sitio, se le crea una con el rol «Líder de oración» y WordPress le pide que elija su contraseña; después inicia sesión y entra en el grupo. Si ya tenía cuenta, inicia sesión con ella.
+
+El administrador del sitio recibe un correo cada vez que alguien acepta, y el envío, la retirada y la aceptación quedan en «Actividad». Mientras una invitación está pendiente, cualquier líder del grupo puede pulsar «Retirar» y el enlace deja de funcionar. Las invitaciones caducadas se borran solas, y las aceptadas a la semana.
+
+**Solo los administradores quitan líderes**, en «Grupos › Gestionar grupos». Un administrador solo puede invitar desde «Ajustes del grupo» a los grupos que lleva; en los demás marca los líderes directamente en su ficha.
 
 ### La dirección secreta del formulario
 

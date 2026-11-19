@@ -12,7 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugs into WordPress' privacy tools, and backs the panel's own lookup by
  * email or phone. A contact finds the requests sent with it (with their
- * updates and the leaders' notes) and the member records with that phone.
+ * updates and the leaders' notes), the member records with that phone and
+ * the invitations to lead a group sent to that email.
  */
 final class DFXPRAY_Privacy {
 
@@ -156,7 +157,7 @@ final class DFXPRAY_Privacy {
 			/* translators: 1: data controller, 2: provider with its identification. */
 			sprintf( __( '1. Parties. %1$s, as data controller, and %2$s, as data processor.', 'dfx-prayer-intentions' ), $controller, $provider ),
 			__( '2. Object and duration. The processor hosts and runs the tool with which the group receives, moderates and shares its prayer requests and keeps its list of members, for as long as the group uses the service.', 'dfx-prayer-intentions' ),
-			__( '3. Data and data subjects. People who send prayer requests (name, contact, phone and the text of the request, which may include data about health and religious beliefs, special categories of data); the people prayed for (name, relationship and the circumstances told); the members of the group (name, how they are called, phone, birthday, date of death and notes).', 'dfx-prayer-intentions' ),
+			__( '3. Data and data subjects. People who send prayer requests (name, contact, phone and the text of the request, which may include data about health and religious beliefs, special categories of data); the people prayed for (name, relationship and the circumstances told); the members of the group (name, how they are called, phone, birthday, date of death and notes); the people invited to lead the group (name and email).', 'dfx-prayer-intentions' ),
 			__( '4. Obligations of the processor. a) To process the data only on the documented instructions of the controller, which are the configuration of the group and what its leaders ask; b) to ensure the confidentiality of everyone who processes them; c) to apply the security measures of art. 32: access restricted to each group, encryption in transit, backups and scheduled deletion; d) to use only the following subprocessors, informing the controller of any change so that it can object:', 'dfx-prayer-intentions' ) . "\n" . $this->subprocessors(),
 			__( 'e) To help the controller to answer the exercise of rights, and with security and impact assessments; f) to notify the controller without undue delay of any personal data breach; g) to make available the information needed to demonstrate compliance; h) at the end of the service, to delete all the data of the group, unless the controller asks for them first.', 'dfx-prayer-intentions' ),
 			__( '5. Obligations of the controller. To have a legal basis and inform the data subjects (the request form does so), to appoint the leaders of the group, who are bound to confidentiality, and to give its instructions through the leaders or in writing.', 'dfx-prayer-intentions' ),
@@ -241,6 +242,23 @@ final class DFXPRAY_Privacy {
 					)
 				);
 			}
+			foreach ( DFXPRAY_Invitations::get_instance()->find_by_email( (string) $contact ) as $invitation ) {
+				$group = DFXPRAY_Groups::get_instance()->get( $invitation['group_id'] );
+
+				$data[] = $this->item(
+					'dfxpray-invitations',
+					__( 'Invitation to lead a prayer group', 'dfx-prayer-intentions' ),
+					'dfxpray-invitation-' . $invitation['id'],
+					array(
+						__( 'Group', 'dfx-prayer-intentions' )       => $group ? $group['name'] : '',
+						__( 'Name', 'dfx-prayer-intentions' )        => $invitation['name'],
+						__( 'Email', 'dfx-prayer-intentions' )       => $invitation['email'],
+						__( 'Sent on', 'dfx-prayer-intentions' )     => $invitation['created_at'],
+						__( 'Expires on', 'dfx-prayer-intentions' )  => $invitation['expires_at'],
+						__( 'Accepted on', 'dfx-prayer-intentions' ) => (string) $invitation['accepted_at'],
+					)
+				);
+			}
 		}
 
 		return array(
@@ -275,7 +293,8 @@ final class DFXPRAY_Privacy {
 
 	/**
 	 * Erase what is kept about a contact: the requests sent with it, with
-	 * everything attached, and the member records with that phone.
+	 * everything attached, the member records with that phone and the
+	 * invitations to lead a group sent to that email.
 	 *
 	 * @param string $contact Email address or phone, in any format.
 	 * @param int    $page    Page, from 1 (always the first: erased rows vanish).
@@ -289,9 +308,10 @@ final class DFXPRAY_Privacy {
 		foreach ( $members as $member ) {
 			DFXPRAY_Members::get_instance()->delete( (int) $member['id'] );
 		}
+		$invitations = DFXPRAY_Invitations::get_instance()->erase_by_email( (string) $contact );
 
 		return array(
-			'items_removed'  => $ids || $members,
+			'items_removed'  => $ids || $members || $invitations,
 			'items_retained' => false,
 			'messages'       => array(),
 			'done'           => count( $ids ) < self::PER_PAGE,
@@ -354,6 +374,9 @@ final class DFXPRAY_Privacy {
 				. __( 'When you ask for someone else, we do not inform them directly, because it would be impossible or would require a disproportionate effort (art. 14.5.b of the GDPR). To protect them, the group only receives a discreet summary without diagnoses, with their name as you chose, and they can exercise the same rights as you.', 'dfx-prayer-intentions' ),
 				$title( __( 'Members of the group.', 'dfx-prayer-intentions' ) )
 				. __( 'For the members of each group the leaders keep their name, how they are called, their phone, their birthday, the date of their death and short notes, to name them correctly and to remember their birthdays and the anniversaries of their death in the daily message. The legal basis is the legitimate interest of the group and, as members of a religious body, art. 9.2.d of the GDPR: these data are not disclosed outside it without their consent. They are kept while they belong to the group, and any member can ask to see them or to have them erased.', 'dfx-prayer-intentions' ),
+				$title( __( 'Invitations to lead a group.', 'dfx-prayer-intentions' ) )
+				/* translators: %d: number of days. */
+				. sprintf( __( 'A leader of a group may invite another person to lead it, with their name and email: they receive an email with a link to accept, valid for %1$d days. The invitation is kept until it is accepted or expires (at most %1$d days) and is deleted when it expires, or a week after it is accepted. Whoever accepts it gets an account on this site as a leader of that group, and the administrator of the site is told.', 'dfx-prayer-intentions' ), DFXPRAY_Invitations::DAYS ),
 				$title( __( 'Minors.', 'dfx-prayer-intentions' ) )
 				/* translators: %d: minimum age. */
 				. sprintf( __( 'You must be at least %d years old to send a request on your own.', 'dfx-prayer-intentions' ), (int) $settings->get( 'consent_min_age' ) ),

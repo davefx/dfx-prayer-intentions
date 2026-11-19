@@ -272,3 +272,8 @@
 	font-weight: 600;
 	cursor: pointer;
 }
+
+.dfxpray-invitation-list form.dfxpray-inline-form {
+	display: inline;
+	margin-left: 8px;
+}

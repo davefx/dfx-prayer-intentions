@@ -176,6 +176,23 @@ class RestApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * An administrator's application password reaches only the groups they
+	 * lead, like anyone else's.
+	 */
+	public function test_admin_reaches_only_groups_they_lead(): void {
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->robot, $admin ) );
+		$id = $this->make_active( $this->other );
+		$this->with_app_password( $admin );
+
+		$this->assertSame( 200, $this->call( 'list', array( 'group_id' => $this->mine ) )->get_status() );
+		$this->assertSame( 403, $this->call( 'list', array( 'group_id' => $this->other ) )->get_status() );
+		$this->assertSame( 403, $this->call( 'get', array( 'intention_id' => $id ) )->get_status() );
+		$this->assertSame( 403, $this->call( 'close', array( 'intention_id' => $id, 'reason' => 'expired' ) )->get_status() );
+		$this->assertSame( 'active', DFXPRAY_Intentions::get_instance()->get( $id )['status'] );
+	}
+
+	/**
 	 * Operations the panel has but the route does not offer stay out.
 	 */
 	public function test_unknown_operations(): void {

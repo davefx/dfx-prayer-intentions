@@ -139,6 +139,196 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A leader invites to their own group, and withdraws its invitations.
+	 */
+	public function test_invitation_actions(): void {
+		$sent = $this->run_action(
+			'invite_leader',
+			array(
+				'group_id' => $this->mine,
+				'name'     => 'Pedro Gil',
+				'email'    => 'pedro@example.org',
+			)
+		);
+
+		$this->assertTrue( $sent['ok'], $sent['message'] );
+		$this->assertSame( 'Invitation sent.', $sent['message'] );
+		$id = (int) $sent['id'];
+		$this->assertSame( $this->mine, DFXPRAY_Invitations::get_instance()->get( $id )['group_id'] );
+
+		$invalid = $this->run_action(
+			'invite_leader',
+			array(
+				'group_id' => $this->mine,
+				'name'     => 'X',
+				'email'    => 'nope',
+			)
+		);
+		$this->assertSame( 'dfxpray_invitation_email', $invalid['code'] );
+
+		$withdrawn = $this->run_action( 'withdraw_invitation', array( 'invitation_id' => $id ) );
+		$this->assertTrue( $withdrawn['ok'], $withdrawn['message'] );
+		$this->assertSame( 'Invitation withdrawn.', $withdrawn['message'] );
+		$this->assertNull( DFXPRAY_Invitations::get_instance()->get( $id ) );
+	}
+
+	/**
+	 * No user enumeration: the leader gets the same answer whether the email
+	 * belongs to an existing user, to a co-leader, or to nobody.
+	 */
+	public function test_invite_answers_the_same_for_any_email(): void {
+		self::factory()->user->create(
+			array(
+				'role'       => 'subscriber',
+				'user_email' => 'existing@example.org',
+			)
+		);
+		$co = self::factory()->user->create(
+			array(
+				'role'       => 'dfxpray_leader',
+				'user_email' => 'co@example.org',
+			)
+		);
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->leader, $co ) );
+
+		$answers = array();
+		foreach ( array( 'nobody@example.org', 'existing@example.org', 'co@example.org' ) as $email ) {
+			$result    = $this->run_action(
+				'invite_leader',
+				array(
+					'group_id' => $this->mine,
+					'name'     => 'Someone',
+					'email'    => $email,
+				)
+			);
+			$answers[] = array( $result['ok'], $result['code'], $result['message'] );
+		}
+
+		$this->assertSame( array( true, 'ok', 'Invitation sent.' ), $answers[0] );
+		$this->assertSame( $answers[0], $answers[1] );
+		$this->assertSame( $answers[0], $answers[2] );
+	}
+
+	/**
+	 * An administrator works only in the groups they lead, but still manages
+	 * every group as such from Manage groups.
+	 */
+	public function test_admin_acts_only_in_groups_they_lead(): void {
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		DFXPRAY_Groups::get_instance()->set_leaders( $this->mine, array( $this->leader, $admin ) );
+		$mine   = $this->make_pending( $this->mine );
+		$theirs = $this->make_pending( $this->other );
+		wp_set_current_user( $admin );
+
+		$this->assertTrue(
+			$this->run_action(
+				'approve',
+				array(
+					'intention_id' => $mine,
+					'summary'      => 'x',
+				)
+			)['ok']
+		);
+		$this->assertSame(
+			'forbidden',
+			$this->run_action(
+				'approve',
+				array(
+					'intention_id' => $theirs,
+					'summary'      => 'x',
+				)
+			)['code']
+		);
+		foreach ( array( 'save_group_settings', 'regenerate_slug', 'send_digest_now', 'invite_leader' ) as $action ) {
+			$this->assertSame(
+				'forbidden',
+				$this->run_action(
+					$action,
+					array(
+						'group_id' => $this->other,
+						'name'     => 'X',
+						'email'    => 'x@example.org',
+					)
+				)['code'],
+				$action
+			);
+		}
+		$this->assertSame(
+			'forbidden',
+			$this->run_action(
+				'save_member',
+				array(
+					'group_id' => $this->other,
+					'member'   => array( 'name' => 'X' ),
+				)
+			)['code']
+		);
+		$this->assertSame( 'pending', DFXPRAY_Intentions::get_instance()->get( $theirs )['status'] );
+
+		$saved = $this->run_action(
+			'save_group',
+			array(
+				'group_id' => $this->other,
+				'name'     => 'Other renamed',
+				'leaders'  => array( $this->leader ),
+			)
+		);
+		$this->assertTrue( $saved['ok'], $saved['message'] );
+		$this->assertSame( 'Other renamed', DFXPRAY_Groups::get_instance()->get( $this->other )['name'] );
+		$this->assertSame( array( $this->leader ), DFXPRAY_Groups::get_instance()->get_leaders( $this->other ) );
+		$this->assertTrue( $this->run_action( 'archive_group', array( 'group_id' => $this->other ) )['ok'] );
+	}
+
+	/**
+	 * Invitation actions on another group.
+	 *
+	 * @return array
+	 */
+	public function provide_invitation_actions(): array {
+		return array(
+			'invite to the other group'               => array( 'invite_leader', false ),
+			'withdraw in the other group'             => array( 'withdraw_invitation', false ),
+			'withdraw in the other group, lying'      => array( 'withdraw_invitation', true ),
+		);
+	}
+
+	/**
+	 * IDOR: a leader of one group cannot invite to another, nor withdraw its
+	 * invitations, whatever group the request claims.
+	 *
+	 * @dataProvider provide_invitation_actions
+	 *
+	 * @param string $action Action.
+	 * @param bool   $lie    Whether the request claims the leader's own group.
+	 */
+	public function test_other_group_invitations_are_forbidden( string $action, bool $lie ): void {
+		$invitations = DFXPRAY_Invitations::get_instance();
+		$admin       = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin );
+		$theirs = $invitations->invite( $this->other, 'Juan', 'juan@example.org' );
+		wp_set_current_user( $this->leader );
+
+		$request = 'invite_leader' === $action
+			? array(
+				'group_id' => $this->other,
+				'name'     => 'Intruso',
+				'email'    => 'intruso@example.org',
+			)
+			: array_filter(
+				array(
+					'invitation_id' => $theirs,
+					'group_id'      => $lie ? $this->mine : null,
+				)
+			);
+
+		$result = $this->run_action( $action, $request );
+
+		$this->assertSame( 'forbidden', $result['code'] );
+		$this->assertNotNull( $invitations->get( $theirs ) );
+		$this->assertSame( array( 'juan@example.org' ), array_column( $invitations->for_group( $this->other ), 'email' ) );
+	}
+
+	/**
 	 * Leaders add, edit and delete the brothers of their group; never those
 	 * of another group (IDOR), whatever group they claim.
 	 */

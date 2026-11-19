@@ -50,6 +50,9 @@ test( 'a service account works with an application password, only in this plugin
 
 	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
 	await expect( page.locator( '.dfxpray-leader', { hasText: 'Leader Two' } ).first() ).toContainText( 'service account' );
+	// The administrator does not lead the group: one of its leaders checks the digest.
+	await page.context().clearCookies();
+	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'digest' ) );
 	await expect( page.getByText( /Generated and sent on/ ) ).toBeVisible();
 } );

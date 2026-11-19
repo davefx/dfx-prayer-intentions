@@ -41,7 +41,7 @@ $dfxpray_admin = DFXPRAY_Admin::get_instance();
 $dfxpray_lookup = isset( $_GET['privacy_lookup'] ) ? trim( sanitize_text_field( wp_unslash( $_GET['privacy_lookup'] ) ) ) : '';
 ?>
 <h2 id="dfxpray-privacy"><?php esc_html_e( 'Requests about personal data', 'dfx-prayer-intentions' ); ?></h2>
-<p class="description"><?php esc_html_e( 'When someone asks to see or erase their data, look them up by the email or phone they gave, in any format. You find their requests and, by phone, their member records. WordPress’ own tools (Tools › Export / Erase Personal Data) only take emails.', 'dfx-prayer-intentions' ); ?></p>
+<p class="description"><?php esc_html_e( 'When someone asks to see or erase their data, look them up by the email or phone they gave, in any format. You find their requests, by phone their member records and, by email, the invitations to lead a group sent to them. WordPress’ own tools (Tools › Export / Erase Personal Data) only take emails.', 'dfx-prayer-intentions' ); ?></p>
 <form method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>#dfxpray-privacy">
 	<input type="hidden" name="page" value="dfxpray-global">
 	<p>

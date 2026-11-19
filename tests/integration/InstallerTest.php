@@ -16,7 +16,7 @@ class InstallerTest extends DFXPRAY_Test_Case {
 	public function test_creates_all_tables(): void {
 		global $wpdb;
 
-		foreach ( array( 'groups', 'group_leaders', 'intentions', 'updates', 'comments', 'log' ) as $table ) {
+		foreach ( array( 'groups', 'group_leaders', 'intentions', 'updates', 'comments', 'log', 'members', 'invitations' ) as $table ) {
 			$name = $wpdb->prefix . 'dfxpray_' . $table;
 			$this->assertSame( $name, $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $name ) ), "Missing table {$name}" );
 		}

@@ -19,7 +19,7 @@ final class DFXPRAY_Installer {
 	/**
 	 * Schema version. Bump it whenever get_schema() changes.
 	 */
-	public const DB_VERSION = '10';
+	public const DB_VERSION = '11';
 
 	/**
 	 * The capability that gives access to the leaders' panel.
@@ -108,7 +108,7 @@ final class DFXPRAY_Installer {
 		global $wpdb;
 
 		$names = array();
-		foreach ( array( 'groups', 'group_leaders', 'intentions', 'updates', 'comments', 'log', 'members' ) as $short ) {
+		foreach ( array( 'groups', 'group_leaders', 'intentions', 'updates', 'comments', 'log', 'members', 'invitations' ) as $short ) {
 			$names[ $short ] = $wpdb->prefix . 'dfxpray_' . $short;
 		}
 
@@ -225,6 +225,22 @@ CREATE TABLE {$t['members']} (
   PRIMARY KEY  (id),
   KEY group_id (group_id),
   KEY birthday (birth_month,birth_day)
+) {$collate};
+CREATE TABLE {$t['invitations']} (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  group_id bigint(20) unsigned NOT NULL,
+  name varchar(191) NOT NULL,
+  email varchar(100) NOT NULL,
+  token_hash char(64) NOT NULL,
+  invited_by bigint(20) unsigned NOT NULL DEFAULT 0,
+  created_at datetime NOT NULL,
+  expires_at datetime NOT NULL,
+  accepted_at datetime NULL,
+  accepted_user_id bigint(20) unsigned NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY token_hash (token_hash),
+  KEY group_email (group_id,email),
+  KEY email (email)
 ) {$collate};
 CREATE TABLE {$t['log']} (
   id bigint(20) unsigned NOT NULL AUTO_INCREMENT,

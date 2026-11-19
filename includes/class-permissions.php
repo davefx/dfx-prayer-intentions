@@ -11,7 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Decides who may see and manage what. Every panel query is filtered through
- * the groups returned here; the group always comes from the URL.
+ * the groups returned here; the group always comes from the URL. Only the
+ * groups a user leads are returned, for administrators too; what only
+ * administrators do (Manage groups, Global settings) checks is_admin().
  */
 final class DFXPRAY_Permissions {
 
@@ -36,7 +38,9 @@ final class DFXPRAY_Permissions {
 	}
 
 	/**
-	 * IDs of the active groups the user may manage.
+	 * IDs of the active groups the user may manage: those they lead.
+	 * Administrators are no exception: they manage every group as such
+	 * (Manage groups), but only see and work in the groups they lead.
 	 *
 	 * @param int|null $user_id User ID; defaults to the current user.
 	 * @return int[]
@@ -50,15 +54,12 @@ final class DFXPRAY_Permissions {
 
 		$active = array_column( DFXPRAY_Groups::get_instance()->all( 'active' ), 'id' );
 
-		if ( $this->is_admin( $user_id ) ) {
-			return $active;
-		}
-
 		return array_values( array_intersect( $active, DFXPRAY_Groups::get_instance()->get_group_ids_for_leader( $user_id ) ) );
 	}
 
 	/**
-	 * Whether the user may manage a group.
+	 * Whether the user may see and work in a group: an active group they
+	 * lead, whoever they are.
 	 *
 	 * @param int      $group_id Group ID.
 	 * @param int|null $user_id  User ID; defaults to the current user.
@@ -68,10 +69,6 @@ final class DFXPRAY_Permissions {
 
 		if ( ! $this->can_access_panel( $user_id ) ) {
 			return false;
-		}
-
-		if ( $this->is_admin( $user_id ) ) {
-			return null !== DFXPRAY_Groups::get_instance()->get( $group_id );
 		}
 
 		return in_array( $group_id, $this->group_ids_for_user( $user_id ), true );

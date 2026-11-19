@@ -141,6 +141,31 @@ class PrivacyTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Invitations to lead a group hold a name and an email: they are found,
+	 * exported and erased by that email.
+	 */
+	public function test_invitations_export_and_erase(): void {
+		$invitations = DFXPRAY_Invitations::get_instance();
+		$mine        = $invitations->invite( $this->group, 'Pedro Gil', 'pedro@example.org' );
+		$other       = $invitations->invite( $this->group, 'Juan', 'juan@example.org' );
+
+		$export = DFXPRAY_Privacy::get_instance()->export( 'PEDRO@example.org', 1 );
+		$item   = array_values( array_filter( $export['data'], static fn( $i ) => 'dfxpray-invitation-' . $mine === $i['item_id'] ) );
+		$this->assertCount( 1, $export['data'] );
+		$this->assertCount( 1, $item );
+		$values = array_column( $item[0]['data'], 'value', 'name' );
+		$this->assertSame( 'Pedro Gil', $values['Name'] );
+		$this->assertSame( 'pedro@example.org', $values['Email'] );
+		$this->assertSame( 'Group', array_keys( $values )[0] );
+
+		$result = DFXPRAY_Privacy::get_instance()->erase( 'pedro@example.org', 1 );
+
+		$this->assertTrue( $result['items_removed'] );
+		$this->assertNull( $invitations->get( $mine ) );
+		$this->assertNotNull( $invitations->get( $other ) );
+	}
+
+	/**
 	 * An administrator can look a contact up and erase it from the global
 	 * settings, also by phone, which WordPress' own tools do not take.
 	 */
@@ -198,7 +223,7 @@ class PrivacyTest extends DFXPRAY_Test_Case {
 		);
 		$text = DFXPRAY_Privacy::get_instance()->policy_text();
 
-		foreach ( array( 'David Marín Carreño (12345678Z, Calle Mayor 1, Madrid, privacidad@example.org)', 'data processor (art. 28 of the GDPR)', 'shown on the form of that group', 'Hosting: Hetzner (Germany)', 'Email: Brevo (France)', 'prayer', '90 days', 'explicit consent', '9.2.a', 'WhatsApp', 'Telegram', 'Cloudflare', 'outside the European Union', 'art. 14.5.b', 'Members of the group', '9.2.d', 'at least 14 years old', 'withdraw your consent', 'supervisory authority' ) as $needle ) {
+		foreach ( array( 'David Marín Carreño (12345678Z, Calle Mayor 1, Madrid, privacidad@example.org)', 'data processor (art. 28 of the GDPR)', 'shown on the form of that group', 'Hosting: Hetzner (Germany)', 'Email: Brevo (France)', 'prayer', '90 days', 'explicit consent', '9.2.a', 'WhatsApp', 'Telegram', 'Cloudflare', 'outside the European Union', 'art. 14.5.b', 'Members of the group', '9.2.d', 'at least 14 years old', 'withdraw your consent', 'supervisory authority', 'invite another person to lead it', '7 days' ) as $needle ) {
 			$this->assertStringContainsString( $needle, $text );
 		}
 		$this->assertNotFalse( has_action( 'admin_init', array( DFXPRAY_Privacy::get_instance(), 'add_policy_content' ) ) );

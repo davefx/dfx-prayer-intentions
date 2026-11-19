@@ -12,21 +12,78 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$dfxpray_admin    = DFXPRAY_Admin::get_instance();
-$dfxpray_settings = DFXPRAY_Settings::get_instance();
-$dfxpray_values   = $dfxpray_settings->all( $group_id );
-$dfxpray_channels = $dfxpray_values['channels'];
-$dfxpray_url      = home_url( '/' . $group['slug'] . '/' );
-$dfxpray_variants = array(
+$dfxpray_admin       = DFXPRAY_Admin::get_instance();
+$dfxpray_settings    = DFXPRAY_Settings::get_instance();
+$dfxpray_values      = $dfxpray_settings->all( $group_id );
+$dfxpray_channels    = $dfxpray_values['channels'];
+$dfxpray_url         = home_url( '/' . $group['slug'] . '/' );
+$dfxpray_variants    = array(
 	'shareable' => __( 'Shareable version (discretion applied)', 'dfx-prayer-intentions' ),
 	'leaders'   => __( 'Leaders’ version (only for a private chat of leaders)', 'dfx-prayer-intentions' ),
 );
-$dfxpray_flags    = array(
+$dfxpray_flags       = array(
 	'digest'      => __( 'Daily digest', 'dfx-prayer-intentions' ),
 	'alerts'      => __( 'Hour alerts', 'dfx-prayer-intentions' ),
 	'new_request' => __( 'New requests (without the text, except by email)', 'dfx-prayer-intentions' ),
 );
+$dfxpray_invitations = DFXPRAY_Invitations::get_instance();
+$dfxpray_accounts    = DFXPRAY_Service_Accounts::get_instance();
 ?>
+<?php
+// Leaders see only the names of their co-leaders; administrators, their emails too.
+$dfxpray_is_admin = DFXPRAY_Permissions::get_instance()->is_admin();
+?>
+<section class="dfxpray-leaders">
+	<h2><?php esc_html_e( 'Leaders', 'dfx-prayer-intentions' ); ?></h2>
+	<ul class="dfxpray-leader-list">
+		<?php foreach ( DFXPRAY_Groups::get_instance()->get_leaders( $group_id ) as $dfxpray_leader_id ) : ?>
+			<?php
+			$dfxpray_leader = get_userdata( $dfxpray_leader_id );
+			if ( ! $dfxpray_leader ) {
+				continue;
+			}
+			?>
+			<li><?php echo esc_html( $dfxpray_leader->display_name . ( $dfxpray_is_admin ? ' (' . $dfxpray_leader->user_email . ')' : '' ) ); ?><?php echo $dfxpray_accounts->is_service_account( $dfxpray_leader->ID ) ? ' · ' . esc_html__( 'service account', 'dfx-prayer-intentions' ) : ''; ?></li>
+		<?php endforeach; ?>
+	</ul>
+	<p class="description"><?php esc_html_e( 'Only the administrator of the site can remove leaders.', 'dfx-prayer-intentions' ); ?></p>
+
+	<?php $dfxpray_pending = $dfxpray_invitations->for_group( $group_id ); ?>
+	<?php if ( $dfxpray_pending ) : ?>
+		<h3><?php esc_html_e( 'Pending invitations', 'dfx-prayer-intentions' ); ?></h3>
+		<ul class="dfxpray-invitation-list">
+			<?php foreach ( $dfxpray_pending as $dfxpray_invitation ) : ?>
+				<li>
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: 1: name, 2: email, 3: date. */
+							__( '%1$s (%2$s) · expires on %3$s', 'dfx-prayer-intentions' ),
+							$dfxpray_invitation['name'],
+							$dfxpray_invitation['email'],
+							$dfxpray_invitations->expiry_date( $dfxpray_invitation )
+						)
+					);
+					?>
+					<?php $dfxpray_admin->form_open( 'withdraw_invitation', array( 'invitation_id' => $dfxpray_invitation['id'] ), 'dfxpray-inline-form' ); ?>
+						<button type="submit" class="button button-small"><?php esc_html_e( 'Withdraw', 'dfx-prayer-intentions' ); ?></button>
+					</form>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
+
+	<h3><?php esc_html_e( 'Invite a leader', 'dfx-prayer-intentions' ); ?></h3>
+	<p class="description"><?php esc_html_e( 'The person receives an email with a link to accept, valid for 7 days. On accepting, they become a leader of this group at once, with an account on this site if they had none.', 'dfx-prayer-intentions' ); ?></p>
+	<?php $dfxpray_admin->form_open( 'invite_leader', array( 'group_id' => $group_id ), 'dfxpray-invite-leader' ); ?>
+		<p>
+			<label><?php esc_html_e( 'Name', 'dfx-prayer-intentions' ); ?><br><input type="text" class="regular-text" name="name" required></label><br>
+			<label><?php esc_html_e( 'Email', 'dfx-prayer-intentions' ); ?><br><input type="email" class="regular-text" name="email" required></label>
+		</p>
+		<p><button type="submit" class="button"><?php esc_html_e( 'Send invitation', 'dfx-prayer-intentions' ); ?></button></p>
+	</form>
+</section>
+
 <h2><?php esc_html_e( 'Public form', 'dfx-prayer-intentions' ); ?></h2>
 <p>
 	<?php esc_html_e( 'Share this address only with the people who should send requests. It is not indexed by search engines.', 'dfx-prayer-intentions' ); ?><br>

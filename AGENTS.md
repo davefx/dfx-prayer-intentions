@@ -55,6 +55,7 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | A setting | default and type in `DFXPRAY_Settings::defaults()`; add to `GLOBAL_ONLY` if leaders must not override it; field in `DFXPRAY_Admin::setting_fields()` and `setting_sections()` |
 | A delivery channel | a class implementing `DFXPRAY_Channel`, added in `DFXPRAY_Channels::all()` (third parties use the `dfxpray_channels` filter) |
 | The members of a group (how they are called, phone, birthday) | `DFXPRAY_Members`; the "Members" tab (`admin/views/members.php`) with the `save_member`/`delete_member` actions (scope `member_or_group`); their birthdays open "Especially" in `DFXPRAY_Index_Composer` |
+| Who leads a group | administrators set leaders in "Manage groups" (`save_group`); leaders invite by email through `DFXPRAY_Invitations` (`invite_leader`/`withdraw_invitation`, scopes `group`/`invitation`; the accept page is `wp-login.php?action=dfxpray_invitation`) |
 | Scheduled work | `DFXPRAY_Scheduler::tick()` (every five minutes) or `daily()` |
 | Schema change | `DFXPRAY_Installer::get_schema()`, and bump `DB_VERSION` so `maybe_upgrade()` runs |
 
@@ -63,7 +64,15 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 - **No data crosses groups, and the group is always explicit.** A group's
   work lives on its own page (`page=dfxpray-group-<id>&tab=…`); there is no
   implicit "current group". Every panel query is scoped to a group the
-  current user may manage (`DFXPRAY_Permissions`). Every action checks the
+  current user leads (`DFXPRAY_Permissions`). **Administrators manage
+  groups but only see the data of the groups they lead**: "Manage groups"
+  (name, leaders, data protection, archive, delete) and "Global settings"
+  (including requests about personal data) are theirs across all groups;
+  menu entries, group cards, tabs, panel actions, the app and the REST
+  route treat them exactly like any leader. A leader never sees other
+  users of the site: the group's settings show its leaders by name only
+  (emails for administrators), and inviting answers the same whether or
+  not the email has an account. Every action checks the
   group of its target, including second targets (merge, transfer). Add the
   new action to the IDOR data provider in `AdminActionsTest`.
 - **The full text of a request is never published.** Only the summary a
