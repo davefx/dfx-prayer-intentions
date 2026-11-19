@@ -285,7 +285,7 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 							<td>
 								<input type="text" class="regular-text" name="intention[requester_display_name]" value="<?php echo esc_attr( $dfxpray_v['requester_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Requester, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the requester instead of the name', 'dfx-prayer-intentions' ); ?>">
 								<input type="text" class="regular-text" name="intention[beneficiary_display_name]" value="<?php echo esc_attr( $dfxpray_v['beneficiary_display_name'] ); ?>" placeholder="<?php esc_attr_e( 'Beneficiary, as described', 'dfx-prayer-intentions' ); ?>" aria-label="<?php esc_attr_e( 'Description of the beneficiary instead of the name', 'dfx-prayer-intentions' ); ?>">
-								<p class="description"><?php esc_html_e( 'Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “La hija de N.H. Axel”. It cannot reveal more than the discretion level allows.', 'dfx-prayer-intentions' ); ?></p>
+								<p class="description"><?php esc_html_e( 'Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “Bro. John’s daughter”. It cannot reveal more than the discretion level allows.', 'dfx-prayer-intentions' ); ?></p>
 							</td>
 						</tr>
 					</table>

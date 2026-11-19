@@ -565,7 +565,7 @@ final class DFXPRAY_Admin {
 			'member_prefix'            => array(
 				'type'  => 'text',
 				'label' => __( 'Prefix for members of the group', 'dfx-prayer-intentions' ),
-				'help'  => __( 'Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix.', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Written before the name of those marked as members, e.g. “Bro.”. Empty: no prefix.', 'dfx-prayer-intentions' ),
 			),
 			'digest_include_comments'  => array(
 				'type'  => 'checkbox',

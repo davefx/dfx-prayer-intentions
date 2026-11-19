@@ -399,7 +399,7 @@ JS;
 			'saveChanges'             => __( 'Save changes', 'dfx-prayer-intentions' ),
 			'visibleRequester'        => __( 'Description of the requester instead of the name', 'dfx-prayer-intentions' ),
 			'visibleBeneficiary'      => __( 'Description of the beneficiary instead of the name', 'dfx-prayer-intentions' ),
-			'descriptionHelp'         => __( 'Only for discreet cases: “La hija de N.H. Axel”. Nothing is added to it.', 'dfx-prayer-intentions' ),
+			'descriptionHelp'         => __( 'Only for discreet cases: “Bro. John’s daughter”. Nothing is added to it.', 'dfx-prayer-intentions' ),
 			'time'                    => __( 'Time', 'dfx-prayer-intentions' ),
 			'discretion'              => __( 'Discretion', 'dfx-prayer-intentions' ),
 		);

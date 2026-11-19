@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611195
+Stable tag: 1.0.2611196
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611196 =
+* Changed: clearer examples in the help for descriptions instead of names and for the members' prefix.
 
 = 1.0.2611195 =
 * New: the user manual in English, with its own screenshots. The panel shows it to anyone whose language is not Spanish, and each manual links to the other.

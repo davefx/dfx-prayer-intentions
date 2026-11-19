@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611195 · November 2026
+Version 1.0.2611196 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611195 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611196 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -194,7 +194,7 @@ The card has five steps, the same as in the app. Fields that do not apply to the
 4. **"How it appears in the message"**: the "Summary", a preview of the line, the message ("Daily message" or "Only the monthly list"), the topic (General, Health, Studies, exams and work, Economic or legal problems, Current affairs), the priority ("Urgent: it opens “Especially”") and, folded, "Discretion and names".
 5. **"Follow-up"**: "Look at it again on" (the next review), "Or pray for it only until" (it stops appearing and closes by itself the next day) and "Pending to ask", with the button to ask by WhatsApp.
 
-In "Discretion and names" you can write a description instead of the name, such as "Bro. Axel's daughter". It replaces the whole description of the person, does not accept surnames with first-name discretion, and can never reveal more than the level allows.
+In "Discretion and names" you can write a description instead of the name, such as "Bro. John's daughter". It replaces the whole description of the person, does not accept surnames with first-name discretion, and can never reveal more than the level allows.
 
 ![An intention's card, with the quick actions on the right](img/05-ficha.webp)
 

@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611195 · noviembre de 2026
+Versión 1.0.2611196 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611195 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611196 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -194,7 +194,7 @@ La ficha tiene cinco pasos, los mismos que en la app. Los campos que no aplican 
 4. **«Cómo sale en el mensaje»**: el «Resumen», una vista previa de la línea, el mensaje («Mensaje diario» o «Solo la lista mensual»), el tema (General, Salud, Estudios y trabajo, Económicos o legales, Actualidad), la prioridad («Urgente: abre “Especialmente”») y, plegado, «Discreción y nombres».
 5. **«Seguimiento»**: «Volver a mirarla el» (la próxima revisión), «O rezar solo hasta el» (deja de salir y se cierra sola al día siguiente) y «Pendiente de preguntar», con el botón para preguntar por WhatsApp.
 
-En «Discreción y nombres» se puede poner una descripción en lugar del nombre, como «La hija de N.H. Axel». Sustituye toda la descripción de la persona, no admite apellidos con discreción de nombre de pila y nunca puede revelar más de lo que permite el nivel.
+En «Discreción y nombres» se puede poner una descripción en lugar del nombre, como «La hija de N.H. Juan». Sustituye toda la descripción de la persona, no admite apellidos con discreción de nombre de pila y nunca puede revelar más de lo que permite el nivel.
 
 ![La ficha de una intención, con las acciones rápidas a la derecha](img/05-ficha.webp)
 

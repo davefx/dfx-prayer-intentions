@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611193\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611195\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T12:29:15+00:00\n"
+"POT-Creation-Date: 2026-11-19T13:08:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -443,7 +443,7 @@ msgid "Prefix for members of the group"
 msgstr ""
 
 #: admin/class-admin.php:568
-msgid "Written before the name of those marked as members, e.g. “N.H.”. Empty: no prefix."
+msgid "Written before the name of those marked as members, e.g. “Bro.”. Empty: no prefix."
 msgstr ""
 
 #: admin/class-admin.php:572
@@ -1313,7 +1313,7 @@ msgid "Description of the beneficiary instead of the name"
 msgstr ""
 
 #: admin/views/intention-edit.php:288
-msgid "Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “La hija de N.H. Axel”. It cannot reveal more than the discretion level allows."
+msgid "Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “Bro. John’s daughter”. It cannot reveal more than the discretion level allows."
 msgstr ""
 
 #: admin/views/intention-edit.php:296
@@ -2084,7 +2084,7 @@ msgid "No phone yet: add it when editing one of them."
 msgstr ""
 
 #: includes/class-app.php:402
-msgid "Only for discreet cases: “La hija de N.H. Axel”. Nothing is added to it."
+msgid "Only for discreet cases: “Bro. John’s daughter”. Nothing is added to it."
 msgstr ""
 
 #: includes/class-channels.php:116
@@ -2700,7 +2700,7 @@ msgstr ""
 msgid "Withdrawn by the requester"
 msgstr ""
 
-#: includes/class-manual.php:131
+#: includes/class-manual.php:157
 msgid "Contents"
 msgstr ""
 
