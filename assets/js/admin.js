@@ -34,6 +34,28 @@
 			return;
 		}
 
+		const link = event.target.closest( '[data-dfxpray-copy-text]' );
+		if ( link ) {
+			const done = function () {
+				link.textContent = strings.copied;
+				window.setTimeout( function () {
+					link.textContent = strings.copyLink || strings.copy;
+				}, 2000 );
+			};
+			if ( navigator.clipboard && window.isSecureContext ) {
+				navigator.clipboard.writeText( link.dataset.dfxprayCopyText ).then( done );
+			} else {
+				const field = document.createElement( 'textarea' );
+				field.value = link.dataset.dfxprayCopyText;
+				document.body.appendChild( field );
+				field.select();
+				document.execCommand( 'copy' );
+				field.remove();
+				done();
+			}
+			return;
+		}
+
 		const add = event.target.closest( '[data-dfxpray-add-row]' );
 		if ( add ) {
 			const rows = add.parentElement.querySelector( '[data-dfxpray-rows]' );

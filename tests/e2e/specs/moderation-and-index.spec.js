@@ -22,7 +22,7 @@ test( 'a leader of a single group lands on that group, with its tabs and counter
 	await expect( page.getByText( 'Pending one' ) ).toBeVisible();
 
 	const submenu = page.locator( '#toplevel_page_dfxpray .wp-submenu a' );
-	await expect( submenu ).toHaveText( [ 'Groups', 'Santa Marta 1' ] );
+	await expect( submenu ).toHaveText( [ 'Groups', 'Santa Marta 1', 'Manual' ] );
 	await expect( page.locator( '#adminmenu .awaiting-mod' ).first() ).toHaveText( '1' );
 
 	await page.locator( '.dfxpray-tabs' ).getByRole( 'link', { name: 'Daily digest' } ).click();

@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611193
+Stable tag: 1.0.2611194
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,11 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611194 =
+* New: the user manual ships with the plugin and opens in the panel, under "Prayer intentions > Manual", in the user's language, with its screenshots. The footer of every screen and the leaders' app link to it.
+* New: on phones and tablets, every panel screen shows the leaders' app address with a "Copy link" button and how to install it, and the menu has an "Install the app" entry. Inside the app, an "Install the app" button (or the steps, on iPhone and iPad) stays at the top of "Today" until the app is installed.
+* Changed: the app's manifest declares its id and icon purposes, so browsers offer to install it.
 
 = 1.0.2611193 =
 * New: administrators invite leaders to any group, including groups they do not lead or groups with no leaders yet, from each group's card in "Groups > Manage groups", where they also see and withdraw its pending invitations.

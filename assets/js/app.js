@@ -238,7 +238,8 @@
 			'header',
 			{ class: 'dfx-header' },
 			h( 'img', { class: 'dfx-logo', src: C.icon, alt: '' } ),
-			h( 'div', { class: 'dfx-title' }, h( 'h1', {}, S.appName ), groups || ( current ? h( 'span', { class: 'dfx-group' }, current.name ) : null ) )
+			h( 'div', { class: 'dfx-title' }, h( 'h1', {}, S.appName ), groups || ( current ? h( 'span', { class: 'dfx-group' }, current.name ) : null ) ),
+			C.manualUrl ? h( 'a', { class: 'dfx-manual', href: C.manualUrl }, S.manual ) : null
 		);
 	}
 
@@ -338,6 +339,80 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Installing: on phones and tablets, until the app runs installed     */
+	/* ------------------------------------------------------------------ */
+
+	const install = { prompt: null, installed: false, el: null };
+
+	function isInstalled() {
+		return install.installed || window.navigator.standalone === true || ( window.matchMedia && window.matchMedia( '(display-mode: standalone)' ).matches );
+	}
+
+	function isMobile() {
+		const nav = window.navigator;
+		const coarse = window.matchMedia && window.matchMedia( '(pointer: coarse)' ).matches;
+		const ipad = 'MacIntel' === nav.platform && nav.maxTouchPoints > 1;
+		const mobile = ( nav.userAgentData && nav.userAgentData.mobile ) || /Android|iPhone|iPad|iPod|Mobile/i.test( nav.userAgent ) || ipad;
+		return Boolean( coarse && mobile );
+	}
+
+	function isIos() {
+		const nav = window.navigator;
+		return /iPhone|iPad|iPod/i.test( nav.userAgent ) || ( 'MacIntel' === nav.platform && nav.maxTouchPoints > 1 );
+	}
+
+	// Fill (or empty) the banner: a button when the browser can install
+	// it, Apple's steps on iPhone and iPad, the generic hint elsewhere.
+	function fillInstall() {
+		const el = install.el;
+		if ( ! el ) {
+			return;
+		}
+		if ( isInstalled() ) {
+			el.remove();
+			install.el = null;
+			return;
+		}
+		if ( install.prompt ) {
+			const button = h( 'button', { type: 'button', class: 'dfx-button is-primary' }, S.installApp );
+			button.addEventListener( 'click', async () => {
+				const event = install.prompt;
+				install.prompt = null;
+				await event.prompt();
+				const choice = await Promise.resolve( event.userChoice ).catch( () => null );
+				if ( choice && 'accepted' === choice.outcome ) {
+					install.installed = true;
+				}
+				fillInstall();
+			} );
+			el.replaceChildren( button );
+		} else {
+			el.replaceChildren( isIos() ? S.installIos : S.installHint );
+		}
+	}
+
+	function installBanner() {
+		if ( isInstalled() || ! isMobile() ) {
+			return null;
+		}
+		install.el = h( 'div', { class: 'dfx-install', role: 'region', 'aria-label': S.installApp } );
+		fillInstall();
+		return install.el;
+	}
+
+	window.addEventListener( 'beforeinstallprompt', ( event ) => {
+		event.preventDefault();
+		install.prompt = event;
+		fillInstall();
+	} );
+
+	window.addEventListener( 'appinstalled', () => {
+		install.installed = true;
+		install.prompt = null;
+		fillInstall();
+	} );
+
+	/* ------------------------------------------------------------------ */
 	/* Today: the message to share                                         */
 	/* ------------------------------------------------------------------ */
 
@@ -372,6 +447,7 @@
 				label
 			);
 		frame(
+			installBanner(),
 			result.offline ? h( 'p', { class: 'dfx-notice' }, S.offline ) : null,
 			h( 'div', { class: 'dfx-segments', role: 'group' }, edition( 'daily', S.daily ), edition( 'monthly', S.monthly ) ),
 			h(

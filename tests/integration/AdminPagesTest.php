@@ -10,6 +10,11 @@
  */
 class AdminPagesTest extends DFXPRAY_Test_Case {
 
+	/**
+	 * A phone's User-Agent, for wp_is_mobile().
+	 */
+	private const PHONE = 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36';
+
 	use DFXPRAY_Intention_Factory;
 
 	/**
@@ -51,6 +56,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	 */
 	public function tear_down(): void {
 		$_GET = array();
+		unset( $_SERVER['HTTP_USER_AGENT'] );
 		parent::tear_down();
 	}
 
@@ -90,10 +96,10 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		DFXPRAY_Admin::get_instance()->register_menu();
 
 		$this->assertSame(
-			array( 'dfxpray', 'dfxpray-group-' . $this->mine, 'dfxpray-group-' . $second ),
+			array( 'dfxpray', 'dfxpray-group-' . $this->mine, 'dfxpray-group-' . $second, 'dfxpray-manual' ),
 			array_column( $submenu['dfxpray'], 2 )
 		);
-		$this->assertSame( array( 'Groups', 'Mine', 'Second' ), array_map( 'wp_strip_all_tags', array_column( $submenu['dfxpray'], 0 ) ) );
+		$this->assertSame( array( 'Groups', 'Mine', 'Second', 'Manual' ), array_map( 'wp_strip_all_tags', array_column( $submenu['dfxpray'], 0 ) ) );
 
 		$menu    = array();
 		$submenu = array();
@@ -102,7 +108,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		wp_set_current_user( $admin );
 		DFXPRAY_Admin::get_instance()->register_menu();
 		$this->assertSame(
-			array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $second ),
+			array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $second, 'dfxpray-manual' ),
 			array_column( $submenu['dfxpray'], 2 )
 		);
 	}
@@ -450,7 +456,7 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 
 		DFXPRAY_Admin::get_instance()->register_menu();
 
-		$this->assertSame( array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $this->mine ), array_column( $submenu['dfxpray'], 2 ) );
+		$this->assertSame( array( 'dfxpray', 'dfxpray-global', 'dfxpray-group-' . $this->mine, 'dfxpray-manual' ), array_column( $submenu['dfxpray'], 2 ) );
 		$this->assertStringNotContainsString( 'awaiting-mod', $menu[ array_key_last( $menu ) ][0] );
 
 		foreach ( array( 'moderation', 'intentions', 'reviews', 'digest', 'monthly', 'members', 'settings', 'log' ) as $tab ) {
@@ -682,6 +688,8 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$pages = array(
 			'groups' => array( 'dfxpray', '' ),
 			'global' => array( 'dfxpray-global', '' ),
+			'manual' => array( 'dfxpray-manual', '' ),
+			'app'    => array( 'dfxpray-app', '' ),
 		);
 		foreach ( array( 'moderation', 'intentions', 'reviews', 'digest', 'monthly', 'settings', 'log' ) as $tab ) {
 			$pages[ $tab ] = array( 'group', $tab );
@@ -703,6 +711,109 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 
 		$this->assertStringContainsString( 'class="dfxpray-plugin-footer"', $html );
 		$this->assertStringContainsString( 'Prayer intentions management features provided via <strong>DFX Prayer Intentions</strong> plugin by <a href="https://davefx.com/en/wordpress-plugins/">David Marín Carreño</a>. A.M.D.G.', $html );
+		$this->assertStringContainsString( '<a href="' . esc_url( DFXPRAY_Admin::get_instance()->url( 'dfxpray-manual' ) ) . '">Manual</a>', $html );
+	}
+
+	/**
+	 * Every screen starts with the link to install the app, its Copy button
+	 * and how to install it, and nothing to dismiss it.
+	 *
+	 * @dataProvider provide_pages
+	 *
+	 * @param string $page Page slug, or "group" for the leader's group.
+	 * @param string $tab  Tab of the group page.
+	 */
+	public function test_install_box_on_every_screen( string $page, string $tab ): void {
+		$_SERVER['HTTP_USER_AGENT'] = self::PHONE;
+		$html                       = 'group' === $page ? $this->tab( $tab ) : $this->render( $page );
+		$url  = DFXPRAY_App::get_instance()->url();
+
+		$this->assertStringContainsString( 'class="dfxpray-install"', $html );
+		$this->assertStringContainsString( 'Install the app on your phone', $html );
+		$this->assertStringContainsString( '<a class="dfxpray-install-url" href="' . esc_url( $url ) . '">' . esc_html( $url ) . '</a>', $html );
+		$this->assertStringContainsString( 'data-dfxpray-copy-text="' . esc_attr( $url ) . '"', $html );
+		$this->assertStringContainsString( 'Copy link', $html );
+		$this->assertStringContainsString( 'Android (Chrome)', $html );
+		$this->assertStringContainsString( 'iPhone (Safari)', $html );
+		$this->assertStringNotContainsString( 'is-dismissible', substr( $html, strpos( $html, 'dfxpray-install' ), 1200 ) );
+	}
+
+	/**
+	 * On a computer nothing about installing is shown, nor in the menu.
+	 *
+	 * @dataProvider provide_pages
+	 *
+	 * @param string $page Page slug, or "group" for the leader's group.
+	 * @param string $tab  Tab of the group page.
+	 */
+	public function test_no_install_box_on_a_computer( string $page, string $tab ): void {
+		$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
+		if ( 'dfxpray-app' === $page ) {
+			$this->assertTrue( true, 'The page itself always shows how to install the app.' );
+			return;
+		}
+
+		$html = 'group' === $page ? $this->tab( $tab ) : $this->render( $page );
+
+		$this->assertStringNotContainsString( 'dfxpray-install', $html );
+	}
+
+	/**
+	 * Administrators get the box too; users without panel access do not, and
+	 * the menu has a page for it, open for everyone with access.
+	 */
+	public function test_install_box_and_page(): void {
+		global $submenu, $menu;
+		$_SERVER['HTTP_USER_AGENT'] = self::PHONE;
+		$menu                       = array();
+		$submenu = array();
+		DFXPRAY_Admin::get_instance()->register_menu();
+		$entries = array_column( $submenu['dfxpray'], 2 );
+		$this->assertSame( array( 'dfxpray-app', 'dfxpray-manual' ), array_slice( $entries, -2 ) );
+
+		$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
+		$menu                       = array();
+		$submenu                    = array();
+		DFXPRAY_Admin::get_instance()->register_menu();
+		$this->assertNotContains( 'dfxpray-app', array_column( $submenu['dfxpray'], 2 ) );
+		$_SERVER['HTTP_USER_AGENT'] = self::PHONE;
+
+		$page = $this->render( 'dfxpray-app' );
+		$this->assertStringContainsString( '<details class="dfxpray-install-how" open>', $page );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$this->assertStringContainsString( 'class="dfxpray-install"', $this->render( 'dfxpray' ) );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
+		$this->assertStringNotContainsString( 'class="dfxpray-install"', $this->render( 'dfxpray-app' ) );
+	}
+
+	/**
+	 * The manual opens for anyone with panel access, leaders and
+	 * administrators, as the last entry of the menu; nobody else sees it.
+	 */
+	public function test_manual_page(): void {
+		global $submenu, $menu;
+		$menu    = array();
+		$submenu = array();
+		DFXPRAY_Admin::get_instance()->register_menu();
+		$entries = $submenu['dfxpray'];
+		$this->assertSame( 'dfxpray-manual', end( $entries )[2] );
+		$this->assertSame( 'Manual', end( $entries )[0] );
+		$this->assertSame( DFXPRAY_Installer::CAPABILITY, end( $entries )[1] );
+
+		$html = $this->render( 'dfxpray-manual' );
+		$this->assertStringContainsString( 'class="dfxpray-manual"', $html );
+		$this->assertStringContainsString( 'dfxpray-manual-toc', $html );
+		$this->assertStringContainsString( DFXPRAY_PLUGIN_URL . 'docs/manual/es/img/', $html );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$this->assertStringContainsString( 'dfxpray-manual-toc', $this->render( 'dfxpray-manual' ) );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
+		$refused = $this->render( 'dfxpray-manual' );
+		$this->assertStringContainsString( 'not allowed', $refused );
+		$this->assertStringNotContainsString( 'dfxpray-manual-toc', $refused );
 	}
 
 	/**

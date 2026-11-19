@@ -58,7 +58,8 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * Menu: Groups, Global settings, then one entry per group.
+	 * Menu: Groups, Global settings, one entry per group, Install the app and
+	 * the Manual.
 	 */
 	public function register_menu(): void {
 		$cap         = DFXPRAY_Installer::CAPABILITY;
@@ -84,6 +85,11 @@ final class DFXPRAY_Admin {
 			$name = $groups->get( $group_id )['name'];
 			add_submenu_page( 'dfxpray', $name, esc_html( $name ) . $this->bubble( $pending[ $group_id ] ), $cap, self::GROUP_PAGE . $group_id, $callback );
 		}
+
+		if ( wp_is_mobile() ) {
+			add_submenu_page( 'dfxpray', __( 'Install the app', 'dfx-prayer-intentions' ), __( 'Install the app', 'dfx-prayer-intentions' ), $cap, 'dfxpray-app', $callback );
+		}
+		add_submenu_page( 'dfxpray', __( 'Manual', 'dfx-prayer-intentions' ), __( 'Manual', 'dfx-prayer-intentions' ), $cap, 'dfxpray-manual', $callback );
 	}
 
 	/**
@@ -120,6 +126,12 @@ final class DFXPRAY_Admin {
 	public function render( string $page ): void {
 		echo '<div class="wrap dfxpray-wrap">';
 
+		// On a phone or tablet, the link to install the app is always at hand,
+		// on every screen. On a computer there is nothing to install.
+		if ( DFXPRAY_Permissions::get_instance()->can_access_panel() && ( wp_is_mobile() || 'dfxpray-app' === $page ) ) {
+			$this->view( 'partials/install-app', array( 'open' => 'dfxpray-app' === $page ) );
+		}
+
 		if ( str_starts_with( $page, self::GROUP_PAGE ) ) {
 			$this->render_group_page( (int) substr( $page, strlen( self::GROUP_PAGE ) ) );
 		} else {
@@ -131,7 +143,8 @@ final class DFXPRAY_Admin {
 	}
 
 	/**
-	 * The DFX footer shown on every screen of the panel, as in the other DFX plugins.
+	 * The DFX footer shown on every screen of the panel, as in the other DFX
+	 * plugins, with a link to the manual.
 	 */
 	public function render_footer(): void {
 		echo '<div class="dfxpray-plugin-footer"><p>';
@@ -143,6 +156,7 @@ final class DFXPRAY_Admin {
 				sprintf( '<a href="%s">David Marín Carreño</a>', esc_url( __( 'https://davefx.com/en/wordpress-plugins/', 'dfx-prayer-intentions' ) ) )
 			)
 		);
+		echo ' · <a href="' . esc_url( $this->url( 'dfxpray-manual' ) ) . '">' . esc_html__( 'Manual', 'dfx-prayer-intentions' ) . '</a>';
 		echo '</p></div>';
 	}
 
@@ -156,6 +170,8 @@ final class DFXPRAY_Admin {
 		$pages       = array(
 			'dfxpray'        => array( __( 'Groups', 'dfx-prayer-intentions' ), 'groups', false ),
 			'dfxpray-global' => array( __( 'Global settings', 'dfx-prayer-intentions' ), 'global', true ),
+			'dfxpray-manual' => array( __( 'Manual', 'dfx-prayer-intentions' ), 'manual', false ),
+			'dfxpray-app'    => array( __( 'Install the app', 'dfx-prayer-intentions' ), 'install', false ),
 		);
 
 		echo '<h1>' . esc_html( $pages[ $page ][0] ?? __( 'Prayer intentions', 'dfx-prayer-intentions' ) ) . '</h1>';
@@ -377,6 +393,7 @@ final class DFXPRAY_Admin {
 				'copied'        => __( 'Copied!', 'dfx-prayer-intentions' ),
 				'copy'          => __( 'Copy', 'dfx-prayer-intentions' ),
 				'confirmDelete' => __( 'This cannot be undone. Continue?', 'dfx-prayer-intentions' ),
+				'copyLink'      => __( 'Copy link', 'dfx-prayer-intentions' ),
 			)
 		);
 	}

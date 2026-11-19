@@ -1,5 +1,6 @@
 # Development tooling. None of it ships: the plugin has no runtime
-# dependencies and no build step.
+# dependencies and no build step. docs/ ships: it holds only the user manual
+# (docs/manual/<lang>/), which the panel shows (ReleasePackageTest checks it).
 .git
 .gitignore
 .distignore
@@ -17,9 +18,8 @@ tests
 vendor
 bin
 dist
-README.md
+/README.md
 AGENTS.md
 CLAUDE.md
 .claude
 .wordpress-org
-docs

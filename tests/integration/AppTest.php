@@ -62,6 +62,10 @@ class AppTest extends DFXPRAY_Test_Case {
 		$this->assertStringContainsString( '"ajaxUrl":"' . str_replace( '/', '\/', admin_url( 'admin-ajax.php' ) ) . '"', $html );
 		$this->assertStringContainsString( 'assets/js/app.js', $html );
 		$this->assertStringContainsString( '"share":"Share"', $html );
+		$this->assertStringContainsString( '"manualUrl":"' . str_replace( '/', '\/', DFXPRAY_Admin::get_instance()->url( 'dfxpray-manual' ) ) . '"', $html );
+		$this->assertStringContainsString( '"manual":"Manual"', $html );
+		$this->assertStringContainsString( '"installApp":"Install the app"', $html );
+		$this->assertStringContainsString( '"installIos":"To install it: tap Share and then Add to Home Screen."', $html );
 	}
 
 	/**
@@ -73,7 +77,11 @@ class AppTest extends DFXPRAY_Test_Case {
 		$this->assertSame( $this->app->url(), $manifest['start_url'] );
 		$this->assertSame( $this->app->url(), $manifest['scope'] );
 		$this->assertSame( 'standalone', $manifest['display'] );
-		$this->assertSame( array( '192x192', '512x512' ), array_column( $manifest['icons'], 'sizes' ) );
+		$this->assertSame( $this->app->url(), $manifest['id'] );
+		$this->assertNotSame( '', $manifest['name'] );
+		$this->assertNotSame( '', $manifest['short_name'] );
+		$this->assertSame( array( '192x192', '512x512', '512x512' ), array_column( $manifest['icons'], 'sizes' ) );
+		$this->assertSame( array( 'any', 'any', 'maskable' ), array_column( $manifest['icons'], 'purpose' ) );
 		foreach ( $manifest['icons'] as $icon ) {
 			$this->assertFileExists( DFXPRAY_PLUGIN_DIR . 'assets/images/' . basename( (string) wp_parse_url( $icon['src'], PHP_URL_PATH ) ) );
 		}
@@ -89,6 +97,7 @@ class AppTest extends DFXPRAY_Test_Case {
 		$this->assertStringContainsString( 'dfxpray-app-' . DFXPRAY_VERSION, $js );
 		$this->assertStringContainsString( 'assets/js/app.js', $js );
 		$this->assertStringNotContainsString( 'admin-ajax', $js );
+		$this->assertStringContainsString( "addEventListener('fetch'", $js );
 	}
 
 	/**

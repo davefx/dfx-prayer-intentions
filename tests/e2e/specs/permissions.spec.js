@@ -48,7 +48,7 @@ test( 'leaders only see their own groups, and have no other WordPress permission
 	await page.goto( groupUrl( mine.id, 'moderation' ) );
 	await expect( page.locator( 'body' ) ).not.toContainText( 'Of the other group' );
 
-	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Santa Marta' ] );
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Santa Marta', 'Manual' ] );
 	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'San José' );
 	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'Global settings' );
 	await expect( page.locator( '#adminmenu' ) ).not.toContainText( 'Posts' );
@@ -87,7 +87,7 @@ test( 'a leader of two groups reaches each from its own menu entry, and always k
 	expect( page.url() ).toContain( 'admin.php?page=dfxpray' );
 	await expect( page.locator( '.dfxpray-card h2' ) ).toHaveText( [ 'San José', 'Santa Marta' ] );
 	const submenu = page.locator( '#toplevel_page_dfxpray .wp-submenu a' );
-	await expect( submenu ).toHaveText( [ 'Groups', 'San José 1', 'Santa Marta 1' ] );
+	await expect( submenu ).toHaveText( [ 'Groups', 'San José 1', 'Santa Marta 1', 'Manual' ] );
 
 	await submenu.filter( { hasText: 'San José' } ).click();
 	await expect( page.getByRole( 'heading', { level: 1 } ) ).toHaveText( 'San José' );

@@ -277,3 +277,72 @@
 	display: inline;
 	margin-left: 8px;
 }
+
+.dfxpray-manual {
+	max-width: 860px;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.dfxpray-manual img {
+	max-width: 100%;
+	height: auto;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	margin: 4px 8px 4px 0;
+	vertical-align: top;
+}
+
+.dfxpray-manual table {
+	margin: 12px 0;
+}
+
+.dfxpray-manual blockquote {
+	border-left: 4px solid #dcdcde;
+	margin: 12px 0;
+	padding: 4px 12px;
+}
+
+.dfxpray-manual pre {
+	background: #f6f7f7;
+	padding: 8px 12px;
+	overflow-x: auto;
+}
+
+.dfxpray-manual-toc {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	padding: 4px 16px;
+	margin: 12px 0 20px;
+}
+
+.dfxpray-install {
+	background: #fff;
+	border-left: 4px solid #24305a;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	margin: 12px 0;
+	padding: 4px 12px;
+}
+
+.dfxpray-install p {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 10px;
+	margin: 6px 0;
+}
+
+.dfxpray-install-url {
+	font-size: 16px;
+	font-weight: 600;
+	word-break: break-all;
+}
+
+.dfxpray-install-how {
+	margin: 0 0 6px;
+}
+
+.dfxpray-install-how ul {
+	margin: 4px 0 0 18px;
+	list-style: disc;
+}

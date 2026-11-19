@@ -150,6 +150,7 @@ class ReleasePackageTest extends DFXPRAY_Test_Case {
 			'dfx-prayer-intentions/assets/js/admin.js',
 			'dfx-prayer-intentions/languages/dfx-prayer-intentions.pot',
 			'dfx-prayer-intentions/languages/dfx-prayer-intentions-es_ES.mo',
+			'dfx-prayer-intentions/docs/manual/es/README.md',
 		) as $expected ) {
 			$this->assertContains( $expected, $files );
 		}
@@ -160,12 +161,34 @@ class ReleasePackageTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The user manual ships, with every screenshot it shows, so the panel
+	 * can display it; nothing else from docs does.
+	 */
+	public function test_zip_contains_the_manual_and_its_images(): void {
+		$files  = $this->zip_files();
+		$images = glob( self::$root . '/docs/manual/*/img/*.webp' );
+
+		$this->assertNotEmpty( $images );
+		foreach ( $images as $image ) {
+			$this->assertContains( 'dfx-prayer-intentions/' . substr( $image, strlen( self::$root ) + 1 ), $files );
+		}
+		foreach ( glob( self::$root . '/docs/manual/*/README.md' ) as $manual ) {
+			$this->assertContains( 'dfx-prayer-intentions/' . substr( $manual, strlen( self::$root ) + 1 ), $files );
+		}
+		foreach ( $files as $file ) {
+			if ( str_starts_with( $file, 'dfx-prayer-intentions/docs/' ) ) {
+				$this->assertMatchesRegularExpression( '#^dfx-prayer-intentions/docs/manual/[a-z]{2}/(README\.md|img/[^/]+\.webp)$#', $file );
+			}
+		}
+	}
+
+	/**
 	 * No development tooling, tests or dependencies ship.
 	 */
 	public function test_zip_excludes_development_files(): void {
 		foreach ( $this->zip_files() as $file ) {
 			$this->assertDoesNotMatchRegularExpression(
-				'#^dfx-prayer-intentions/(tests|vendor|node_modules|bin|dist|docs|\.git|composer\.|package|phpunit|phpcs|playwright|AGENTS\.md|CLAUDE\.md|README\.md|\.gitignore|\.distignore|\.claude)#',
+				'#^dfx-prayer-intentions/(tests|vendor|node_modules|bin|dist|\.git|composer\.|package|phpunit|phpcs|playwright|AGENTS\.md|CLAUDE\.md|README\.md|\.gitignore|\.distignore|\.claude)#',
 				$file
 			);
 			$this->assertStringNotContainsString( '__pycache__', $file );

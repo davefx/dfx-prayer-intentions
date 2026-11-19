@@ -102,6 +102,13 @@ body {
 	opacity: 0.8;
 }
 
+.dfx-manual {
+	margin-left: auto;
+	color: #fff;
+	font-size: 13px;
+	opacity: 0.85;
+}
+
 .dfx-header select {
 	margin-top: 2px;
 	padding: 2px 6px;
@@ -160,6 +167,18 @@ h2 {
 	border-radius: 10px;
 	background: #fff8e4;
 	font-size: 14px;
+}
+
+.dfx-install {
+	margin: 0 0 14px;
+	padding: 10px 14px;
+	border-radius: 10px;
+	background: #eef1f8;
+	font-size: 14px;
+}
+
+.dfx-install .dfx-button {
+	width: 100%;
 }
 
 .dfx-notice.is-ok {

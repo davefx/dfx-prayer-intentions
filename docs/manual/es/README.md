@@ -2,6 +2,8 @@
 
 Versión 1.0.2611191 · noviembre de 2026
 
+Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
+
 ## Qué es y para quién
 
 DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611191 del plugin para WordPress y su app para el móvil.
@@ -51,7 +53,7 @@ Al activarlo, crea sus tablas, el rol «Líder de oración» y dos tareas progra
 - **«Ajustes globales»**, solo para administradores.
 - **Una entrada por cada grupo que llevas**, con su propio globo de pendientes. Esto vale también para los administradores: los grupos que no llevan solo aparecen en «Gestionar grupos».
 
-![La página «Grupos» vista por un administrador](img/02-grupos.png)
+![La página «Grupos» vista por un administrador](img/02-grupos.webp)
 
 ### Avisos al entrar en un grupo
 
@@ -141,7 +143,7 @@ Las páginas con el formulario piden a los buscadores que no las indexen y a las
 
 El botón es «Enviar mi petición». Sin las tres casillas, la petición no se guarda.
 
-<img src="img/01-formulario.png" alt="El formulario de peticiones en el móvil, con «un momento concreto» elegido" width="320">
+<img src="img/01-formulario.webp" alt="El formulario de peticiones en el móvil, con «un momento concreto» elegido" width="320">
 
 ### Defensas contra el abuso
 
@@ -172,13 +174,13 @@ Aquí llegan las peticiones del formulario, de la más antigua a la más recient
 
 Al aprobar no se eligen el mensaje, el tema ni si es de nuestro grupo: se ajustan después, editando la intención.
 
-![La pestaña «Moderación» con dos peticiones del formulario](img/03-moderacion.png)
+![La pestaña «Moderación» con dos peticiones del formulario](img/03-moderacion.webp)
 
 ### La lista de intenciones
 
 La pestaña «Intenciones» permite filtrar por estado, tipo, prioridad, fechas y nombre. Las urgentes salen primero, marcadas con ❗. El botón «Añadir intención» abre una ficha vacía; una intención añadida por un líder queda activa en el acto.
 
-![La lista de intenciones con sus filtros](img/04-intenciones.png)
+![La lista de intenciones con sus filtros](img/04-intenciones.webp)
 
 ### La ficha de una intención
 
@@ -192,7 +194,7 @@ La ficha tiene cinco pasos, los mismos que en la app. Los campos que no aplican 
 
 En «Discreción y nombres» se puede poner una descripción en lugar del nombre, como «La hija de N.H. Axel». Sustituye toda la descripción de la persona, no admite apellidos con discreción de nombre de pila y nunca puede revelar más de lo que permite el nivel.
 
-![La ficha de una intención, con las acciones rápidas a la derecha](img/05-ficha.png)
+![La ficha de una intención, con las acciones rápidas a la derecha](img/05-ficha.webp)
 
 ### Bajo la ficha
 
@@ -218,7 +220,7 @@ Al cerrar como «Atendida» un acontecimiento o una situación, la casilla «Ate
 
 ### El ciclo de vida
 
-![ciclo de vida de una intención · 6 estados](img/12-ciclo-de-vida.png)
+![ciclo de vida de una intención · 6 estados](img/12-ciclo-de-vida.webp)
 
 Cada intención activa tiene una fecha de revisión. Al llegar, pasa a «En revisión», pero sigue en el mensaje hasta que un líder decide.
 
@@ -235,13 +237,13 @@ Las intenciones con «O rezar solo hasta el» se cierran solas al día siguiente
 
 La pestaña «Revisiones» reúne las intenciones que han llegado a su fecha de revisión. **Siguen saliendo en el mensaje hasta que un líder decide**: nadie deja de rezar por un descuido administrativo. Cada tarjeta ofrece «Sigue vigente» o cerrarla.
 
-![La pestaña «Revisiones»](img/06-revisiones.png)
+![La pestaña «Revisiones»](img/06-revisiones.webp)
 
 ### Actividad
 
 Los últimos 200 movimientos del grupo: peticiones recibidas, aprobaciones, cambios, cierres y envíos. El filtro «Envíos fallidos» muestra solo lo que no llegó por correo, Telegram o webhook.
 
-![La pestaña «Actividad»](img/11-actividad.png)
+![La pestaña «Actividad»](img/11-actividad.webp)
 
 ## El mensaje para el grupo
 
@@ -307,7 +309,7 @@ El bloque de líderes trae:
 
 Arriba se indica si el resumen de hoy ya salió y a qué hora. El botón «Generar y enviar ahora» lo envía en el acto por los canales del grupo, aunque ya se hubiera enviado.
 
-![La pestaña «Resumen diario» con la versión para compartir y la de líderes, en el formato «Propuestas de oración»](img/07-resumen-diario.png)
+![La pestaña «Resumen diario» con la versión para compartir y la de líderes, en el formato «Propuestas de oración»](img/07-resumen-diario.webp)
 
 ### Cuándo sale
 
@@ -319,7 +321,7 @@ Arriba se indica si el resumen de hoy ya salió y a qué hora. El botón «Gener
 
 La pestaña «Resumen mensual» tiene la lista mensual en sus dos versiones. **Nunca se envía sola**: se copia desde aquí o desde la app.
 
-![La pestaña «Resumen mensual»](img/08-resumen-mensual.png)
+![La pestaña «Resumen mensual»](img/08-resumen-mensual.webp)
 
 ### Avisos de hora
 
@@ -337,7 +339,7 @@ El panel siempre ofrece copiar y pegar en WhatsApp. En «Ajustes del grupo › C
 | Telegram | Token del bot e ID del chat | La versión para compartir o la de líderes (solo en un chat privado de líderes) |
 | Webhook | URL y secreto de firma | JSON firmado con HMAC-SHA256, para Slack, Discord, n8n… |
 
-![«Ajustes del grupo»](img/10-ajustes-grupo.png)
+![«Ajustes del grupo»](img/10-ajustes-grupo.webp)
 
 Por defecto solo el correo está activo, para el resumen y las peticiones nuevas.
 
@@ -349,7 +351,7 @@ WhatsApp no tiene canal automático: su API oficial no puede publicar en grupos 
 
 La pestaña «Miembros» guarda a los hermanos del grupo para nombrarlos bien y pedir por ellos en su cumpleaños, que abre «Especialmente» en el mensaje diario. Solo la ven los líderes.
 
-![La pestaña «Miembros»](img/09-miembros.png)
+![La pestaña «Miembros»](img/09-miembros.webp)
 
 ### Los datos de cada miembro
 
@@ -454,6 +456,10 @@ La dirección es la del sitio seguida de `/peticiones-app/` (en un sitio en espa
 
 Queda como un icono más, llamado «Oración», que se abre a pantalla completa. Desde la pestaña «Resumen diario» del panel hay un enlace directo.
 
+Cuando abres el panel en el móvil o la tableta, arriba de cada pantalla aparece «Instala la app en tu móvil:» con la dirección de la app, el botón «Copiar enlace» y, en «Cómo instalarla», estos dos pasos; el menú «Intenciones de oración» tiene además la entrada «Instalar la app». En el ordenador no aparece nada de esto.
+
+Si abres la app en el móvil sin haberla instalado, arriba de «Hoy» aparece el botón «Instalar la app» (en Android con Chrome) o la indicación de pulsar Compartir y luego «Añadir a pantalla de inicio» (en iPhone y iPad). Desaparece en cuanto la app está instalada.
+
 ### Las pantallas
 
 En la barra de abajo hay seis botones. Si diriges varios grupos, arriba hay un selector para elegir el grupo, y la app recuerda el último.
@@ -467,12 +473,12 @@ En la barra de abajo hay seis botones. Si diriges varios grupos, arriba hay un s
 | «Moderación» | Las peticiones por moderar y las intenciones por revisar |
 | «Añadir» | La ficha de cinco pasos del panel, con «Así saldrá»: la línea tal como quedará en el mensaje |
 
-<img src="img/20-app-hoy.png" alt="App: «Hoy»" width="320">
-<img src="img/21-app-intenciones.png" alt="App: «Intenciones»" width="320">
-<img src="img/22-app-consultar.png" alt="App: «Consultar»" width="320">
-<img src="img/23-app-miembros.png" alt="App: «Miembros»" width="320">
-<img src="img/24-app-moderacion.png" alt="App: «Moderación»" width="320">
-<img src="img/25-app-anadir.png" alt="App: «Añadir»" width="320">
+<img src="img/20-app-hoy.webp" alt="App: «Hoy»" width="320">
+<img src="img/21-app-intenciones.webp" alt="App: «Intenciones»" width="320">
+<img src="img/22-app-consultar.webp" alt="App: «Consultar»" width="320">
+<img src="img/23-app-miembros.webp" alt="App: «Miembros»" width="320">
+<img src="img/24-app-moderacion.webp" alt="App: «Moderación»" width="320">
+<img src="img/25-app-anadir.webp" alt="App: «Añadir»" width="320">
 
 La pregunta de «Consultar» sale como «Hola, Luis. ¿Cómo sigue Carmen (operación de cadera)?». Si son varias, se pregunta por todas a la vez. Al añadir una actualización o cerrar la intención, sale de la lista.
 
@@ -485,7 +491,7 @@ Al tocar una intención se ve su línea, quién la pide, el «Texto completo» (
 - **si está cerrada**: «Reabrir»;
 - y siempre «Editar» y «Preguntar por WhatsApp cómo sigue».
 
-<img src="img/26-app-ficha.png" alt="La ficha de una intención en la app" width="320">
+<img src="img/26-app-ficha.webp" alt="La ficha de una intención en la app" width="320">
 
 Quedan solo en el panel los comentarios internos, fusionar, trasladar, el acuse de recibo, editar miembros, los ajustes y el resumen de líderes.
 
@@ -508,7 +514,7 @@ Una rutina es un programa del propio líder que mantiene la lista al día sin ab
 2. **Márcalo como cuenta de servicio**: un administrador, en el perfil del usuario, sección «DFX Prayer Intentions», activa «Esta cuenta solo la usa una rutina».
 3. **Crea una contraseña de aplicación** en ese mismo perfil (sección «Contraseñas de aplicación» de WordPress). Guárdala donde solo la lea el programa, nunca en el texto de la rutina.
 
-![La casilla de cuenta de servicio en el perfil del usuario](img/15-cuenta-servicio.png)
+![La casilla de cuenta de servicio en el perfil del usuario](img/15-cuenta-servicio.webp)
 
 Si un plugin de seguridad desactiva las contraseñas de aplicación (Wordfence lo hace con «Disable WordPress application passwords»), la ruta responderá siempre 401 hasta que se permitan.
 

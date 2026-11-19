@@ -152,22 +152,23 @@ final class DFXPRAY_App {
 	 */
 	public function shell(): string {
 		$config = array(
-			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
-			'action'   => DFXPRAY_App_API::AJAX_ACTION,
-			'nonce'    => wp_create_nonce( DFXPRAY_App_API::NONCE ),
-			'appUrl'   => $this->url(),
-			'worker'   => $this->url() . 'sw.js',
-			'version'  => DFXPRAY_VERSION,
-			'today'    => DFXPRAY_Clock::get_instance()->today(),
-			'icon'     => $this->asset( 'images/app-icon-192.png' ),
-			'strings'  => $this->strings(),
-			'types'    => DFXPRAY_Lifecycle::get_instance()->types(),
-			'kinds'    => DFXPRAY_Lifecycle::get_instance()->kind_choices(),
-			'reasons'  => DFXPRAY_Lifecycle::get_instance()->close_reasons(),
-			'statuses' => DFXPRAY_Lifecycle::get_instance()->statuses(),
-			'levels'   => DFXPRAY_Discretion::get_instance()->levels(),
-			'scopes'   => DFXPRAY_Intentions::get_instance()->scope_labels(),
-			'topics'   => DFXPRAY_Intentions::get_instance()->topic_labels(),
+			'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
+			'action'    => DFXPRAY_App_API::AJAX_ACTION,
+			'nonce'     => wp_create_nonce( DFXPRAY_App_API::NONCE ),
+			'appUrl'    => $this->url(),
+			'manualUrl' => DFXPRAY_Admin::get_instance()->url( 'dfxpray-manual' ),
+			'worker'    => $this->url() . 'sw.js',
+			'version'   => DFXPRAY_VERSION,
+			'today'     => DFXPRAY_Clock::get_instance()->today(),
+			'icon'      => $this->asset( 'images/app-icon-192.png' ),
+			'strings'   => $this->strings(),
+			'types'     => DFXPRAY_Lifecycle::get_instance()->types(),
+			'kinds'     => DFXPRAY_Lifecycle::get_instance()->kind_choices(),
+			'reasons'   => DFXPRAY_Lifecycle::get_instance()->close_reasons(),
+			'statuses'  => DFXPRAY_Lifecycle::get_instance()->statuses(),
+			'levels'    => DFXPRAY_Discretion::get_instance()->levels(),
+			'scopes'    => DFXPRAY_Intentions::get_instance()->scope_labels(),
+			'topics'    => DFXPRAY_Intentions::get_instance()->topic_labels(),
 		);
 		$title  = __( 'Prayer intentions', 'dfx-prayer-intentions' );
 
@@ -200,6 +201,7 @@ final class DFXPRAY_App {
 	 */
 	public function manifest(): array {
 		return array(
+			'id'               => $this->url(),
 			'name'             => __( 'Prayer intentions', 'dfx-prayer-intentions' ),
 			'short_name'       => __( 'Prayer', 'dfx-prayer-intentions' ),
 			'start_url'        => $this->url(),
@@ -209,14 +211,22 @@ final class DFXPRAY_App {
 			'theme_color'      => '#24305a',
 			'icons'            => array(
 				array(
-					'src'   => $this->asset( 'images/app-icon-192.png' ),
-					'sizes' => '192x192',
-					'type'  => 'image/png',
+					'src'     => $this->asset( 'images/app-icon-192.png' ),
+					'sizes'   => '192x192',
+					'type'    => 'image/png',
+					'purpose' => 'any',
 				),
 				array(
-					'src'   => $this->asset( 'images/app-icon-512.png' ),
-					'sizes' => '512x512',
-					'type'  => 'image/png',
+					'src'     => $this->asset( 'images/app-icon-512.png' ),
+					'sizes'   => '512x512',
+					'type'    => 'image/png',
+					'purpose' => 'any',
+				),
+				array(
+					'src'     => $this->asset( 'images/app-icon-512.png' ),
+					'sizes'   => '512x512',
+					'type'    => 'image/png',
+					'purpose' => 'maskable',
 				),
 			),
 		);
@@ -285,6 +295,9 @@ JS;
 			'moderation'              => __( 'Moderation', 'dfx-prayer-intentions' ),
 			'add'                     => __( 'Add', 'dfx-prayer-intentions' ),
 			'share'                   => __( 'Share', 'dfx-prayer-intentions' ),
+			'manual'                  => __( 'Manual', 'dfx-prayer-intentions' ),
+			'installApp'              => __( 'Install the app', 'dfx-prayer-intentions' ),
+			'installIos'              => __( 'To install it: tap Share and then Add to Home Screen.', 'dfx-prayer-intentions' ),
 			'copy'                    => __( 'Copy', 'dfx-prayer-intentions' ),
 			'copied'                  => __( 'Copied!', 'dfx-prayer-intentions' ),
 			'search'                  => __( 'Search', 'dfx-prayer-intentions' ),

@@ -21,7 +21,7 @@ test( 'the administrator creates a group, assigns a leader, and the leader sees 
 	expect( url ).toMatch( /\/prayer-requests-[a-z0-9]{8}\/$/ );
 
 	// The administrator manages the group but, not leading it, does not see its data.
-	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings' ] );
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings', 'Manual' ] );
 
 	const leader = await browser.newPage();
 	await login( leader, 'leader1' );
@@ -39,7 +39,7 @@ test( 'an administrator only sees the groups they lead, and manages the others f
 	await login( page, 'admin' );
 	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
 
-	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings', 'Santa Marta' ] );
+	await expect( page.locator( '#toplevel_page_dfxpray .wp-submenu a' ) ).toHaveText( [ 'Groups', 'Global settings', 'Santa Marta', 'Manual' ] );
 	await expect( page.locator( '#toplevel_page_dfxpray .awaiting-mod' ) ).toHaveCount( 0 );
 	await expect( page.locator( '.dfxpray-group-card' ) ).toHaveCount( 1 );
 	await expect( page.locator( '.dfxpray-group-card' ) ).toContainText( 'Santa Marta' );

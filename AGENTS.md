@@ -56,6 +56,7 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | A delivery channel | a class implementing `DFXPRAY_Channel`, added in `DFXPRAY_Channels::all()` (third parties use the `dfxpray_channels` filter) |
 | The members of a group (how they are called, phone, birthday) | `DFXPRAY_Members`; the "Members" tab (`admin/views/members.php`) with the `save_member`/`delete_member` actions (scope `member_or_group`); their birthdays open "Especially" in `DFXPRAY_Index_Composer` |
 | Who leads a group | administrators set leaders in "Manage groups" (`save_group`); leaders invite by email through `DFXPRAY_Invitations` (`invite_leader`/`withdraw_invitation`, scopes `group`/`invitation`; the accept page is `wp-login.php?action=dfxpray_invitation`) |
+| The user manual | `docs/manual/<lang>/README.md`, with its screenshots as WebP in `docs/manual/<lang>/img/`; it ships in the zip and the panel's "Manual" screen renders it with `DFXPRAY_Manual`, which understands only the Markdown subset the manual uses (add to the renderer, with a test in `ManualTest`, before using anything new) |
 | Scheduled work | `DFXPRAY_Scheduler::tick()` (every five minutes) or `daily()` |
 | Schema change | `DFXPRAY_Installer::get_schema()`, and bump `DB_VERSION` so `maybe_upgrade()` runs |
 
