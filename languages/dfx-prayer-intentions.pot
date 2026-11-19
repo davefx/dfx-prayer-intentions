@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611181\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611190\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T04:25:36+00:00\n"
+"POT-Creation-Date: 2026-11-19T06:51:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -41,7 +41,7 @@ msgstr ""
 
 #: admin/class-admin-actions.php:120
 #: admin/class-admin-actions.php:141
-#: includes/class-app-api.php:110
+#: includes/class-app-api.php:125
 msgid "Unknown action."
 msgstr ""
 
@@ -50,8 +50,9 @@ msgid "The link has expired. Please try again."
 msgstr ""
 
 #: admin/class-admin-actions.php:145
-#: includes/class-app-api.php:339
+#: includes/class-app-api.php:379
 #: includes/class-app.php:142
+#: includes/class-rest.php:62
 msgid "You are not allowed to do that."
 msgstr ""
 
@@ -882,6 +883,10 @@ msgstr ""
 
 #: admin/views/groups.php:82
 msgid "No users can lead groups yet. Give someone the “Prayer leader” role first."
+msgstr ""
+
+#: admin/views/groups.php:85
+msgid "service account"
 msgstr ""
 
 #: admin/views/groups.php:90
@@ -1783,7 +1788,7 @@ msgstr ""
 msgid "The webhook answered with status %d."
 msgstr ""
 
-#: includes/class-app-api.php:77
+#: includes/class-app-api.php:78
 msgid "The session has expired. Reload the app."
 msgstr ""
 
@@ -2569,7 +2574,7 @@ msgstr ""
 msgid "Prayer alert"
 msgstr ""
 
-#: includes/class-plugin.php:58
+#: includes/class-plugin.php:60
 msgid "Every five minutes"
 msgstr ""
 
@@ -2661,6 +2666,7 @@ msgid "Called"
 msgstr ""
 
 #: includes/class-privacy.php:306
+#: includes/class-service-accounts.php:123
 msgid "DFX Prayer Intentions"
 msgstr ""
 
@@ -2724,7 +2730,7 @@ msgid "Who sees them."
 msgstr ""
 
 #: includes/class-privacy.php:346
-msgid "Only the leaders of the group read your request: in their private panel, in their app and, if the group keeps it so, in an email notice. The group receives a short summary written by the leaders, with the names only as you chose (full name, first name, initials or anonymous), through its messaging channel. The full text is never shared with the group."
+msgid "Only the leaders of the group read your request: in their private panel, in their app and, if the group keeps it so, in an email notice. A leader may also use a program of their own (a routine) that works on the group's list with a password only for this, from their own computer. The group receives a short summary written by the leaders, with the names only as you chose (full name, first name, initials or anonymous), through its messaging channel. The full text is never shared with the group."
 msgstr ""
 
 #: includes/class-privacy.php:347
@@ -2777,6 +2783,27 @@ msgstr ""
 
 #: includes/class-privacy.php:360
 msgid "Your rights."
+msgstr ""
+
+#: includes/class-rest.php:58
+msgid "This route only answers to application passwords."
+msgstr ""
+
+#: includes/class-service-accounts.php:83
+#: includes/class-service-accounts.php:107
+msgid "This account only works with DFX Prayer Intentions."
+msgstr ""
+
+#: includes/class-service-accounts.php:126
+msgid "Service account"
+msgstr ""
+
+#: includes/class-service-accounts.php:128
+msgid "Only a routine uses this account"
+msgstr ""
+
+#: includes/class-service-accounts.php:129
+msgid "It keeps the permissions of the groups it leads, but gets no email, and its application passwords only work with this plugin."
 msgstr ""
 
 #: includes/class-settings.php:108

@@ -121,11 +121,13 @@ class PublicPageTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
-	 * Nothing about intentions is exposed through REST.
+	 * Nothing about intentions is exposed through REST but the routines'
+	 * route, which answers only to application passwords.
 	 */
-	public function test_no_rest_routes(): void {
+	public function test_only_the_routines_route_in_rest(): void {
 		$routes = array_keys( rest_get_server()->get_routes() );
 
-		$this->assertSame( array(), array_values( preg_grep( '/dfxpray|prayer/i', $routes ) ) );
+		$this->assertSame( array( '/dfxpray/v1', '/dfxpray/v1/(?P<op>[a-z_]+)' ), array_values( preg_grep( '/dfxpray|prayer/i', $routes ) ) );
+		$this->assertSame( 401, rest_do_request( new WP_REST_Request( 'POST', '/dfxpray/v1/list' ) )->get_status() );
 	}
 }

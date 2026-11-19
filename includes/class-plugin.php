@@ -43,6 +43,8 @@ final class DFXPRAY_Plugin {
 		DFXPRAY_Privacy::get_instance()->register_hooks();
 		DFXPRAY_Admin::get_instance()->register_hooks();
 		DFXPRAY_App_API::get_instance()->register_hooks();
+		DFXPRAY_REST::get_instance()->register_hooks();
+		DFXPRAY_Service_Accounts::get_instance()->register_hooks();
 		DFXPRAY_App::get_instance()->register_hooks();
 	}
 

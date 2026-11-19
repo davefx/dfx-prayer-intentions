@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611190
+Stable tag: 1.0.2611191
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,12 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611191 =
+* New: routines. A script can keep a group up to date through one REST route (`dfxpray/v1/<op>`), with the same operations and permissions as the leaders' app. It answers only to application passwords, never anonymously or to a browser session.
+* New: service accounts. An administrator marks a user as used only by a routine, in the user's profile: it keeps the permissions of the groups it leads, gets no email, and its application passwords open nothing else in WordPress.
+* New: the routine (and the app) can read today's digest and send it with "send_digest_now".
+* Changed: the suggested privacy policy mentions that a leader may use a routine.
 
 = 1.0.2611190 =
 * New: "Daily digest at" can be left empty, so the digest goes out only when it is sent with "Generate and send now", for example by a routine when it finishes.

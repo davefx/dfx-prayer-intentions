@@ -413,6 +413,9 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'forbidden', $this->call( 'list', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'get', array( 'intention_id' => $id ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'members', array( 'group_id' => $this->other ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'digest', array( 'group_id' => $this->other ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'send_digest_now', array( 'group_id' => $this->other ) )['code'] );
+		$this->assertNull( DFXPRAY_Scheduler::get_instance()->get_stored_digest( $this->other ) );
 		$this->assertSame(
 			'forbidden',
 			$this->call(

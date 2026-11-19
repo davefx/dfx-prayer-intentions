@@ -6,6 +6,9 @@
  * @package DFXPRAY
  */
 
+// The E2E site is served over plain HTTP: let routines use application passwords.
+add_filter( 'wp_is_application_passwords_available', '__return_true' );
+
 add_filter(
 	'pre_wp_mail',
 	static function ( $short_circuit, $atts ) {

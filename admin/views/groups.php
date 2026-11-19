@@ -82,7 +82,7 @@ $dfxpray_group_form = static function ( ?array $group ) use ( $dfxpray_admin, $d
 				<p class="description"><?php esc_html_e( 'No users can lead groups yet. Give someone the “Prayer leader” role first.', 'dfx-prayer-intentions' ); ?></p>
 			<?php endif; ?>
 			<?php foreach ( $dfxpray_candidates as $user ) : ?>
-				<label class="dfxpray-leader"><input type="checkbox" name="leaders[]" value="<?php echo esc_attr( (string) $user->ID ); ?>" <?php checked( in_array( $user->ID, $leaders, true ) ); ?>> <?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?></label>
+				<label class="dfxpray-leader"><input type="checkbox" name="leaders[]" value="<?php echo esc_attr( (string) $user->ID ); ?>" <?php checked( in_array( $user->ID, $leaders, true ) ); ?>> <?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?><?php echo DFXPRAY_Service_Accounts::get_instance()->is_service_account( $user->ID ) ? ' · ' . esc_html__( 'service account', 'dfx-prayer-intentions' ) : ''; ?></label>
 			<?php endforeach; ?>
 		</fieldset>
 		<?php $privacy = DFXPRAY_Settings::get_instance()->all( $group['id'] ?? null ); ?>

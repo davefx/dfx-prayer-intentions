@@ -15,7 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * It is not a REST route: intentions stay out of WordPress' public surfaces.
  * Every request carries the app's nonce; reads are scoped to the groups the
  * user may manage, and writes go through the panel's own actions, with the
- * same permission checks.
+ * same permission checks. Routines reach the same operations through
+ * DFXPRAY_REST, with an application password instead of the nonce.
  */
 final class DFXPRAY_App_API {
 
@@ -34,7 +35,7 @@ final class DFXPRAY_App_API {
 	/**
 	 * Panel actions the app may run.
 	 */
-	private const WRITES = array( 'save_intention', 'add_update', 'close', 'reopen', 'keep_active', 'approve', 'discard', 'set_priority', 'postpone' );
+	private const WRITES = array( 'save_intention', 'add_update', 'close', 'reopen', 'keep_active', 'approve', 'discard', 'set_priority', 'postpone', 'send_digest_now' );
 
 	/**
 	 * Lists the app asks for, by status.
@@ -77,6 +78,17 @@ final class DFXPRAY_App_API {
 			return $this->failure( 'nonce', __( 'The session has expired. Reload the app.', 'dfx-prayer-intentions' ) );
 		}
 
+		return $this->dispatch( $request );
+	}
+
+	/**
+	 * Run one operation for the current user, once the caller has checked
+	 * how they authenticated (the app's nonce, or an application password).
+	 *
+	 * @param array $request Unslashed request: op and the operation's fields.
+	 * @return array{ok:bool, code:string, message:string, id:?int, data?:array}
+	 */
+	public function dispatch( array $request ): array {
 		if ( ! DFXPRAY_Permissions::get_instance()->can_access_panel() ) {
 			return $this->forbidden();
 		}
@@ -102,6 +114,9 @@ final class DFXPRAY_App_API {
 
 			case 'members':
 				return $this->members( (int) ( $request['group_id'] ?? 0 ) );
+
+			case 'digest':
+				return $this->digest( (int) ( $request['group_id'] ?? 0 ) );
 
 			case 'preview':
 				return $this->preview( (int) ( $request['group_id'] ?? 0 ), (int) ( $request['intention_id'] ?? 0 ), (array) ( $request['intention'] ?? array() ) );
@@ -143,6 +158,31 @@ final class DFXPRAY_App_API {
 		}
 
 		return $this->success( array( 'members' => $members ) );
+	}
+
+	/**
+	 * Today's digest: the message to share, the leaders' version and whether
+	 * it has already gone out today.
+	 *
+	 * @param int $group_id Group.
+	 */
+	private function digest( int $group_id ): array {
+		if ( ! DFXPRAY_Permissions::get_instance()->can_manage_group( $group_id ) ) {
+			return $this->forbidden();
+		}
+
+		$stored = DFXPRAY_Scheduler::get_instance()->get_stored_digest( $group_id );
+		$today  = $stored && DFXPRAY_Clock::get_instance()->today() === $stored['date'];
+		$digest = DFXPRAY_Digest_Composer::get_instance()->compose( $group_id );
+
+		return $this->success(
+			array(
+				'shareable'  => $digest['shareable'],
+				'leaders'    => $digest['leaders'],
+				'sent_today' => $today,
+				'sent_at'    => $today ? (string) $stored['generated_at'] : '',
+			)
+		);
 	}
 
 	/**

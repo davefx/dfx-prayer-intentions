@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611181\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611190\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish (Spain)\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T04:25:36+00:00\n"
+"POT-Creation-Date: 2026-11-19T06:51:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -43,7 +43,7 @@ msgstr "https://davefx.com"
 
 #: admin/class-admin-actions.php:120
 #: admin/class-admin-actions.php:141
-#: includes/class-app-api.php:110
+#: includes/class-app-api.php:125
 msgid "Unknown action."
 msgstr "Acción desconocida."
 
@@ -52,8 +52,9 @@ msgid "The link has expired. Please try again."
 msgstr "El enlace ha caducado. Vuelve a intentarlo."
 
 #: admin/class-admin-actions.php:145
-#: includes/class-app-api.php:339
+#: includes/class-app-api.php:379
 #: includes/class-app.php:142
+#: includes/class-rest.php:62
 msgid "You are not allowed to do that."
 msgstr "No tienes permiso para hacer eso."
 
@@ -885,6 +886,10 @@ msgstr "Líderes"
 #: admin/views/groups.php:82
 msgid "No users can lead groups yet. Give someone the “Prayer leader” role first."
 msgstr "Todavía nadie puede dirigir grupos. Da antes a alguien el rol «Líder de oración»."
+
+#: admin/views/groups.php:85
+msgid "service account"
+msgstr "cuenta de servicio"
 
 #: admin/views/groups.php:90
 #: templates/form.php:133
@@ -1785,7 +1790,7 @@ msgstr "Webhook"
 msgid "The webhook answered with status %d."
 msgstr "El webhook respondió con el estado %d."
 
-#: includes/class-app-api.php:77
+#: includes/class-app-api.php:78
 msgid "The session has expired. Reload the app."
 msgstr "La sesión ha caducado. Vuelve a cargar la app."
 
@@ -2571,7 +2576,7 @@ msgstr "A las %1$s: %2$s. Unidos en oración."
 msgid "Prayer alert"
 msgstr "Aviso de oración"
 
-#: includes/class-plugin.php:58
+#: includes/class-plugin.php:60
 msgid "Every five minutes"
 msgstr "Cada cinco minutos"
 
@@ -2663,6 +2668,7 @@ msgid "Called"
 msgstr "Se le llama"
 
 #: includes/class-privacy.php:306
+#: includes/class-service-accounts.php:123
 msgid "DFX Prayer Intentions"
 msgstr "DFX Prayer Intentions"
 
@@ -2726,8 +2732,8 @@ msgid "Who sees them."
 msgstr "Quién los ve."
 
 #: includes/class-privacy.php:346
-msgid "Only the leaders of the group read your request: in their private panel, in their app and, if the group keeps it so, in an email notice. The group receives a short summary written by the leaders, with the names only as you chose (full name, first name, initials or anonymous), through its messaging channel. The full text is never shared with the group."
-msgstr "Solo los responsables del grupo leen tu petición: en su panel privado, en su app y, si el grupo lo tiene así, en un aviso por correo. El grupo recibe un resumen breve escrito por los responsables, con los nombres solo como elegiste (nombre completo, nombre de pila, iniciales o anónimo), por su canal de mensajería. El texto completo nunca se comparte con el grupo."
+msgid "Only the leaders of the group read your request: in their private panel, in their app and, if the group keeps it so, in an email notice. A leader may also use a program of their own (a routine) that works on the group's list with a password only for this, from their own computer. The group receives a short summary written by the leaders, with the names only as you chose (full name, first name, initials or anonymous), through its messaging channel. The full text is never shared with the group."
+msgstr "Solo los responsables del grupo leen tu petición: en su panel privado, en su app y, si el grupo lo tiene así, en un aviso por correo. Un responsable puede usar también un programa propio (una rutina) que trabaja con la lista del grupo, con una contraseña solo para eso y desde su propio ordenador. El grupo recibe un resumen breve escrito por los responsables, con los nombres solo como elegiste (nombre completo, nombre de pila, iniciales o anónimo), por su canal de mensajería. El texto completo nunca se comparte con el grupo."
 
 #: includes/class-privacy.php:347
 msgid "Services that take part."
@@ -2780,6 +2786,27 @@ msgstr "Para enviar una petición por tu cuenta debes tener al menos %d años."
 #: includes/class-privacy.php:360
 msgid "Your rights."
 msgstr "Tus derechos."
+
+#: includes/class-rest.php:58
+msgid "This route only answers to application passwords."
+msgstr "Esta ruta solo responde a contraseñas de aplicación."
+
+#: includes/class-service-accounts.php:83
+#: includes/class-service-accounts.php:107
+msgid "This account only works with DFX Prayer Intentions."
+msgstr "Esta cuenta solo funciona con DFX Prayer Intentions."
+
+#: includes/class-service-accounts.php:126
+msgid "Service account"
+msgstr "Cuenta de servicio"
+
+#: includes/class-service-accounts.php:128
+msgid "Only a routine uses this account"
+msgstr "Esta cuenta solo la usa una rutina"
+
+#: includes/class-service-accounts.php:129
+msgid "It keeps the permissions of the groups it leads, but gets no email, and its application passwords only work with this plugin."
+msgstr "Conserva los permisos de los grupos que dirige, pero no recibe correos, y sus contraseñas de aplicación solo funcionan con este plugin."
 
 #: includes/class-settings.php:108
 msgctxt "Base of the public form URL"

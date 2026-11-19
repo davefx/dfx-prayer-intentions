@@ -41,6 +41,8 @@ function resetData() {
 		foreach ( DFXPRAY_Installer::get_instance()->get_table_names() as $t ) { $wpdb->query( "TRUNCATE TABLE {$t}" ); }
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'dfxpray\\\\_%' AND option_name NOT IN ('dfxpray_db_version')" );
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '\\\\_transient%dfxpray%'" );
+		delete_metadata( 'user', 0, 'dfxpray_service_account', '', true );
+		delete_metadata( 'user', 0, '_application_passwords', '', true );
 		wp_cache_flush();`,
 	] );
 }

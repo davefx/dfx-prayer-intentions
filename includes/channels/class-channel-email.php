@@ -109,6 +109,9 @@ final class DFXPRAY_Channel_Email implements DFXPRAY_Channel {
 
 		$emails = array();
 		foreach ( DFXPRAY_Groups::get_instance()->get_leaders( $group_id ) as $user_id ) {
+			if ( DFXPRAY_Service_Accounts::get_instance()->is_service_account( $user_id ) ) {
+				continue; // A routine reads nothing by email.
+			}
 			$user = get_userdata( $user_id );
 			if ( $user && is_email( $user->user_email ) ) {
 				$emails[] = $user->user_email;

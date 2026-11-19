@@ -49,6 +49,7 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 | Anything a leader does in the panel | a `do_<action>()` in `admin/class-admin-actions.php`, registered in `ACTIONS` with its permission scope; the view only renders a form through `DFXPRAY_Admin::form_open()` |
 | A task on a group (moderation, digests…) | a tab: `admin/views/<name>.php`, registered in `DFXPRAY_Admin::TABS` and `tab_titles()`; link to it with `DFXPRAY_Admin::group_url( $group_id, $tab )` |
 | A site-wide screen | `DFXPRAY_Admin::render_page()` and `register_menu()`; the menu only holds "Groups", "Global settings" and one entry per group |
+| Something a routine does (scripts with an application password) | an `op` in `DFXPRAY_App_API` (it reaches `DFXPRAY_REST` as well); add it to `RestApiTest` |
 | Anything a leader does in the app | the screen in `assets/js/app.js`; a write is a panel action (add it to `DFXPRAY_App_API::WRITES`), a read an `op` in `DFXPRAY_App_API::respond()`, scoped with `DFXPRAY_Permissions`; add it to the IDOR provider in `AppApiTest` |
 | Text shared with the group (index, digest, alerts) | `DFXPRAY_Formatter`, `DFXPRAY_Index_Composer`, `DFXPRAY_Digest_Composer`, templates in `templates/` |
 | A setting | default and type in `DFXPRAY_Settings::defaults()`; add to `GLOBAL_ONLY` if leaders must not override it; field in `DFXPRAY_Admin::setting_fields()` and `setting_sections()` |
@@ -71,7 +72,14 @@ served by `php -S 127.0.0.1:8890`, with the plugin symlinked in.
 - **Discretion only hardens.** Leaders may make it stricter, never more open;
   visible names may not reveal more than the level allows.
 - **Intentions stay out of WordPress' public surfaces**: custom tables only,
-  no REST routes, no posts. The form page sends `noindex`, `nofollow` and
+  no posts, and one REST route only (`DFXPRAY_REST`, `dfxpray/v1/<op>`) for
+  routines: it answers only to application passwords (never anonymously,
+  never to a browser session), runs the app's operations through
+  `DFXPRAY_App_API::dispatch()` with the same per-group permissions, and is
+  covered by the IDOR tests in `RestApiTest`. Service accounts
+  (`DFXPRAY_Service_Accounts`, marked by administrators in the user's
+  profile) get no email, and their application passwords open nothing else
+  in WordPress (no other REST route, no XML-RPC). The form page sends `noindex`, `nofollow` and
   no-cache headers and defines `DONOTCACHEPAGE`; it is never added to
   `robots.txt`. The leaders' app (`DFXPRAY_App`) talks only to
   `DFXPRAY_App_API` through admin-ajax, for logged-in users (no `nopriv`
