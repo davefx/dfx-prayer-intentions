@@ -68,7 +68,7 @@ Cada grupo es independiente: sus líderes, su formulario, su mensaje y su resume
 
 | Persona | Ve | Puede |
 | --- | --- | --- |
-| Administrador | Los grupos activos de los que es líder, como cualquier líder; el resto solo en «Gestionar grupos» (nombre, líderes, protección de datos), sin sus intenciones | Crear, editar, archivar y borrar cualquier grupo; asignar y quitar líderes; ajustes globales; solicitudes de datos personales de cualquier grupo; marcar cuentas de servicio |
+| Administrador | Los grupos activos de los que es líder, como cualquier líder; el resto solo en «Gestionar grupos» (nombre, líderes, protección de datos), sin sus intenciones | Crear, editar, archivar y borrar cualquier grupo; asignar, invitar y quitar líderes; ajustes globales; solicitudes de datos personales de cualquier grupo; marcar cuentas de servicio |
 | Líder de oración | Solo sus grupos | Todo dentro de ellos: moderar, intenciones, resúmenes, miembros, «Ajustes del grupo» (canales, plazos, nueva dirección del formulario) e invitar a nuevos líderes |
 | Otros roles con acceso al panel | Solo los grupos a los que se les asigne | Lo mismo que un líder |
 
@@ -97,7 +97,9 @@ Cualquier líder de un grupo puede invitar a otra persona a llevarlo, sin pasar 
 
 El administrador del sitio recibe un correo cada vez que alguien acepta, y el envío, la retirada y la aceptación quedan en «Actividad». Mientras una invitación está pendiente, cualquier líder del grupo puede pulsar «Retirar» y el enlace deja de funcionar. Las invitaciones caducadas se borran solas, y las aceptadas a la semana.
 
-**Solo los administradores quitan líderes**, en «Grupos › Gestionar grupos». Un administrador solo puede invitar desde «Ajustes del grupo» a los grupos que lleva; en los demás marca los líderes directamente en su ficha.
+Los administradores pueden invitar además a **cualquier grupo**, también a uno que no llevan o que aún no tiene líderes: en «Grupos › Gestionar grupos», la ficha de cada grupo tiene su bloque «Invitar a un líder» (con «Nombre», «Correo» y «Enviar invitación») y la lista de sus «Invitaciones pendientes», cada una con «Retirar». La invitación funciona igual, y el correo dice que invita el administrador. La tarjeta «Nuevo grupo» no lo tiene: primero se crea el grupo.
+
+**Solo los administradores quitan líderes**, en «Grupos › Gestionar grupos», donde también pueden marcar como líder directamente a cualquier usuario con acceso al panel.
 
 ### La dirección secreta del formulario
 

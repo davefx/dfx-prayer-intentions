@@ -788,6 +788,15 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 			array( 'delete_group', array( 'group_id' => 0 ) ),
 			array( 'save_global_settings', array( 'settings' => array( 'retention_days' => 5 ) ) ),
 			array( 'privacy_erase', array( 'contact' => 'luis@example.org' ) ),
+			array(
+				'admin_invite_leader',
+				array(
+					'group_id' => 0,
+					'name'     => 'Pedro',
+					'email'    => 'pedro@example.org',
+				),
+			),
+			array( 'admin_withdraw_invitation', array( 'invitation_id' => 0 ) ),
 		);
 	}
 
@@ -804,9 +813,64 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 			$request['group_id'] = $this->mine;
 		}
 
+		$invitation = null;
+		if ( array_key_exists( 'invitation_id', $request ) ) {
+			$invitation               = DFXPRAY_Invitations::get_instance()->invite( $this->mine, 'Juan', 'juan@example.org' );
+			$request['invitation_id'] = $invitation;
+		}
+
 		$this->assertSame( 'forbidden', $this->run_action( $action, $request )['code'] );
+		if ( $invitation ) {
+			$this->assertNotNull( DFXPRAY_Invitations::get_instance()->get( $invitation ) );
+		} else {
+			$this->assertSame( array(), DFXPRAY_Invitations::get_instance()->for_group( $this->mine ) );
+		}
 		$this->assertNotNull( DFXPRAY_Groups::get_instance()->get( $this->mine ) );
 		$this->assertSame( 'active', DFXPRAY_Groups::get_instance()->get( $this->mine )['status'] );
+	}
+
+	/**
+	 * From Manage groups, an administrator invites to any group, also one
+	 * they do not lead and one with no leaders, and withdraws its invitations.
+	 */
+	public function test_admin_invites_to_any_group(): void {
+		$admin = self::factory()->user->create(
+			array(
+				'role'         => 'administrator',
+				'display_name' => 'Site Admin',
+			)
+		);
+		wp_set_current_user( $admin );
+		$invitations = DFXPRAY_Invitations::get_instance();
+
+		$answers = array();
+		foreach ( array( 'pedro@example.org', get_userdata( $this->leader )->user_email ) as $email ) {
+			$result    = $this->run_action(
+				'admin_invite_leader',
+				array(
+					'group_id' => $this->other,
+					'name'     => 'Pedro Gil',
+					'email'    => $email,
+				)
+			);
+			$answers[] = array( $result['ok'], $result['message'] );
+		}
+		$this->assertSame( array( true, 'Invitation sent.' ), $answers[0] );
+		$this->assertSame( $answers[0], $answers[1] );
+
+		$pending = $invitations->for_group( $this->other );
+		$this->assertSame( array( 'pedro@example.org', get_userdata( $this->leader )->user_email ), array_column( $pending, 'email' ) );
+		$this->assertSame( $admin, $pending[0]['invited_by'] );
+		$this->assertStringContainsString( 'Site Admin invites you', tests_retrieve_phpmailer_instance()->get_sent( 0 )->body );
+		$log = DFXPRAY_Log::get_instance()->for_group( $this->other, array( 'invitation_sent' ) );
+		$this->assertSame( $admin, $log[0]['user_id'] );
+
+		$this->assertSame( 'forbidden', $this->run_action( 'invite_leader', array( 'group_id' => $this->other, 'name' => 'X', 'email' => 'x@example.org' ) )['code'] );
+
+		$withdrawn = $this->run_action( 'admin_withdraw_invitation', array( 'invitation_id' => $pending[0]['id'] ) );
+		$this->assertTrue( $withdrawn['ok'], $withdrawn['message'] );
+		$this->assertSame( 'Invitation withdrawn.', $withdrawn['message'] );
+		$this->assertNull( $invitations->get( $pending[0]['id'] ) );
 	}
 
 	/**

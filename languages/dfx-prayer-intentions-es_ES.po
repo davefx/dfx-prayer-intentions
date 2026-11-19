@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611191\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611192\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Spanish (Spain)\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Language: es_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T11:17:59+00:00\n"
+"POT-Creation-Date: 2026-11-19T12:02:53+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -41,154 +41,156 @@ msgstr "David Marín Carreño"
 msgid "https://davefx.com"
 msgstr "https://davefx.com"
 
-#: admin/class-admin-actions.php:123
-#: admin/class-admin-actions.php:144
+#: admin/class-admin-actions.php:125
+#: admin/class-admin-actions.php:146
 #: includes/class-app-api.php:125
 msgid "Unknown action."
 msgstr "Acción desconocida."
 
-#: admin/class-admin-actions.php:127
+#: admin/class-admin-actions.php:129
 #: includes/class-invitations.php:320
 msgid "The link has expired. Please try again."
 msgstr "El enlace ha caducado. Vuelve a intentarlo."
 
-#: admin/class-admin-actions.php:148
+#: admin/class-admin-actions.php:150
 #: includes/class-app-api.php:379
 #: includes/class-app.php:142
 #: includes/class-rest.php:62
 msgid "You are not allowed to do that."
 msgstr "No tienes permiso para hacer eso."
 
-#: admin/class-admin-actions.php:536
+#: admin/class-admin-actions.php:558
 msgid "The group does not exist."
 msgstr "El grupo no existe."
 
-#: admin/class-admin-actions.php:603
+#: admin/class-admin-actions.php:625
 msgid "Write an email or a phone."
 msgstr "Escribe un correo o un teléfono."
 
-#: admin/class-admin-actions.php:688
+#: admin/class-admin-actions.php:710
 msgid "Intention approved."
 msgstr "Intención aprobada."
 
-#: admin/class-admin-actions.php:689
+#: admin/class-admin-actions.php:711
 msgid "Intention discarded."
 msgstr "Intención descartada."
 
-#: admin/class-admin-actions.php:690
+#: admin/class-admin-actions.php:712
 msgid "Duplicate merged."
 msgstr "Duplicado fusionado."
 
-#: admin/class-admin-actions.php:691
+#: admin/class-admin-actions.php:713
 msgid "Intention saved."
 msgstr "Intención guardada."
 
-#: admin/class-admin-actions.php:692
+#: admin/class-admin-actions.php:714
 msgid "Comment added."
 msgstr "Comentario añadido."
 
-#: admin/class-admin-actions.php:693
+#: admin/class-admin-actions.php:715
 msgid "Comment updated."
 msgstr "Comentario actualizado."
 
-#: admin/class-admin-actions.php:694
+#: admin/class-admin-actions.php:716
 msgid "Comment deleted."
 msgstr "Comentario borrado."
 
-#: admin/class-admin-actions.php:695
+#: admin/class-admin-actions.php:717
 msgid "Comment turned into an update."
 msgstr "Comentario convertido en actualización."
 
-#: admin/class-admin-actions.php:696
+#: admin/class-admin-actions.php:718
 msgid "Update added."
 msgstr "Actualización añadida."
 
-#: admin/class-admin-actions.php:697
+#: admin/class-admin-actions.php:719
 msgid "Priority changed."
 msgstr "Prioridad cambiada."
 
-#: admin/class-admin-actions.php:698
+#: admin/class-admin-actions.php:720
 msgid "Review postponed."
 msgstr "Revisión pospuesta."
 
-#: admin/class-admin-actions.php:699
+#: admin/class-admin-actions.php:721
 msgid "Acknowledgement marked as sent."
 msgstr "Acuse marcado como enviado."
 
-#: admin/class-admin-actions.php:700
+#: admin/class-admin-actions.php:722
 msgid "Intention moved to the other group."
 msgstr "Intención trasladada al otro grupo."
 
-#: admin/class-admin-actions.php:701
+#: admin/class-admin-actions.php:723
 msgid "Intention kept active."
 msgstr "La intención sigue activa."
 
-#: admin/class-admin-actions.php:702
+#: admin/class-admin-actions.php:724
 msgid "Intention closed."
 msgstr "Intención cerrada."
 
-#: admin/class-admin-actions.php:703
+#: admin/class-admin-actions.php:725
 msgid "Intention reopened."
 msgstr "Intención reabierta."
 
-#: admin/class-admin-actions.php:704
+#: admin/class-admin-actions.php:726
 msgid "Member saved."
 msgstr "Miembro guardado."
 
-#: admin/class-admin-actions.php:705
+#: admin/class-admin-actions.php:727
 msgid "Member deleted."
 msgstr "Miembro borrado."
 
-#: admin/class-admin-actions.php:706
-#: admin/class-admin-actions.php:716
+#: admin/class-admin-actions.php:728
+#: admin/class-admin-actions.php:738
 msgid "Settings saved."
 msgstr "Ajustes guardados."
 
-#: admin/class-admin-actions.php:707
+#: admin/class-admin-actions.php:729
 msgid "The form has a new address. The old one no longer works."
 msgstr "El formulario tiene una dirección nueva. La anterior ya no funciona."
 
-#: admin/class-admin-actions.php:708
+#: admin/class-admin-actions.php:730
 msgid "Test message sent."
 msgstr "Mensaje de prueba enviado."
 
-#: admin/class-admin-actions.php:709
+#: admin/class-admin-actions.php:731
 msgid "Digest generated and sent."
 msgstr "Resumen generado y enviado."
 
-#: admin/class-admin-actions.php:710
+#: admin/class-admin-actions.php:732
+#: admin/class-admin-actions.php:740
 msgid "Invitation sent."
 msgstr "Invitación enviada."
 
-#: admin/class-admin-actions.php:711
+#: admin/class-admin-actions.php:733
+#: admin/class-admin-actions.php:741
 msgid "Invitation withdrawn."
 msgstr "Invitación retirada."
 
-#: admin/class-admin-actions.php:712
+#: admin/class-admin-actions.php:734
 msgid "Group saved."
 msgstr "Grupo guardado."
 
-#: admin/class-admin-actions.php:713
+#: admin/class-admin-actions.php:735
 msgid "Group archived."
 msgstr "Grupo archivado."
 
-#: admin/class-admin-actions.php:714
+#: admin/class-admin-actions.php:736
 msgid "Group restored."
 msgstr "Grupo restaurado."
 
-#: admin/class-admin-actions.php:715
+#: admin/class-admin-actions.php:737
 msgid "Group deleted."
 msgstr "Grupo eliminado."
 
-#: admin/class-admin-actions.php:717
+#: admin/class-admin-actions.php:739
 msgid "Personal data erased."
 msgstr "Datos personales borrados."
 
-#: admin/class-admin-actions.php:718
+#: admin/class-admin-actions.php:742
 msgid "Thank you."
 msgstr "Gracias."
 
-#: admin/class-admin-actions.php:721
+#: admin/class-admin-actions.php:745
 msgid "Done."
 msgstr "Hecho."
 
@@ -890,6 +892,7 @@ msgid "Manage groups"
 msgstr "Gestionar grupos"
 
 #: admin/views/groups.php:77
+#: admin/views/groups.php:142
 #: admin/views/intention-edit.php:142
 #: admin/views/settings.php:80
 #: includes/class-app.php:328
@@ -957,28 +960,62 @@ msgstr "Cada grupo es independiente: sus líderes, su formulario, su índice y s
 msgid "Archived"
 msgstr "Archivado"
 
-#: admin/views/groups.php:114
-#: admin/views/groups.php:121
+#: admin/views/groups.php:116
+#: admin/views/settings.php:53
+msgid "Pending invitations"
+msgstr "Invitaciones pendientes"
+
+#. translators: 1: name, 2: email, 3: date.
+#: admin/views/groups.php:124
+#: admin/views/settings.php:61
+#, php-format
+msgid "%1$s (%2$s) · expires on %3$s"
+msgstr "%1$s (%2$s) · caduca el %3$s"
+
+#: admin/views/groups.php:132
+#: admin/views/settings.php:69
+msgid "Withdraw"
+msgstr "Retirar"
+
+#: admin/views/groups.php:139
+#: admin/views/settings.php:76
+msgid "Invite a leader"
+msgstr "Invitar a un líder"
+
+#: admin/views/groups.php:143
+#: admin/views/settings.php:81
+#: includes/channels/class-channel-email.php:39
+#: includes/class-privacy.php:255
+msgid "Email"
+msgstr "Correo"
+
+#: admin/views/groups.php:145
+#: admin/views/settings.php:83
+msgid "Send invitation"
+msgstr "Enviar invitación"
+
+#: admin/views/groups.php:150
+#: admin/views/groups.php:157
 msgid "Data processing agreement of this group"
 msgstr "Encargo de tratamiento de este grupo"
 
-#: admin/views/groups.php:115
+#: admin/views/groups.php:151
 msgid "Copy it, have it accepted or signed by the controller of the group, and record the date above."
 msgstr "Cópialo, haz que el responsable del grupo lo acepte o lo firme, y anota la fecha arriba."
 
-#: admin/views/groups.php:131
+#: admin/views/groups.php:167
 msgid "Archive"
 msgstr "Archivar"
 
-#: admin/views/groups.php:135
+#: admin/views/groups.php:171
 msgid "Restore"
 msgstr "Restaurar"
 
-#: admin/views/groups.php:139
+#: admin/views/groups.php:175
 msgid "Delete group and all its intentions"
 msgstr "Eliminar el grupo y todas sus intenciones"
 
-#: admin/views/groups.php:146
+#: admin/views/groups.php:182
 msgid "New group"
 msgstr "Nuevo grupo"
 
@@ -1711,37 +1748,9 @@ msgstr "Nuevas peticiones (sin el texto, salvo por correo)"
 msgid "Only the administrator of the site can remove leaders."
 msgstr "Solo el administrador del sitio puede quitar líderes."
 
-#: admin/views/settings.php:53
-msgid "Pending invitations"
-msgstr "Invitaciones pendientes"
-
-#. translators: 1: name, 2: email, 3: date.
-#: admin/views/settings.php:61
-#, php-format
-msgid "%1$s (%2$s) · expires on %3$s"
-msgstr "%1$s (%2$s) · caduca el %3$s"
-
-#: admin/views/settings.php:69
-msgid "Withdraw"
-msgstr "Retirar"
-
-#: admin/views/settings.php:76
-msgid "Invite a leader"
-msgstr "Invitar a un líder"
-
 #: admin/views/settings.php:77
 msgid "The person receives an email with a link to accept, valid for 7 days. On accepting, they become a leader of this group at once, with an account on this site if they had none."
 msgstr "La persona recibe un correo con un enlace para aceptar, válido durante 7 días. Al aceptar pasa a ser líder de este grupo en el acto, con una cuenta en este sitio si no la tenía."
-
-#: admin/views/settings.php:81
-#: includes/channels/class-channel-email.php:39
-#: includes/class-privacy.php:255
-msgid "Email"
-msgstr "Correo"
-
-#: admin/views/settings.php:83
-msgid "Send invitation"
-msgstr "Enviar invitación"
 
 #: admin/views/settings.php:87
 msgid "Public form"

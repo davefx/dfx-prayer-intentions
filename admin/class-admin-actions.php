@@ -30,37 +30,39 @@ final class DFXPRAY_Admin_Actions {
 	 * (administrator only).
 	 */
 	private const ACTIONS = array(
-		'approve'              => 'intention',
-		'discard'              => 'intention',
-		'merge'                => 'intention',
-		'save_intention'       => 'intention_or_group',
-		'add_comment'          => 'intention',
-		'edit_comment'         => 'comment',
-		'delete_comment'       => 'comment',
-		'convert_comment'      => 'comment',
-		'add_update'           => 'intention',
-		'set_priority'         => 'intention',
-		'postpone'             => 'intention',
-		'ack_sent'             => 'intention',
-		'transfer'             => 'intention',
-		'keep_active'          => 'intention',
-		'close'                => 'intention',
-		'reopen'               => 'intention',
-		'save_member'          => 'member_or_group',
-		'delete_member'        => 'member_or_group',
-		'save_group_settings'  => 'group',
-		'regenerate_slug'      => 'group',
-		'test_channel'         => 'group',
-		'send_digest_now'      => 'group',
-		'invite_leader'        => 'group',
-		'withdraw_invitation'  => 'invitation',
-		'save_group'           => 'admin',
-		'archive_group'        => 'admin',
-		'restore_group'        => 'admin',
-		'delete_group'         => 'admin',
-		'save_global_settings' => 'admin',
-		'privacy_erase'        => 'admin',
-		'ack_confidentiality'  => 'self',
+		'approve'                   => 'intention',
+		'discard'                   => 'intention',
+		'merge'                     => 'intention',
+		'save_intention'            => 'intention_or_group',
+		'add_comment'               => 'intention',
+		'edit_comment'              => 'comment',
+		'delete_comment'            => 'comment',
+		'convert_comment'           => 'comment',
+		'add_update'                => 'intention',
+		'set_priority'              => 'intention',
+		'postpone'                  => 'intention',
+		'ack_sent'                  => 'intention',
+		'transfer'                  => 'intention',
+		'keep_active'               => 'intention',
+		'close'                     => 'intention',
+		'reopen'                    => 'intention',
+		'save_member'               => 'member_or_group',
+		'delete_member'             => 'member_or_group',
+		'save_group_settings'       => 'group',
+		'regenerate_slug'           => 'group',
+		'test_channel'              => 'group',
+		'send_digest_now'           => 'group',
+		'invite_leader'             => 'group',
+		'withdraw_invitation'       => 'invitation',
+		'save_group'                => 'admin',
+		'archive_group'             => 'admin',
+		'restore_group'             => 'admin',
+		'delete_group'              => 'admin',
+		'save_global_settings'      => 'admin',
+		'privacy_erase'             => 'admin',
+		'admin_invite_leader'       => 'admin',
+		'admin_withdraw_invitation' => 'admin',
+		'ack_confidentiality'       => 'self',
 	);
 
 	/**
@@ -518,6 +520,26 @@ final class DFXPRAY_Admin_Actions {
 	}
 
 	/**
+	 * Invite someone to lead any group, from Manage groups.
+	 *
+	 * @param array $r Request.
+	 * @return int|true|WP_Error
+	 */
+	private function do_admin_invite_leader( array $r ) {
+		return $this->do_invite_leader( $r );
+	}
+
+	/**
+	 * Withdraw a pending invitation of any group, from Manage groups.
+	 *
+	 * @param array $r Request.
+	 * @return true|WP_Error
+	 */
+	private function do_admin_withdraw_invitation( array $r ) {
+		return $this->do_withdraw_invitation( $r );
+	}
+
+	/**
 	 * Create or edit a group, with its leaders.
 	 *
 	 * @param array $r Request.
@@ -685,37 +707,39 @@ final class DFXPRAY_Admin_Actions {
 	 */
 	private function success_message( string $action ): string {
 		$messages = array(
-			'approve'              => __( 'Intention approved.', 'dfx-prayer-intentions' ),
-			'discard'              => __( 'Intention discarded.', 'dfx-prayer-intentions' ),
-			'merge'                => __( 'Duplicate merged.', 'dfx-prayer-intentions' ),
-			'save_intention'       => __( 'Intention saved.', 'dfx-prayer-intentions' ),
-			'add_comment'          => __( 'Comment added.', 'dfx-prayer-intentions' ),
-			'edit_comment'         => __( 'Comment updated.', 'dfx-prayer-intentions' ),
-			'delete_comment'       => __( 'Comment deleted.', 'dfx-prayer-intentions' ),
-			'convert_comment'      => __( 'Comment turned into an update.', 'dfx-prayer-intentions' ),
-			'add_update'           => __( 'Update added.', 'dfx-prayer-intentions' ),
-			'set_priority'         => __( 'Priority changed.', 'dfx-prayer-intentions' ),
-			'postpone'             => __( 'Review postponed.', 'dfx-prayer-intentions' ),
-			'ack_sent'             => __( 'Acknowledgement marked as sent.', 'dfx-prayer-intentions' ),
-			'transfer'             => __( 'Intention moved to the other group.', 'dfx-prayer-intentions' ),
-			'keep_active'          => __( 'Intention kept active.', 'dfx-prayer-intentions' ),
-			'close'                => __( 'Intention closed.', 'dfx-prayer-intentions' ),
-			'reopen'               => __( 'Intention reopened.', 'dfx-prayer-intentions' ),
-			'save_member'          => __( 'Member saved.', 'dfx-prayer-intentions' ),
-			'delete_member'        => __( 'Member deleted.', 'dfx-prayer-intentions' ),
-			'save_group_settings'  => __( 'Settings saved.', 'dfx-prayer-intentions' ),
-			'regenerate_slug'      => __( 'The form has a new address. The old one no longer works.', 'dfx-prayer-intentions' ),
-			'test_channel'         => __( 'Test message sent.', 'dfx-prayer-intentions' ),
-			'send_digest_now'      => __( 'Digest generated and sent.', 'dfx-prayer-intentions' ),
-			'invite_leader'        => __( 'Invitation sent.', 'dfx-prayer-intentions' ),
-			'withdraw_invitation'  => __( 'Invitation withdrawn.', 'dfx-prayer-intentions' ),
-			'save_group'           => __( 'Group saved.', 'dfx-prayer-intentions' ),
-			'archive_group'        => __( 'Group archived.', 'dfx-prayer-intentions' ),
-			'restore_group'        => __( 'Group restored.', 'dfx-prayer-intentions' ),
-			'delete_group'         => __( 'Group deleted.', 'dfx-prayer-intentions' ),
-			'save_global_settings' => __( 'Settings saved.', 'dfx-prayer-intentions' ),
-			'privacy_erase'        => __( 'Personal data erased.', 'dfx-prayer-intentions' ),
-			'ack_confidentiality'  => __( 'Thank you.', 'dfx-prayer-intentions' ),
+			'approve'                   => __( 'Intention approved.', 'dfx-prayer-intentions' ),
+			'discard'                   => __( 'Intention discarded.', 'dfx-prayer-intentions' ),
+			'merge'                     => __( 'Duplicate merged.', 'dfx-prayer-intentions' ),
+			'save_intention'            => __( 'Intention saved.', 'dfx-prayer-intentions' ),
+			'add_comment'               => __( 'Comment added.', 'dfx-prayer-intentions' ),
+			'edit_comment'              => __( 'Comment updated.', 'dfx-prayer-intentions' ),
+			'delete_comment'            => __( 'Comment deleted.', 'dfx-prayer-intentions' ),
+			'convert_comment'           => __( 'Comment turned into an update.', 'dfx-prayer-intentions' ),
+			'add_update'                => __( 'Update added.', 'dfx-prayer-intentions' ),
+			'set_priority'              => __( 'Priority changed.', 'dfx-prayer-intentions' ),
+			'postpone'                  => __( 'Review postponed.', 'dfx-prayer-intentions' ),
+			'ack_sent'                  => __( 'Acknowledgement marked as sent.', 'dfx-prayer-intentions' ),
+			'transfer'                  => __( 'Intention moved to the other group.', 'dfx-prayer-intentions' ),
+			'keep_active'               => __( 'Intention kept active.', 'dfx-prayer-intentions' ),
+			'close'                     => __( 'Intention closed.', 'dfx-prayer-intentions' ),
+			'reopen'                    => __( 'Intention reopened.', 'dfx-prayer-intentions' ),
+			'save_member'               => __( 'Member saved.', 'dfx-prayer-intentions' ),
+			'delete_member'             => __( 'Member deleted.', 'dfx-prayer-intentions' ),
+			'save_group_settings'       => __( 'Settings saved.', 'dfx-prayer-intentions' ),
+			'regenerate_slug'           => __( 'The form has a new address. The old one no longer works.', 'dfx-prayer-intentions' ),
+			'test_channel'              => __( 'Test message sent.', 'dfx-prayer-intentions' ),
+			'send_digest_now'           => __( 'Digest generated and sent.', 'dfx-prayer-intentions' ),
+			'invite_leader'             => __( 'Invitation sent.', 'dfx-prayer-intentions' ),
+			'withdraw_invitation'       => __( 'Invitation withdrawn.', 'dfx-prayer-intentions' ),
+			'save_group'                => __( 'Group saved.', 'dfx-prayer-intentions' ),
+			'archive_group'             => __( 'Group archived.', 'dfx-prayer-intentions' ),
+			'restore_group'             => __( 'Group restored.', 'dfx-prayer-intentions' ),
+			'delete_group'              => __( 'Group deleted.', 'dfx-prayer-intentions' ),
+			'save_global_settings'      => __( 'Settings saved.', 'dfx-prayer-intentions' ),
+			'privacy_erase'             => __( 'Personal data erased.', 'dfx-prayer-intentions' ),
+			'admin_invite_leader'       => __( 'Invitation sent.', 'dfx-prayer-intentions' ),
+			'admin_withdraw_invitation' => __( 'Invitation withdrawn.', 'dfx-prayer-intentions' ),
+			'ack_confidentiality'       => __( 'Thank you.', 'dfx-prayer-intentions' ),
 		);
 
 		return $messages[ $action ] ?? __( 'Done.', 'dfx-prayer-intentions' );

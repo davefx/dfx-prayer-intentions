@@ -480,6 +480,30 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Each group's card in Manage groups lets administrators invite a leader
+	 * and withdraw its pending invitations; the New group card does not, and
+	 * leaders never see any of it.
+	 */
+	public function test_manage_groups_invitations(): void {
+		$admin = self::factory()->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin );
+		$id = DFXPRAY_Invitations::get_instance()->invite( $this->other, 'Pedro Gil', 'pedro@example.org' );
+
+		$html = $this->render( 'dfxpray' );
+
+		$this->assertSame( 2, substr_count( $html, 'name="dfxpray_action" value="admin_invite_leader"' ) );
+		$this->assertStringContainsString( 'name="dfxpray_action" value="admin_withdraw_invitation"', $html );
+		$this->assertStringContainsString( 'name="invitation_id" value="' . $id . '"', $html );
+		$this->assertStringContainsString( 'Pedro Gil (pedro@example.org) · expires on', $html );
+		$new_card = substr( $html, strpos( $html, 'New group' ) );
+		$this->assertStringNotContainsString( 'admin_invite_leader', $new_card );
+
+		wp_set_current_user( $this->leader );
+		$this->assertStringNotContainsString( 'admin_invite_leader', $this->render( 'dfxpray' ) );
+		$this->assertStringNotContainsString( 'pedro@example.org', $this->render( 'dfxpray' ) );
+	}
+
+	/**
 	 * Admin screens refuse leaders.
 	 */
 	public function test_admin_screens_refuse_leaders(): void {

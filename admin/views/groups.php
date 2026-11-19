@@ -110,6 +110,42 @@ $dfxpray_group_form = static function ( ?array $group ) use ( $dfxpray_admin, $d
 		</h2>
 		<p><code><?php echo esc_html( home_url( '/' . $dfxpray_group['slug'] . '/' ) ); ?></code></p>
 		<?php $dfxpray_group_form( $dfxpray_group ); ?>
+		<?php $dfxpray_pending = DFXPRAY_Invitations::get_instance()->for_group( $dfxpray_group['id'] ); ?>
+		<div class="dfxpray-group-invitations">
+			<?php if ( $dfxpray_pending ) : ?>
+				<h3><?php esc_html_e( 'Pending invitations', 'dfx-prayer-intentions' ); ?></h3>
+				<ul class="dfxpray-invitation-list">
+					<?php foreach ( $dfxpray_pending as $dfxpray_invitation ) : ?>
+						<li>
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: 1: name, 2: email, 3: date. */
+									__( '%1$s (%2$s) · expires on %3$s', 'dfx-prayer-intentions' ),
+									$dfxpray_invitation['name'],
+									$dfxpray_invitation['email'],
+									DFXPRAY_Invitations::get_instance()->expiry_date( $dfxpray_invitation )
+								)
+							);
+							?>
+							<?php $dfxpray_admin->form_open( 'admin_withdraw_invitation', array( 'invitation_id' => $dfxpray_invitation['id'] ), 'dfxpray-inline-form' ); ?>
+								<button type="submit" class="button button-small"><?php esc_html_e( 'Withdraw', 'dfx-prayer-intentions' ); ?></button>
+							</form>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+			<?php if ( 'active' === $dfxpray_group['status'] ) : ?>
+				<h3><?php esc_html_e( 'Invite a leader', 'dfx-prayer-intentions' ); ?></h3>
+				<?php $dfxpray_admin->form_open( 'admin_invite_leader', array( 'group_id' => $dfxpray_group['id'] ), 'dfxpray-invite-leader' ); ?>
+					<p>
+						<label><?php esc_html_e( 'Name', 'dfx-prayer-intentions' ); ?><br><input type="text" class="regular-text" name="name" required></label><br>
+						<label><?php esc_html_e( 'Email', 'dfx-prayer-intentions' ); ?><br><input type="email" class="regular-text" name="email" required></label>
+					</p>
+					<p><button type="submit" class="button"><?php esc_html_e( 'Send invitation', 'dfx-prayer-intentions' ); ?></button></p>
+				</form>
+			<?php endif; ?>
+		</div>
 		<details class="dfxpray-agreement">
 			<summary><?php esc_html_e( 'Data processing agreement of this group', 'dfx-prayer-intentions' ); ?></summary>
 			<p class="description"><?php esc_html_e( 'Copy it, have it accepted or signed by the controller of the group, and record the date above.', 'dfx-prayer-intentions' ); ?></p>

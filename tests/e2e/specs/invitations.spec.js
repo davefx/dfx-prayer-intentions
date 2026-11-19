@@ -110,3 +110,31 @@ test( 'a withdrawn or expired invitation does not open', async ( { page, browser
 	freeze( null );
 	await context.close();
 } );
+
+test( 'an administrator invites from Manage groups to a group they do not lead, and the invitee becomes its leader', async ( { page, browser } ) => {
+	const empty = createGroup( 'San Pablo' );
+	await login( page, 'admin' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
+
+	const card = page.locator( '.dfxpray-group', { hasText: 'San Pablo' } );
+	const form = card.locator( 'form.dfxpray-invite-leader' );
+	await form.getByLabel( 'Name' ).fill( 'Pedro Gil' );
+	await form.getByLabel( 'Email' ).fill( EMAIL );
+	await form.getByRole( 'button', { name: 'Send invitation' } ).click();
+	await expect( page ).toHaveURL( /page=dfxpray(&|$)/ );
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Invitation sent.' );
+	await expect( page.locator( '.dfxpray-group', { hasText: 'San Pablo' } ).locator( '.dfxpray-invitation-list' ) ).toContainText( `Pedro Gil (${ EMAIL }) · expires on` );
+	await expect( page.locator( '.dfxpray-card', { hasText: 'New group' } ).locator( 'form.dfxpray-invite-leader' ) ).toHaveCount( 0 );
+
+	const link = linkSentTo( EMAIL );
+	const context = await browser.newContext();
+	const invitee = await context.newPage();
+	await invitee.goto( link );
+	await expect( invitee.locator( '.dfxpray-invitation' ) ).toContainText( 'invites you to be a leader of the prayer group “San Pablo”' );
+	await invitee.getByRole( 'button', { name: 'Accept the invitation' } ).click();
+	await expect( invitee ).toHaveURL( /wp-login\.php\?action=rp/ );
+	await context.close();
+
+	const leaders = php( `echo wp_json_encode( array_map( static fn( $id ) => get_userdata( $id )->user_email, DFXPRAY_Groups::get_instance()->get_leaders( ${ empty.id } ) ) );` );
+	expect( leaders ).toEqual( [ EMAIL ] );
+} );

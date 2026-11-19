@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611192
+Stable tag: 1.0.2611193
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -41,7 +41,7 @@ Prayer requests often carry health and religious information about third parties
 
 **Roles**
 
-The plugin adds a *Prayer leader* role whose only capability is access to the panel. Leaders only ever see the groups they are assigned to, and so do administrators: they create, edit, archive and delete every group and assign its leaders, keep the global settings and answer requests about personal data, and can give panel access to other roles, but they only see the requests of the groups they lead. A leader can invite someone by email to lead their group: the invitation is valid for seven days, and on accepting it the person becomes a leader at once, with an account if they had none. Only administrators remove leaders.
+The plugin adds a *Prayer leader* role whose only capability is access to the panel. Leaders only ever see the groups they are assigned to, and so do administrators: they create, edit, archive and delete every group and assign its leaders, keep the global settings and answer requests about personal data, and can give panel access to other roles, but they only see the requests of the groups they lead. A leader can invite someone by email to lead their group, and an administrator to any group, from the groups page: the invitation is valid for seven days, and on accepting it the person becomes a leader at once, with an account if they had none. Only administrators remove leaders.
 
 == External services ==
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611193 =
+* New: administrators invite leaders to any group, including groups they do not lead or groups with no leaders yet, from each group's card in "Groups > Manage groups", where they also see and withdraw its pending invitations.
 
 = 1.0.2611192 =
 * New: leaders invite other people to lead their group, by name and email, from "Group settings". The invitation lasts seven days; accepting it (with a button, never just by opening the link) makes the person a leader at once, with a new account if they had none, and tells the site's administrator. Only administrators remove leaders.
