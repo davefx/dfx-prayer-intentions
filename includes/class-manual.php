@@ -17,7 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * tags with src, alt and width only), ordered and unordered lists with
  * nested items, pipe tables, blockquotes and horizontal rules. Everything
  * else is escaped, relative image paths point at the plugin's copy of the
- * manual, and the result goes through wp_kses. Nothing is cached.
+ * manual, links to the manual in another language (../<lang>/README.md)
+ * open that manual in the panel, and the result goes through wp_kses.
+ * Nothing is cached.
  */
 final class DFXPRAY_Manual {
 
@@ -62,6 +64,13 @@ final class DFXPRAY_Manual {
 	private string $base = '';
 
 	/**
+	 * URL of the manual in each language: language => URL.
+	 *
+	 * @var array<string, string>
+	 */
+	private array $manuals = array();
+
+	/**
 	 * Languages the manual is written in.
 	 *
 	 * @return string[]
@@ -95,30 +104,47 @@ final class DFXPRAY_Manual {
 	/**
 	 * The manual for a locale, as HTML.
 	 *
-	 * @param string $locale Locale.
+	 * @param string $locale   Locale.
+	 * @param string $language Language asked for (e.g. from a link to the
+	 *                         other language); ignored if it does not exist.
 	 */
-	public function page( string $locale ): string {
-		$language = $this->language_for( $locale );
-		$file     = DFXPRAY_PLUGIN_DIR . 'docs/manual/' . $language . '/README.md';
+	public function page( string $locale, string $language = '' ): string {
+		$available = $this->languages();
+		$language  = in_array( $language, $available, true ) ? $language : $this->language_for( $locale, $available );
+		$file      = DFXPRAY_PLUGIN_DIR . 'docs/manual/' . $language . '/README.md';
 
 		if ( ! is_readable( $file ) ) {
 			return '';
 		}
 
-		return $this->render( (string) file_get_contents( $file ), DFXPRAY_PLUGIN_URL . 'docs/manual/' . $language . '/' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- A local file of the plugin.
+		$manuals = array();
+		foreach ( $available as $other ) {
+			$manuals[ $other ] = add_query_arg(
+				array(
+					'page' => 'dfxpray-manual',
+					'lang' => $other,
+				),
+				admin_url( 'admin.php' )
+			);
+		}
+
+		return $this->render( (string) file_get_contents( $file ), DFXPRAY_PLUGIN_URL . 'docs/manual/' . $language . '/', $manuals ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- A local file of the plugin.
 	}
 
 	/**
 	 * Render Markdown.
 	 *
-	 * @param string $markdown Markdown.
-	 * @param string $base     URL that relative image paths are relative to.
+	 * @param string                $markdown Markdown.
+	 * @param string                $base     URL that relative image paths are relative to.
+	 * @param array<string, string> $manuals  URL of the manual in each language, for
+	 *                                        links to ../<lang>/README.md.
 	 */
-	public function render( string $markdown, string $base ): string {
-		$this->base   = trailingslashit( $base );
-		$this->tokens = array();
-		$this->ids    = array();
-		$this->toc    = array();
+	public function render( string $markdown, string $base, array $manuals = array() ): string {
+		$this->base    = trailingslashit( $base );
+		$this->manuals = $manuals;
+		$this->tokens  = array();
+		$this->ids     = array();
+		$this->toc     = array();
 
 		$lines = explode( "\n", str_replace( array( "\r\n", "\r" ), "\n", $markdown ) );
 		$html  = $this->blocks( $lines );
@@ -383,6 +409,8 @@ final class DFXPRAY_Manual {
 				$url = esc_url( $m[2], array( 'http', 'https', 'mailto' ) );
 				if ( str_starts_with( $m[2], '#' ) ) {
 					$url = '#' . sanitize_title( substr( $m[2], 1 ) );
+				} elseif ( preg_match( '#^\.\./([a-z]{2})/README\.md$#', $m[2], $language ) ) {
+					$url = esc_url( $this->manuals[ $language[1] ] ?? '' );
 				}
 				$label = $this->emphasis( esc_html( $m[1] ) );
 

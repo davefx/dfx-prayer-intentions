@@ -147,6 +147,42 @@ class ManualTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A link to the manual in another language opens that manual in the
+	 * panel; one to a language the panel does not have keeps only its text.
+	 */
+	public function test_links_to_the_manual_in_another_language(): void {
+		$panel = 'https://example.org/wp-admin/admin.php?page=dfxpray-manual&lang=';
+		$html  = $this->manual->render(
+			"[English version](../en/README.md) · [Version française](../fr/README.md)",
+			self::BASE,
+			array(
+				'es' => $panel . 'es',
+				'en' => $panel . 'en',
+			)
+		);
+
+		$this->assertStringContainsString( '<a href="https://example.org/wp-admin/admin.php?page=dfxpray-manual&amp;lang=en">English version</a>', $html );
+		$this->assertStringContainsString( 'Version française', $html );
+		$this->assertStringNotContainsString( 'README.md', $html );
+		$this->assertStringNotContainsString( 'http://..', $html );
+	}
+
+	/**
+	 * The page can be asked for in a given language, which wins over the
+	 * locale when it exists, and links to the other language in the panel.
+	 */
+	public function test_page_in_a_given_language(): void {
+		$this->assertStringContainsString( '<h1 id="dfx-prayer-intentions-user-manual">', $this->manual->page( 'en_US' ) );
+		$this->assertStringContainsString( '<h1 id="manual-de-dfx-prayer-intentions">', $this->manual->page( 'en_US', 'es' ) );
+		$this->assertStringContainsString( '<h1 id="dfx-prayer-intentions-user-manual">', $this->manual->page( 'es_ES', 'en' ) );
+		$this->assertStringContainsString( '<h1 id="manual-de-dfx-prayer-intentions">', $this->manual->page( 'es_ES', 'xx' ) );
+
+		$html = $this->manual->page( 'en_US' );
+		$this->assertStringContainsString( '<a href="' . admin_url( 'admin.php' ) . '?page=dfxpray-manual&amp;lang=es">Manual de DFX Prayer Intentions</a>', $html );
+		$this->assertStringContainsString( DFXPRAY_PLUGIN_URL . 'docs/manual/en/img/02-grupos.webp', $html );
+	}
+
+	/**
 	 * The manual in the user's language: Spanish for any Spanish locale,
 	 * English for the rest when it exists, Spanish otherwise.
 	 */
@@ -157,6 +193,7 @@ class ManualTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'en', $this->manual->language_for( 'fr_FR', array( 'es', 'en' ) ) );
 		$this->assertSame( 'es', $this->manual->language_for( 'en_US', array( 'es' ) ) );
 		$this->assertContains( 'es', $this->manual->languages() );
+		$this->assertContains( 'en', $this->manual->languages() );
 	}
 
 	/**

@@ -151,6 +151,7 @@ class ReleasePackageTest extends DFXPRAY_Test_Case {
 			'dfx-prayer-intentions/languages/dfx-prayer-intentions.pot',
 			'dfx-prayer-intentions/languages/dfx-prayer-intentions-es_ES.mo',
 			'dfx-prayer-intentions/docs/manual/es/README.md',
+			'dfx-prayer-intentions/docs/manual/en/README.md',
 		) as $expected ) {
 			$this->assertContains( $expected, $files );
 		}

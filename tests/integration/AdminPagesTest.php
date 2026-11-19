@@ -805,7 +805,12 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 		$html = $this->render( 'dfxpray-manual' );
 		$this->assertStringContainsString( 'class="dfxpray-manual"', $html );
 		$this->assertStringContainsString( 'dfxpray-manual-toc', $html );
-		$this->assertStringContainsString( DFXPRAY_PLUGIN_URL . 'docs/manual/es/img/', $html );
+		$this->assertStringContainsString( DFXPRAY_PLUGIN_URL . 'docs/manual/en/img/', $html );
+
+		// A link of the manual can ask for the other language.
+		$spanish = $this->render( 'dfxpray-manual', array( 'lang' => 'es' ) );
+		$this->assertStringContainsString( DFXPRAY_PLUGIN_URL . 'docs/manual/es/img/', $spanish );
+		$this->assertStringContainsString( 'Manual de DFX Prayer Intentions', $spanish );
 
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 		$this->assertStringContainsString( 'dfxpray-manual-toc', $this->render( 'dfxpray-manual' ) );

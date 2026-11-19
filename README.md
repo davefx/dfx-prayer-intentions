@@ -2,7 +2,7 @@
 
 How to work on the plugin (rules, invariants, where things go): see `AGENTS.md`.
 
-User manual (for administrators and group leaders, with the leaders' app): [Spanish](docs/manual/es/README.md).
+User manual (for administrators and group leaders, with the leaders' app): [English](docs/manual/en/README.md) and [Spanish](docs/manual/es/README.md).
 
 WordPress plugin for prayer groups: a discreet public request form, moderation,
 a lifecycle by type, a WhatsApp-ready index and a daily digest. The user-facing

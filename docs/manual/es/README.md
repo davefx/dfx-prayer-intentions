@@ -1,12 +1,14 @@
 # Manual de DFX Prayer Intentions
 
-Versión 1.0.2611191 · noviembre de 2026
+English version: [DFX Prayer Intentions User Manual](../en/README.md)
+
+Versión 1.0.2611195 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611191 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611195 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
