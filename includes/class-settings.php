@@ -339,6 +339,10 @@ final class DFXPRAY_Settings {
 
 		$value = is_scalar( $value ) ? (string) $value : '';
 
+		if ( 'digest_time' === $key && '' === $value ) {
+			return ''; // No automatic digest: it goes out when someone sends it.
+		}
+
 		if ( in_array( $key, self::TIME_KEYS, true ) ) {
 			return preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $value ) ? $value : $fallback;
 		}

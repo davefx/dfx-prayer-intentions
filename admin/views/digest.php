@@ -29,6 +29,8 @@ $dfxpray_length    = mb_strlen( $dfxpray_digest['shareable'] );
 	if ( $dfxpray_is_today ) {
 		/* translators: %s: date and time. */
 		printf( esc_html__( 'Generated and sent on %s.', 'dfx-prayer-intentions' ), esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $dfxpray_stored['generated_at'] ) ) );
+	} elseif ( '' === $dfxpray_time ) {
+		esc_html_e( 'Preview: today’s digest has not been sent yet. It goes out only when someone sends it with the button below.', 'dfx-prayer-intentions' );
 	} else {
 		/* translators: %s: time of day. */
 		printf( esc_html__( 'Preview: today’s digest has not been sent yet. It goes out every day at %s.', 'dfx-prayer-intentions' ), esc_html( $dfxpray_time ) );

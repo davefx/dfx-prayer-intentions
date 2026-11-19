@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611181
+Stable tag: 1.0.2611190
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611190 =
+* New: "Daily digest at" can be left empty, so the digest goes out only when it is sent with "Generate and send now", for example by a routine when it finishes.
 
 = 1.0.2611181 =
 * Changed: "Daily message: thanksgivings during (days)" is now the number of daily messages that carry a thanksgiving (1: only one), counted from the day of the good news, or from the day it reaches the list if it is written down later.

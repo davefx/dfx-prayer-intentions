@@ -566,6 +566,7 @@ final class DFXPRAY_Admin {
 			'digest_time'              => array(
 				'type'  => 'time',
 				'label' => __( 'Daily digest at', 'dfx-prayer-intentions' ),
+				'help'  => __( 'Empty: no automatic digest; it goes out only with “Generate and send now” (for example, from a routine when it finishes).', 'dfx-prayer-intentions' ),
 			),
 			'digest_when_empty'        => array(
 				'type'    => 'select',

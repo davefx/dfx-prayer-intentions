@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-18T05:42:41+00:00\n"
+"POT-Creation-Date: 2026-11-19T04:25:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -436,284 +436,288 @@ msgstr ""
 msgid "Daily digest at"
 msgstr ""
 
-#: admin/class-admin.php:572
+#: admin/class-admin.php:569
+msgid "Empty: no automatic digest; it goes out only with “Generate and send now” (for example, from a routine when it finishes)."
+msgstr ""
+
+#: admin/class-admin.php:573
 msgid "When there is nothing new"
 msgstr ""
 
-#: admin/class-admin.php:574
+#: admin/class-admin.php:575
 msgid "Send a short version"
 msgstr ""
 
-#: admin/class-admin.php:575
+#: admin/class-admin.php:576
 msgid "Send nothing"
 msgstr ""
 
-#: admin/class-admin.php:580
+#: admin/class-admin.php:581
 msgid "Hour alerts: minutes before"
 msgstr ""
 
-#: admin/class-admin.php:584
+#: admin/class-admin.php:585
 msgid "Second alert at the exact time"
 msgstr ""
 
-#: admin/class-admin.php:588
+#: admin/class-admin.php:589
 msgid "Quiet hours from"
 msgstr ""
 
-#: admin/class-admin.php:589
+#: admin/class-admin.php:590
 msgid "Alerts are never sent in quiet hours. The digest before them lists those events; if none did, an early alert goes out just before quiet hours begin."
 msgstr ""
 
-#: admin/class-admin.php:593
+#: admin/class-admin.php:594
 msgid "Quiet hours until"
 msgstr ""
 
-#: admin/class-admin.php:597
+#: admin/class-admin.php:598
 msgid "Delete closed and discarded intentions after (days)"
 msgstr ""
 
-#: admin/class-admin.php:598
+#: admin/class-admin.php:599
 msgid "Including their updates, comments and history."
 msgstr ""
 
-#: admin/class-admin.php:602
+#: admin/class-admin.php:603
 msgid "Country code for phone numbers"
 msgstr ""
 
-#: admin/class-admin.php:603
+#: admin/class-admin.php:604
 msgid "Added to numbers written without one, for the WhatsApp links. 34 is Spain."
 msgstr ""
 
-#: admin/class-admin.php:607
+#: admin/class-admin.php:608
 msgid "Beginning of the form addresses"
 msgstr ""
 
-#: admin/class-admin.php:608
+#: admin/class-admin.php:609
 msgid "Applies to new addresses. A random part is always added."
 msgstr ""
 
-#: admin/class-admin.php:612
+#: admin/class-admin.php:613
 msgid "Maximum requests per hour from one connection"
 msgstr ""
 
-#: admin/class-admin.php:616
+#: admin/class-admin.php:617
 msgid "Cloudflare Turnstile site key"
 msgstr ""
 
-#: admin/class-admin.php:617
+#: admin/class-admin.php:618
 msgid "Optional. Leave both keys empty to disable it."
 msgstr ""
 
-#: admin/class-admin.php:621
+#: admin/class-admin.php:622
 msgid "Cloudflare Turnstile secret key"
 msgstr ""
 
-#: admin/class-admin.php:625
+#: admin/class-admin.php:626
 msgid "Delete all data when the plugin is uninstalled"
 msgstr ""
 
-#: admin/class-admin.php:629
+#: admin/class-admin.php:630
 msgid "Default data controller"
 msgstr ""
 
-#: admin/class-admin.php:630
+#: admin/class-admin.php:631
 msgid "Each group sets its own in the groups page; this one is for groups that have none. Empty: the name of the site."
 msgstr ""
 
-#: admin/class-admin.php:634
+#: admin/class-admin.php:635
 msgid "Default contact for data protection"
 msgstr ""
 
-#: admin/class-admin.php:635
+#: admin/class-admin.php:636
 msgid "An email or address where people can exercise their rights."
 msgstr ""
 
-#: admin/class-admin.php:639
+#: admin/class-admin.php:640
 msgid "Provider of the service (data processor)"
 msgstr ""
 
-#: admin/class-admin.php:640
+#: admin/class-admin.php:641
 msgid "Who runs this site for the parishes and groups: a person, a company or an association. Empty: the site itself is the controller."
 msgstr ""
 
-#: admin/class-admin.php:644
+#: admin/class-admin.php:645
 msgid "Tax ID of the provider"
 msgstr ""
 
-#: admin/class-admin.php:648
+#: admin/class-admin.php:649
 msgid "Address of the provider"
 msgstr ""
 
-#: admin/class-admin.php:652
+#: admin/class-admin.php:653
 msgid "Email of the provider for data protection"
 msgstr ""
 
-#: admin/class-admin.php:656
+#: admin/class-admin.php:657
 msgid "Subprocessors"
 msgstr ""
 
-#: admin/class-admin.php:657
+#: admin/class-admin.php:658
 msgid "One per line: who and for what, and where, e.g. “Hosting: Hetzner (Germany)”."
 msgstr ""
 
-#: admin/class-admin.php:661
+#: admin/class-admin.php:662
 msgid "Minimum age to send requests"
 msgstr ""
 
-#: admin/class-admin.php:662
+#: admin/class-admin.php:663
 msgid "Age to consent on one’s own: 14 in Spain; 13 to 16 elsewhere in the EU."
 msgstr ""
 
-#: admin/class-admin.php:675
+#: admin/class-admin.php:676
 msgid "Deadlines"
 msgstr ""
 
-#: admin/class-admin.php:676
+#: admin/class-admin.php:677
 msgid "Texts"
 msgstr ""
 
-#: admin/class-admin.php:677
+#: admin/class-admin.php:678
 msgid "Schedules"
 msgstr ""
 
-#: admin/class-admin.php:678
+#: admin/class-admin.php:679
 msgid "Personal data in messages"
 msgstr ""
 
-#: admin/class-admin.php:684
+#: admin/class-admin.php:685
 msgid "Data and protection"
 msgstr ""
 
-#: admin/class-admin.php:700
+#: admin/class-admin.php:701
 msgid "Request received from the form"
 msgstr ""
 
-#: admin/class-admin.php:701
+#: admin/class-admin.php:702
 msgid "Intention added"
 msgstr ""
 
-#: admin/class-admin.php:702
+#: admin/class-admin.php:703
 msgid "Approved"
 msgstr ""
 
-#: admin/class-admin.php:703
+#: admin/class-admin.php:704
 #: includes/class-lifecycle.php:70
 msgid "Discarded"
 msgstr ""
 
-#: admin/class-admin.php:704
+#: admin/class-admin.php:705
 msgid "Duplicate merged into it"
 msgstr ""
 
-#: admin/class-admin.php:705
+#: admin/class-admin.php:706
 msgid "Edited"
 msgstr ""
 
-#: admin/class-admin.php:706
+#: admin/class-admin.php:707
 msgid "Description changed"
 msgstr ""
 
-#: admin/class-admin.php:707
+#: admin/class-admin.php:708
 msgid "Review date reached"
 msgstr ""
 
-#: admin/class-admin.php:708
+#: admin/class-admin.php:709
 msgid "Kept active"
 msgstr ""
 
-#: admin/class-admin.php:709
+#: admin/class-admin.php:710
 msgid "Reopened"
 msgstr ""
 
-#: admin/class-admin.php:710
+#: admin/class-admin.php:711
 #: includes/class-lifecycle.php:69
 msgid "Closed"
 msgstr ""
 
-#: admin/class-admin.php:711
+#: admin/class-admin.php:712
 #: admin/views/intention-edit.php:72
 #: admin/views/intention-edit.php:454
 msgid "Acknowledgement sent"
 msgstr ""
 
-#: admin/class-admin.php:712
+#: admin/class-admin.php:713
 msgid "Moved to another group"
 msgstr ""
 
-#: admin/class-admin.php:713
+#: admin/class-admin.php:714
 msgid "Received from another group"
 msgstr ""
 
-#: admin/class-admin.php:714
+#: admin/class-admin.php:715
 msgid "Update added"
 msgstr ""
 
-#: admin/class-admin.php:715
+#: admin/class-admin.php:716
 msgid "Comment added"
 msgstr ""
 
-#: admin/class-admin.php:716
+#: admin/class-admin.php:717
 msgid "Comment edited"
 msgstr ""
 
-#: admin/class-admin.php:717
+#: admin/class-admin.php:718
 msgid "Comment deleted"
 msgstr ""
 
-#: admin/class-admin.php:718
+#: admin/class-admin.php:719
 msgid "Comment turned into an update"
 msgstr ""
 
-#: admin/class-admin.php:719
+#: admin/class-admin.php:720
 msgid "Delivered"
 msgstr ""
 
-#: admin/class-admin.php:720
+#: admin/class-admin.php:721
 msgid "Delivery failed"
 msgstr ""
 
-#: admin/class-admin.php:721
+#: admin/class-admin.php:722
 msgid "Group created"
 msgstr ""
 
-#: admin/class-admin.php:722
+#: admin/class-admin.php:723
 msgid "Group edited"
 msgstr ""
 
-#: admin/class-admin.php:723
+#: admin/class-admin.php:724
 msgid "Group archived"
 msgstr ""
 
-#: admin/class-admin.php:724
+#: admin/class-admin.php:725
 msgid "Group restored"
 msgstr ""
 
-#: admin/class-admin.php:725
+#: admin/class-admin.php:726
 msgid "Leaders changed"
 msgstr ""
 
-#: admin/class-admin.php:726
+#: admin/class-admin.php:727
 msgid "New form address"
 msgstr ""
 
-#: admin/class-admin.php:727
+#: admin/class-admin.php:728
 msgid "Settings saved"
 msgstr ""
 
-#: admin/class-admin.php:728
+#: admin/class-admin.php:729
 msgid "Global settings saved"
 msgstr ""
 
-#: admin/class-admin.php:729
+#: admin/class-admin.php:730
 msgid "Personal data erased on request"
 msgstr ""
 
-#: admin/class-admin.php:743
+#: admin/class-admin.php:744
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr ""
 
-#: admin/class-admin.php:744
+#: admin/class-admin.php:745
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr ""
@@ -724,43 +728,47 @@ msgstr ""
 msgid "Generated and sent on %s."
 msgstr ""
 
+#: admin/views/digest.php:33
+msgid "Preview: today’s digest has not been sent yet. It goes out only when someone sends it with the button below."
+msgstr ""
+
 #. translators: %s: time of day.
-#: admin/views/digest.php:34
+#: admin/views/digest.php:36
 #, php-format
 msgid "Preview: today’s digest has not been sent yet. It goes out every day at %s."
 msgstr ""
 
 #. translators: %s: link to the leaders' app.
-#: admin/views/digest.php:42
+#: admin/views/digest.php:44
 #, php-format
 msgid "On your phone: %s (you can add it to the home screen)."
 msgstr ""
 
-#: admin/views/digest.php:43
+#: admin/views/digest.php:45
 msgid "open the leaders’ app"
 msgstr ""
 
-#: admin/views/digest.php:49
+#: admin/views/digest.php:51
 msgid "Generate and send now"
 msgstr ""
 
 #. translators: 1: length, 2: limit.
-#: admin/views/digest.php:58
+#: admin/views/digest.php:60
 #, php-format
 msgid "The message is %1$s characters long, over %2$s: it may be too long to read comfortably in one message."
 msgstr ""
 
 #. translators: %s: number of characters.
-#: admin/views/digest.php:79
+#: admin/views/digest.php:81
 #, php-format
 msgid "%s characters"
 msgstr ""
 
-#: admin/views/digest.php:85
+#: admin/views/digest.php:87
 msgid "Recent hour alerts"
 msgstr ""
 
-#: admin/views/digest.php:93
+#: admin/views/digest.php:95
 msgid "Hour alert"
 msgstr ""
 

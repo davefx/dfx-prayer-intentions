@@ -82,6 +82,7 @@ final class DFXPRAY_Scheduler {
 
 	/**
 	 * Generate, store and send the group's digest once its time has come.
+	 * A group without a time gets it only when someone sends it.
 	 *
 	 * @param int  $group_id Group ID.
 	 * @param bool $force    Send even if already sent today or not yet time.
@@ -93,7 +94,7 @@ final class DFXPRAY_Scheduler {
 		$time   = (string) DFXPRAY_Settings::get_instance()->get( 'digest_time', $group_id );
 		$stored = $this->get_stored_digest( $group_id );
 
-		if ( ! $force && ( $clock->now()->format( 'H:i' ) < $time || ( $stored && $today === $stored['date'] ) ) ) {
+		if ( ! $force && ( '' === $time || $clock->now()->format( 'H:i' ) < $time || ( $stored && $today === $stored['date'] ) ) ) {
 			return false;
 		}
 

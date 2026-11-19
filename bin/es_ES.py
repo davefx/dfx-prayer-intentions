@@ -257,6 +257,8 @@ T = {
 "Spam": "Spam",
 "Duplicate": "Duplicado",
 "Generated and sent on %s.": "Generado y enviado el %s.",
+"Preview: today’s digest has not been sent yet. It goes out only when someone sends it with the button below.": "Vista previa: el resumen de hoy aún no se ha enviado. Solo sale cuando alguien lo envía con el botón de abajo.",
+"Empty: no automatic digest; it goes out only with “Generate and send now” (for example, from a routine when it finishes).": "Vacío: sin resumen automático; solo sale con «Generar y enviar ahora» (por ejemplo, desde una rutina al terminar).",
 "Preview: today’s digest has not been sent yet. It goes out every day at %s.": "Vista previa: el resumen de hoy aún no se ha enviado. Sale cada día a las %s.",
 "Generate and send now": "Generar y enviar ahora",
 "Shareable version": "Versión para compartir",

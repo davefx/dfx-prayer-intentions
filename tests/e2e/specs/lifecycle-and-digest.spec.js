@@ -155,3 +155,26 @@ test( 'the digest can be generated and sent on demand', async ( { page } ) => {
 	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /• Carmen, madre de Luis: recién llegada$/m );
 	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /\*News of the last 24 hours\*\n• Carmen, madre de Luis: recién llegada/ );
 } );
+
+test( 'without a time the digest goes out only when it is sent from the panel', async ( { page } ) => {
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'settings' ) );
+	await page.getByLabel( 'Daily digest at' ).fill( '' );
+	await page.getByRole( 'button', { name: 'Save settings' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Settings saved.' );
+	await expect( page.getByLabel( 'Daily digest at' ) ).toHaveValue( '' );
+
+	createIntention( group.id, { summary: 'recién llegada' } );
+	const before = mails().length;
+	for ( const moment of [ '2026-09-24 07:05', '2026-09-24 12:00', '2026-09-24 23:55' ] ) {
+		freeze( moment );
+		tick();
+	}
+	expect( mails().length ).toBe( before );
+
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.getByText( 'It goes out only when someone sends it with the button below.' ) ).toBeVisible();
+	await page.getByRole( 'button', { name: 'Generate and send now' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Digest generated and sent.' );
+	expect( mails().length ).toBeGreaterThan( before );
+} );

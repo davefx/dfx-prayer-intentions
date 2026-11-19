@@ -83,6 +83,30 @@ class SchedulerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Without a time, the digest goes out only when a leader (or a routine) sends it.
+	 */
+	public function test_digest_without_time_goes_out_only_on_demand(): void {
+		DFXPRAY_Settings::get_instance()->save_group( $this->group, array( 'digest_time' => '' ) );
+		$this->assertSame( '', DFXPRAY_Settings::get_instance()->get( 'digest_time', $this->group ) );
+
+		$scheduler = DFXPRAY_Scheduler::get_instance();
+		foreach ( array( '2026-09-24 00:05', '2026-09-24 07:30', '2026-09-24 23:55' ) as $moment ) {
+			$this->freeze_time( $moment );
+			$scheduler->tick();
+		}
+		$this->assertNull( $scheduler->get_stored_digest( $this->group ) );
+		$this->assertCount( 0, $this->sent_mails() );
+
+		$this->freeze_time( '2026-09-25 05:08' );
+		$this->assertTrue( $scheduler->maybe_send_digest( $this->group, true ) );
+		$this->assertCount( 1, $this->sent_mails() );
+
+		$this->freeze_time( '2026-09-25 23:55' );
+		$scheduler->tick();
+		$this->assertCount( 1, $this->sent_mails() );
+	}
+
+	/**
 	 * Each group has its own time.
 	 */
 	public function test_digest_time_per_group(): void {
