@@ -680,6 +680,30 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Administrators see, at the top of Groups, the figures of every group,
+	 * also the ones they do not lead, and nothing else of them; leaders do
+	 * not see them.
+	 */
+	public function test_admin_sees_statistics_of_all_groups(): void {
+		$this->make_pending( $this->other, array( 'beneficiary_name' => 'Hidden Person' ) );
+		$this->make_active( $this->mine );
+
+		$this->assertStringNotContainsString( 'dfxpray-statistics', $this->render( 'dfxpray' ) );
+
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
+		$html = $this->render( 'dfxpray' );
+
+		$this->assertStringContainsString( 'Statistics of all groups', $html );
+		$this->assertLessThan( strpos( $html, 'Manage groups' ), strpos( $html, 'dfxpray-statistics' ) );
+		$this->assertStringContainsString( 'data-group="' . $this->other . '"', $html );
+		$this->assertStringContainsString( 'data-group="' . $this->mine . '"', $html );
+		$this->assertStringContainsString( 'data-stat="pending">1<', $html );
+		$this->assertStringContainsString( 'class="dfxpray-statistics-totals"', $html );
+		$this->assertStringNotContainsString( 'Hidden', $html );
+		$this->assertStringNotContainsString( 'Carmen', $html );
+	}
+
+	/**
 	 * Every screen carries the DFX footer, as in the other DFX plugins.
 	 *
 	 * @return array

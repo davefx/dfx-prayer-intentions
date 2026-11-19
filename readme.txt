@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611196
+Stable tag: 1.0.2611197
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611197 =
+* Administrators see, at the top of "Groups", the statistics of all groups: one row per group (archived ones too) with leaders, members, pending, in the list, received and closed in the last 30 days, answered and total received, and the totals. Figures only: no names or texts of groups they do not lead.
 
 = 1.0.2611196 =
 * Changed: clearer examples in the help for descriptions instead of names and for the members' prefix.

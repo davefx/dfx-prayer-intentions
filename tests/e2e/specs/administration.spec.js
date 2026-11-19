@@ -60,6 +60,34 @@ test( 'an administrator only sees the groups they lead, and manages the others f
 	expect( php( `echo wp_json_encode( DFXPRAY_Groups::get_instance()->get( ${ other.id } )['description'] );` ) ).toBe( 'Jueves' );
 } );
 
+test( 'administrators see, at the top of Groups, the figures of every group and nothing else', async ( { page, browser } ) => {
+	const mine = createGroup( 'Santa Marta', [ 'leader1', 'admin' ] );
+	const other = createGroup( 'San Pablo', [ 'leader1' ] );
+	createIntention( other.id, { summary: 'de otro grupo', beneficiary_name: 'Persona Oculta' }, 'form' );
+	createIntention( other.id, { summary: 'otra más' }, 'form' );
+	createIntention( mine.id, { summary: 'la mía' }, 'manual' );
+	await login( page, 'admin' );
+	await page.goto( '/wp-admin/admin.php?page=dfxpray' );
+
+	const stats = page.locator( '.dfxpray-statistics' );
+	await expect( stats.getByRole( 'heading', { name: 'Statistics of all groups' } ) ).toBeVisible();
+	const row = stats.locator( `tr[data-group="${ other.id }"]` );
+	await expect( row.locator( 'th' ) ).toHaveText( 'San Pablo' );
+	await expect( row.locator( 'th a' ) ).toHaveCount( 0 );
+	await expect( row.locator( '[data-stat="pending"]' ) ).toHaveText( '2' );
+	await expect( stats.locator( `tr[data-group="${ mine.id }"] [data-stat="listed"]` ) ).toHaveText( '1' );
+	await expect( stats.locator( `tr[data-group="${ mine.id }"] th a` ) ).toHaveText( 'Santa Marta' );
+	await expect( stats.locator( '[data-stat-total="total"]' ) ).toHaveText( '3' );
+	await expect( page.locator( 'body' ) ).not.toContainText( 'Persona Oculta' );
+	await expect( page.locator( 'body' ) ).not.toContainText( 'de otro grupo' );
+
+	const leader = await browser.newPage();
+	await login( leader, 'leader1' );
+	await leader.goto( '/wp-admin/admin.php?page=dfxpray' );
+	await expect( leader.locator( '.dfxpray-statistics' ) ).toHaveCount( 0 );
+	await leader.close();
+} );
+
 test( 'archiving a group closes its form; restoring opens it again', async ( { page } ) => {
 	const group = createGroup( 'Santa Marta' );
 	await login( page, 'admin' );

@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611196 · November 2026
+Version 1.0.2611197 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611196 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611197 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -51,7 +51,7 @@ When it is activated, it creates its tables, the "Prayer leader" role and two sc
 ### The menu
 
 - **"Prayer intentions"**, with a bubble that counts the pending requests of your groups.
-- **"Groups"**: one card for each group you lead, with its counters ("Pending", "In review", "Events today", "Events tomorrow") and the "Daily digest" and "Add intention" buttons.
+- **"Groups"**: for administrators it opens with the **"Statistics of all groups"**, a table with one row per group (archived ones too) and the "All groups" total. Figures only: "Leaders", "Members" (living), "Pending", "In the list" (active and in review), "Received" and "Closed" in the last 30 days, "Answered" since the beginning and "Total received". It shows no names or texts, and a group's name only leads to its intentions if the administrator leads it. Below, for everyone, one card for each group you lead, with its counters ("Pending", "In review", "Events today", "Events tomorrow") and the "Daily digest" and "Add intention" buttons.
 - **"Global settings"**, for administrators only.
 - **One entry for each group you lead**, with its own bubble of pending requests. This applies to administrators too: the groups they do not lead only appear in "Manage groups".
 
@@ -72,7 +72,7 @@ Each group is independent: its leaders, its form, its message and its digest. No
 
 | Person | Sees | Can |
 | --- | --- | --- |
-| Administrator | The active groups they lead, like any leader; the rest only in "Manage groups" (name, leaders, data protection), without their intentions | Create, edit, archive and delete any group; assign, invite and remove leaders; global settings; personal data requests of any group; mark service accounts |
+| Administrator | The active groups they lead, like any leader; the rest only in "Manage groups" (name, leaders, data protection) and in the statistics (figures only), without their intentions | Create, edit, archive and delete any group; assign, invite and remove leaders; global settings; personal data requests of any group; mark service accounts |
 | Prayer leader | Only their groups | Everything inside them: moderation, intentions, digests, members, "Group settings" (channels, time limits, new form address) and inviting new leaders |
 | Other roles with access to the panel | Only the groups assigned to them | The same as a leader |
 

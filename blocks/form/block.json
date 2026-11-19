@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "dfxpray/form",
-	"version": "1.0.2611196",
+	"version": "1.0.2611197",
 	"title": "Prayer request form",
 	"category": "widgets",
 	"icon": "heart",

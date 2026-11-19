@@ -346,3 +346,28 @@
 	margin: 4px 0 0 18px;
 	list-style: disc;
 }
+
+/* Statistics of all groups (administrators), at the top of Groups. */
+.dfxpray-statistics {
+	margin-bottom: 24px;
+}
+
+.dfxpray-table-scroll {
+	overflow-x: auto;
+	max-width: 100%;
+}
+
+.dfxpray-statistics-table th.num,
+.dfxpray-statistics-table td.num {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.dfxpray-statistics-table thead th.num {
+	white-space: normal;
+}
+
+.dfxpray-statistics-totals th,
+.dfxpray-statistics-totals td {
+	font-weight: 600;
+}

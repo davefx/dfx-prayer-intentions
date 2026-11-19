@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611196 · noviembre de 2026
+Versión 1.0.2611197 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611196 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611197 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -51,7 +51,7 @@ Al activarlo, crea sus tablas, el rol «Líder de oración» y dos tareas progra
 ### El menú
 
 - **«Intenciones de oración»**, con un globo que cuenta las peticiones pendientes de tus grupos.
-- **«Grupos»**: una tarjeta por cada grupo que llevas con sus contadores («Pendientes», «En revisión», «Eventos de hoy», «Eventos de mañana») y los botones «Resumen diario» y «Añadir intención».
+- **«Grupos»**: a los administradores les abre con las **«Estadísticas de todos los grupos»**, una tabla con una fila por grupo (también los archivados) y el total de «Todos los grupos». Son solo cifras: «Líderes», «Miembros» (vivos), «Pendientes», «En la lista» (activas y en revisión), «Recibidas» y «Cerradas» en los últimos 30 días, «Atendidas» desde el principio y «Total recibidas». No muestra nombres ni textos, y el nombre del grupo solo lleva a sus intenciones si el administrador lo lleva. Debajo, para todos, una tarjeta por cada grupo que llevas con sus contadores («Pendientes», «En revisión», «Eventos de hoy», «Eventos de mañana») y los botones «Resumen diario» y «Añadir intención».
 - **«Ajustes globales»**, solo para administradores.
 - **Una entrada por cada grupo que llevas**, con su propio globo de pendientes. Esto vale también para los administradores: los grupos que no llevan solo aparecen en «Gestionar grupos».
 
@@ -72,7 +72,7 @@ Cada grupo es independiente: sus líderes, su formulario, su mensaje y su resume
 
 | Persona | Ve | Puede |
 | --- | --- | --- |
-| Administrador | Los grupos activos de los que es líder, como cualquier líder; el resto solo en «Gestionar grupos» (nombre, líderes, protección de datos), sin sus intenciones | Crear, editar, archivar y borrar cualquier grupo; asignar, invitar y quitar líderes; ajustes globales; solicitudes de datos personales de cualquier grupo; marcar cuentas de servicio |
+| Administrador | Los grupos activos de los que es líder, como cualquier líder; el resto solo en «Gestionar grupos» (nombre, líderes, protección de datos) y en las estadísticas (solo cifras), sin sus intenciones | Crear, editar, archivar y borrar cualquier grupo; asignar, invitar y quitar líderes; ajustes globales; solicitudes de datos personales de cualquier grupo; marcar cuentas de servicio |
 | Líder de oración | Solo sus grupos | Todo dentro de ellos: moderar, intenciones, resúmenes, miembros, «Ajustes del grupo» (canales, plazos, nueva dirección del formulario) e invitar a nuevos líderes |
 | Otros roles con acceso al panel | Solo los grupos a los que se les asigne | Lo mismo que un líder |
 

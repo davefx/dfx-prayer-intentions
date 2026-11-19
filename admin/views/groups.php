@@ -1,6 +1,6 @@
 <?php
 /**
- * Groups: a card per group the user may manage, with its counters and links
+ * Groups: for administrators, the statistics of all groups first; then a card per group the user may manage, with its counters and links
  * to its tabs; below, for administrators, group management (create, edit,
  * assign leaders, archive, delete).
  *
@@ -25,6 +25,11 @@ $dfxpray_link  = array(
 	'today'    => 'intentions',
 	'tomorrow' => 'intentions',
 );
+
+// Administrators open the page with the figures of every group.
+if ( DFXPRAY_Permissions::get_instance()->is_admin() ) {
+	$dfxpray_admin->view( 'partials/statistics' );
+}
 
 if ( ! $dfxpray_ids ) {
 	echo '<div class="notice notice-info inline"><p>' . esc_html__( 'You are not assigned to any group yet. Ask the site administrator.', 'dfx-prayer-intentions' ) . '</p></div>';

@@ -744,4 +744,13 @@ T = {
 "iPhone (Safari): open the link, tap Share › Add to Home Screen.": "iPhone (Safari): abre el enlace y pulsa Compartir › Añadir a pantalla de inicio.",
 "The leaders’ app works on the phone like any other app: the daily message, the intentions, whom to ask and the members, also without connection. Open this address on your phone and install it.": "La app de líderes funciona en el móvil como cualquier otra: el mensaje del día, las intenciones, a quién preguntar y los miembros, también sin conexión. Abre esta dirección en el móvil e instálala.",
 "To install it: tap Share and then Add to Home Screen.": "Para instalarla: pulsa Compartir y luego «Añadir a pantalla de inicio».",
+"Statistics of all groups": "Estadísticas de todos los grupos",
+"Figures only. You open the intentions of the groups you lead.": "Solo cifras. Las intenciones se abren desde los grupos que llevas.",
+"There are no groups yet.": "Todavía no hay grupos.",
+"In the list": "En la lista",
+"Received (last %d days)": "Recibidas (últimos %d días)",
+"Closed (last %d days)": "Cerradas (últimos %d días)",
+"Total received": "Total recibidas",
+"All groups": "Todos los grupos",
+"Answered (all time)": "Atendidas (desde el principio)",
 }
