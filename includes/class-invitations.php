@@ -13,8 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * A leader of a group (or an administrator) invites someone by name and
  * email to lead that group. The invitee gets a link, valid for seven days, to
  * a page on wp-login.php where they accept it with a button: a GET never
- * accepts, so email scanners cannot. On acceptance they become a leader at
- * once (with an account and the leader role if they had none) and the site's
+ * accepts, so email scanners cannot. Someone without an account chooses
+ * their password on that same page; on acceptance they become a leader at
+ * once (with an account and the leader role if they had none), a new account
+ * is logged in and welcomed by email with how to come back, and the site's
  * administrator is told. Only the hash of the token is stored.
  */
 final class DFXPRAY_Invitations {
@@ -25,6 +27,11 @@ final class DFXPRAY_Invitations {
 	 * Days an invitation stays valid, and days an accepted one is kept.
 	 */
 	public const DAYS = 7;
+
+	/**
+	 * Shortest password a new account may choose.
+	 */
+	public const MIN_PASSWORD = 8;
 
 	/**
 	 * The wp-login.php action of the accept page.
@@ -183,18 +190,27 @@ final class DFXPRAY_Invitations {
 
 	/**
 	 * Accept an invitation: the person becomes a leader of the group, with a
-	 * new account if they had none.
+	 * new account if they had none, whose password they choose here.
 	 *
-	 * @param string $token Token from the link.
+	 * @param string $token    Token from the link.
+	 * @param string $password Password for a new account.
+	 * @param string $confirm  The same password, typed again.
 	 * @return array{user_id:int, created:bool, redirect:string}|WP_Error
 	 */
-	public function accept( string $token ) {
+	public function accept( string $token, string $password = '', string $confirm = '' ) {
 		global $wpdb;
 
 		$invitation = $this->find_valid( $token );
 		$invalid    = new WP_Error( 'dfxpray_invitation_invalid', $this->invalid_message() );
 		if ( ! $invitation ) {
 			return $invalid;
+		}
+
+		if ( ! get_user_by( 'email', $invitation['email'] ) ) {
+			$weak = $this->check_password( $password, $confirm );
+			if ( $weak ) {
+				return $weak;
+			}
 		}
 
 		// Claim it first, so that the same link cannot be used twice at once.
@@ -207,7 +223,7 @@ final class DFXPRAY_Invitations {
 		$created = false;
 
 		if ( ! $user ) {
-			$user_id = $this->create_user( $invitation );
+			$user_id = $this->create_user( $invitation, $password );
 			if ( is_wp_error( $user_id ) ) {
 				$wpdb->update( $this->table(), array( 'accepted_at' => null ), array( 'id' => $invitation['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				return $user_id;
@@ -230,6 +246,9 @@ final class DFXPRAY_Invitations {
 			),
 			$user->ID
 		);
+		if ( $created ) {
+			$this->send_welcome( $invitation, $user );
+		}
 		$this->notify_admin( $invitation, $user );
 
 		return array(
@@ -319,8 +338,17 @@ final class DFXPRAY_Invitations {
 			if ( ! wp_verify_nonce( isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '', self::NONCE ) ) {
 				$error = __( 'The link has expired. Please try again.', 'dfx-prayer-intentions' );
 			} else {
-				$result = $this->accept( $token );
+				// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Passwords are kept exactly as typed.
+				$password = isset( $_POST['dfxpray_password'] ) ? (string) wp_unslash( $_POST['dfxpray_password'] ) : '';
+				$confirm  = isset( $_POST['dfxpray_password_confirm'] ) ? (string) wp_unslash( $_POST['dfxpray_password_confirm'] ) : '';
+				// phpcs:enable
+				$result = $this->accept( $token, $password, $confirm );
 				if ( ! is_wp_error( $result ) ) {
+					if ( $result['created'] ) {
+						// They proved the email is theirs and chose a password: in they go.
+						wp_set_current_user( $result['user_id'] );
+						wp_set_auth_cookie( $result['user_id'] );
+					}
 					wp_safe_redirect( $result['redirect'] );
 					exit;
 				}
@@ -366,7 +394,32 @@ final class DFXPRAY_Invitations {
 		$html .= '<form method="post" action="' . esc_url( $this->page_url() ) . '" class="dfxpray-invitation-accept">';
 		$html .= '<input type="hidden" name="token" value="' . esc_attr( $token ) . '">';
 		$html .= wp_nonce_field( self::NONCE, '_wpnonce', true, false );
-		$html .= '<p class="submit"><button type="submit" class="button button-primary button-large">' . esc_html__( 'Accept the invitation', 'dfx-prayer-intentions' ) . '</button></p>';
+		if ( get_user_by( 'email', $invitation['email'] ) ) {
+			$html  .= '<p>' . esc_html__( 'You already have an account with this email: after accepting, log in with it.', 'dfx-prayer-intentions' ) . '</p>';
+			$button = __( 'Accept the invitation', 'dfx-prayer-intentions' );
+		} else {
+			$html .= '<p>' . esc_html(
+				sprintf(
+					/* translators: %s: email address. */
+					__( 'You will log in with your email, %s. Choose your password:', 'dfx-prayer-intentions' ),
+					$invitation['email']
+				)
+			) . '</p>';
+			$html .= '<input type="hidden" name="log" value="' . esc_attr( $invitation['email'] ) . '" autocomplete="username">';
+			$html .= '<p><label for="dfxpray_password">' . esc_html__( 'Password', 'dfx-prayer-intentions' ) . '</label>';
+			$html .= '<input type="password" name="dfxpray_password" id="dfxpray_password" class="input" autocomplete="new-password" minlength="' . esc_attr( (string) self::MIN_PASSWORD ) . '" required></p>';
+			$html .= '<p><label for="dfxpray_password_confirm">' . esc_html__( 'Repeat the password', 'dfx-prayer-intentions' ) . '</label>';
+			$html .= '<input type="password" name="dfxpray_password_confirm" id="dfxpray_password_confirm" class="input" autocomplete="new-password" minlength="' . esc_attr( (string) self::MIN_PASSWORD ) . '" required></p>';
+			$html .= '<p class="description">' . esc_html(
+				sprintf(
+					/* translators: %d: number of characters. */
+					__( 'At least %d characters. Write it down somewhere safe: you will need it to come back.', 'dfx-prayer-intentions' ),
+					self::MIN_PASSWORD
+				)
+			) . '</p>';
+			$button = __( 'Accept and enter', 'dfx-prayer-intentions' );
+		}
+		$html .= '<p class="submit"><button type="submit" class="button button-primary button-large">' . esc_html( $button ) . '</button></p>';
 		$html .= '</form>';
 
 		return $html;
@@ -483,10 +536,11 @@ final class DFXPRAY_Invitations {
 	/**
 	 * Create the account of someone who accepted an invitation.
 	 *
-	 * @param array $invitation Invitation.
+	 * @param array  $invitation Invitation.
+	 * @param string $password   Password they chose.
 	 * @return int|WP_Error User ID.
 	 */
-	private function create_user( array $invitation ) {
+	private function create_user( array $invitation, string $password ) {
 		$base  = substr( (string) preg_replace( '/[^a-z0-9]/', '', strtolower( (string) strstr( $invitation['email'], '@', true ) ) ), 0, 50 );
 		$base  = '' !== $base ? $base : 'leader';
 		$login = $base;
@@ -501,7 +555,7 @@ final class DFXPRAY_Invitations {
 			array(
 				'user_login'   => $login,
 				'user_email'   => $invitation['email'],
-				'user_pass'    => wp_generate_password( 32, true, true ),
+				'user_pass'    => $password,
 				'display_name' => $invitation['name'],
 				'nickname'     => $invitation['name'],
 				'first_name'   => $parts[0] ?? '',
@@ -512,8 +566,8 @@ final class DFXPRAY_Invitations {
 	}
 
 	/**
-	 * Where someone goes after accepting: a new account chooses its password;
-	 * an existing one goes to the group, through the login if needed.
+	 * Where someone goes after accepting: a new account, already logged in,
+	 * and whoever is logged in go to the group; anyone else logs in first.
 	 *
 	 * @param WP_User $user     User.
 	 * @param bool    $created  Whether the account was just created.
@@ -522,14 +576,58 @@ final class DFXPRAY_Invitations {
 	private function redirect_after_accepting( WP_User $user, bool $created, int $group_id ): string {
 		$group_url = DFXPRAY_Admin::get_instance()->group_url( $group_id );
 
-		if ( $created ) {
-			$key = get_password_reset_key( $user );
-			if ( ! is_wp_error( $key ) ) {
-				return network_site_url( 'wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode( $user->user_login ), 'login' );
-			}
-		}
+		return $created || get_current_user_id() === $user->ID ? $group_url : wp_login_url( $group_url );
+	}
 
-		return get_current_user_id() === $user->ID ? $group_url : wp_login_url( $group_url );
+	/**
+	 * Why a password for a new account is not good enough, if it is not.
+	 *
+	 * @param string $password Password.
+	 * @param string $confirm  The same, typed again.
+	 */
+	private function check_password( string $password, string $confirm ): ?WP_Error {
+		if ( mb_strlen( $password ) < self::MIN_PASSWORD ) {
+			/* translators: %d: number of characters. */
+			return new WP_Error( 'dfxpray_invitation_password', sprintf( __( 'Choose a password of at least %d characters.', 'dfx-prayer-intentions' ), self::MIN_PASSWORD ) );
+		}
+		if ( $password !== $confirm ) {
+			return new WP_Error( 'dfxpray_invitation_password', __( 'The two passwords do not match.', 'dfx-prayer-intentions' ) );
+		}
+		return null;
+	}
+
+	/**
+	 * Welcome a new leader with how to come back: their email is their user,
+	 * where to log in, the app, and what to do if they forget the password.
+	 *
+	 * @param array   $invitation Invitation.
+	 * @param WP_User $user       New leader.
+	 */
+	private function send_welcome( array $invitation, WP_User $user ): void {
+		$group = DFXPRAY_Groups::get_instance()->get( $invitation['group_id'] );
+		$body  = implode(
+			"\n\n",
+			array(
+				sprintf(
+					/* translators: 1: name of the new leader, 2: group name, 3: site name. */
+					__( 'Hello, %1$s: you are now a leader of the prayer group “%2$s” on %3$s.', 'dfx-prayer-intentions' ),
+					$invitation['name'],
+					$group['name'],
+					$this->site_name()
+				),
+				sprintf(
+					/* translators: %s: email address. */
+					__( 'To come back, log in with your email, %s, and the password you chose, here:', 'dfx-prayer-intentions' ),
+					$user->user_email
+				) . "\n" . wp_login_url( DFXPRAY_Admin::get_instance()->group_url( $invitation['group_id'] ) ),
+				__( 'On your phone, the leaders’ app is easier to use; once open, you can add it to your home screen:', 'dfx-prayer-intentions' ) . "\n" . DFXPRAY_App::get_instance()->url(),
+				__( 'If you forget your password, choose a new one here:', 'dfx-prayer-intentions' ) . "\n" . wp_lostpassword_url(),
+				$this->confidentiality_sentence(),
+			)
+		);
+
+		/* translators: %s: group name. */
+		wp_mail( $user->user_email, sprintf( __( 'Welcome to %s', 'dfx-prayer-intentions' ), $group['name'] ), $body );
 	}
 
 	/**

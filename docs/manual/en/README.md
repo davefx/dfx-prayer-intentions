@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611202 · November 2026
+Version 1.0.2611203 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611202 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611203 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -97,7 +97,9 @@ Any leader of a group can invite someone else to lead it, without going through 
 2. In "Invite a leader", type the person's "Name" and "Email" and press "Send invitation". The panel answers "Invitation sent."; if that person was already a leader of the group, nothing changes.
 3. The person receives an email, "Invitation to lead…", which reminds them that leaders see very sensitive information and must keep it confidential, with a link to accept. **The link expires after 7 days.** If the same email is invited again, a new link is sent and the previous one stops working.
 4. Opening the link shows the invitation and the "Accept the invitation" button. Opening the link accepts nothing: the button has to be pressed.
-5. On accepting, they become a leader of the group at once. If they had no account on the site, one is created with the "Prayer leader" role and WordPress asks them to choose their password; then they log in and go into the group. If they already had an account, they log in with it.
+5. If they have no account on the site, the invitation itself tells them they will log in with their email and asks them to choose their password ("Password" and "Repeat the password", at least 8 characters); pressing "Accept and enter" creates the account with the "Prayer leader" role, makes them a leader of the group and takes them straight into it, already logged in. They also get a welcome email that tells them how to come back: their user is their email, the address to log in, the leaders' app and where to choose a new password if they forget it. If they already had an account, they press "Accept the invitation" and log in with it.
+
+Anyone who does not remember their password can choose another on the login screen, with "Lost your password?" and their email.
 
 The site administrator receives an email every time someone accepts, and the sending, withdrawal and acceptance are recorded in "Activity". While an invitation is pending, any leader of the group can press "Withdraw" and the link stops working. Expired invitations are deleted automatically, and accepted ones after a week.
 

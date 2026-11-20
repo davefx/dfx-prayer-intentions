@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611202
+Stable tag: 1.0.2611203
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611203 =
+* Easier start for invited leaders without an account: they choose their password on the invitation page itself (told that their email is their user), and on accepting they go straight into the group, already logged in, instead of WordPress' password reset screen. A welcome email tells them how to come back: log in with their email, the leaders' app, and where to choose a new password if they forget it.
 
 = 1.0.2611202 =
 * Routines (and the app's API) can create and edit the members of their groups with "save_member", with the same per-group checks as the panel; only the fields sent change. Deleting members stays in the panel.

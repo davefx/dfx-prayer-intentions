@@ -1,6 +1,7 @@
 /**
  * Leaders invite other people to lead their group, by email: the invitee
- * accepts on a page of wp-login.php, chooses a password and reaches the group.
+ * accepts on a page of wp-login.php, choosing their password there, and goes
+ * straight into the group.
  */
 const { groupUrl, test, expect, resetData, createGroup, login, mails, php, freeze } = require( '../helpers' );
 
@@ -54,20 +55,36 @@ test( 'a leader invites someone new, who accepts, chooses a password and reaches
 	// Opening the link (as an email scanner would) accepts nothing.
 	expect( php( `echo wp_json_encode( (bool) get_user_by( 'email', ${ JSON.stringify( EMAIL ) } ) );` ) ).toBe( false );
 
-	await invitee.getByRole( 'button', { name: 'Accept the invitation' } ).click();
-	await expect( invitee ).toHaveURL( /wp-login\.php\?action=rp/ );
+	// No account yet: the invitation itself asks for the password, and says
+	// that the email is what they log in with.
+	const accept = invitee.locator( 'form.dfxpray-invitation-accept' );
+	await expect( accept ).toContainText( `You will log in with your email, ${ EMAIL }. Choose your password:` );
 	const password = 'Gr4ce-and-Peace-2026!';
-	await invitee.locator( '#pass1' ).fill( password );
-	await invitee.locator( '#wp-submit' ).click();
-	await expect( invitee.locator( '.message, .notice' ).first() ).toContainText( 'Your password has been reset' );
+	await accept.getByLabel( 'Password', { exact: true } ).fill( password );
+	await accept.getByLabel( 'Repeat the password' ).fill( 'something else' );
+	await accept.getByRole( 'button', { name: 'Accept and enter' } ).click();
+	await expect( invitee.locator( '#login_error' ) ).toContainText( 'The two passwords do not match.' );
+	expect( php( `echo wp_json_encode( (bool) get_user_by( 'email', ${ JSON.stringify( EMAIL ) } ) );` ) ).toBe( false );
+
+	await accept.getByLabel( 'Password', { exact: true } ).fill( password );
+	await accept.getByLabel( 'Repeat the password' ).fill( password );
+	await accept.getByRole( 'button', { name: 'Accept and enter' } ).click();
+
+	// Straight into the group, already logged in.
+	await expect( invitee ).toHaveURL( new RegExp( `page=dfxpray-group-${ group.id }` ) );
+	await expect( invitee.locator( 'h1' ) ).toHaveText( 'Santa Marta' );
 
 	const user = php( `$u = get_user_by( 'email', ${ JSON.stringify( EMAIL ) } ); echo wp_json_encode( array( 'login' => $u->user_login, 'roles' => $u->roles, 'name' => $u->display_name ) );` );
 	expect( user.roles ).toEqual( [ 'dfxpray_leader' ] );
 	expect( user.name ).toBe( 'Pedro Gil' );
 
-	await login( invitee, user.login, password );
-	await expect( invitee ).toHaveURL( new RegExp( `page=dfxpray-group-${ group.id }` ) );
-	await expect( invitee.locator( 'h1' ) ).toHaveText( 'Santa Marta' );
+	const welcome = mails().find( ( m ) => m.to.includes( EMAIL ) && m.message.includes( 'you are now a leader' ) );
+	expect( welcome.message ).toContain( `with your email, ${ EMAIL }, and the password you chose` );
+
+	// Coming back another day: the email and the password open the group.
+	await context.clearCookies();
+	await login( invitee, EMAIL, password );
+	await expect( invitee ).toHaveURL( /wp-admin/ );
 	await context.close();
 
 	const notice = mails().find( ( m ) => m.to.includes( 'admin@example.org' ) );
@@ -131,8 +148,10 @@ test( 'an administrator invites from Manage groups to a group they do not lead, 
 	const invitee = await context.newPage();
 	await invitee.goto( link );
 	await expect( invitee.locator( '.dfxpray-invitation' ) ).toContainText( 'invites you to be a leader of the prayer group “San Pablo”' );
-	await invitee.getByRole( 'button', { name: 'Accept the invitation' } ).click();
-	await expect( invitee ).toHaveURL( /wp-login\.php\?action=rp/ );
+	await invitee.locator( 'form.dfxpray-invitation-accept' ).getByLabel( 'Password', { exact: true } ).fill( 'Gr4ce-and-Peace-2026!' );
+	await invitee.locator( 'form.dfxpray-invitation-accept' ).getByLabel( 'Repeat the password' ).fill( 'Gr4ce-and-Peace-2026!' );
+	await invitee.getByRole( 'button', { name: 'Accept and enter' } ).click();
+	await expect( invitee ).toHaveURL( new RegExp( `page=dfxpray-group-${ empty.id }` ) );
 	await context.close();
 
 	const leaders = php( `echo wp_json_encode( array_map( static fn( $id ) => get_userdata( $id )->user_email, DFXPRAY_Groups::get_instance()->get_leaders( ${ empty.id } ) ) );` );

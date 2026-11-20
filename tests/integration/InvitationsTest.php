@@ -233,9 +233,9 @@ class InvitationsTest extends DFXPRAY_Test_Case {
 		reset_phpmailer_instance();
 		wp_set_current_user( 0 );
 
-		$result = $this->invitations->accept( $token );
+		$result = $this->invitations->accept( $token, 'Gr4ce-and-Peace', 'Gr4ce-and-Peace' );
 
-		$this->assertIsArray( $result );
+		$this->assertIsArray( $result, is_wp_error( $result ) ? $result->get_error_message() : '' );
 		$this->assertTrue( $result['created'] );
 		$user = get_user_by( 'email', 'pedro.gil+fe@example.org' );
 		$this->assertInstanceOf( WP_User::class, $user );
@@ -248,22 +248,52 @@ class InvitationsTest extends DFXPRAY_Test_Case {
 		$this->assertStringStartsWith( 'pedrogilfe', $user->user_login );
 		$this->assertContains( $this->group, DFXPRAY_Groups::get_instance()->get_group_ids_for_leader( $user->ID ) );
 		$this->assertContains( $this->leader, DFXPRAY_Groups::get_instance()->get_leaders( $this->group ) );
-		$this->assertStringContainsString( 'wp-login.php?action=rp&key=', $result['redirect'] );
-		$this->assertStringContainsString( 'login=' . rawurlencode( $user->user_login ), $result['redirect'] );
+		// The password they chose is theirs, and they go straight to the group.
+		$this->assertTrue( wp_check_password( 'Gr4ce-and-Peace', $user->user_pass, $user->ID ) );
+		$this->assertSame( DFXPRAY_Admin::get_instance()->group_url( $this->group ), $result['redirect'] );
 
 		$this->assertNull( $this->invitations->find_valid( $token ) );
 		$this->assertSame( 'dfxpray_invitation_invalid', $this->invitations->accept( $token )->get_error_code() );
 
 		$mails = $this->sent_mails();
-		$this->assertCount( 1, $mails );
-		$this->assertSame( 'admin@example.org', $mails[0]['to'][0][0] );
+		$this->assertCount( 2, $mails );
+
+		// A welcome that tells them how to come back: their email is their user.
+		$this->assertSame( 'pedro.gil+fe@example.org', $mails[0]['to'][0][0] );
 		$this->assertStringContainsString( 'Santa Marta', $mails[0]['subject'] );
-		$this->assertStringContainsString( 'Pedro Gil Sanz', $mails[0]['body'] );
-		$this->assertStringContainsString( 'Ana Leader', $mails[0]['body'] );
+		$this->assertStringContainsString( 'Hello, Pedro Gil Sanz: you are now a leader of the prayer group “Santa Marta”', $mails[0]['body'] );
+		$this->assertStringContainsString( 'with your email, pedro.gil+fe@example.org, and the password you chose', $mails[0]['body'] );
+		$this->assertStringContainsString( wp_login_url( DFXPRAY_Admin::get_instance()->group_url( $this->group ) ), $mails[0]['body'] );
+		$this->assertStringContainsString( DFXPRAY_App::get_instance()->url(), $mails[0]['body'] );
+		$this->assertStringContainsString( wp_lostpassword_url(), $mails[0]['body'] );
+		$this->assertStringNotContainsString( 'Gr4ce-and-Peace', $mails[0]['body'] );
+
+		$this->assertSame( 'admin@example.org', $mails[1]['to'][0][0] );
+		$this->assertStringContainsString( 'Santa Marta', $mails[1]['subject'] );
+		$this->assertStringContainsString( 'Pedro Gil Sanz', $mails[1]['body'] );
+		$this->assertStringContainsString( 'Ana Leader', $mails[1]['body'] );
 
 		$log = DFXPRAY_Log::get_instance()->for_group( $this->group, array( 'invitation_accepted' ) );
 		$this->assertCount( 1, $log );
 		$this->assertSame( $user->ID, $log[0]['user_id'] );
+	}
+
+	/**
+	 * Without an account, the invitation is accepted only with a password of
+	 * at least eight characters, typed twice the same; until then nothing
+	 * changes and the link keeps working.
+	 */
+	public function test_new_account_needs_a_password(): void {
+		$token = $this->invite();
+		wp_set_current_user( 0 );
+
+		$this->assertSame( 'dfxpray_invitation_password', $this->invitations->accept( $token )->get_error_code() );
+		$this->assertSame( 'Choose a password of at least 8 characters.', $this->invitations->accept( $token, 'short', 'short' )->get_error_message() );
+		$this->assertSame( 'The two passwords do not match.', $this->invitations->accept( $token, 'Gr4ce-and-Peace', 'Gr4ce-and-peace' )->get_error_message() );
+		$this->assertFalse( get_user_by( 'email', 'pedro@example.org' ) );
+		$this->assertNotNull( $this->invitations->find_valid( $token ) );
+
+		$this->assertIsArray( $this->invitations->accept( $token, 'Gr4ce-and-Peace', 'Gr4ce-and-Peace' ) );
 	}
 
 	/**
@@ -289,6 +319,7 @@ class InvitationsTest extends DFXPRAY_Test_Case {
 		$this->assertTrue( DFXPRAY_Permissions::get_instance()->can_manage_group( $this->group, $subscriber ) );
 		$this->assertStringContainsString( 'wp-login.php', $result['redirect'] );
 		$this->assertStringContainsString( rawurlencode( 'page=dfxpray-group-' . $this->group ), $result['redirect'] );
+		$this->assertCount( 0, array_filter( $this->sent_mails(), static fn( $m ) => 'pedro@example.org' === $m['to'][0][0] && str_contains( $m['body'], 'you are now a leader' ) ) );
 	}
 
 	/**
@@ -319,9 +350,9 @@ class InvitationsTest extends DFXPRAY_Test_Case {
 	public function test_daily_cleanup(): void {
 		$this->freeze_time( '2026-09-20 10:00' );
 		$expired = $this->invitations->find_valid( $this->invite( 'old@example.org' ) )['id'];
-		$this->invitations->accept( $this->invite( 'acc@example.org' ) );
+		$this->invitations->accept( $this->invite( 'acc@example.org' ), 'Gr4ce-and-Peace', 'Gr4ce-and-Peace' );
 		$this->freeze_time( '2026-09-24 10:00' );
-		$this->invitations->accept( $this->invite( 'recent@example.org' ) );
+		$this->invitations->accept( $this->invite( 'recent@example.org' ), 'Gr4ce-and-Peace', 'Gr4ce-and-Peace' );
 		$pending = $this->invitations->find_valid( $this->invite( 'pending@example.org' ) )['id'];
 
 		$this->freeze_time( '2026-09-28 03:00' );
@@ -370,9 +401,20 @@ class InvitationsTest extends DFXPRAY_Test_Case {
 		$this->assertStringContainsString( 'illnesses, deaths, family situations', $html );
 		$this->assertStringContainsString( 'method="post"', $html );
 		$this->assertStringContainsString( 'name="token" value="' . $token . '"', $html );
-		$this->assertStringContainsString( 'Accept the invitation', $html );
+		$this->assertStringContainsString( 'You will log in with your email, pedro@example.org. Choose your password:', $html );
+		$this->assertStringContainsString( 'name="dfxpray_password"', $html );
+		$this->assertStringContainsString( 'name="dfxpray_password_confirm"', $html );
+		$this->assertStringContainsString( 'autocomplete="new-password"', $html );
+		$this->assertStringContainsString( 'Accept and enter', $html );
 		$this->assertNotNull( $this->invitations->find_valid( $token ) );
 		$this->assertFalse( get_user_by( 'email', 'pedro@example.org' ) );
+
+		// With an account already, no password is asked: they log in with it.
+		self::factory()->user->create( array( 'user_email' => 'pedro@example.org' ) );
+		$html = $this->invitations->page_body( $token );
+		$this->assertStringContainsString( 'You already have an account with this email: after accepting, log in with it.', $html );
+		$this->assertStringNotContainsString( 'name="dfxpray_password"', $html );
+		$this->assertStringContainsString( 'Accept the invitation', $html );
 
 		$invalid = $this->invitations->page_body( 'nope' );
 		$this->assertStringContainsString( 'This invitation is not valid or has expired. Ask whoever invited you for a new one.', $invalid );

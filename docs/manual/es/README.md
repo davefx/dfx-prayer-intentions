@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611202 · noviembre de 2026
+Versión 1.0.2611203 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611202 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611203 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -97,7 +97,9 @@ Cualquier líder de un grupo puede invitar a otra persona a llevarlo, sin pasar 
 2. En «Invitar a un líder», escribe el «Nombre» y el «Correo» de la persona y pulsa «Enviar invitación». El panel responde «Invitación enviada.»; si esa persona ya era líder del grupo, no cambia nada.
 3. La persona recibe un correo, «Invitación a ser líder de…», que le recuerda que los líderes ven información muy sensible y deben guardar confidencialidad, con un enlace para aceptar. **El enlace caduca a los 7 días.** Si se vuelve a invitar al mismo correo, se envía un enlace nuevo y el anterior deja de valer.
 4. Al abrir el enlace ve la invitación y el botón «Aceptar la invitación». Abrir el enlace no acepta nada: hay que pulsar el botón.
-5. Al aceptar pasa a ser líder del grupo en el acto. Si no tenía cuenta en el sitio, se le crea una con el rol «Líder de oración» y WordPress le pide que elija su contraseña; después inicia sesión y entra en el grupo. Si ya tenía cuenta, inicia sesión con ella.
+5. Si no tiene cuenta en el sitio, la propia invitación le dice que entrará con su correo y le pide que elija su contraseña («Contraseña» y «Repite la contraseña», de al menos 8 caracteres); al pulsar «Aceptar y entrar» se le crea la cuenta con el rol «Líder de oración», pasa a ser líder del grupo y entra en él directamente, sin tener que iniciar sesión. Recibe además un correo de bienvenida que le recuerda cómo volver: su usuario es su correo, la dirección para entrar, la app de los líderes y dónde elegir una contraseña nueva si la olvida. Si ya tenía cuenta, pulsa «Aceptar la invitación» e inicia sesión con ella.
+
+Quien no recuerde su contraseña puede elegir otra en la pantalla de acceso, con «¿Has olvidado tu contraseña?» y su correo.
 
 El administrador del sitio recibe un correo cada vez que alguien acepta, y el envío, la retirada y la aceptación quedan en «Actividad». Mientras una invitación está pendiente, cualquier líder del grupo puede pulsar «Retirar» y el enlace deja de funcionar. Las invitaciones caducadas se borran solas, y las aceptadas a la semana.
 

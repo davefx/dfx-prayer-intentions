@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611200\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611202\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-20T04:35:41+00:00\n"
+"POT-Creation-Date: 2026-11-20T09:12:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -46,7 +46,7 @@ msgid "Unknown action."
 msgstr ""
 
 #: admin/class-admin-actions.php:141
-#: includes/class-invitations.php:320
+#: includes/class-invitations.php:339
 msgid "The link has expired. Please try again."
 msgstr ""
 
@@ -2647,94 +2647,158 @@ msgstr ""
 msgid "Write the summary for the index before activating the intention."
 msgstr ""
 
-#: includes/class-invitations.php:61
+#: includes/class-invitations.php:68
 msgid "Invitations can only be sent for an active group."
 msgstr ""
 
-#: includes/class-invitations.php:66
+#: includes/class-invitations.php:73
 msgid "Write the name of the person you invite."
 msgstr ""
 
-#: includes/class-invitations.php:71
+#: includes/class-invitations.php:78
 msgid "The email address is not valid."
 msgstr ""
 
-#: includes/class-invitations.php:150
+#: includes/class-invitations.php:157
 msgid "This invitation is no longer pending."
 msgstr ""
 
-#: includes/class-invitations.php:331
+#: includes/class-invitations.php:359
 #: includes/class-privacy.php:250
 msgid "Invitation to lead a prayer group"
 msgstr ""
 
 #. translators: 1: who invites, 2: group name, 3: site name.
-#: includes/class-invitations.php:358
+#: includes/class-invitations.php:386
 #, php-format
 msgid "%1$s invites you to be a leader of the prayer group “%2$s” on %3$s."
 msgstr ""
 
-#: includes/class-invitations.php:369
+#: includes/class-invitations.php:398
+msgid "You already have an account with this email: after accepting, log in with it."
+msgstr ""
+
+#: includes/class-invitations.php:399
 msgid "Accept the invitation"
 msgstr ""
 
-#. translators: 1: name of the person invited, 2: who invites, 3: group name, 4: site name, 5: site address.
+#. translators: %s: email address.
 #: includes/class-invitations.php:404
+#, php-format
+msgid "You will log in with your email, %s. Choose your password:"
+msgstr ""
+
+#: includes/class-invitations.php:409
+msgid "Password"
+msgstr ""
+
+#: includes/class-invitations.php:411
+msgid "Repeat the password"
+msgstr ""
+
+#. translators: %d: number of characters.
+#: includes/class-invitations.php:416
+#, php-format
+msgid "At least %d characters. Write it down somewhere safe: you will need it to come back."
+msgstr ""
+
+#: includes/class-invitations.php:420
+msgid "Accept and enter"
+msgstr ""
+
+#. translators: 1: name of the person invited, 2: who invites, 3: group name, 4: site name, 5: site address.
+#: includes/class-invitations.php:457
 #, php-format
 msgid "Hello, %1$s: %2$s invites you to be a leader of the prayer group “%3$s” on %4$s (%5$s)."
 msgstr ""
 
-#: includes/class-invitations.php:412
+#: includes/class-invitations.php:465
 msgid "To accept, open this link:"
 msgstr ""
 
 #. translators: %s: date.
-#: includes/class-invitations.php:414
+#: includes/class-invitations.php:467
 #, php-format
 msgid "The invitation expires on %s."
 msgstr ""
 
-#: includes/class-invitations.php:415
-#: includes/class-invitations.php:446
+#: includes/class-invitations.php:468
+#: includes/class-invitations.php:499
 msgid "If you did not expect this invitation, ignore this email."
 msgstr ""
 
 #. translators: %s: group name.
-#: includes/class-invitations.php:420
-#: includes/class-invitations.php:451
+#: includes/class-invitations.php:473
+#: includes/class-invitations.php:504
 #, php-format
 msgid "Invitation to lead %s"
 msgstr ""
 
 #. translators: 1: who invites, 2: group name, 3: site name.
-#: includes/class-invitations.php:441
+#: includes/class-invitations.php:494
 #, php-format
 msgid "%1$s invited you to be a leader of the prayer group “%2$s” on %3$s, but you are already a leader of it. Nothing changes."
 msgstr ""
 
 #. translators: 1: name of the new leader, 2: their email, 3: who invited them, 4: group name, 5: site name.
-#: includes/class-invitations.php:467
+#: includes/class-invitations.php:520
 #, php-format
 msgid "%1$s (%2$s) accepted the invitation of %3$s and is now a leader of the prayer group “%4$s” on %5$s."
 msgstr ""
 
 #. translators: %s: address of the groups page.
-#: includes/class-invitations.php:475
+#: includes/class-invitations.php:528
 #, php-format
 msgid "Only administrators can remove leaders, in %s"
 msgstr ""
 
 #. translators: %s: group name.
-#: includes/class-invitations.php:480
+#: includes/class-invitations.php:533
 #, php-format
 msgid "New leader in %s"
 msgstr ""
 
-#: includes/class-invitations.php:539
+#. translators: %d: number of characters.
+#: includes/class-invitations.php:591
+#, php-format
+msgid "Choose a password of at least %d characters."
+msgstr ""
+
+#: includes/class-invitations.php:594
+msgid "The two passwords do not match."
+msgstr ""
+
+#. translators: 1: name of the new leader, 2: group name, 3: site name.
+#: includes/class-invitations.php:613
+#, php-format
+msgid "Hello, %1$s: you are now a leader of the prayer group “%2$s” on %3$s."
+msgstr ""
+
+#. translators: %s: email address.
+#: includes/class-invitations.php:620
+#, php-format
+msgid "To come back, log in with your email, %s, and the password you chose, here:"
+msgstr ""
+
+#: includes/class-invitations.php:623
+msgid "On your phone, the leaders’ app is easier to use; once open, you can add it to your home screen:"
+msgstr ""
+
+#: includes/class-invitations.php:624
+msgid "If you forget your password, choose a new one here:"
+msgstr ""
+
+#. translators: %s: group name.
+#: includes/class-invitations.php:630
+#, php-format
+msgid "Welcome to %s"
+msgstr ""
+
+#: includes/class-invitations.php:637
 msgid "Leaders see very sensitive information: illnesses, deaths, family situations. If you accept, you owe confidentiality about everything you read, also when you stop being a leader."
 msgstr ""
 
-#: includes/class-invitations.php:546
+#: includes/class-invitations.php:644
 msgid "This invitation is not valid or has expired. Ask whoever invited you for a new one."
 msgstr ""
 
