@@ -817,7 +817,8 @@
 				field( S.whatsapp, input( 'requester_phone', it.requester_phone, { type: 'tel' } ), S.whatsappHelp ),
 				box( 'requester_is_member', S.ourGroup, it.requester_is_member ),
 				it.requester_contact ? h( 'p', { class: 'dfx-muted' }, S.formContact + ' ' + it.requester_contact ) : null,
-				field( S.whenAsked, input( 'asked_on', isNew ? '' : String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ), S.whenAskedHelp )
+				field( S.whenAsked, input( 'asked_on', isNew ? '' : String( it.created_at || '' ).slice( 0, 10 ), { type: 'date', max: C.today } ), S.whenAskedHelp ),
+				! isNew && it.activated_at ? field( S.whenListed, input( 'listed_on', String( it.activated_at ).slice( 0, 10 ), { type: 'date', max: C.today } ), S.whenListedHelp ) : null
 			),
 			step( 2, S.stepForWhom, radios( 'beneficiary_is_requester', { self: S.forThemselves, other: S.forSomeoneElse }, it.beneficiary_is_requester ? 'self' : 'other' ), beneficiary ),
 			step(

@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611200 · noviembre de 2026
+Versión 1.0.2611201 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611200 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611201 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -188,7 +188,7 @@ La pestaña «Intenciones» permite filtrar por estado, tipo, prioridad, fechas 
 
 La ficha tiene cinco pasos, los mismos que en la app. Los campos que no aplican al tipo se ocultan.
 
-1. **«Quién lo pide»**: «Nombre completo», «Cómo le llamamos» (un apodo o un nombre compuesto: Toni, Juan Tomás, Javi Cavallé), «WhatsApp», «Es de nuestro grupo» y «Cuándo lo pidió».
+1. **«Quién lo pide»**: «Nombre completo», «Cómo le llamamos» (un apodo o un nombre compuesto: Toni, Juan Tomás, Javi Cavallé), «WhatsApp», «Es de nuestro grupo», «Cuándo lo pidió» y, si ya está en la lista, «Cuándo entró en la lista». Mientras es nueva, una intención sale en «Especialmente»; para sacarla antes (por ejemplo, tras una operación que ya pasó), pon en «Cuándo entró en la lista» un día anterior. No puede ser posterior a hoy ni anterior a «Cuándo lo pidió».
 2. **«Por quién rezamos»**: «Por sí mismo», o el nombre, cómo le llamamos, «Qué es de quien lo pide» («madre de») y «Es de nuestro grupo».
 3. **«Qué pasa»**: el tipo («Situación», «Algo con fecha», «Fallecimiento», «Acción de gracias»), la fecha y la hora, «Recordarlo cada año» para los difuntos, las «Fechas señaladas» (funeral, misa de mes, cita médica…) y «Lo que nos contó», que nunca se publica.
 4. **«Cómo sale en el mensaje»**: el «Resumen», una vista previa de la línea, el mensaje («Mensaje diario» o «Solo la lista mensual»), el tema (General, Salud, Estudios y trabajo, Económicos o legales, Actualidad), la prioridad («Urgente: abre “Especialmente”») y, plegado, «Discreción y nombres».

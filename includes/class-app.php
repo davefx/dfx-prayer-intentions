@@ -350,6 +350,8 @@ JS;
 			'formContact'             => __( 'Contact left in the form:', 'dfx-prayer-intentions' ),
 			'whenAsked'               => __( 'When they asked', 'dfx-prayer-intentions' ),
 			'whenAskedHelp'           => __( 'Empty: today.', 'dfx-prayer-intentions' ),
+			'whenListed'              => __( 'When it reached the list', 'dfx-prayer-intentions' ),
+			'whenListedHelp'          => __( 'While it is new, it goes in “Especially”. Move this day back to take it out sooner.', 'dfx-prayer-intentions' ),
 			'forThemselves'           => __( 'For themselves', 'dfx-prayer-intentions' ),
 			'forSomeoneElse'          => __( 'For someone else', 'dfx-prayer-intentions' ),
 			'relationshipToRequester' => __( 'What they are to the requester', 'dfx-prayer-intentions' ),

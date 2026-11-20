@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611200
+Stable tag: 1.0.2611201
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611201 =
+* Leaders can edit the day an intention reached the list ("When it reached the list"), in the panel, the app and routines (listed_on). Moving it back takes a new intention out of "Especially" sooner. It cannot be after today nor before the day it was asked for.
 
 = 1.0.2611200 =
 * Closing an intention as answered with a thanksgiving previews, in the panel and in the app, the exact line the thanksgiving will show in the daily and monthly digests, refreshed while its summary is written.

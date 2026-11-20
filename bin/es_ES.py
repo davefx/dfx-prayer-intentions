@@ -758,4 +758,7 @@ T = {
 "Its thanksgiving:": "Su acción de gracias:",
 "In the daily and monthly digests it will appear as:": "En los resúmenes diario y mensual aparecerá así:",
 "This intention cannot become a thanksgiving.": "Esta intención no puede convertirse en acción de gracias.",
+"When it reached the list": "Cuándo entró en la lista",
+"While it is new, it goes in “Especially”. Move this day back to take it out sooner.": "Mientras es nueva, sale en «Especialmente». Pon un día anterior para sacarla antes.",
+"The day it reached the list must be a valid day, not after today nor before the day it was asked for.": "El día en que entró en la lista debe ser un día válido, no posterior a hoy ni anterior al día en que se pidió.",
 }

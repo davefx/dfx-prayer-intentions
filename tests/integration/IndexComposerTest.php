@@ -643,6 +643,46 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A leader moves the day an intention reached the list back, and it
+	 * leaves "Especially" for its topic, as if it had arrived then.
+	 */
+	public function test_editing_the_day_it_reached_the_list_ends_the_news(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout' => 'proposals',
+				'index_header' => '*Daily*',
+				'index_footer' => '',
+			)
+		);
+		$this->freeze_time( '2026-09-23 05:06' );
+		$id = $this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Bea',
+				'relationship'     => '',
+				'summary'          => 'operada',
+				'topic'            => 'health',
+			)
+		);
+
+		$this->freeze_time( '2026-09-24 05:00' );
+		$this->assertStringContainsString( "*Especially*\n• Bea: operada", DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+
+		$this->assertTrue(
+			DFXPRAY_Intentions::get_instance()->update(
+				$id,
+				array(
+					'asked_on'  => '2026-09-20',
+					'listed_on' => '2026-09-20',
+				)
+			)
+		);
+		$this->assertSame( '2026-09-20 05:06:00', DFXPRAY_Intentions::get_instance()->get( $id )['activated_at'] );
+		$this->assertSame( "*Daily*\n\n*For the health of*\n• Bea", DFXPRAY_Index_Composer::get_instance()->compose( $this->group ) );
+	}
+
+	/**
 	 * An old intention that turns serious again is news too: a news update
 	 * or a reopening bring it to "Especially" with its summary for the same
 	 * days as a new one, and so do a request approved in moderation days

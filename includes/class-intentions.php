@@ -237,6 +237,12 @@ final class DFXPRAY_Intentions {
 		}
 		$record['created_at'] = $asked_on;
 
+		$listed_on = $this->listed_on( $data, $current, $asked_on );
+		if ( is_wp_error( $listed_on ) ) {
+			return $listed_on;
+		}
+		$record['activated_at'] = $listed_on;
+
 		$dates_changed = $record['type'] !== $current['type'] || $record['reference_date'] !== $current['reference_date'];
 		if ( $dates_changed && in_array( $current['status'], self::LISTABLE_STATUSES, true ) && ! array_key_exists( 'next_review', $data ) ) {
 			$record['next_review'] = DFXPRAY_Lifecycle::get_instance()->initial_review_date( $record['type'], $record['reference_date'], $current['group_id'] );
@@ -1183,6 +1189,36 @@ final class DFXPRAY_Intentions {
 		}
 
 		return $date . substr( $current, 10 );
+	}
+
+	/**
+	 * The moment an intention reached the list, from the leader's
+	 * 'listed_on' (Y-m-d), keeping its time. It decides how long it is news
+	 * in "Especially". Pending intentions have not reached it yet; it can be
+	 * neither after today nor before the day it was asked for.
+	 *
+	 * @param array  $data     Raw data, maybe with 'listed_on'.
+	 * @param array  $current  Intention as stored.
+	 * @param string $asked_on Day it was asked for, as it will be stored.
+	 * @return string|null|WP_Error
+	 */
+	private function listed_on( array $data, array $current, string $asked_on ) {
+		$stored = $current['activated_at'];
+		if ( null === $stored ) {
+			return null;
+		}
+
+		$date = trim( (string) ( $data['listed_on'] ?? '' ) );
+		if ( '' === $date ) {
+			// Asked for later than it was listed: it reached the list that day.
+			return substr( $stored, 0, 10 ) < substr( $asked_on, 0, 10 ) ? substr( $asked_on, 0, 10 ) . substr( $stored, 10 ) : $stored;
+		}
+
+		if ( ! $this->is_valid_date( $date ) || $date > DFXPRAY_Clock::get_instance()->today() || $date < substr( $asked_on, 0, 10 ) ) {
+			return new WP_Error( 'dfxpray_listed_on_invalid', __( 'The day it reached the list must be a valid day, not after today nor before the day it was asked for.', 'dfx-prayer-intentions' ) );
+		}
+
+		return $date . substr( $stored, 10 );
 	}
 
 	/**

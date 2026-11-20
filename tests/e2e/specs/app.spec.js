@@ -278,6 +278,22 @@ test( 'closing as answered in the app previews the thanksgiving and opens it to 
 	await expect( page.locator( '.dfx-linked' ) ).toContainText( 'Pablo: por el trabajo que ya tiene' );
 } );
 
+test( 'the day an intention reached the list can be edited in the app', async ( { page } ) => {
+	const id = createIntention( group.id, { beneficiary_name: 'Bea', relationship: '', summary: 'operada ayer', topic: 'health' } );
+	const before = php( "echo wp_json_encode( DFXPRAY_Clock::get_instance()->local( DFXPRAY_Clock::get_instance()->today() )->modify( '-3 days' )->format( 'Y-m-d' ) );" );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'Bea' } ).click();
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+
+	await page.locator( 'input[name="asked_on"]' ).fill( before );
+	await page.locator( 'input[name="listed_on"]' ).fill( before );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Bea: operada ayer' );
+	expect( php( `echo wp_json_encode( substr( DFXPRAY_Intentions::get_instance()->get( ${ id } )['activated_at'], 0, 10 ) );` ) ).toBe( before );
+} );
+
 test( 'an intention prayed for until a day leaves the message by itself the day after', async ( { page } ) => {
 	freeze( '2026-09-24 10:00' );
 	createIntention( group.id, { beneficiary_name: 'Pontevedra', relationship: '', summary: 'por sus frutos' } );

@@ -585,6 +585,34 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The day an intention reached the list can be edited: a valid day, not
+	 * after today nor before it was asked for; a pending one has none.
+	 */
+	public function test_listed_on_is_editable(): void {
+		$id = $this->make_active( $this->group, array( 'asked_on' => '2026-09-20' ) );
+		$i  = $this->intentions;
+
+		$this->assertTrue( $i->update( $id, array( 'listed_on' => '2026-09-22' ) ) );
+		$this->assertSame( '2026-09-22 10:00:00', $i->get( $id )['activated_at'] );
+		$this->assertTrue( $i->update( $id, array( 'listed_on' => '' ) ) );
+		$this->assertSame( '2026-09-22 10:00:00', $i->get( $id )['activated_at'] );
+
+		$this->assertWPError( $i->update( $id, array( 'listed_on' => '2026-09-25' ) ) );
+		$this->assertWPError( $i->update( $id, array( 'listed_on' => '2026-09-19' ) ) );
+		$this->assertWPError( $i->update( $id, array( 'listed_on' => '2026-02-30' ) ) );
+		$this->assertWPError( $i->update( $id, array( 'asked_on' => '2026-09-23', 'listed_on' => '2026-09-22' ) ) );
+		$this->assertSame( '2026-09-22 10:00:00', $i->get( $id )['activated_at'] );
+
+		// Asked for after it was listed: it reached the list that same day.
+		$this->assertTrue( $i->update( $id, array( 'asked_on' => '2026-09-23' ) ) );
+		$this->assertSame( '2026-09-23 10:00:00', $i->get( $id )['activated_at'] );
+
+		$pending = $this->make_pending( $this->group );
+		$this->assertTrue( $i->update( $pending, array( 'listed_on' => '2026-09-22' ) ) );
+		$this->assertNull( $i->get( $pending )['activated_at'] );
+	}
+
+	/**
 	 * A deceased intention cannot spawn a thanksgiving.
 	 */
 	public function test_deceased_cannot_spawn_thanksgiving(): void {

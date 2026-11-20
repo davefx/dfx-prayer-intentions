@@ -155,6 +155,15 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 							<p class="description"><?php esc_html_e( 'Empty: today.', 'dfx-prayer-intentions' ); ?></p>
 						</td>
 					</tr>
+					<?php if ( ! $dfxpray_is_new && null !== $dfxpray_v['activated_at'] ) : ?>
+						<tr>
+							<th scope="row"><label for="dfxpray-listed-on"><?php esc_html_e( 'When it reached the list', 'dfx-prayer-intentions' ); ?></label></th>
+							<td>
+								<input type="date" id="dfxpray-listed-on" name="intention[listed_on]" value="<?php echo esc_attr( substr( (string) $dfxpray_v['activated_at'], 0, 10 ) ); ?>" max="<?php echo esc_attr( DFXPRAY_Clock::get_instance()->today() ); ?>">
+								<p class="description"><?php esc_html_e( 'While it is new, it goes in “Especially”. Move this day back to take it out sooner.', 'dfx-prayer-intentions' ); ?></p>
+							</td>
+						</tr>
+					<?php endif; ?>
 				</table>
 			</fieldset>
 

@@ -227,6 +227,30 @@ test( 'closing as answered adds a linked thanksgiving to the index', async ( { p
 	await expect( index ).not.toHaveValue( /busca trabajo/ );
 } );
 
+test( 'the day an intention reached the list can be moved back, to take it out of Especially', async ( { page } ) => {
+	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'index_layout' => 'proposals' ) ); echo 1;` );
+	const id = createIntention( group.id, { beneficiary_name: 'Bea', relationship: '', summary: 'operada ayer', topic: 'health' } );
+	const today = php( 'echo wp_json_encode( DFXPRAY_Clock::get_instance()->today() );' );
+	const before = php( "echo wp_json_encode( DFXPRAY_Clock::get_instance()->local( DFXPRAY_Clock::get_instance()->today() )->modify( '-5 days' )->format( 'Y-m-d' ) );" );
+	await login( page, 'leader1' );
+
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /\*Especially\*\n• Bea: operada ayer/ );
+
+	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id } ) );
+	await expect( page.getByLabel( 'When it reached the list' ) ).toHaveValue( today );
+	await page.getByLabel( 'When they asked' ).fill( before );
+	await page.getByLabel( 'When it reached the list' ).fill( before );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention saved.' );
+	await expect( page.getByLabel( 'When it reached the list' ) ).toHaveValue( before );
+
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	const message = page.locator( '#dfxpray-digest-shareable' );
+	await expect( message ).not.toHaveValue( /Especially/ );
+	await expect( message ).toHaveValue( /\*For the health of\*\n• Bea/ );
+} );
+
 test( 'an intention closed by mistake can be reopened', async ( { page } ) => {
 	const id = createIntention( group.id, { summary: 'quimioterapia' } );
 	await login( page, 'leader1' );
