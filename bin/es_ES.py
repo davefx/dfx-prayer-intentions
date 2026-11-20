@@ -753,4 +753,9 @@ T = {
 "Total received": "Total recibidas",
 "All groups": "Todos los grupos",
 "Answered (all time)": "Atendidas (desde el principio)",
+"Intention closed. This is its thanksgiving: you can edit it here.": "Intención cerrada. Esta es su acción de gracias: puedes editarla aquí.",
+"Gives thanks for:": "Da gracias por:",
+"Its thanksgiving:": "Su acción de gracias:",
+"In the daily and monthly digests it will appear as:": "En los resúmenes diario y mensual aparecerá así:",
+"This intention cannot become a thanksgiving.": "Esta intención no puede convertirse en acción de gracias.",
 }

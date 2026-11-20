@@ -592,6 +592,62 @@
 		return detail( id, true );
 	}
 
+	/**
+	 * Close an intention. Closing an event or an ongoing situation as
+	 * answered can add a thanksgiving, whose line in the digests is previewed
+	 * while its summary is written; once closed, the thanksgiving opens, to
+	 * edit it.
+	 *
+	 * @param {Object} it Intention.
+	 */
+	function closeForm( it ) {
+		const canThank = 'event' === it.type || 'ongoing' === it.type;
+		const reason = select( 'reason', C.reasons, 'answered' );
+		const box = h( 'input', { type: 'checkbox', name: 'thanksgiving', value: '1' } );
+		const summary = h( 'input', { name: 'thanksgiving_summary', maxlength: 100 } );
+		const line = h( 'p', { class: 'dfx-preview-line dfx-thanks-line' } );
+		const preview = h( 'div', { class: 'dfx-preview dfx-thanks-preview', hidden: true }, h( 'span', { class: 'dfx-label' }, S.thanksWillAppear ), line );
+		let timer = null;
+
+		async function refresh() {
+			const result = await api( 'thanksgiving_preview', { intention_id: it.id, summary: summary.value } );
+			if ( result.ok ) {
+				line.textContent = result.data.line;
+			}
+		}
+
+		function sync() {
+			preview.hidden = ! box.checked || 'answered' !== reason.value;
+			if ( ! preview.hidden && ! line.textContent ) {
+				refresh();
+			}
+		}
+
+		box.addEventListener( 'change', sync );
+		reason.addEventListener( 'change', sync );
+		summary.addEventListener( 'input', () => {
+			clearTimeout( timer );
+			timer = setTimeout( refresh, 300 );
+		} );
+
+		return form(
+			async ( data ) => {
+				const result = await write( 'close', { intention_id: it.id, reason: data.get( 'reason' ), thanksgiving: data.get( 'thanksgiving' ) ? 1 : '', thanksgiving_summary: data.get( 'thanksgiving_summary' ) || '' } );
+				notify( result );
+				if ( result.ok && result.id ) {
+					remember( { tab: state.tab, id: result.id } );
+					return detail( result.id, true );
+				}
+				return detail( it.id, true );
+			},
+			field( S.closeAs, reason ),
+			canThank ? check( S.addThanksgiving, box ) : null,
+			canThank ? field( S.thanksSummary, summary ) : null,
+			canThank ? preview : null,
+			h( 'button', { class: 'dfx-button' }, S.close )
+		);
+	}
+
 	async function detail( id, keepNotice, fromHistory ) {
 		if ( ! keepNotice && ! fromHistory ) {
 			remember( { tab: state.tab, id } );
@@ -655,19 +711,19 @@
 					field( S.postponeTo, h( 'input', { type: 'date', name: 'date', required: true } ) ),
 					h( 'button', { class: 'dfx-button' }, S.postpone )
 				),
-				form(
-					( data ) => act( id, 'close', { reason: data.get( 'reason' ), thanksgiving: data.get( 'thanksgiving' ) ? 1 : '', thanksgiving_summary: data.get( 'thanksgiving_summary' ) || '' } ),
-					field( S.closeAs, select( 'reason', C.reasons, 'answered' ) ),
-					check( S.addThanksgiving, h( 'input', { type: 'checkbox', name: 'thanksgiving', value: '1' } ) ),
-					field( S.thanksSummary, h( 'input', { name: 'thanksgiving_summary', maxlength: 100 } ) ),
-					h( 'button', { class: 'dfx-button' }, S.close )
-				)
+				closeForm( it )
 			);
 		}
 
 
 		if ( 'closed' === it.status ) {
 			blocks.push( h( 'button', { type: 'button', class: 'dfx-button is-primary', onclick: () => act( id, 'reopen', {} ) }, S.reopen ) );
+		}
+
+		const linked = result.data.linked;
+		const linkLabel = linked && ( 'thanksgiving' === it.type && 'thanksgiving' !== linked.type ? S.givesThanksFor : ( 'thanksgiving' === linked.type && 'thanksgiving' !== it.type ? S.itsThanksgiving : null ) );
+		if ( linkLabel ) {
+			blocks.unshift( h( 'p', { class: 'dfx-card dfx-linked' }, h( 'span', { class: 'dfx-label' }, linkLabel ), ' ', h( 'a', { href: '#', onclick: ( event ) => { event.preventDefault(); detail( linked.id ); } }, linked.line ) ) );
 		}
 
 		const updates = result.data.updates;

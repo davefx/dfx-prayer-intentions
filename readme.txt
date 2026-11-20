@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611197
+Stable tag: 1.0.2611200
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,10 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611200 =
+* Closing an intention as answered with a thanksgiving previews, in the panel and in the app, the exact line the thanksgiving will show in the daily and monthly digests, refreshed while its summary is written.
+* Once closed, the new thanksgiving opens so it can be edited, and the intention and its thanksgiving link to each other ("Gives thanks for:" / "Its thanksgiving:").
 
 = 1.0.2611197 =
 * Administrators see, at the top of "Groups", the statistics of all groups: one row per group (archived ones too) with leaders, members, pending, in the list, received and closed in the last 30 days, answered and total received, and the totals. Figures only: no names or texts of groups they do not lead.

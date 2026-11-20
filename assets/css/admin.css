@@ -371,3 +371,14 @@
 .dfxpray-statistics-totals td {
 	font-weight: 600;
 }
+
+/* The thanksgiving's line, previewed in the close form. */
+.dfxpray-thanks-preview:not([hidden]) {
+	display: block;
+	flex-basis: 100%;
+	margin: 4px 0;
+}
+
+.dfxpray-linked a {
+	font-weight: 600;
+}

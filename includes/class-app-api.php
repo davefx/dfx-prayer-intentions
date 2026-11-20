@@ -112,6 +112,9 @@ final class DFXPRAY_App_API {
 			case 'get':
 				return $this->intention( (int) ( $request['intention_id'] ?? 0 ) );
 
+			case 'thanksgiving_preview':
+				return $this->thanksgiving_preview( (int) ( $request['intention_id'] ?? 0 ), (string) ( $request['summary'] ?? '' ) );
+
 			case 'members':
 				return $this->members( (int) ( $request['group_id'] ?? 0 ) );
 
@@ -206,6 +209,26 @@ final class DFXPRAY_App_API {
 		}
 
 		$line = $intentions->preview( $group_id, $data, $current );
+		if ( is_wp_error( $line ) ) {
+			return $this->failure( 'invalid', $line->get_error_message() );
+		}
+
+		return $this->success( array( 'line' => $line ) );
+	}
+
+	/**
+	 * The line the thanksgiving will show, while closing an intention as
+	 * answered, scoped to the intention's group.
+	 *
+	 * @param int    $intention_id Intention being closed.
+	 * @param string $summary      Summary of the thanksgiving.
+	 */
+	private function thanksgiving_preview( int $intention_id, string $summary ): array {
+		if ( ! DFXPRAY_Admin_Actions::get_instance()->can_manage_intention( $intention_id ) ) {
+			return $this->forbidden();
+		}
+
+		$line = DFXPRAY_Intentions::get_instance()->thanksgiving_preview( $intention_id, $summary );
 		if ( is_wp_error( $line ) ) {
 			return $this->failure( 'invalid', $line->get_error_message() );
 		}
@@ -353,7 +376,30 @@ final class DFXPRAY_App_API {
 				'line'      => DFXPRAY_Formatter::get_instance()->line( $intention ),
 				'updates'   => $updates,
 				'ask'       => DFXPRAY_Formatter::get_instance()->ask_link( $intention ),
+				'linked'    => $this->linked( $intention ),
 			)
+		);
+	}
+
+	/**
+	 * The intention linked to this one (the thanksgiving of an answered
+	 * intention, or the intention a thanksgiving gives thanks for), when it
+	 * is in the same group.
+	 *
+	 * @param array $intention Intention.
+	 * @return array{id:int, type:string, status:string, line:string}|null
+	 */
+	private function linked( array $intention ): ?array {
+		$linked = $intention['linked_id'] ? DFXPRAY_Intentions::get_instance()->get( $intention['linked_id'] ) : null;
+		if ( ! $linked || $linked['group_id'] !== $intention['group_id'] ) {
+			return null;
+		}
+
+		return array(
+			'id'     => $linked['id'],
+			'type'   => $linked['type'],
+			'status' => $linked['status'],
+			'line'   => DFXPRAY_Formatter::get_instance()->line( $linked ),
 		);
 	}
 

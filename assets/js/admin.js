@@ -131,6 +131,52 @@
 		syncIntention( form );
 	} );
 
+	// Closing as answered with a thanksgiving: the line it will show in the
+	// digests, refreshed while its summary is written.
+	document.querySelectorAll( '.dfxpray-thanks-preview' ).forEach( function ( preview ) {
+		const form = preview.closest( 'form' );
+		const box = form.querySelector( '[name="thanksgiving"]' );
+		const reason = form.querySelector( '[name="reason"]' );
+		const summary = form.querySelector( '[name="thanksgiving_summary"]' );
+		const code = preview.querySelector( 'code' );
+		let timer = null;
+
+		function sync() {
+			preview.hidden = ! box.checked || 'answered' !== reason.value;
+		}
+
+		function refresh() {
+			if ( ! strings.ajaxUrl ) {
+				return;
+			}
+			const body = new URLSearchParams( {
+				action: strings.ajaxAction,
+				_nonce: strings.nonce,
+				op: 'thanksgiving_preview',
+				intention_id: preview.dataset.intention,
+				summary: summary.value,
+			} );
+			window.fetch( strings.ajaxUrl, { method: 'POST', credentials: 'same-origin', body } )
+				.then( function ( response ) {
+					return response.json();
+				} )
+				.then( function ( result ) {
+					if ( result.ok ) {
+						code.textContent = result.data.line;
+					}
+				} )
+				.catch( function () {} );
+		}
+
+		box.addEventListener( 'change', sync );
+		reason.addEventListener( 'change', sync );
+		summary.addEventListener( 'input', function () {
+			window.clearTimeout( timer );
+			timer = window.setTimeout( refresh, 300 );
+		} );
+		sync();
+	} );
+
 	document.addEventListener( 'submit', function ( event ) {
 		if ( event.target.classList.contains( 'dfxpray-confirm' ) && ! window.confirm( strings.confirmDelete ) ) {
 			event.preventDefault();

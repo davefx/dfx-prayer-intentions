@@ -394,6 +394,9 @@ final class DFXPRAY_Admin {
 				'copy'          => __( 'Copy', 'dfx-prayer-intentions' ),
 				'confirmDelete' => __( 'This cannot be undone. Continue?', 'dfx-prayer-intentions' ),
 				'copyLink'      => __( 'Copy link', 'dfx-prayer-intentions' ),
+				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+				'ajaxAction'    => DFXPRAY_App_API::AJAX_ACTION,
+				'nonce'         => wp_create_nonce( DFXPRAY_App_API::NONCE ),
 			)
 		);
 	}

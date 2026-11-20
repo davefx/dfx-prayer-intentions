@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611197 · noviembre de 2026
+Versión 1.0.2611200 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611197 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611200 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -218,7 +218,7 @@ En el lateral de la ficha:
 | «Cerrar como» | «Atendida», «Caducada» o «Retirada por el solicitante» |
 | «Reabrir» | Para una cerrada por error: vuelve a activa con su historial |
 
-Al cerrar como «Atendida» un acontecimiento o una situación, la casilla «Atendida: añadir una acción de gracias» crea una acción de gracias con su propio resumen breve («salió muy bien de su operación»). Así el grupo da gracias en el mensaje siguiente.
+Al cerrar como «Atendida» un acontecimiento o una situación, la casilla «Atendida: añadir una acción de gracias» crea una acción de gracias con su propio resumen breve («salió muy bien de su operación»). Así el grupo da gracias en el mensaje siguiente. Al marcar la casilla, debajo aparece «En los resúmenes diario y mensual aparecerá así:» con la línea exacta, que cambia mientras escribes el resumen (si lo dejas vacío, se usa el de la intención). Al pulsar «Cerrar» se abre la acción de gracias recién creada, que se edita como cualquier otra intención. Cada una enlaza con la otra: la acción de gracias muestra «Da gracias por:» y la intención cerrada, «Su acción de gracias:». En la app funciona igual.
 
 ### El ciclo de vida
 

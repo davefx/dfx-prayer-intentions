@@ -389,6 +389,55 @@ class AppApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Closing as answered previews the thanksgiving's line; closing with it
+	 * answers the new thanksgiving's ID, so the app opens it to edit it, and
+	 * each of the two intentions links to the other.
+	 */
+	public function test_thanksgiving_preview_and_link(): void {
+		$id = $this->make_active( $this->mine, array( 'summary' => 'operada mañana' ) );
+
+		$result = $this->call(
+			'thanksgiving_preview',
+			array(
+				'intention_id' => $id,
+				'summary'      => 'salió bien',
+			)
+		);
+		$this->assertTrue( $result['ok'], $result['message'] );
+		$this->assertSame( 'Carmen, madre de Luis: salió bien', $result['data']['line'] );
+
+		$closed = $this->call(
+			'close',
+			array(
+				'intention_id'         => $id,
+				'reason'               => 'answered',
+				'thanksgiving'         => 1,
+				'thanksgiving_summary' => 'salió bien',
+			)
+		);
+		$this->assertTrue( $closed['ok'], $closed['message'] );
+		$this->assertIsInt( $closed['id'] );
+
+		$thanks = $this->call( 'get', array( 'intention_id' => $closed['id'] ) )['data'];
+		$this->assertSame( 'Carmen, madre de Luis: salió bien', $thanks['line'] );
+		$this->assertSame( $id, $thanks['linked']['id'] );
+		$this->assertSame( 'Carmen, madre de Luis: operada mañana', $thanks['linked']['line'] );
+		$this->assertSame( $closed['id'], $this->call( 'get', array( 'intention_id' => $id ) )['data']['linked']['id'] );
+
+		$other = $this->make_active( $this->other );
+		$this->assertSame(
+			'forbidden',
+			$this->call(
+				'thanksgiving_preview',
+				array(
+					'intention_id' => $other,
+					'summary'      => 'x',
+				)
+			)['code']
+		);
+	}
+
+	/**
 	 * The members of a group, by their next birthday or anniversary.
 	 */
 	public function test_members(): void {

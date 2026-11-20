@@ -556,6 +556,35 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Before closing, the line the thanksgiving will show in the digests is
+	 * previewed, exactly as it comes out once created, with nothing saved.
+	 */
+	public function test_thanksgiving_preview(): void {
+		$id = $this->make_active( $this->group, array( 'summary' => 'Carmen, operada mañana' ) );
+
+		$this->assertSame( 'Carmen, madre de Luis: operada mañana', $this->intentions->thanksgiving_preview( $id, '' ) );
+		$this->assertSame( 'Carmen, madre de Luis: salió bien la operación', $this->intentions->thanksgiving_preview( $id, 'Carmen, salió bien la operación' ) );
+		$this->assertSame( 'active', $this->intentions->get( $id )['status'] );
+		$this->assertCount( 1, $this->intentions->query( $this->group, array() ) );
+
+		$new_id = $this->intentions->close( $id, 'answered', true, 'salió bien la operación' );
+		$this->assertSame(
+			$this->intentions->thanksgiving_preview( $id, 'salió bien la operación' ),
+			DFXPRAY_Formatter::get_instance()->line( $this->intentions->get( $new_id ) )
+		);
+
+		$deceased = $this->make_active(
+			$this->group,
+			array(
+				'type'           => 'deceased',
+				'reference_date' => '2026-09-20',
+			)
+		);
+		$this->assertWPError( $this->intentions->thanksgiving_preview( $deceased, '' ) );
+		$this->assertWPError( $this->intentions->thanksgiving_preview( 999999, '' ) );
+	}
+
+	/**
 	 * A deceased intention cannot spawn a thanksgiving.
 	 */
 	public function test_deceased_cannot_spawn_thanksgiving(): void {

@@ -197,15 +197,33 @@ test( 'closing as answered adds a linked thanksgiving to the index', async ( { p
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
+	const preview = page.locator( '.dfxpray-thanks-preview' );
 	await page.getByLabel( 'Close as' ).selectOption( 'answered' );
+	await expect( preview ).toBeHidden();
 	await page.getByLabel( 'Answered: add a thanksgiving' ).check();
+	await expect( preview ).toBeVisible();
+	await expect( preview.locator( 'code' ) ).toHaveText( 'Pablo: busca trabajo' );
 	await page.getByLabel( 'Summary of the thanksgiving' ).fill( 'por el trabajo encontrado' );
+	await expect( preview.locator( 'code' ) ).toHaveText( 'Pablo: por el trabajo encontrado' );
+	await page.getByLabel( 'Close as' ).selectOption( 'expired' );
+	await expect( preview ).toBeHidden();
+	await page.getByLabel( 'Close as' ).selectOption( 'answered' );
 	await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
-	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention closed.' );
+
+	// The new thanksgiving opens, to be edited, linked to the intention.
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention closed. This is its thanksgiving: you can edit it here.' );
+	await expect( page.getByLabel( 'Summary', { exact: true } ) ).toHaveValue( 'por el trabajo encontrado' );
+	await expect( page.locator( '.dfxpray-linked' ) ).toContainText( 'Gives thanks for: Pablo: busca trabajo' );
+	await page.getByLabel( 'Summary', { exact: true } ).fill( 'por el trabajo que ya tiene' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Intention saved.' );
+
+	await page.locator( '.dfxpray-linked a' ).click();
+	await expect( page.locator( '.dfxpray-linked' ) ).toContainText( 'Its thanksgiving: Pablo: por el trabajo que ya tiene' );
 
 	await page.goto( groupUrl( group.id, 'digest' ) );
 	const index = page.locator( '#dfxpray-digest-shareable' );
-	await expect( index ).toHaveValue( /\*Thanksgiving\*\n• Pablo: por el trabajo encontrado/ );
+	await expect( index ).toHaveValue( /\*Thanksgiving\*\n• Pablo: por el trabajo que ya tiene/ );
 	await expect( index ).not.toHaveValue( /busca trabajo/ );
 } );
 

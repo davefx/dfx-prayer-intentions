@@ -105,6 +105,18 @@ final class DFXPRAY_Admin_Actions {
 				)
 			);
 		}
+		// Closing with a thanksgiving opens the new thanksgiving, to edit it.
+		if ( $result['ok'] && 'close' === $action && ! empty( $result['id'] ) ) {
+			$thanks = DFXPRAY_Intentions::get_instance()->get( (int) $result['id'] );
+			$return = DFXPRAY_Admin::get_instance()->group_url(
+				(int) $thanks['group_id'],
+				'intentions',
+				array(
+					'view' => 'edit',
+					'id'   => (int) $result['id'],
+				)
+			);
+		}
 		if ( $result['ok'] && 'delete_group' === $action ) {
 			$return = DFXPRAY_Admin::get_instance()->url( 'dfxpray' );
 		}
@@ -159,7 +171,9 @@ final class DFXPRAY_Admin_Actions {
 		return array(
 			'ok'      => true,
 			'code'    => 'ok',
-			'message' => $this->success_message( $action ),
+			'message' => 'close' === $action && is_int( $result )
+				? __( 'Intention closed. This is its thanksgiving: you can edit it here.', 'dfx-prayer-intentions' )
+				: $this->success_message( $action ),
 			'id'      => is_int( $result ) ? $result : null,
 		);
 	}

@@ -251,6 +251,33 @@ test( 'every field of an active intention can be edited in the app', async ( { p
 	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Marta, tía materna de Luis Sebastián: descanse en paz' );
 } );
 
+test( 'closing as answered in the app previews the thanksgiving and opens it to edit it', async ( { page } ) => {
+	createIntention( group.id, { beneficiary_name: 'Pablo', relationship: '', type: 'ongoing', summary: 'busca trabajo' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+	await page.getByRole( 'button', { name: 'Intentions' } ).click();
+	await page.locator( '.dfx-item', { hasText: 'Pablo' } ).click();
+
+	const preview = page.locator( '.dfx-thanks-preview' );
+	await expect( preview ).toBeHidden();
+	await page.getByLabel( 'Answered: add a thanksgiving' ).check();
+	await expect( preview.locator( '.dfx-thanks-line' ) ).toHaveText( 'Pablo: busca trabajo' );
+	await page.getByLabel( 'Summary of the thanksgiving' ).fill( 'por el trabajo encontrado' );
+	await expect( preview.locator( '.dfx-thanks-line' ) ).toHaveText( 'Pablo: por el trabajo encontrado' );
+	await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
+
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Pablo: por el trabajo encontrado' );
+	await expect( page.locator( '.dfx-linked' ) ).toContainText( 'Pablo: busca trabajo' );
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await page.locator( 'input[name="summary"]' ).fill( 'por el trabajo que ya tiene' );
+	await page.getByRole( 'button', { name: 'Save changes' } ).click();
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Pablo: por el trabajo que ya tiene' );
+
+	await page.locator( '.dfx-linked a' ).click();
+	await expect( page.locator( '#dfx-line' ) ).toHaveText( 'Pablo: busca trabajo' );
+	await expect( page.locator( '.dfx-linked' ) ).toContainText( 'Pablo: por el trabajo que ya tiene' );
+} );
+
 test( 'an intention prayed for until a day leaves the message by itself the day after', async ( { page } ) => {
 	freeze( '2026-09-24 10:00' );
 	createIntention( group.id, { beneficiary_name: 'Pontevedra', relationship: '', summary: 'por sus frutos' } );

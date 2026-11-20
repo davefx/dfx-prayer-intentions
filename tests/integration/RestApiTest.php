@@ -165,6 +165,7 @@ class RestApiTest extends DFXPRAY_Test_Case {
 				array( 'send_digest_now', array( 'group_id' => $this->other ) ),
 				array( 'add_update', array( 'intention_id' => $id, 'body' => 'x' ) ),
 				array( 'close', array( 'intention_id' => $id, 'reason' => 'expired' ) ),
+				array( 'thanksgiving_preview', array( 'intention_id' => $id, 'summary' => 'x' ) ),
 			) as $call
 		) {
 			$response = $this->call( $call[0], $call[1] );

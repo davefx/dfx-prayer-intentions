@@ -561,29 +561,7 @@ final class DFXPRAY_Intentions {
 			return true;
 		}
 
-		$summary = sanitize_text_field( $thanksgiving_summary );
-		$new_id  = $this->create(
-			$current['group_id'],
-			array(
-				'requester_name'           => $current['requester_name'],
-				'requester_contact'        => $current['requester_contact'],
-				'beneficiary_name'         => $current['beneficiary_name'],
-				'beneficiary_is_requester' => $current['beneficiary_is_requester'],
-				'relationship'             => $current['relationship'],
-				'requester_display_name'   => $current['requester_display_name'],
-				'beneficiary_display_name' => $current['beneficiary_display_name'],
-				'requester_first_name'     => $current['requester_first_name'],
-				'beneficiary_first_name'   => $current['beneficiary_first_name'],
-				'requester_is_member'      => $current['requester_is_member'],
-				'beneficiary_is_member'    => $current['beneficiary_is_member'],
-				'body'                     => $current['body'],
-				'discretion'               => $current['discretion'],
-				'type'                     => 'thanksgiving',
-				'reference_date'           => DFXPRAY_Clock::get_instance()->today(),
-				'summary'                  => '' !== $summary ? $summary : $current['summary'],
-			),
-			'manual'
-		);
+		$new_id = $this->create( $current['group_id'], $this->thanksgiving_data( $current, $thanksgiving_summary ), 'manual' );
 
 		if ( is_wp_error( $new_id ) ) {
 			return $new_id;
@@ -593,6 +571,71 @@ final class DFXPRAY_Intentions {
 		$this->write( $id, array( 'linked_id' => $new_id ) );
 
 		return $new_id;
+	}
+
+	/**
+	 * The line the thanksgiving of an answered intention will show in the
+	 * daily and monthly digests, before closing it. Nothing is saved.
+	 *
+	 * @param int    $id      Intention ID.
+	 * @param string $summary Summary of the thanksgiving; empty keeps the original one.
+	 * @return string|WP_Error
+	 */
+	public function thanksgiving_preview( int $id, string $summary ) {
+		$current = $this->get( $id );
+		if ( ! $current ) {
+			return $this->not_found_error();
+		}
+		if ( ! DFXPRAY_Lifecycle::get_instance()->can_spawn_thanksgiving( $current['type'] ) ) {
+			return new WP_Error( 'dfxpray_thanksgiving_type', __( 'This intention cannot become a thanksgiving.', 'dfx-prayer-intentions' ) );
+		}
+
+		$record = $this->build_record( $this->thanksgiving_data( $current, $summary ), null, true );
+		if ( is_wp_error( $record ) ) {
+			return $record;
+		}
+
+		return DFXPRAY_Formatter::get_instance()->line(
+			array_merge(
+				$record,
+				array(
+					'id'       => 0,
+					'status'   => 'active',
+					'group_id' => $current['group_id'],
+				)
+			)
+		);
+	}
+
+	/**
+	 * The fields of the thanksgiving that closing an intention as answered
+	 * creates: the same people and discretion, dated today.
+	 *
+	 * @param array  $current Intention being closed.
+	 * @param string $summary Summary of the thanksgiving; empty keeps the original one.
+	 * @return array
+	 */
+	private function thanksgiving_data( array $current, string $summary ): array {
+		$summary = sanitize_text_field( $summary );
+
+		return array(
+			'requester_name'           => $current['requester_name'],
+			'requester_contact'        => $current['requester_contact'],
+			'beneficiary_name'         => $current['beneficiary_name'],
+			'beneficiary_is_requester' => $current['beneficiary_is_requester'],
+			'relationship'             => $current['relationship'],
+			'requester_display_name'   => $current['requester_display_name'],
+			'beneficiary_display_name' => $current['beneficiary_display_name'],
+			'requester_first_name'     => $current['requester_first_name'],
+			'beneficiary_first_name'   => $current['beneficiary_first_name'],
+			'requester_is_member'      => $current['requester_is_member'],
+			'beneficiary_is_member'    => $current['beneficiary_is_member'],
+			'body'                     => $current['body'],
+			'discretion'               => $current['discretion'],
+			'type'                     => 'thanksgiving',
+			'reference_date'           => DFXPRAY_Clock::get_instance()->today(),
+			'summary'                  => '' !== $summary ? $summary : $current['summary'],
+		);
 	}
 
 	/**

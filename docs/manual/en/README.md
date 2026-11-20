@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611197 · November 2026
+Version 1.0.2611200 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611197 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611200 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -218,7 +218,7 @@ On the side of the card:
 | "Close as" | "Answered", "Expired" or "Withdrawn by the requester" |
 | "Reopen" | For one closed by mistake: it goes back to active with its history |
 
-When an event or a situation is closed as "Answered", the "Answered: add a thanksgiving" checkbox creates a thanksgiving with its own short summary ("came through the operation very well"). That way the group gives thanks in the next message.
+When an event or a situation is closed as "Answered", the "Answered: add a thanksgiving" checkbox creates a thanksgiving with its own short summary ("came through the operation very well"). That way the group gives thanks in the next message. When the box is ticked, "In the daily and monthly digests it will appear as:" shows the exact line below it, which changes while you write the summary (left empty, the intention's own summary is used). Pressing "Close" opens the new thanksgiving, which is edited like any other intention. Each links to the other: the thanksgiving shows "Gives thanks for:" and the closed intention "Its thanksgiving:". The app works the same way.
 
 ### The lifecycle
 

@@ -72,6 +72,33 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 					· <?php esc_html_e( 'Acknowledgement sent', 'dfx-prayer-intentions' ); ?>
 				<?php endif; ?>
 			</p>
+			<?php
+			$dfxpray_linked = $dfxpray_intention['linked_id'] ? DFXPRAY_Intentions::get_instance()->get( $dfxpray_intention['linked_id'] ) : null;
+			$dfxpray_link   = null;
+			if ( $dfxpray_linked && $dfxpray_linked['group_id'] === $dfxpray_intention['group_id'] ) {
+				if ( 'thanksgiving' === $dfxpray_intention['type'] && 'thanksgiving' !== $dfxpray_linked['type'] ) {
+					$dfxpray_link = __( 'Gives thanks for:', 'dfx-prayer-intentions' );
+				} elseif ( 'thanksgiving' === $dfxpray_linked['type'] && 'thanksgiving' !== $dfxpray_intention['type'] ) {
+					$dfxpray_link = __( 'Its thanksgiving:', 'dfx-prayer-intentions' );
+				}
+			}
+			?>
+			<?php if ( $dfxpray_link ) : ?>
+				<?php
+				$dfxpray_link_url = $dfxpray_admin->group_url(
+					$dfxpray_linked['group_id'],
+					'intentions',
+					array(
+						'view' => 'edit',
+						'id'   => $dfxpray_linked['id'],
+					)
+				);
+				?>
+				<p class="dfxpray-linked">
+					<?php echo esc_html( $dfxpray_link ); ?>
+					<a href="<?php echo esc_url( $dfxpray_link_url ); ?>"><?php echo esc_html( DFXPRAY_Formatter::get_instance()->line( $dfxpray_linked ) ); ?></a>
+				</p>
+			<?php endif; ?>
 		<?php endif; ?>
 
 		<?php

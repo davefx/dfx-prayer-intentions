@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611196\n"
+"Project-Id-Version: DFX Prayer Intentions – Prayer Requests for Small Groups 1.0.2611197\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dfx-prayer-intentions\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T17:25:46+00:00\n"
+"POT-Creation-Date: 2026-11-20T04:15:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dfx-prayer-intentions\n"
@@ -39,156 +39,160 @@ msgstr ""
 msgid "https://davefx.com"
 msgstr ""
 
-#: admin/class-admin-actions.php:125
-#: admin/class-admin-actions.php:146
-#: includes/class-app-api.php:125
+#: admin/class-admin-actions.php:137
+#: admin/class-admin-actions.php:158
+#: includes/class-app-api.php:128
 msgid "Unknown action."
 msgstr ""
 
-#: admin/class-admin-actions.php:129
+#: admin/class-admin-actions.php:141
 #: includes/class-invitations.php:320
 msgid "The link has expired. Please try again."
 msgstr ""
 
-#: admin/class-admin-actions.php:150
-#: includes/class-app-api.php:379
+#: admin/class-admin-actions.php:162
+#: includes/class-app-api.php:425
 #: includes/class-app.php:142
 #: includes/class-rest.php:62
 msgid "You are not allowed to do that."
 msgstr ""
 
-#: admin/class-admin-actions.php:558
+#: admin/class-admin-actions.php:175
+msgid "Intention closed. This is its thanksgiving: you can edit it here."
+msgstr ""
+
+#: admin/class-admin-actions.php:572
 msgid "The group does not exist."
 msgstr ""
 
-#: admin/class-admin-actions.php:625
+#: admin/class-admin-actions.php:639
 msgid "Write an email or a phone."
 msgstr ""
 
-#: admin/class-admin-actions.php:710
+#: admin/class-admin-actions.php:724
 msgid "Intention approved."
 msgstr ""
 
-#: admin/class-admin-actions.php:711
+#: admin/class-admin-actions.php:725
 msgid "Intention discarded."
 msgstr ""
 
-#: admin/class-admin-actions.php:712
+#: admin/class-admin-actions.php:726
 msgid "Duplicate merged."
 msgstr ""
 
-#: admin/class-admin-actions.php:713
+#: admin/class-admin-actions.php:727
 msgid "Intention saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:714
+#: admin/class-admin-actions.php:728
 msgid "Comment added."
 msgstr ""
 
-#: admin/class-admin-actions.php:715
+#: admin/class-admin-actions.php:729
 msgid "Comment updated."
 msgstr ""
 
-#: admin/class-admin-actions.php:716
+#: admin/class-admin-actions.php:730
 msgid "Comment deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:717
+#: admin/class-admin-actions.php:731
 msgid "Comment turned into an update."
 msgstr ""
 
-#: admin/class-admin-actions.php:718
+#: admin/class-admin-actions.php:732
 msgid "Update added."
 msgstr ""
 
-#: admin/class-admin-actions.php:719
+#: admin/class-admin-actions.php:733
 msgid "Priority changed."
 msgstr ""
 
-#: admin/class-admin-actions.php:720
+#: admin/class-admin-actions.php:734
 msgid "Review postponed."
 msgstr ""
 
-#: admin/class-admin-actions.php:721
+#: admin/class-admin-actions.php:735
 msgid "Acknowledgement marked as sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:722
+#: admin/class-admin-actions.php:736
 msgid "Intention moved to the other group."
 msgstr ""
 
-#: admin/class-admin-actions.php:723
+#: admin/class-admin-actions.php:737
 msgid "Intention kept active."
 msgstr ""
 
-#: admin/class-admin-actions.php:724
+#: admin/class-admin-actions.php:738
 msgid "Intention closed."
 msgstr ""
 
-#: admin/class-admin-actions.php:725
+#: admin/class-admin-actions.php:739
 msgid "Intention reopened."
 msgstr ""
 
-#: admin/class-admin-actions.php:726
+#: admin/class-admin-actions.php:740
 msgid "Member saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:727
+#: admin/class-admin-actions.php:741
 msgid "Member deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:728
-#: admin/class-admin-actions.php:738
+#: admin/class-admin-actions.php:742
+#: admin/class-admin-actions.php:752
 msgid "Settings saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:729
+#: admin/class-admin-actions.php:743
 msgid "The form has a new address. The old one no longer works."
 msgstr ""
 
-#: admin/class-admin-actions.php:730
+#: admin/class-admin-actions.php:744
 msgid "Test message sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:731
+#: admin/class-admin-actions.php:745
 msgid "Digest generated and sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:732
-#: admin/class-admin-actions.php:740
+#: admin/class-admin-actions.php:746
+#: admin/class-admin-actions.php:754
 msgid "Invitation sent."
 msgstr ""
 
-#: admin/class-admin-actions.php:733
-#: admin/class-admin-actions.php:741
+#: admin/class-admin-actions.php:747
+#: admin/class-admin-actions.php:755
 msgid "Invitation withdrawn."
 msgstr ""
 
-#: admin/class-admin-actions.php:734
+#: admin/class-admin-actions.php:748
 msgid "Group saved."
 msgstr ""
 
-#: admin/class-admin-actions.php:735
+#: admin/class-admin-actions.php:749
 msgid "Group archived."
 msgstr ""
 
-#: admin/class-admin-actions.php:736
+#: admin/class-admin-actions.php:750
 msgid "Group restored."
 msgstr ""
 
-#: admin/class-admin-actions.php:737
+#: admin/class-admin-actions.php:751
 msgid "Group deleted."
 msgstr ""
 
-#: admin/class-admin-actions.php:739
+#: admin/class-admin-actions.php:753
 msgid "Personal data erased."
 msgstr ""
 
-#: admin/class-admin-actions.php:742
+#: admin/class-admin-actions.php:756
 msgid "Thank you."
 msgstr ""
 
-#: admin/class-admin-actions.php:745
+#: admin/class-admin-actions.php:759
 msgid "Done."
 msgstr ""
 
@@ -253,7 +257,7 @@ msgstr ""
 
 #: admin/class-admin.php:107
 #: admin/views/partials/statistics.php:18
-#: includes/class-app.php:366
+#: includes/class-app.php:369
 msgid "Members"
 msgstr ""
 
@@ -315,452 +319,452 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
-#: admin/class-admin.php:468
+#: admin/class-admin.php:471
 msgid "Prayer leader"
 msgstr ""
 
-#: admin/class-admin.php:481
+#: admin/class-admin.php:484
 msgid "One-off events: days after the date"
 msgstr ""
 
-#: admin/class-admin.php:482
+#: admin/class-admin.php:485
 msgid "After that, the intention goes to review."
 msgstr ""
 
-#: admin/class-admin.php:486
+#: admin/class-admin.php:489
 msgid "Deceased: days after the death"
 msgstr ""
 
-#: admin/class-admin.php:490
+#: admin/class-admin.php:493
 msgid "Daily message: departed during (days)"
 msgstr ""
 
-#: admin/class-admin.php:491
+#: admin/class-admin.php:494
 msgid "The monthly list keeps them for the whole deceased deadline."
 msgstr ""
 
-#: admin/class-admin.php:495
+#: admin/class-admin.php:498
 msgid "Close the deceased when that time is over"
 msgstr ""
 
-#: admin/class-admin.php:496
+#: admin/class-admin.php:499
 msgid "Instead of waiting in review. Those whose anniversary is remembered are kept."
 msgstr ""
 
-#: admin/class-admin.php:500
+#: admin/class-admin.php:503
 msgid "Ongoing situations: review every (days)"
 msgstr ""
 
-#: admin/class-admin.php:504
+#: admin/class-admin.php:507
 msgid "Thanksgiving: days"
 msgstr ""
 
-#: admin/class-admin.php:508
+#: admin/class-admin.php:511
 msgid "Daily message: news go first during (days)"
 msgstr ""
 
-#: admin/class-admin.php:509
+#: admin/class-admin.php:512
 msgid "What reached the list (registered or approved, however old the request) or was reopened the day before (and that morning), and what got an update marked as news, goes in “Especially”. 0: never."
 msgstr ""
 
-#: admin/class-admin.php:513
+#: admin/class-admin.php:516
 msgid "Daily message: pray for the members on their birthday"
 msgstr ""
 
-#: admin/class-admin.php:514
+#: admin/class-admin.php:517
 msgid "They open “Especially”, and so do the members who have died, on the anniversary of their death. The dates are kept in the Members tab."
 msgstr ""
 
-#: admin/class-admin.php:518
+#: admin/class-admin.php:521
 msgid "Daily message: thanksgivings during (days)"
 msgstr ""
 
-#: admin/class-admin.php:519
+#: admin/class-admin.php:522
 msgid "How many daily messages carry it, from the day of the good news, or from the day it reaches the list if later: 1 means a single message. The monthly list keeps them."
 msgstr ""
 
-#: admin/class-admin.php:523
+#: admin/class-admin.php:526
 msgid "Monthly list: thanksgivings of the last (days)"
 msgstr ""
 
-#: admin/class-admin.php:524
+#: admin/class-admin.php:527
 msgid "Also those already closed, to give thanks again at the monthly adoration."
 msgstr ""
 
-#: admin/class-admin.php:528
+#: admin/class-admin.php:531
 msgid "Close thanksgivings when their days are over"
 msgstr ""
 
-#: admin/class-admin.php:532
+#: admin/class-admin.php:535
 msgid "“Still current”: days until the next review"
 msgstr ""
 
-#: admin/class-admin.php:536
+#: admin/class-admin.php:539
 msgid "Message after sending the form"
 msgstr ""
 
-#: admin/class-admin.php:540
+#: admin/class-admin.php:543
 msgid "Index header"
 msgstr ""
 
-#: admin/class-admin.php:541
+#: admin/class-admin.php:544
 msgid "{date} is replaced with the date, and {long_date} with the date and weekday in full."
 msgstr ""
 
-#: admin/class-admin.php:545
+#: admin/class-admin.php:548
 msgid "Monthly list header"
 msgstr ""
 
-#: admin/class-admin.php:546
+#: admin/class-admin.php:549
 msgid "Placeholders: {date}, {long_date}."
 msgstr ""
 
-#: admin/class-admin.php:550
+#: admin/class-admin.php:553
 msgid "Index footer"
 msgstr ""
 
-#: admin/class-admin.php:551
+#: admin/class-admin.php:554
 msgid "For example, a short prayer."
 msgstr ""
 
-#: admin/class-admin.php:555
+#: admin/class-admin.php:558
 msgid "Emojis in the index sections"
 msgstr ""
 
-#: admin/class-admin.php:559
+#: admin/class-admin.php:562
 msgid "Index layout"
 msgstr ""
 
-#: admin/class-admin.php:561
+#: admin/class-admin.php:564
 msgid "By kind: events, the departed, ongoing situations, thanksgiving"
 msgstr ""
 
-#: admin/class-admin.php:562
+#: admin/class-admin.php:565
 msgid "Prayer proposals: especially, also for, we give thanks, the recently departed"
 msgstr ""
 
-#: admin/class-admin.php:567
+#: admin/class-admin.php:570
 msgid "Prefix for members of the group"
 msgstr ""
 
-#: admin/class-admin.php:568
+#: admin/class-admin.php:571
 msgid "Written before the name of those marked as members, e.g. “Bro.”. Empty: no prefix."
 msgstr ""
 
-#: admin/class-admin.php:572
+#: admin/class-admin.php:575
 msgid "Include recent internal comments in the leaders’ digest"
 msgstr ""
 
-#: admin/class-admin.php:576
+#: admin/class-admin.php:579
 msgid "Include the requesters’ phones in the leaders’ digest"
 msgstr ""
 
-#: admin/class-admin.php:580
+#: admin/class-admin.php:583
 msgid "Include the full text of new requests in the email notice"
 msgstr ""
 
-#: admin/class-admin.php:581
+#: admin/class-admin.php:584
 msgid "Only by email, never in other channels. Without it, leaders read the text in the panel."
 msgstr ""
 
-#: admin/class-admin.php:585
+#: admin/class-admin.php:588
 msgid "Daily digest at"
 msgstr ""
 
-#: admin/class-admin.php:586
+#: admin/class-admin.php:589
 msgid "Empty: no automatic digest; it goes out only with “Generate and send now” (for example, from a routine when it finishes)."
 msgstr ""
 
-#: admin/class-admin.php:590
+#: admin/class-admin.php:593
 msgid "When there is nothing new"
 msgstr ""
 
-#: admin/class-admin.php:592
+#: admin/class-admin.php:595
 msgid "Send a short version"
 msgstr ""
 
-#: admin/class-admin.php:593
+#: admin/class-admin.php:596
 msgid "Send nothing"
 msgstr ""
 
-#: admin/class-admin.php:598
+#: admin/class-admin.php:601
 msgid "Hour alerts: minutes before"
 msgstr ""
 
-#: admin/class-admin.php:602
+#: admin/class-admin.php:605
 msgid "Second alert at the exact time"
 msgstr ""
 
-#: admin/class-admin.php:606
+#: admin/class-admin.php:609
 msgid "Quiet hours from"
 msgstr ""
 
-#: admin/class-admin.php:607
+#: admin/class-admin.php:610
 msgid "Alerts are never sent in quiet hours. The digest before them lists those events; if none did, an early alert goes out just before quiet hours begin."
 msgstr ""
 
-#: admin/class-admin.php:611
+#: admin/class-admin.php:614
 msgid "Quiet hours until"
 msgstr ""
 
-#: admin/class-admin.php:615
+#: admin/class-admin.php:618
 msgid "Delete closed and discarded intentions after (days)"
 msgstr ""
 
-#: admin/class-admin.php:616
+#: admin/class-admin.php:619
 msgid "Including their updates, comments and history."
 msgstr ""
 
-#: admin/class-admin.php:620
+#: admin/class-admin.php:623
 msgid "Country code for phone numbers"
 msgstr ""
 
-#: admin/class-admin.php:621
+#: admin/class-admin.php:624
 msgid "Added to numbers written without one, for the WhatsApp links. 34 is Spain."
 msgstr ""
 
-#: admin/class-admin.php:625
+#: admin/class-admin.php:628
 msgid "Beginning of the form addresses"
 msgstr ""
 
-#: admin/class-admin.php:626
+#: admin/class-admin.php:629
 msgid "Applies to new addresses. A random part is always added."
 msgstr ""
 
-#: admin/class-admin.php:630
+#: admin/class-admin.php:633
 msgid "Maximum requests per hour from one connection"
 msgstr ""
 
-#: admin/class-admin.php:634
+#: admin/class-admin.php:637
 msgid "Cloudflare Turnstile site key"
 msgstr ""
 
-#: admin/class-admin.php:635
+#: admin/class-admin.php:638
 msgid "Optional. Leave both keys empty to disable it."
 msgstr ""
 
-#: admin/class-admin.php:639
+#: admin/class-admin.php:642
 msgid "Cloudflare Turnstile secret key"
 msgstr ""
 
-#: admin/class-admin.php:643
+#: admin/class-admin.php:646
 msgid "Delete all data when the plugin is uninstalled"
 msgstr ""
 
-#: admin/class-admin.php:647
+#: admin/class-admin.php:650
 msgid "Default data controller"
 msgstr ""
 
-#: admin/class-admin.php:648
+#: admin/class-admin.php:651
 msgid "Each group sets its own in the groups page; this one is for groups that have none. Empty: the name of the site."
 msgstr ""
 
-#: admin/class-admin.php:652
+#: admin/class-admin.php:655
 msgid "Default contact for data protection"
 msgstr ""
 
-#: admin/class-admin.php:653
+#: admin/class-admin.php:656
 msgid "An email or address where people can exercise their rights."
 msgstr ""
 
-#: admin/class-admin.php:657
+#: admin/class-admin.php:660
 msgid "Provider of the service (data processor)"
 msgstr ""
 
-#: admin/class-admin.php:658
+#: admin/class-admin.php:661
 msgid "Who runs this site for the parishes and groups: a person, a company or an association. Empty: the site itself is the controller."
 msgstr ""
 
-#: admin/class-admin.php:662
+#: admin/class-admin.php:665
 msgid "Tax ID of the provider"
 msgstr ""
 
-#: admin/class-admin.php:666
+#: admin/class-admin.php:669
 msgid "Address of the provider"
 msgstr ""
 
-#: admin/class-admin.php:670
+#: admin/class-admin.php:673
 msgid "Email of the provider for data protection"
 msgstr ""
 
-#: admin/class-admin.php:674
+#: admin/class-admin.php:677
 msgid "Subprocessors"
 msgstr ""
 
-#: admin/class-admin.php:675
+#: admin/class-admin.php:678
 msgid "One per line: who and for what, and where, e.g. “Hosting: Hetzner (Germany)”."
 msgstr ""
 
-#: admin/class-admin.php:679
+#: admin/class-admin.php:682
 msgid "Minimum age to send requests"
 msgstr ""
 
-#: admin/class-admin.php:680
+#: admin/class-admin.php:683
 msgid "Age to consent on one’s own: 14 in Spain; 13 to 16 elsewhere in the EU."
 msgstr ""
 
-#: admin/class-admin.php:693
+#: admin/class-admin.php:696
 msgid "Deadlines"
 msgstr ""
 
-#: admin/class-admin.php:694
+#: admin/class-admin.php:697
 msgid "Texts"
 msgstr ""
 
-#: admin/class-admin.php:695
+#: admin/class-admin.php:698
 msgid "Schedules"
 msgstr ""
 
-#: admin/class-admin.php:696
+#: admin/class-admin.php:699
 msgid "Personal data in messages"
 msgstr ""
 
-#: admin/class-admin.php:702
+#: admin/class-admin.php:705
 msgid "Data and protection"
 msgstr ""
 
-#: admin/class-admin.php:718
+#: admin/class-admin.php:721
 msgid "Request received from the form"
 msgstr ""
 
-#: admin/class-admin.php:719
+#: admin/class-admin.php:722
 msgid "Intention added"
 msgstr ""
 
-#: admin/class-admin.php:720
+#: admin/class-admin.php:723
 msgid "Approved"
 msgstr ""
 
-#: admin/class-admin.php:721
+#: admin/class-admin.php:724
 #: includes/class-lifecycle.php:70
 msgid "Discarded"
 msgstr ""
 
-#: admin/class-admin.php:722
+#: admin/class-admin.php:725
 msgid "Duplicate merged into it"
 msgstr ""
 
-#: admin/class-admin.php:723
+#: admin/class-admin.php:726
 msgid "Edited"
 msgstr ""
 
-#: admin/class-admin.php:724
+#: admin/class-admin.php:727
 msgid "Description changed"
 msgstr ""
 
-#: admin/class-admin.php:725
+#: admin/class-admin.php:728
 msgid "Review date reached"
 msgstr ""
 
-#: admin/class-admin.php:726
+#: admin/class-admin.php:729
 msgid "Kept active"
 msgstr ""
 
-#: admin/class-admin.php:727
+#: admin/class-admin.php:730
 msgid "Reopened"
 msgstr ""
 
-#: admin/class-admin.php:728
+#: admin/class-admin.php:731
 #: includes/class-lifecycle.php:69
 msgid "Closed"
 msgstr ""
 
-#: admin/class-admin.php:729
+#: admin/class-admin.php:732
 #: admin/views/intention-edit.php:72
-#: admin/views/intention-edit.php:454
+#: admin/views/intention-edit.php:471
 msgid "Acknowledgement sent"
 msgstr ""
 
-#: admin/class-admin.php:730
+#: admin/class-admin.php:733
 msgid "Moved to another group"
 msgstr ""
 
-#: admin/class-admin.php:731
+#: admin/class-admin.php:734
 msgid "Received from another group"
 msgstr ""
 
-#: admin/class-admin.php:732
+#: admin/class-admin.php:735
 msgid "Update added"
 msgstr ""
 
-#: admin/class-admin.php:733
+#: admin/class-admin.php:736
 msgid "Comment added"
 msgstr ""
 
-#: admin/class-admin.php:734
+#: admin/class-admin.php:737
 msgid "Comment edited"
 msgstr ""
 
-#: admin/class-admin.php:735
+#: admin/class-admin.php:738
 msgid "Comment deleted"
 msgstr ""
 
-#: admin/class-admin.php:736
+#: admin/class-admin.php:739
 msgid "Comment turned into an update"
 msgstr ""
 
-#: admin/class-admin.php:737
+#: admin/class-admin.php:740
 msgid "Delivered"
 msgstr ""
 
-#: admin/class-admin.php:738
+#: admin/class-admin.php:741
 msgid "Delivery failed"
 msgstr ""
 
-#: admin/class-admin.php:739
+#: admin/class-admin.php:742
 msgid "Group created"
 msgstr ""
 
-#: admin/class-admin.php:740
+#: admin/class-admin.php:743
 msgid "Group edited"
 msgstr ""
 
-#: admin/class-admin.php:741
+#: admin/class-admin.php:744
 msgid "Group archived"
 msgstr ""
 
-#: admin/class-admin.php:742
+#: admin/class-admin.php:745
 msgid "Group restored"
 msgstr ""
 
-#: admin/class-admin.php:743
+#: admin/class-admin.php:746
 msgid "Leaders changed"
 msgstr ""
 
-#: admin/class-admin.php:744
+#: admin/class-admin.php:747
 msgid "New form address"
 msgstr ""
 
-#: admin/class-admin.php:745
+#: admin/class-admin.php:748
 msgid "Settings saved"
 msgstr ""
 
-#: admin/class-admin.php:746
+#: admin/class-admin.php:749
 msgid "Global settings saved"
 msgstr ""
 
-#: admin/class-admin.php:747
+#: admin/class-admin.php:750
 msgid "Personal data erased on request"
 msgstr ""
 
-#: admin/class-admin.php:748
+#: admin/class-admin.php:751
 msgid "Invitation to lead the group sent"
 msgstr ""
 
-#: admin/class-admin.php:749
+#: admin/class-admin.php:752
 msgid "Invitation to lead the group withdrawn"
 msgstr ""
 
-#: admin/class-admin.php:750
+#: admin/class-admin.php:753
 msgid "Invitation accepted: new leader"
 msgstr ""
 
-#: admin/class-admin.php:764
+#: admin/class-admin.php:767
 #: admin/views/moderation.php:64
 msgid "Spam"
 msgstr ""
 
-#: admin/class-admin.php:765
+#: admin/class-admin.php:768
 #: admin/views/moderation.php:65
 msgid "Duplicate"
 msgstr ""
@@ -899,9 +903,9 @@ msgid "You are not assigned to any group yet. Ask the site administrator."
 msgstr ""
 
 #: admin/views/groups.php:58
-#: admin/views/intention-edit.php:322
+#: admin/views/intention-edit.php:339
 #: admin/views/intentions.php:42
-#: includes/class-app.php:378
+#: includes/class-app.php:381
 msgid "Add intention"
 msgstr ""
 
@@ -911,9 +915,9 @@ msgstr ""
 
 #: admin/views/groups.php:82
 #: admin/views/groups.php:147
-#: admin/views/intention-edit.php:142
+#: admin/views/intention-edit.php:159
 #: admin/views/settings.php:80
-#: includes/class-app.php:341
+#: includes/class-app.php:344
 #: includes/class-privacy.php:237
 #: includes/class-privacy.php:254
 msgid "Name"
@@ -1055,109 +1059,119 @@ msgstr ""
 msgid "Added by a leader"
 msgstr ""
 
-#: admin/views/intention-edit.php:94
-#: includes/class-app.php:335
+#: admin/views/intention-edit.php:80
+#: includes/class-app.php:324
+msgid "Gives thanks for:"
+msgstr ""
+
+#: admin/views/intention-edit.php:82
+#: includes/class-app.php:325
+msgid "Its thanksgiving:"
+msgstr ""
+
+#: admin/views/intention-edit.php:111
+#: includes/class-app.php:338
 msgid "Who asks"
 msgstr ""
 
-#: admin/views/intention-edit.php:97
+#: admin/views/intention-edit.php:114
 #: admin/views/members.php:31
-#: includes/class-app.php:340
+#: includes/class-app.php:343
 #: includes/class-discretion.php:39
 msgid "Full name"
 msgstr ""
 
-#: admin/views/intention-edit.php:101
-#: admin/views/intention-edit.php:146
-#: includes/class-app.php:342
+#: admin/views/intention-edit.php:118
+#: admin/views/intention-edit.php:163
+#: includes/class-app.php:345
 msgid "How we call them"
 msgstr ""
 
-#: admin/views/intention-edit.php:103
+#: admin/views/intention-edit.php:120
 msgid "How the requester is called"
 msgstr ""
 
-#: admin/views/intention-edit.php:104
-#: includes/class-app.php:343
+#: admin/views/intention-edit.php:121
+#: includes/class-app.php:346
 msgid "A nickname, a compound name or a surname to tell brothers apart: Toni, Juan Tomás, Javi Cavallé. Empty: the first word, as shown in grey."
 msgstr ""
 
-#: admin/views/intention-edit.php:108
-#: includes/class-app.php:344
+#: admin/views/intention-edit.php:125
+#: includes/class-app.php:347
 msgid "WhatsApp"
 msgstr ""
 
-#: admin/views/intention-edit.php:110
+#: admin/views/intention-edit.php:127
 msgid "Phone of the requester"
 msgstr ""
 
-#: admin/views/intention-edit.php:111
-#: includes/class-app.php:345
+#: admin/views/intention-edit.php:128
+#: includes/class-app.php:348
 msgid "To ask them how it goes."
 msgstr ""
 
-#: admin/views/intention-edit.php:115
-#: admin/views/intention-edit.php:116
-#: admin/views/intention-edit.php:159
-#: admin/views/intention-edit.php:160
-#: includes/class-app.php:346
+#: admin/views/intention-edit.php:132
+#: admin/views/intention-edit.php:133
+#: admin/views/intention-edit.php:176
+#: admin/views/intention-edit.php:177
+#: includes/class-app.php:349
 msgid "One of our group"
 msgstr ""
 
-#: admin/views/intention-edit.php:116
+#: admin/views/intention-edit.php:133
 msgid "The requester is a member of the group"
 msgstr ""
 
-#: admin/views/intention-edit.php:120
-#: includes/class-app.php:347
+#: admin/views/intention-edit.php:137
+#: includes/class-app.php:350
 msgid "Contact left in the form:"
 msgstr ""
 
-#: admin/views/intention-edit.php:125
-#: includes/class-app.php:348
+#: admin/views/intention-edit.php:142
+#: includes/class-app.php:351
 msgid "When they asked"
 msgstr ""
 
-#: admin/views/intention-edit.php:128
-#: includes/class-app.php:349
+#: admin/views/intention-edit.php:145
+#: includes/class-app.php:352
 msgid "Empty: today."
 msgstr ""
 
-#: admin/views/intention-edit.php:135
-#: includes/class-app.php:336
+#: admin/views/intention-edit.php:152
+#: includes/class-app.php:339
 msgid "Who we pray for"
 msgstr ""
 
-#: admin/views/intention-edit.php:138
-#: admin/views/intention-edit.php:139
-#: includes/class-app.php:350
+#: admin/views/intention-edit.php:155
+#: admin/views/intention-edit.php:156
+#: includes/class-app.php:353
 msgid "For themselves"
 msgstr ""
 
-#: admin/views/intention-edit.php:148
+#: admin/views/intention-edit.php:165
 msgid "How the beneficiary is called"
 msgstr ""
 
-#: admin/views/intention-edit.php:152
-#: includes/class-app.php:352
+#: admin/views/intention-edit.php:169
+#: includes/class-app.php:355
 msgid "What they are to the requester"
 msgstr ""
 
-#: admin/views/intention-edit.php:155
-#: includes/class-app.php:355
+#: admin/views/intention-edit.php:172
+#: includes/class-app.php:358
 msgid "“mother of”, “friend of”… It goes before the requester’s name: “Carmen, mother of Luis”."
 msgstr ""
 
-#: admin/views/intention-edit.php:160
+#: admin/views/intention-edit.php:177
 msgid "The beneficiary is a member of the group"
 msgstr ""
 
-#: admin/views/intention-edit.php:166
-#: includes/class-app.php:337
+#: admin/views/intention-edit.php:183
+#: includes/class-app.php:340
 msgid "What is happening"
 msgstr ""
 
-#: admin/views/intention-edit.php:169
+#: admin/views/intention-edit.php:186
 #: admin/views/intentions.php:53
 #: admin/views/intentions.php:75
 #: admin/views/partials/intention-facts.php:28
@@ -1165,332 +1179,332 @@ msgstr ""
 msgid "Kind"
 msgstr ""
 
-#: admin/views/intention-edit.php:176
-#: includes/class-app.php:356
+#: admin/views/intention-edit.php:193
+#: includes/class-app.php:359
 msgid "An operation, an exam, a retreat…"
 msgstr ""
 
-#: admin/views/intention-edit.php:180
-#: admin/views/intention-edit.php:208
+#: admin/views/intention-edit.php:197
+#: admin/views/intention-edit.php:225
 #: admin/views/intentions.php:76
-#: includes/class-app.php:357
+#: includes/class-app.php:360
 #: includes/class-privacy.php:212
 #: templates/form.php:96
 msgid "Date"
 msgstr ""
 
-#: admin/views/intention-edit.php:180
+#: admin/views/intention-edit.php:197
 #: admin/views/members.php:54
-#: includes/class-app.php:358
+#: includes/class-app.php:361
 msgid "Date of death"
 msgstr ""
 
-#: admin/views/intention-edit.php:184
-#: admin/views/intention-edit.php:209
-#: includes/class-app.php:403
+#: admin/views/intention-edit.php:201
+#: admin/views/intention-edit.php:226
+#: includes/class-app.php:406
 msgid "Time"
 msgstr ""
 
-#: admin/views/intention-edit.php:188
+#: admin/views/intention-edit.php:205
 msgid "Anniversary"
 msgstr ""
 
-#: admin/views/intention-edit.php:189
-#: includes/class-app.php:359
+#: admin/views/intention-edit.php:206
+#: includes/class-app.php:362
 msgid "Remember it every year"
 msgstr ""
 
-#: admin/views/intention-edit.php:192
+#: admin/views/intention-edit.php:209
 #: includes/class-privacy.php:213
 msgid "Key dates"
 msgstr ""
 
-#: admin/views/intention-edit.php:210
+#: admin/views/intention-edit.php:227
 msgid "Funeral, month’s mind Mass, appointment…"
 msgstr ""
 
-#: admin/views/intention-edit.php:210
+#: admin/views/intention-edit.php:227
 msgid "Label"
 msgstr ""
 
-#: admin/views/intention-edit.php:214
+#: admin/views/intention-edit.php:231
 msgid "Add another date"
 msgstr ""
 
-#: admin/views/intention-edit.php:218
-#: includes/class-app.php:360
+#: admin/views/intention-edit.php:235
+#: includes/class-app.php:363
 msgid "What they told us"
 msgstr ""
 
-#: admin/views/intention-edit.php:220
-#: includes/class-app.php:376
+#: admin/views/intention-edit.php:237
+#: includes/class-app.php:379
 msgid "Never published. Only leaders read it."
 msgstr ""
 
-#: admin/views/intention-edit.php:226
-#: includes/class-app.php:338
+#: admin/views/intention-edit.php:243
+#: includes/class-app.php:341
 msgid "How it appears in the message"
 msgstr ""
 
-#: admin/views/intention-edit.php:229
-#: includes/class-app.php:332
+#: admin/views/intention-edit.php:246
+#: includes/class-app.php:335
 #: includes/class-privacy.php:215
 msgid "Summary"
 msgstr ""
 
-#: admin/views/intention-edit.php:232
-#: includes/class-app.php:333
+#: admin/views/intention-edit.php:249
+#: includes/class-app.php:336
 msgid "What follows the name in the message."
 msgstr ""
 
-#: admin/views/intention-edit.php:237
+#: admin/views/intention-edit.php:254
 msgid "How it appears"
 msgstr ""
 
-#: admin/views/intention-edit.php:242
+#: admin/views/intention-edit.php:259
 msgid "Message"
 msgstr ""
 
-#: admin/views/intention-edit.php:249
-#: includes/class-app.php:398
+#: admin/views/intention-edit.php:266
+#: includes/class-app.php:401
 msgid "Topic"
 msgstr ""
 
-#: admin/views/intention-edit.php:254
+#: admin/views/intention-edit.php:271
 msgid "The monthly list, read at the monthly adoration, has every intention by topic; the daily message leaves out those kept for the monthly one."
 msgstr ""
 
-#: admin/views/intention-edit.php:258
+#: admin/views/intention-edit.php:275
 #: admin/views/intentions.php:59
 #: admin/views/moderation.php:51
 msgid "Priority"
 msgstr ""
 
-#: admin/views/intention-edit.php:261
+#: admin/views/intention-edit.php:278
 #: admin/views/intentions.php:62
 #: admin/views/moderation.php:53
 msgid "Normal"
 msgstr ""
 
-#: admin/views/intention-edit.php:262
-#: includes/class-app.php:361
+#: admin/views/intention-edit.php:279
+#: includes/class-app.php:364
 msgid "Urgent: it opens “Especially”"
 msgstr ""
 
-#: admin/views/intention-edit.php:268
-#: includes/class-app.php:362
+#: admin/views/intention-edit.php:285
+#: includes/class-app.php:365
 msgid "Discretion and names"
 msgstr ""
 
-#: admin/views/intention-edit.php:271
+#: admin/views/intention-edit.php:288
 #: admin/views/moderation.php:43
 #: admin/views/partials/intention-facts.php:35
-#: includes/class-app.php:404
+#: includes/class-app.php:407
 #: includes/class-privacy.php:216
 msgid "Discretion"
 msgstr ""
 
-#: admin/views/intention-edit.php:279
+#: admin/views/intention-edit.php:296
 msgid "It can be made stricter than the requester chose, never more open."
 msgstr ""
 
-#: admin/views/intention-edit.php:284
+#: admin/views/intention-edit.php:301
 msgid "Description instead of the name"
 msgstr ""
 
-#: admin/views/intention-edit.php:286
+#: admin/views/intention-edit.php:303
 msgid "Requester, as described"
 msgstr ""
 
-#: admin/views/intention-edit.php:286
-#: includes/class-app.php:400
+#: admin/views/intention-edit.php:303
+#: includes/class-app.php:403
 msgid "Description of the requester instead of the name"
 msgstr ""
 
-#: admin/views/intention-edit.php:287
+#: admin/views/intention-edit.php:304
 msgid "Beneficiary, as described"
 msgstr ""
 
-#: admin/views/intention-edit.php:287
-#: includes/class-app.php:401
+#: admin/views/intention-edit.php:304
+#: includes/class-app.php:404
 msgid "Description of the beneficiary instead of the name"
 msgstr ""
 
-#: admin/views/intention-edit.php:288
+#: admin/views/intention-edit.php:305
 msgid "Only for discreet cases: it replaces the whole description of the person and nothing is added to it, not even the prefix. Example: “Bro. John’s daughter”. It cannot reveal more than the discretion level allows."
 msgstr ""
 
-#: admin/views/intention-edit.php:296
-#: includes/class-app.php:339
+#: admin/views/intention-edit.php:313
+#: includes/class-app.php:342
 msgid "Follow-up"
 msgstr ""
 
-#: admin/views/intention-edit.php:300
-#: includes/class-app.php:363
+#: admin/views/intention-edit.php:317
+#: includes/class-app.php:366
 msgid "Look at it again on"
 msgstr ""
 
-#: admin/views/intention-edit.php:305
-#: includes/class-app.php:364
+#: admin/views/intention-edit.php:322
+#: includes/class-app.php:367
 msgid "Or pray for it only until"
 msgstr ""
 
-#: admin/views/intention-edit.php:308
-#: includes/class-app.php:381
+#: admin/views/intention-edit.php:325
+#: includes/class-app.php:384
 msgid "The day after, it leaves the messages and closes by itself."
 msgstr ""
 
-#: admin/views/intention-edit.php:312
-#: admin/views/intention-edit.php:314
-#: includes/class-app.php:395
+#: admin/views/intention-edit.php:329
+#: admin/views/intention-edit.php:331
+#: includes/class-app.php:398
 msgid "Pending to ask"
 msgstr ""
 
-#: admin/views/intention-edit.php:316
-#: includes/class-app.php:391
+#: admin/views/intention-edit.php:333
+#: includes/class-app.php:394
 msgid "Ask by WhatsApp how it goes"
 msgstr ""
 
-#: admin/views/intention-edit.php:322
-#: includes/class-app.php:399
+#: admin/views/intention-edit.php:339
+#: includes/class-app.php:402
 msgid "Save changes"
 msgstr ""
 
-#: admin/views/intention-edit.php:326
+#: admin/views/intention-edit.php:343
 #: includes/class-app.php:314
 #: includes/class-privacy.php:219
 msgid "Updates"
 msgstr ""
 
-#: admin/views/intention-edit.php:328
+#: admin/views/intention-edit.php:345
 #: includes/class-app.php:315
 msgid "New update"
 msgstr ""
 
-#: admin/views/intention-edit.php:328
+#: admin/views/intention-edit.php:345
 msgid "The operation went well, still in hospital…"
 msgstr ""
 
-#: admin/views/intention-edit.php:329
+#: admin/views/intention-edit.php:346
 #: includes/class-app.php:317
 msgid "Show as news in the daily digest"
 msgstr ""
 
-#: admin/views/intention-edit.php:330
+#: admin/views/intention-edit.php:347
 #: includes/class-app.php:316
 msgid "Add update"
 msgstr ""
 
-#: admin/views/intention-edit.php:335
+#: admin/views/intention-edit.php:352
 msgid "news"
 msgstr ""
 
-#: admin/views/intention-edit.php:341
+#: admin/views/intention-edit.php:358
 msgid "Internal comments"
 msgstr ""
 
-#: admin/views/intention-edit.php:342
+#: admin/views/intention-edit.php:359
 msgid "Only leaders see these. They never appear in the index or the shareable digest."
 msgstr ""
 
-#: admin/views/intention-edit.php:345
+#: admin/views/intention-edit.php:362
 msgid "New comment"
 msgstr ""
 
-#: admin/views/intention-edit.php:346
-#: admin/views/intention-edit.php:378
+#: admin/views/intention-edit.php:363
+#: admin/views/intention-edit.php:395
 msgid "Type"
 msgstr ""
 
-#: admin/views/intention-edit.php:347
-#: admin/views/intention-edit.php:379
+#: admin/views/intention-edit.php:364
+#: admin/views/intention-edit.php:396
 msgid "— Type —"
 msgstr ""
 
-#: admin/views/intention-edit.php:352
+#: admin/views/intention-edit.php:369
 msgid "Add comment"
 msgstr ""
 
 #. translators: 1: user, 2: date.
-#: admin/views/intention-edit.php:365
+#: admin/views/intention-edit.php:382
 #, php-format
 msgid "edited by %1$s on %2$s"
 msgstr ""
 
-#: admin/views/intention-edit.php:375
+#: admin/views/intention-edit.php:392
 #: admin/views/members.php:103
-#: includes/class-app.php:386
+#: includes/class-app.php:389
 msgid "Edit"
 msgstr ""
 
-#: admin/views/intention-edit.php:377
+#: admin/views/intention-edit.php:394
 msgid "Comment"
 msgstr ""
 
-#: admin/views/intention-edit.php:384
+#: admin/views/intention-edit.php:401
 #: admin/views/members.php:106
 #: includes/class-app.php:312
 msgid "Save"
 msgstr ""
 
-#: admin/views/intention-edit.php:397
+#: admin/views/intention-edit.php:414
 msgid "Turn into an update"
 msgstr ""
 
-#: admin/views/intention-edit.php:400
+#: admin/views/intention-edit.php:417
 #: admin/views/members.php:109
 msgid "Delete"
 msgstr ""
 
-#: admin/views/intention-edit.php:407
+#: admin/views/intention-edit.php:424
 msgid "History"
 msgstr ""
 
-#: admin/views/intention-edit.php:415
-#: admin/views/intention-edit.php:427
+#: admin/views/intention-edit.php:432
+#: admin/views/intention-edit.php:444
 msgid "Quick actions"
 msgstr ""
 
-#: admin/views/intention-edit.php:417
-#: includes/class-app.php:323
+#: admin/views/intention-edit.php:434
+#: includes/class-app.php:326
 msgid "Reopen"
 msgstr ""
 
-#: admin/views/intention-edit.php:418
+#: admin/views/intention-edit.php:435
 msgid "If it was closed by mistake: it becomes active again and keeps its history."
 msgstr ""
 
-#: admin/views/intention-edit.php:438
-#: includes/class-app.php:325
+#: admin/views/intention-edit.php:455
+#: includes/class-app.php:328
 msgid "Back to normal priority"
 msgstr ""
 
-#: admin/views/intention-edit.php:438
-#: includes/class-app.php:324
+#: admin/views/intention-edit.php:455
+#: includes/class-app.php:327
 msgid "Mark as high priority"
 msgstr ""
 
-#: admin/views/intention-edit.php:443
+#: admin/views/intention-edit.php:460
 #: admin/views/reviews.php:44
 #: includes/class-app.php:318
 msgid "Still current"
 msgstr ""
 
-#: admin/views/intention-edit.php:448
-#: includes/class-app.php:326
+#: admin/views/intention-edit.php:465
+#: includes/class-app.php:329
 msgid "Postpone review to"
 msgstr ""
 
-#: admin/views/intention-edit.php:449
-#: includes/class-app.php:327
+#: admin/views/intention-edit.php:466
+#: includes/class-app.php:330
 msgid "Postpone"
 msgstr ""
 
-#: admin/views/intention-edit.php:460
+#: admin/views/intention-edit.php:477
 msgid "Move to"
 msgstr ""
 
-#: admin/views/intention-edit.php:467
+#: admin/views/intention-edit.php:484
 msgid "Move"
 msgstr ""
 
@@ -1544,7 +1558,7 @@ msgid "Requester"
 msgstr ""
 
 #: admin/views/intentions.php:78
-#: includes/class-app.php:380
+#: includes/class-app.php:383
 msgid "Next review"
 msgstr ""
 
@@ -1574,7 +1588,7 @@ msgstr ""
 
 #: admin/views/members.php:43
 #: admin/views/members.php:74
-#: includes/class-app.php:367
+#: includes/class-app.php:370
 #: includes/class-privacy.php:240
 msgid "Birthday"
 msgstr ""
@@ -1659,7 +1673,7 @@ msgid "Up to 100 characters. This is the only text the group will see."
 msgstr ""
 
 #: admin/views/moderation.php:58
-#: includes/class-app.php:328
+#: includes/class-app.php:331
 msgid "Approve"
 msgstr ""
 
@@ -1668,7 +1682,7 @@ msgid "Reason"
 msgstr ""
 
 #: admin/views/moderation.php:67
-#: includes/class-app.php:329
+#: includes/class-app.php:332
 msgid "Discard"
 msgstr ""
 
@@ -1689,17 +1703,22 @@ msgstr ""
 msgid "Close as"
 msgstr ""
 
-#: admin/views/partials/close-form.php:24
+#: admin/views/partials/close-form.php:25
 #: includes/class-app.php:321
 msgid "Answered: add a thanksgiving"
 msgstr ""
 
-#: admin/views/partials/close-form.php:25
+#: admin/views/partials/close-form.php:26
 #: includes/class-app.php:322
 msgid "Summary of the thanksgiving"
 msgstr ""
 
-#: admin/views/partials/close-form.php:27
+#: admin/views/partials/close-form.php:29
+#: includes/class-app.php:323
+msgid "In the daily and monthly digests it will appear as:"
+msgstr ""
+
+#: admin/views/partials/close-form.php:34
 #: includes/class-app.php:320
 msgid "Close"
 msgstr ""
@@ -1797,7 +1816,7 @@ msgid "There are no groups yet."
 msgstr ""
 
 #: admin/views/partials/statistics.php:39
-#: includes/class-app.php:379
+#: includes/class-app.php:382
 #: includes/class-privacy.php:204
 #: includes/class-privacy.php:236
 #: includes/class-privacy.php:253
@@ -2015,120 +2034,120 @@ msgstr ""
 msgid "Saved."
 msgstr ""
 
-#: includes/class-app.php:330
+#: includes/class-app.php:333
 msgid "Waiting for moderation"
 msgstr ""
 
-#: includes/class-app.php:331
+#: includes/class-app.php:334
 msgid "To review"
 msgstr ""
 
-#: includes/class-app.php:334
+#: includes/class-app.php:337
 msgid "How it will appear"
 msgstr ""
 
-#: includes/class-app.php:351
+#: includes/class-app.php:354
 msgid "For someone else"
 msgstr ""
 
 #. translators: %s: how the requester is called ("Javier").
-#: includes/class-app.php:354
+#: includes/class-app.php:357
 #, php-format
 msgid "What they are to %s"
 msgstr ""
 
-#: includes/class-app.php:365
+#: includes/class-app.php:368
 msgid "Cancel"
 msgstr ""
 
 #. translators: %d: the age a member turns.
-#: includes/class-app.php:369
+#: includes/class-app.php:372
 #, php-format
 msgid "Turns %d"
 msgstr ""
 
-#: includes/class-app.php:370
+#: includes/class-app.php:373
 msgid "Anniversary of his death"
 msgstr ""
 
-#: includes/class-app.php:371
+#: includes/class-app.php:374
 msgid "Tomorrow"
 msgstr ""
 
-#: includes/class-app.php:372
+#: includes/class-app.php:375
 msgid "Nobody this month."
 msgstr ""
 
-#: includes/class-app.php:373
+#: includes/class-app.php:376
 msgid "No date"
 msgstr ""
 
-#: includes/class-app.php:374
+#: includes/class-app.php:377
 msgid "Edit intention"
 msgstr ""
 
-#: includes/class-app.php:375
+#: includes/class-app.php:378
 msgid "Full text"
 msgstr ""
 
-#: includes/class-app.php:377
+#: includes/class-app.php:380
 msgid "High priority"
 msgstr ""
 
-#: includes/class-app.php:382
+#: includes/class-app.php:385
 msgctxt "followed by the last day an intention is prayed for"
 msgid "Until"
 msgstr ""
 
-#: includes/class-app.php:383
+#: includes/class-app.php:386
 msgid "To install it, use “Add to home screen” in your browser’s menu."
 msgstr ""
 
-#: includes/class-app.php:384
+#: includes/class-app.php:387
 msgid "You do not lead any group yet."
 msgstr ""
 
-#: includes/class-app.php:385
+#: includes/class-app.php:388
 msgid "Discard this request?"
 msgstr ""
 
-#: includes/class-app.php:387
+#: includes/class-app.php:390
 msgid "Added on"
 msgstr ""
 
-#: includes/class-app.php:388
+#: includes/class-app.php:391
 msgid "Asked by"
 msgstr ""
 
-#: includes/class-app.php:389
+#: includes/class-app.php:392
 msgid "Daily"
 msgstr ""
 
-#: includes/class-app.php:390
+#: includes/class-app.php:393
 msgid "Monthly list"
 msgstr ""
 
-#: includes/class-app.php:392
+#: includes/class-app.php:395
 msgid "To ask"
 msgstr ""
 
-#: includes/class-app.php:393
+#: includes/class-app.php:396
 msgid "Pending to ask how they go"
 msgstr ""
 
-#: includes/class-app.php:394
+#: includes/class-app.php:397
 msgid "Those you marked to ask about, and those whose review date has come. Adding an update or closing one takes it off the list."
 msgstr ""
 
-#: includes/class-app.php:396
+#: includes/class-app.php:399
 msgid "Ask about all of them by WhatsApp"
 msgstr ""
 
-#: includes/class-app.php:397
+#: includes/class-app.php:400
 msgid "No phone yet: add it when editing one of them."
 msgstr ""
 
-#: includes/class-app.php:402
+#: includes/class-app.php:405
 msgid "Only for discreet cases: “Bro. John’s daughter”. Nothing is added to it."
 msgstr ""
 
@@ -2171,7 +2190,7 @@ msgid "The comment is empty."
 msgstr ""
 
 #: includes/class-comments.php:53
-#: includes/class-intentions.php:1249
+#: includes/class-intentions.php:1292
 #: includes/class-updates.php:38
 msgid "The intention does not exist."
 msgstr ""
@@ -2246,7 +2265,7 @@ msgid "Anonymous"
 msgstr ""
 
 #: includes/class-discretion.php:73
-#: includes/class-intentions.php:945
+#: includes/class-intentions.php:988
 msgid "Unknown discretion level."
 msgstr ""
 
@@ -2532,81 +2551,85 @@ msgstr ""
 msgid "Choose why the intention is being closed."
 msgstr ""
 
-#: includes/class-intentions.php:607
-#: includes/class-intentions.php:1010
+#: includes/class-intentions.php:590
+msgid "This intention cannot become a thanksgiving."
+msgstr ""
+
+#: includes/class-intentions.php:650
+#: includes/class-intentions.php:1053
 msgid "Unknown priority."
 msgstr ""
 
-#: includes/class-intentions.php:622
+#: includes/class-intentions.php:665
 msgid "Choose a future date."
 msgstr ""
 
-#: includes/class-intentions.php:645
+#: includes/class-intentions.php:688
 msgid "Acknowledgement sent to the requester."
 msgstr ""
 
-#: includes/class-intentions.php:672
+#: includes/class-intentions.php:715
 msgid "You can only move intentions between groups you lead."
 msgstr ""
 
-#: includes/class-intentions.php:925
+#: includes/class-intentions.php:968
 #: includes/class-members.php:310
 msgid "The phone number is not valid."
 msgstr ""
 
-#: includes/class-intentions.php:963
+#: includes/class-intentions.php:1006
 msgid "Please tell us your name."
 msgstr ""
 
-#: includes/class-intentions.php:967
+#: includes/class-intentions.php:1010
 msgid "Please tell us who we should pray for."
 msgstr ""
 
-#: includes/class-intentions.php:971
+#: includes/class-intentions.php:1014
 msgid "Please write your intention."
 msgstr ""
 
-#: includes/class-intentions.php:975
+#: includes/class-intentions.php:1018
 msgid "Please choose the kind of intention."
 msgstr ""
 
-#: includes/class-intentions.php:979
+#: includes/class-intentions.php:1022
 msgid "Please tell us the date."
 msgstr ""
 
-#: includes/class-intentions.php:983
-#: includes/class-intentions.php:1022
-#: includes/class-intentions.php:1027
+#: includes/class-intentions.php:1026
+#: includes/class-intentions.php:1065
+#: includes/class-intentions.php:1070
 msgid "The date is not valid."
 msgstr ""
 
-#: includes/class-intentions.php:992
+#: includes/class-intentions.php:1035
 msgid "The time is not valid."
 msgstr ""
 
 #. translators: %d: maximum number of characters.
-#: includes/class-intentions.php:1005
+#: includes/class-intentions.php:1048
 #, php-format
 msgid "The summary cannot be longer than %d characters."
 msgstr ""
 
-#: includes/class-intentions.php:1014
+#: includes/class-intentions.php:1057
 msgid "Choose whether it goes in the daily or the monthly message."
 msgstr ""
 
-#: includes/class-intentions.php:1018
+#: includes/class-intentions.php:1061
 msgid "Unknown topic."
 msgstr ""
 
-#: includes/class-intentions.php:1139
+#: includes/class-intentions.php:1182
 msgid "The date of the request must be a valid day, today or earlier."
 msgstr ""
 
-#: includes/class-intentions.php:1256
+#: includes/class-intentions.php:1299
 msgid "That change is not possible in the intention’s current state."
 msgstr ""
 
-#: includes/class-intentions.php:1263
+#: includes/class-intentions.php:1306
 msgid "Write the summary for the index before activating the intention."
 msgstr ""
 

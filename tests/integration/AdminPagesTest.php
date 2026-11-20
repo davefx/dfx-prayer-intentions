@@ -680,6 +680,39 @@ class AdminPagesTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * The close form previews the thanksgiving's line; once closed, the
+	 * intention and its thanksgiving link to each other.
+	 */
+	public function test_thanksgiving_preview_and_links(): void {
+		$id   = $this->make_active( $this->mine, array( 'summary' => 'operada mañana' ) );
+		$edit = array(
+			'view' => 'edit',
+			'id'   => $id,
+		);
+
+		$html = $this->tab( 'intentions', $edit );
+		$this->assertStringContainsString( 'class="dfxpray-thanks-preview" data-intention="' . $id . '"', $html );
+		$this->assertStringContainsString( '<code>Carmen, madre de Luis: operada mañana</code>', $html );
+
+		$new_id = DFXPRAY_Intentions::get_instance()->close( $id, 'answered', true, 'salió bien' );
+
+		$html = $this->tab( 'intentions', $edit );
+		$this->assertStringContainsString( 'Its thanksgiving:', $html );
+		$this->assertStringContainsString( 'id=' . $new_id . '">Carmen, madre de Luis: salió bien</a>', $html );
+
+		$html = $this->tab(
+			'intentions',
+			array(
+				'view' => 'edit',
+				'id'   => $new_id,
+			)
+		);
+		$this->assertStringContainsString( 'Gives thanks for:', $html );
+		$this->assertStringContainsString( 'id=' . $id . '">Carmen, madre de Luis: operada mañana</a>', $html );
+		$this->assertStringContainsString( 'name="intention[summary]" value="salió bien"', $html );
+	}
+
+	/**
 	 * Administrators see, at the top of Groups, the figures of every group,
 	 * also the ones they do not lead, and nothing else of them; leaders do
 	 * not see them.
