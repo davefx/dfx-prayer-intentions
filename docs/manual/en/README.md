@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611201 · November 2026
+Version 1.0.2611202 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611201 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611202 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -545,6 +545,7 @@ If a security plugin switches off application passwords (Wordfence does it with 
 | `close`, `reopen`, `keep_active`, `postpone`, `set_priority` | The panel's quick actions |
 | `approve`, `discard` | Moderating |
 | `send_digest_now` | Sends the daily digest, like "Generate and send now" |
+| `save_member` | Creates (`member_id` 0 and `group_id`) or edits (`member_id`) a member of the group; only the fields sent in `member` change (`name`, `called`, `phone`, `birth_day`…). Deleting members stays in the panel |
 
 The fields are the same as those of the panel's cards. For the digest to go out right when the routine finishes, leave "Daily digest at" empty and have the routine call `send_digest_now` at the end.
 

@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611201 · noviembre de 2026
+Versión 1.0.2611202 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611201 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611202 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -545,6 +545,7 @@ Si un plugin de seguridad desactiva las contraseñas de aplicación (Wordfence l
 | `close`, `reopen`, `keep_active`, `postpone`, `set_priority` | Las acciones rápidas del panel |
 | `approve`, `discard` | Moderar |
 | `send_digest_now` | Envía el resumen diario, como «Generar y enviar ahora» |
+| `save_member` | Crea (`member_id` 0 y `group_id`) o edita (`member_id`) un miembro del grupo; solo cambian los campos que se envían en `member` (`name`, `called`, `phone`, `birth_day`…). Borrar miembros sigue siendo solo cosa del panel |
 
 Los campos son los mismos que los de las fichas del panel. Para que el resumen salga justo cuando la rutina termina, deja vacío «Resumen diario a las» y que la rutina llame a `send_digest_now` al final.
 

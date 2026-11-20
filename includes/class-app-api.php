@@ -35,7 +35,7 @@ final class DFXPRAY_App_API {
 	/**
 	 * Panel actions the app may run.
 	 */
-	private const WRITES = array( 'save_intention', 'add_update', 'close', 'reopen', 'keep_active', 'approve', 'discard', 'set_priority', 'postpone', 'send_digest_now' );
+	private const WRITES = array( 'save_intention', 'add_update', 'close', 'reopen', 'keep_active', 'approve', 'discard', 'set_priority', 'postpone', 'send_digest_now', 'save_member' );
 
 	/**
 	 * Lists the app asks for, by status.

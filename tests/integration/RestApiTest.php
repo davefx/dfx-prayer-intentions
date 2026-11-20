@@ -135,6 +135,67 @@ class RestApiTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A routine edits the members of its group (how they are called, the
+	 * phone…), and only those: the rest of the member stays as it was.
+	 */
+	public function test_routine_edits_members_of_its_group_only(): void {
+		$members = DFXPRAY_Members::get_instance();
+		$mine    = $members->create(
+			$this->mine,
+			array(
+				'name'        => 'Ignacio Díez Murugarren',
+				'called'      => 'Ignacio Díez',
+				'phone'       => '600 11 22 33',
+				'birth_day'   => '3',
+				'birth_month' => '5',
+			)
+		);
+		$other   = $members->create( $this->other, array( 'name' => 'Pedro' ) );
+		$this->with_app_password( $this->robot );
+
+		$saved = $this->call(
+			'save_member',
+			array(
+				'member_id' => $mine,
+				'member'    => array( 'called' => 'Nacho Díez' ),
+			)
+		);
+		$this->assertSame( 200, $saved->get_status(), wp_json_encode( $saved->get_data() ) );
+		$member = $members->get( $mine );
+		$this->assertSame( 'Nacho Díez', $member['called'] );
+		$this->assertSame( 'Ignacio Díez Murugarren', $member['name'] );
+		$this->assertSame( 3, (int) $member['birth_day'] );
+		$this->assertNotSame( '', $member['phone'] );
+
+		$created = $this->call(
+			'save_member',
+			array(
+				'member_id' => 0,
+				'group_id'  => $this->mine,
+				'member'    => array( 'name' => 'Teo Martín' ),
+			)
+		);
+		$this->assertSame( 200, $created->get_status() );
+		$this->assertSame( $this->mine, $members->get( $created->get_data()['id'] )['group_id'] );
+
+		foreach (
+			array(
+				array( 'member_id' => $other, 'member' => array( 'called' => 'x' ) ),
+				array( 'member_id' => 0, 'group_id' => $this->other, 'member' => array( 'name' => 'x' ) ),
+			) as $request
+		) {
+			$response = $this->call( 'save_member', $request );
+			$this->assertSame( 403, $response->get_status() );
+		}
+		$this->assertSame( '', $members->get( $other )['called'] );
+		$this->assertCount( 1, $members->for_group( $this->other ) );
+
+		// Deleting stays in the panel.
+		$this->assertNotSame( 200, $this->call( 'delete_member', array( 'member_id' => $mine ) )->get_status() );
+		$this->assertNotNull( $members->get( $mine ) );
+	}
+
+	/**
 	 * The digest is read and sent on demand, once the routine is done.
 	 */
 	public function test_digest_read_and_sent(): void {

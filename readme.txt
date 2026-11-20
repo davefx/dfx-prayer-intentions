@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611201
+Stable tag: 1.0.2611202
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611202 =
+* Routines (and the app's API) can create and edit the members of their groups with "save_member", with the same per-group checks as the panel; only the fields sent change. Deleting members stays in the panel.
 
 = 1.0.2611201 =
 * Leaders can edit the day an intention reached the list ("When it reached the list"), in the panel, the app and routines (listed_on). Moving it back takes a new intention out of "Especially" sooner. It cannot be after today nor before the day it was asked for.
