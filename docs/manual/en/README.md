@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611210 · November 2026
+Version 1.0.2611211 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611210 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611211 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 

@@ -613,6 +613,30 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Moving the day it reached the list to today never leaves it in the
+	 * future: a time later than now becomes now, or it would still be new
+	 * after today's message was shared.
+	 */
+	public function test_listed_on_today_is_never_in_the_future(): void {
+		$this->freeze_time( '2026-09-20 13:28' );
+		$id    = $this->make_active( $this->group, array( 'asked_on' => '2026-09-20' ) );
+		$other = $this->make_active( $this->group, array( 'asked_on' => '2026-09-20' ) );
+		$this->freeze_time( '2026-09-24 07:15' );
+		$i = $this->intentions;
+
+		$this->assertTrue( $i->update( $id, array( 'listed_on' => '2026-09-24' ) ) );
+		$this->assertSame( '2026-09-24 07:15:00', $i->get( $id )['activated_at'] );
+
+		// Asked for today, listed on an earlier day at a later hour.
+		$this->assertTrue( $i->update( $other, array( 'asked_on' => '2026-09-24' ) ) );
+		$this->assertSame( '2026-09-24 07:15:00', $i->get( $other )['activated_at'] );
+
+		// Another day keeps the time it has.
+		$this->assertTrue( $i->update( $id, array( 'listed_on' => '2026-09-22' ) ) );
+		$this->assertSame( '2026-09-22 07:15:00', $i->get( $id )['activated_at'] );
+	}
+
+	/**
 	 * A deceased intention cannot spawn a thanksgiving.
 	 */
 	public function test_deceased_cannot_spawn_thanksgiving(): void {

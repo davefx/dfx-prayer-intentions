@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611210
+Stable tag: 1.0.2611211
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611211 =
+* Moving the day an intention reached the list to today no longer leaves it at a later hour of today: it becomes now, so a thanksgiving moved to today does not appear again in the next message after today's was shared.
 
 = 1.0.2611210 =
 * "Mark as sent to the group", in the "Daily digest" tab and on the app's "Today" screen (with "Undo"): leaders mark the day's message once they have shared it. Thanksgivings now go in the next message shared after they are written down, so one written down after the day's message was shared is no longer lost; the digest's schedule plays no part. Routines can mark it too (mark_shared).

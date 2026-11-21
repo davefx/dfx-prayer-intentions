@@ -1211,14 +1211,24 @@ final class DFXPRAY_Intentions {
 		$date = trim( (string) ( $data['listed_on'] ?? '' ) );
 		if ( '' === $date ) {
 			// Asked for later than it was listed: it reached the list that day.
-			return substr( $stored, 0, 10 ) < substr( $asked_on, 0, 10 ) ? substr( $asked_on, 0, 10 ) . substr( $stored, 10 ) : $stored;
+			return substr( $stored, 0, 10 ) < substr( $asked_on, 0, 10 ) ? $this->not_after_now( substr( $asked_on, 0, 10 ) . substr( $stored, 10 ) ) : $stored;
 		}
 
 		if ( ! $this->is_valid_date( $date ) || $date > DFXPRAY_Clock::get_instance()->today() || $date < substr( $asked_on, 0, 10 ) ) {
 			return new WP_Error( 'dfxpray_listed_on_invalid', __( 'The day it reached the list must be a valid day, not after today nor before the day it was asked for.', 'dfx-prayer-intentions' ) );
 		}
 
-		return $date . substr( $stored, 10 );
+		return $this->not_after_now( $date . substr( $stored, 10 ) );
+	}
+
+	/**
+	 * A moment moved to today keeps its time only if it has already come:
+	 * otherwise it is now, so it is not new again after today's message.
+	 *
+	 * @param string $moment 'Y-m-d H:i:s'.
+	 */
+	private function not_after_now( string $moment ): string {
+		return min( $moment, DFXPRAY_Clock::get_instance()->mysql() );
 	}
 
 	/**
