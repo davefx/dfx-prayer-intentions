@@ -239,7 +239,7 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 				)
 			)['code']
 		);
-		foreach ( array( 'save_group_settings', 'regenerate_slug', 'send_digest_now', 'invite_leader' ) as $action ) {
+		foreach ( array( 'save_group_settings', 'regenerate_slug', 'send_digest_now', 'mark_shared', 'invite_leader' ) as $action ) {
 			$this->assertSame(
 				'forbidden',
 				$this->run_action(
@@ -767,6 +767,28 @@ class AdminActionsTest extends DFXPRAY_Test_Case {
 	public function test_send_digest_now(): void {
 		$this->assertTrue( $this->run_action( 'send_digest_now', array( 'group_id' => $this->mine ) )['ok'] );
 		$this->assertNotNull( DFXPRAY_Scheduler::get_instance()->get_stored_digest( $this->mine ) );
+	}
+
+	/**
+	 * Mark today's message as shared with the group, and undo it.
+	 */
+	public function test_mark_shared(): void {
+		$this->freeze_time( '2026-09-20 09:00' );
+		$result = $this->run_action( 'mark_shared', array( 'group_id' => $this->mine ) );
+		$this->assertTrue( $result['ok'], $result['message'] );
+		$this->assertSame( 'Today’s message is marked as sent to the group.', $result['message'] );
+		$this->assertSame( '2026-09-20 09:00:00', DFXPRAY_Shares::get_instance()->today( $this->mine ) );
+
+		$result = $this->run_action(
+			'mark_shared',
+			array(
+				'group_id' => $this->mine,
+				'undo'     => '1',
+			)
+		);
+		$this->assertTrue( $result['ok'] );
+		$this->assertSame( 'Today’s message is no longer marked as sent.', $result['message'] );
+		$this->assertNull( DFXPRAY_Shares::get_instance()->today( $this->mine ) );
 	}
 
 	/**

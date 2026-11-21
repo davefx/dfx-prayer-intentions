@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611203 · November 2026
+Version 1.0.2611210 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611203 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611210 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -275,7 +275,7 @@ It is chosen in "Index layout", in the settings.
 | "For the health of" | The Health topic: only the names, in one line for everyone, those of the group first |
 | "Also for" | The General, Studies and Economic topics. Those with the same summary are joined in one line |
 | "We also pray for" | The Current affairs topic |
-| "We give thanks" | Thanksgivings, for 1 day (configurable) |
+| "We give thanks" | Thanksgivings, in 1 message (configurable): the next one shared after they are written down |
 | "For our departed" | Those who died in the last 7 days (configurable) |
 
 With "Only the monthly list", an intention does not appear in the daily message, but it does in the monthly list. It is useful for situations that go on without news, or for distant acquaintances.
@@ -312,6 +312,8 @@ The leaders' block contains:
 - **"News of the last 24 hours"**.
 
 At the top it says whether today's digest has already gone out and at what time. The "Generate and send now" button sends it at once through the group's channels, even if it had already been sent.
+
+**"Mark as sent to the group".** Once you have shared today's message with the group, press this button (it is also on the app's "Today" screen). It then says "Sent to the group today at …", with "Undo" in case of a mistake. That way the plugin knows what went in each message: a thanksgiving written down after sharing it goes in the next one, even if it is written that same afternoon, and if one day it is not shared, nothing is lost. It does not depend on the time of the email digest. Until a group marks its messages, thanksgivings go in on the day they are written down.
 
 ![The "Daily digest" tab with the shareable version and the leaders' version, in the "Prayer proposals" layout](img/07-resumen-diario.webp)
 
@@ -470,7 +472,7 @@ The bar at the bottom has six buttons. If you lead several groups, there is a se
 
 | Screen | What is there |
 | --- | --- |
-| "Today" | The day's message ("Daily") or the "Monthly list", with "Share" (opens WhatsApp or another app) and "Copy" |
+| "Today" | The day's message ("Daily") or the "Monthly list", with "Share" (opens WhatsApp or another app) and "Copy". In the daily one, "Mark as sent to the group" for once you have shared it (with "Undo") |
 | "Intentions" | The list with a search box and a filter: "Current", "To review" or "Closed". Urgent ones are highlighted |
 | "To ask" | Whom to ask how things are going, grouped by the person who asked, with a WhatsApp button that already has the question written |
 | "Members" | Birthdays and anniversaries by month, with the current month open and a button to write by WhatsApp |

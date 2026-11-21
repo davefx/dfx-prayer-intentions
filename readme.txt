@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611203
+Stable tag: 1.0.2611210
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611210 =
+* "Mark as sent to the group", in the "Daily digest" tab and on the app's "Today" screen (with "Undo"): leaders mark the day's message once they have shared it. Thanksgivings now go in the next message shared after they are written down, so one written down after the day's message was shared is no longer lost; the digest's schedule plays no part. Routines can mark it too (mark_shared).
 
 = 1.0.2611203 =
 * Easier start for invited leaders without an account: they choose their password on the invitation page itself (told that their email is their user), and on accepting they go straight into the group, already logged in, instead of WordPress' password reset screen. A welcome email tells them how to come back: log in with their email, the leaders' app, and where to choose a new password if they forget it.

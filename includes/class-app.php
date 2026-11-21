@@ -300,6 +300,11 @@ JS;
 			'installIos'              => __( 'To install it: tap Share and then Add to Home Screen.', 'dfx-prayer-intentions' ),
 			'copy'                    => __( 'Copy', 'dfx-prayer-intentions' ),
 			'copied'                  => __( 'Copied!', 'dfx-prayer-intentions' ),
+			'markShared'              => __( 'Mark as sent to the group', 'dfx-prayer-intentions' ),
+			'markSharedHelp'          => __( 'Once you have shared it: what comes after goes in the next message.', 'dfx-prayer-intentions' ),
+			/* translators: %s: time of day. */
+			'sharedAt'                => __( 'Sent to the group today at %s.', 'dfx-prayer-intentions' ),
+			'undo'                    => __( 'Undo', 'dfx-prayer-intentions' ),
 			'search'                  => __( 'Search', 'dfx-prayer-intentions' ),
 			'current'                 => __( 'Current', 'dfx-prayer-intentions' ),
 			'nothing'                 => __( 'Nothing here.', 'dfx-prayer-intentions' ),

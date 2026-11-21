@@ -774,4 +774,10 @@ T = {
 "On your phone, the leaders’ app is easier to use; once open, you can add it to your home screen:": "En el móvil es más cómoda la app de los líderes; cuando la abras, puedes añadirla a la pantalla de inicio:",
 "If you forget your password, choose a new one here:": "Si olvidas la contraseña, elige una nueva aquí:",
 "Welcome to %s": "Te damos la bienvenida a %s",
+"Today’s message is no longer marked as sent.": "El mensaje de hoy ya no está marcado como enviado.",
+"Today’s message is marked as sent to the group.": "El mensaje de hoy está marcado como enviado al grupo.",
+"Sent to the group today at %s.": "Enviado hoy al grupo a las %s.",
+"Undo": "Deshacer",
+"Mark as sent to the group": "Marcar como enviado al grupo",
+"Once you have shared it: what comes after goes in the next message.": "Púlsalo cuando lo hayas compartido: lo que llegue después irá en el siguiente mensaje.",
 }

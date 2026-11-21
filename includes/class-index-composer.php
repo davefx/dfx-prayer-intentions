@@ -223,10 +223,15 @@ final class DFXPRAY_Index_Composer {
 		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && ( $arrived( $i ) >= $since || isset( $revived[ $i['id'] ] ) );
 		$news    = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
 		$buckets = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
-		// A thanksgiving goes in as many daily messages as the setting says: 1, only one.
-		$thanks = DFXPRAY_Clock::get_instance()->local( DFXPRAY_Clock::get_instance()->today() )->modify( '-' . ( (int) DFXPRAY_Settings::get_instance()->get( 'daily_thanks_days', $group_id ) - 1 ) . ' days' )->format( 'Y-m-d' );
-		// From the day of the good news, or from the day it reached the list if later.
-		$thanked = array_values( array_filter( $buckets['thanks'], static fn( $i ) => max( (string) ( $i['reference_date'] ?? '' ), substr( max( (string) $i['created_at'], (string) $i['activated_at'] ), 0, 10 ) ) >= $thanks ) );
+		// A thanksgiving goes in as many daily messages as the setting says (1, only one),
+		// from the day of the good news, or from when it reached the list if later.
+		$thanks  = $this->thanks_since( $group_id );
+		$thanked = array_values(
+			array_filter(
+				$buckets['thanks'],
+				static fn( $i ) => max( (string) ( $i['reference_date'] ?? '' ) . ' 00:00:00', (string) $i['created_at'], (string) $i['activated_at'] ) >= $thanks
+			)
+		);
 
 		$news_departed = array_values( array_filter( $news, static fn( $i ) => 'deceased' === $i['type'] ) );
 		$news_serious  = array_values( array_filter( $news, static fn( $i ) => 'deceased' !== $i['type'] ) );
@@ -386,6 +391,32 @@ final class DFXPRAY_Index_Composer {
 			static fn( array $member ): string => sprintf( __( '%1$s: on the anniversary of his death († %2$s)', 'dfx-prayer-intentions' ), $name( $member ), substr( $member['death_date'], 0, 4 ) ),
 			DFXPRAY_Members::get_instance()->death_anniversaries_on( $group_id, DFXPRAY_Clock::get_instance()->today() )
 		);
+	}
+
+	/**
+	 * Moment from which thanksgivings go in the daily message. Leaders mark
+	 * each message as sent to the group (DFXPRAY_Shares): what reached the
+	 * list after the last one shared goes in the next, so nothing written
+	 * down after the day's message is lost, and a day without sharing loses
+	 * nothing either. Until a group has marked enough messages, the days
+	 * count from midnight.
+	 *
+	 * @param int $group_id Group ID.
+	 */
+	private function thanks_since( int $group_id ): string {
+		$days = (int) DFXPRAY_Settings::get_instance()->get( 'daily_thanks_days', $group_id );
+		if ( $days < 1 ) {
+			return '9999-12-31 23:59:59';
+		}
+
+		$shared = DFXPRAY_Shares::get_instance()->since( $group_id, $days );
+		if ( null !== $shared ) {
+			return $shared;
+		}
+
+		$clock = DFXPRAY_Clock::get_instance();
+
+		return $clock->local( $clock->today() )->modify( '-' . ( $days - 1 ) . ' days' )->format( 'Y-m-d H:i:s' );
 	}
 
 	/**

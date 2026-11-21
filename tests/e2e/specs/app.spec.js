@@ -47,6 +47,26 @@ test( 'today’s message, ready to copy', async ( { page } ) => {
 	expect( await page.evaluate( () => navigator.clipboard.readText() ) ).toContain( 'Carmen, madre de Luis: quimioterapia' );
 } );
 
+test( 'today’s message is marked as sent to the group, and undone', async ( { page } ) => {
+	freeze( '2026-09-20 09:05' );
+	createIntention( group.id, { summary: 'quimioterapia' } );
+	await login( page, 'leader1' );
+	await page.goto( APP );
+
+	await page.getByRole( 'button', { name: 'Mark as sent to the group' } ).click();
+	await expect( page.locator( '.dfx-shared' ) ).toContainText( 'Sent to the group today at 09:05.' );
+	expect( php( `echo wp_json_encode( DFXPRAY_Shares::get_instance()->today( ${ group.id } ) );` ) ).toBe( '2026-09-20 09:05:00' );
+
+	await page.locator( '.dfx-shared' ).getByRole( 'button', { name: 'Undo' } ).click();
+	await expect( page.getByRole( 'button', { name: 'Mark as sent to the group' } ) ).toBeVisible();
+
+	// The monthly list is not shared day by day: no button there.
+	await page.getByRole( 'button', { name: 'Monthly list' } ).click();
+	await expect( page.locator( '#dfx-message' ) ).toBeVisible();
+	await expect( page.locator( '.dfx-shared' ) ).toHaveCount( 0 );
+	freeze( null );
+} );
+
 test( 'a leader adds an intention and follows it up', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( APP );

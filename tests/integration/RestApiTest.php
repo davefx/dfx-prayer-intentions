@@ -224,6 +224,7 @@ class RestApiTest extends DFXPRAY_Test_Case {
 				array( 'get', array( 'intention_id' => $id ) ),
 				array( 'digest', array( 'group_id' => $this->other ) ),
 				array( 'send_digest_now', array( 'group_id' => $this->other ) ),
+				array( 'mark_shared', array( 'group_id' => $this->other ) ),
 				array( 'add_update', array( 'intention_id' => $id, 'body' => 'x' ) ),
 				array( 'close', array( 'intention_id' => $id, 'reason' => 'expired' ) ),
 				array( 'thanksgiving_preview', array( 'intention_id' => $id, 'summary' => 'x' ) ),
@@ -235,6 +236,7 @@ class RestApiTest extends DFXPRAY_Test_Case {
 		}
 		$this->assertSame( 'active', DFXPRAY_Intentions::get_instance()->get( $id )['status'] );
 		$this->assertNull( DFXPRAY_Scheduler::get_instance()->get_stored_digest( $this->other ) );
+		$this->assertNull( DFXPRAY_Shares::get_instance()->today( $this->other ) );
 	}
 
 	/**

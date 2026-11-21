@@ -778,6 +778,59 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * A thanksgiving written down after the day's message was shared with the
+	 * group goes in the next one: the leader marks each message as sent, and
+	 * the digest's schedule has nothing to do with it.
+	 */
+	public function test_a_thanksgiving_after_the_message_was_shared_goes_in_the_next_one(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'      => 'proposals',
+				'index_header'      => '',
+				'index_footer'      => '',
+				'daily_thanks_days' => 1,
+				'digest_time'       => '05:00',
+			)
+		);
+		$thanks   = array(
+			'relationship' => '',
+			'type'         => 'thanksgiving',
+		);
+		$composer = DFXPRAY_Index_Composer::get_instance();
+		$shares   = DFXPRAY_Shares::get_instance();
+
+		// The 20th: the good news of the morning goes in the message shared at nine.
+		$this->freeze_time( '2026-09-20 08:00' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Luis', 'summary' => 'salió bien', 'reference_date' => '2026-09-20' ) + $thanks );
+		DFXPRAY_Scheduler::get_instance()->maybe_send_digest( $this->group, true );
+		$this->freeze_time( '2026-09-20 09:00' );
+		$shares->mark( $this->group );
+		$this->freeze_time( '2026-09-20 13:28' );
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Bea', 'summary' => 'su operación salió bien', 'reference_date' => '2026-09-20' ) + $thanks );
+		// What was shared today is still today's message.
+		$this->assertStringContainsString( '• Luis: salió bien', $composer->compose( $this->group ) );
+
+		// The 21st, before and after sharing it: Bea, not Luis.
+		$this->freeze_time( '2026-09-21 05:00' );
+		$text = $composer->compose( $this->group );
+		$this->assertStringContainsString( '• Bea: su operación salió bien', $text );
+		$this->assertStringNotContainsString( 'Luis', $text );
+		$this->freeze_time( '2026-09-21 10:00' );
+		$shares->mark( $this->group );
+		$this->assertStringContainsString( '• Bea: su operación salió bien', $composer->compose( $this->group ) );
+
+		// The 22nd: it already went in one message.
+		$this->freeze_time( '2026-09-22 05:00' );
+		$this->assertStringNotContainsString( 'Bea', $composer->compose( $this->group ) );
+
+		// A day without sharing: the next message still has what it missed.
+		$this->make_active( $this->group, array( 'beneficiary_name' => 'Pilar', 'summary' => 'ya tiene el alta', 'reference_date' => '2026-09-22' ) + $thanks );
+		$this->freeze_time( '2026-09-23 05:00' );
+		$this->assertStringContainsString( '• Pilar: ya tiene el alta', $composer->compose( $this->group ) );
+	}
+
+	/**
 	 * The brothers who celebrate their birthday that day open "Especially",
 	 * unless the group turns it off.
 	 */

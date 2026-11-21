@@ -47,6 +47,36 @@ $dfxpray_length    = mb_strlen( $dfxpray_digest['shareable'] );
 	?>
 </p>
 
+<?php $dfxpray_shared = DFXPRAY_Shares::get_instance()->today( $group_id ); ?>
+<div class="dfxpray-shared">
+	<?php if ( null !== $dfxpray_shared ) : ?>
+		<?php
+		$dfxpray_admin->form_open(
+			'mark_shared',
+			array(
+				'group_id' => $group_id,
+				'undo'     => 1,
+			)
+		);
+		?>
+			<p>
+				<?php
+				/* translators: %s: time of day. */
+				printf( esc_html__( 'Sent to the group today at %s.', 'dfx-prayer-intentions' ), esc_html( mysql2date( (string) get_option( 'time_format' ), $dfxpray_shared ) ) );
+				?>
+				<button type="submit" class="button-link"><?php esc_html_e( 'Undo', 'dfx-prayer-intentions' ); ?></button>
+			</p>
+		</form>
+	<?php else : ?>
+		<?php $dfxpray_admin->form_open( 'mark_shared', array( 'group_id' => $group_id ) ); ?>
+			<p>
+				<button type="submit" class="button button-primary"><?php esc_html_e( 'Mark as sent to the group', 'dfx-prayer-intentions' ); ?></button>
+				<span class="description"><?php esc_html_e( 'Once you have shared it: what comes after goes in the next message.', 'dfx-prayer-intentions' ); ?></span>
+			</p>
+		</form>
+	<?php endif; ?>
+</div>
+
 <?php $dfxpray_admin->form_open( 'send_digest_now', array( 'group_id' => $group_id ) ); ?>
 	<p><button type="submit" class="button"><?php esc_html_e( 'Generate and send now', 'dfx-prayer-intentions' ); ?></button></p>
 </form>

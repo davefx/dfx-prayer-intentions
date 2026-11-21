@@ -35,7 +35,7 @@ final class DFXPRAY_App_API {
 	/**
 	 * Panel actions the app may run.
 	 */
-	private const WRITES = array( 'save_intention', 'add_update', 'close', 'reopen', 'keep_active', 'approve', 'discard', 'set_priority', 'postpone', 'send_digest_now', 'save_member' );
+	private const WRITES = array( 'save_intention', 'add_update', 'close', 'reopen', 'keep_active', 'approve', 'discard', 'set_priority', 'postpone', 'send_digest_now', 'mark_shared', 'save_member' );
 
 	/**
 	 * Lists the app asks for, by status.
@@ -268,7 +268,15 @@ final class DFXPRAY_App_API {
 			return $this->forbidden();
 		}
 
-		return $this->success( array( 'text' => DFXPRAY_Index_Composer::get_instance()->compose( $group_id, $edition ) ) );
+		$shared = DFXPRAY_Shares::get_instance()->today( $group_id );
+
+		return $this->success(
+			array(
+				'text'      => DFXPRAY_Index_Composer::get_instance()->compose( $group_id, $edition ),
+				// When today's message was marked as sent to the group (H:i), or empty.
+				'shared_at' => null !== $shared ? substr( $shared, 11, 5 ) : '',
+			)
+		);
 	}
 
 	/**

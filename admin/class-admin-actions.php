@@ -52,6 +52,7 @@ final class DFXPRAY_Admin_Actions {
 		'regenerate_slug'           => 'group',
 		'test_channel'              => 'group',
 		'send_digest_now'           => 'group',
+		'mark_shared'               => 'group',
 		'invite_leader'             => 'group',
 		'withdraw_invitation'       => 'invitation',
 		'save_group'                => 'admin',
@@ -171,9 +172,7 @@ final class DFXPRAY_Admin_Actions {
 		return array(
 			'ok'      => true,
 			'code'    => 'ok',
-			'message' => 'close' === $action && is_int( $result )
-				? __( 'Intention closed. This is its thanksgiving: you can edit it here.', 'dfx-prayer-intentions' )
-				: $this->success_message( $action ),
+			'message' => $this->result_message( $action, $request, $result ),
 			'id'      => is_int( $result ) ? $result : null,
 		);
 	}
@@ -514,6 +513,22 @@ final class DFXPRAY_Admin_Actions {
 	}
 
 	/**
+	 * Mark today's message as sent to the group, or undo it.
+	 *
+	 * @param array $r Request.
+	 */
+	private function do_mark_shared( array $r ): bool {
+		$shares = DFXPRAY_Shares::get_instance();
+		if ( ! empty( $r['undo'] ) ) {
+			$shares->undo( (int) $r['group_id'] );
+		} else {
+			$shares->mark( (int) $r['group_id'] );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Invite someone to lead the group.
 	 *
 	 * @param array $r Request.
@@ -715,6 +730,24 @@ final class DFXPRAY_Admin_Actions {
 	}
 
 	/**
+	 * Message after a successful action, for the request it answered.
+	 *
+	 * @param string $action  Action.
+	 * @param array  $request Request.
+	 * @param mixed  $result  What the action returned.
+	 */
+	private function result_message( string $action, array $request, $result ): string {
+		if ( 'close' === $action && is_int( $result ) ) {
+			return __( 'Intention closed. This is its thanksgiving: you can edit it here.', 'dfx-prayer-intentions' );
+		}
+		if ( 'mark_shared' === $action && ! empty( $request['undo'] ) ) {
+			return __( 'Today’s message is no longer marked as sent.', 'dfx-prayer-intentions' );
+		}
+
+		return $this->success_message( $action );
+	}
+
+	/**
 	 * Message after a successful action.
 	 *
 	 * @param string $action Action.
@@ -743,6 +776,7 @@ final class DFXPRAY_Admin_Actions {
 			'regenerate_slug'           => __( 'The form has a new address. The old one no longer works.', 'dfx-prayer-intentions' ),
 			'test_channel'              => __( 'Test message sent.', 'dfx-prayer-intentions' ),
 			'send_digest_now'           => __( 'Digest generated and sent.', 'dfx-prayer-intentions' ),
+			'mark_shared'               => __( 'Today’s message is marked as sent to the group.', 'dfx-prayer-intentions' ),
 			'invite_leader'             => __( 'Invitation sent.', 'dfx-prayer-intentions' ),
 			'withdraw_invitation'       => __( 'Invitation withdrawn.', 'dfx-prayer-intentions' ),
 			'save_group'                => __( 'Group saved.', 'dfx-prayer-intentions' ),

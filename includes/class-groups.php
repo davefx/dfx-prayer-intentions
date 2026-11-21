@@ -183,6 +183,7 @@ final class DFXPRAY_Groups {
 		DFXPRAY_Log::get_instance()->delete_for_group( $id );
 		DFXPRAY_Members::get_instance()->delete_for_group( $id );
 		DFXPRAY_Invitations::get_instance()->delete_for_group( $id );
+		DFXPRAY_Shares::get_instance()->delete_for_group( $id );
 		delete_option( 'dfxpray_digest_' . $id );
 		delete_option( 'dfxpray_alerts_' . $id );
 		update_option( 'dfxpray_flush_rewrite', 1 );

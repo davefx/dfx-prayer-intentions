@@ -286,6 +286,27 @@ h2 {
 	color: var(--maroon);
 }
 
+/* Today's message, marked as sent to the group. */
+.dfx-shared {
+	margin: 12px 0;
+	font-size: 0.95em;
+}
+
+.dfx-shared .dfx-muted {
+	display: block;
+	margin-top: 6px;
+}
+
+.dfx-link {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--navy);
+	font: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+}
+
 .dfx-back {
 	margin-bottom: 10px;
 	padding: 4px 0;

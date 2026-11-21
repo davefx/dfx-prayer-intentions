@@ -156,6 +156,29 @@ test( 'the digest can be generated and sent on demand', async ( { page } ) => {
 	await expect( page.locator( '#dfxpray-digest-leaders' ) ).toHaveValue( /\*News of the last 24 hours\*\n• Carmen, madre de Luis: recién llegada/ );
 } );
 
+test( 'once today’s message is marked as sent to the group, a thanksgiving written down afterwards goes in the next one', async ( { page } ) => {
+	php( `DFXPRAY_Settings::get_instance()->save_group( ${ group.id }, array( 'index_layout' => 'proposals', 'daily_thanks_days' => 1 ) ); echo 1;` );
+	freeze( '2026-09-20 09:00' );
+	await login( page, 'leader1' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await page.getByRole( 'button', { name: 'Mark as sent to the group' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Today’s message is marked as sent to the group.' );
+	await expect( page.locator( '.dfxpray-shared' ) ).toContainText( 'Sent to the group today at' );
+
+	// Undoing and marking again.
+	await page.locator( '.dfxpray-shared' ).getByRole( 'button', { name: 'Undo' } ).click();
+	await expect( page.locator( '.notice-success' ) ).toContainText( 'Today’s message is no longer marked as sent.' );
+	await page.getByRole( 'button', { name: 'Mark as sent to the group' } ).click();
+
+	freeze( '2026-09-20 13:28' );
+	createIntention( group.id, { type: 'thanksgiving', relationship: '', beneficiary_name: 'Bea', summary: 'su operación salió bien', reference_date: '2026-09-20' } );
+
+	freeze( '2026-09-21 05:00' );
+	await page.goto( groupUrl( group.id, 'digest' ) );
+	await expect( page.locator( '#dfxpray-digest-shareable' ) ).toHaveValue( /• Bea: su operación salió bien/ );
+	await expect( page.getByRole( 'button', { name: 'Mark as sent to the group' } ) ).toBeVisible();
+} );
+
 test( 'without a time the digest goes out only when it is sent from the panel', async ( { page } ) => {
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'settings' ) );

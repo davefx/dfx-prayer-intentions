@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611203 · noviembre de 2026
+Versión 1.0.2611210 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611203 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611210 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -275,7 +275,7 @@ Se elige en «Formato del índice», en los ajustes.
 | «Por la salud de» | El tema Salud: solo los nombres, en una línea por persona, primero los del grupo |
 | «También por» | Temas General, Estudios y Económicos. Las que tienen el mismo resumen se juntan en una línea |
 | «Y también pedimos por» | El tema Actualidad |
-| «Damos gracias» | Las acciones de gracias, durante 1 día (configurable) |
+| «Damos gracias» | Las acciones de gracias, en 1 mensaje (configurable): el siguiente que se comparta después de anotarlas |
 | «Por nuestros difuntos» | Los fallecidos en los últimos 7 días (configurable) |
 
 Con «Solo la lista mensual», una intención no sale en el mensaje diario, pero sí en la lista mensual. Sirve para situaciones que se alargan sin noticias o para conocidos lejanos.
@@ -312,6 +312,8 @@ El bloque de líderes trae:
 - **«Novedades de las últimas 24 h»**.
 
 Arriba se indica si el resumen de hoy ya salió y a qué hora. El botón «Generar y enviar ahora» lo envía en el acto por los canales del grupo, aunque ya se hubiera enviado.
+
+**«Marcar como enviado al grupo».** Cuando hayas compartido el mensaje de hoy con el grupo, pulsa este botón (está también en la pantalla «Hoy» de la app). Queda «Enviado hoy al grupo a las …», con «Deshacer» por si te equivocas. Así el plugin sabe qué entró en cada mensaje: una acción de gracias anotada después de compartirlo sale en el siguiente, aunque se escriba esa misma tarde, y si un día no se comparte, nada se pierde. No depende de la hora del resumen por correo. Mientras un grupo no marque sus mensajes, las acciones de gracias salen el día en que se anotan.
 
 ![La pestaña «Resumen diario» con la versión para compartir y la de líderes, en el formato «Propuestas de oración»](img/07-resumen-diario.webp)
 
@@ -470,7 +472,7 @@ En la barra de abajo hay seis botones. Si diriges varios grupos, arriba hay un s
 
 | Pantalla | Qué hay |
 | --- | --- |
-| «Hoy» | El mensaje del día («Diario») o la «Lista mensual», con «Compartir» (abre WhatsApp u otra app) y «Copiar» |
+| «Hoy» | El mensaje del día («Diario») o la «Lista mensual», con «Compartir» (abre WhatsApp u otra app) y «Copiar». En el diario, «Marcar como enviado al grupo» para cuando ya lo hayas compartido (con «Deshacer») |
 | «Intenciones» | La lista con buscador y filtro: «Vigentes», «Por revisar» o «Cerrada». Las urgentes van resaltadas |
 | «Consultar» | A quién preguntar cómo sigue, agrupado por quien pidió, con un botón de WhatsApp que ya lleva escrita la pregunta |
 | «Miembros» | Los cumpleaños y aniversarios por meses, con el mes actual abierto y un botón para escribir por WhatsApp |

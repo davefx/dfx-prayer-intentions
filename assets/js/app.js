@@ -446,6 +446,29 @@
 				},
 				label
 			);
+		// The daily message, once shared with the group, is marked as sent:
+		// what reaches the list afterwards goes in the next one.
+		const mark = async ( undo ) => {
+			notify( await write( 'mark_shared', Object.assign( { group_id: state.group }, undo ? { undo: 1 } : {} ) ) );
+			today();
+		};
+		let shared = null;
+		if ( 'daily' === state.edition && ! result.offline ) {
+			shared = result.data.shared_at
+				? h(
+						'p',
+						{ class: 'dfx-shared' },
+						S.sharedAt.replace( '%s', result.data.shared_at ),
+						' ',
+						h( 'button', { type: 'button', class: 'dfx-link', onclick: () => mark( true ) }, S.undo )
+				  )
+				: h(
+						'p',
+						{ class: 'dfx-shared' },
+						h( 'button', { type: 'button', class: 'dfx-button', onclick: () => mark( false ) }, S.markShared ),
+						h( 'span', { class: 'dfx-muted' }, ' ' + S.markSharedHelp )
+				  );
+		}
 		frame(
 			installBanner(),
 			result.offline ? h( 'p', { class: 'dfx-notice' }, S.offline ) : null,
@@ -456,6 +479,7 @@
 				navigator.share ? h( 'button', { type: 'button', class: 'dfx-button is-primary', onclick: () => navigator.share( { text } ).catch( () => {} ) }, S.share ) : null,
 				copy
 			),
+			shared,
 			h( 'article', { class: 'dfx-card dfx-paper' }, h( 'pre', { class: 'dfx-message', id: 'dfx-message' }, text ) )
 		);
 	}

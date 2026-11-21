@@ -137,6 +137,12 @@ class AppApiTest extends DFXPRAY_Test_Case {
 
 		$this->assertTrue( $result['ok'] );
 		$this->assertSame( DFXPRAY_Index_Composer::get_instance()->compose( $this->mine ), $result['data']['text'] );
+		$this->assertSame( '', $result['data']['shared_at'] );
+
+		// Once marked as sent to the group, the app says when.
+		$this->freeze_time( '2026-09-20 09:05' );
+		$this->assertTrue( $this->call( 'mark_shared', array( 'group_id' => $this->mine ) )['ok'] );
+		$this->assertSame( '09:05', $this->call( 'index', array( 'group_id' => $this->mine ) )['data']['shared_at'] );
 
 		$monthly = $this->call(
 			'index',
@@ -480,6 +486,8 @@ class AppApiTest extends DFXPRAY_Test_Case {
 		$this->assertSame( 'forbidden', $this->call( 'members', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'digest', array( 'group_id' => $this->other ) )['code'] );
 		$this->assertSame( 'forbidden', $this->call( 'send_digest_now', array( 'group_id' => $this->other ) )['code'] );
+		$this->assertSame( 'forbidden', $this->call( 'mark_shared', array( 'group_id' => $this->other ) )['code'] );
+		$this->assertNull( DFXPRAY_Shares::get_instance()->today( $this->other ) );
 		$this->assertNull( DFXPRAY_Scheduler::get_instance()->get_stored_digest( $this->other ) );
 		$this->assertSame(
 			'forbidden',
