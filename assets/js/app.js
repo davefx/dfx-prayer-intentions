@@ -76,6 +76,11 @@
 		return h( 'label', { class: 'dfx-check' }, control, ' ', label );
 	}
 
+	// High and immediate priority open "Especially".
+	function urgent( intention ) {
+		return 'high' === intention.priority || 'immediate' === intention.priority;
+	}
+
 	function select( name, options, value ) {
 		return h( 'select', { name }, Object.entries( options ).map( ( [ key, text ] ) => h( 'option', { value: key, selected: key === value ? 'selected' : null }, text ) ) );
 	}
@@ -501,7 +506,7 @@
 					{},
 					h(
 						'button',
-						{ type: 'button', class: 'dfx-item' + ( 'high' === item.priority ? ' is-urgent' : '' ), onclick: () => detail( item.id ) },
+						{ type: 'button', class: 'dfx-item' + ( urgent( item ) ? ' is-urgent' : '' ), onclick: () => detail( item.id ) },
 						leaf( item.created_at ),
 						h(
 							'span',
@@ -728,7 +733,9 @@
 					'div',
 					{ class: 'dfx-actions' },
 					'review' === it.status ? h( 'button', { type: 'button', class: 'dfx-button is-primary', onclick: () => act( id, 'keep_active', {} ) }, S.stillCurrent ) : null,
-					h( 'button', { type: 'button', class: 'dfx-button', onclick: () => act( id, 'set_priority', { priority: 'high' === it.priority ? 'normal' : 'high' } ) }, 'high' === it.priority ? S.markNormal : S.markHigh )
+					...[ [ 'immediate', S.markImmediate ], [ 'high', S.markHigh ], [ 'normal', S.markNormal ] ]
+						.filter( ( [ priority ] ) => priority !== ( it.priority || 'normal' ) )
+						.map( ( [ priority, label ] ) => h( 'button', { type: 'button', class: 'dfx-button', onclick: () => act( id, 'set_priority', { priority } ) }, label ) )
 				),
 				form(
 					( data ) => act( id, 'postpone', { date: data.get( 'date' ) } ),
@@ -756,7 +763,7 @@
 			h( 'button', { type: 'button', class: 'dfx-back', onclick: () => history.back() }, '← ' + S.back ),
 			h(
 				'section',
-				{ class: 'dfx-hero' + ( 'high' === it.priority ? ' is-urgent' : '' ) },
+				{ class: 'dfx-hero' + ( urgent( it ) ? ' is-urgent' : '' ) },
 				h( 'p', { class: 'dfx-created' }, S.addedOn + ' ' + formatDate( it.created_at, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } ) ),
 				h( 'h2', { class: 'dfx-line', id: 'dfx-line' }, lineParts( result.data.line ) ),
 				h( 'p', { class: 'dfx-requester', id: 'dfx-requester' }, S.requestedBy + ' ' + it.requester_name + ( it.requester_contact ? ' · ' + it.requester_contact : '' ) ),
@@ -862,7 +869,7 @@
 				h( 'div', { class: 'dfx-preview' }, h( 'span', { class: 'dfx-label' }, S.willAppear ), preview, previewNote ),
 				radios( 'scope', C.scopes, it.scope || 'daily' ),
 				field( S.topic, select( 'topic', C.topics, it.topic || '' ) ),
-				box( 'priority', S.urgent, 'high' === it.priority ),
+				field( S.priority, select( 'priority', C.priorities, it.priority || 'normal' ) ),
 				h(
 					'details',
 					{ class: 'dfx-more' },
@@ -960,7 +967,6 @@
 			intention[ key ] = data.get( key ) ? '1' : '';
 		} );
 		intention.beneficiary_is_requester = 'self' === data.get( 'beneficiary_is_requester' ) ? '1' : '';
-		intention.priority = data.get( 'priority' ) ? 'high' : 'normal';
 		return intention;
 	}
 

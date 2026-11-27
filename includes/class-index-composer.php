@@ -204,7 +204,7 @@ final class DFXPRAY_Index_Composer {
 	/**
 	 * Lines of the "prayer proposals" layout, the daily message: in
 	 * "Especially", the news (registered, approved, reopened or with a news
-	 * update since the day before): the departed of the day before and the anniversaries of
+	 * update since the day before): the immediate ones (any kind), the departed of the day before and the anniversaries of
 	 * a death, then the birthdays, then the other news and the urgent ones
 	 * (high priority), each block apart; the people whose health we pray for (only their
 	 * names, our brothers first), the rest, current affairs, the thanksgivings
@@ -220,7 +220,7 @@ final class DFXPRAY_Index_Composer {
 		$revived = $this->revived_since( $group_id, $since );
 		// News from the day it reaches the list: approved, or written down by a leader, however old the request.
 		$arrived = static fn( $i ) => substr( max( (string) $i['created_at'], (string) $i['activated_at'] ), 0, 10 );
-		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && ( $arrived( $i ) >= $since || isset( $revived[ $i['id'] ] ) );
+		$is_news = static fn( $i ) => 'thanksgiving' !== $i['type'] && 'immediate' !== $i['priority'] && ( $arrived( $i ) >= $since || isset( $revived[ $i['id'] ] ) );
 		$news    = $this->sort( array_values( array_filter( $intentions, $is_news ) ) );
 		$buckets = $this->buckets( array_values( array_filter( $intentions, static fn( $i ) => ! $is_news( $i ) ) ), $this->departed_since( 'daily_deceased_days', $group_id ) );
 		// A thanksgiving goes in as many daily messages as the setting says (1, only one),
@@ -238,7 +238,7 @@ final class DFXPRAY_Index_Composer {
 
 		return array(
 			'urgent'   => $this->apart(
-				array_merge( $this->grouped_lines( $news_departed ), $this->anniversary_lines( $group_id ), $this->intention_anniversary_lines( $group_id ) ),
+				array_merge( $this->grouped_lines( $buckets['first'] ), $this->grouped_lines( $news_departed ), $this->anniversary_lines( $group_id ), $this->intention_anniversary_lines( $group_id ) ),
 				$this->birthday_lines( $group_id ),
 				array_merge( $this->grouped_lines( $news_serious ), $this->grouped_lines( $buckets['urgent'] ) )
 			),
@@ -294,7 +294,7 @@ final class DFXPRAY_Index_Composer {
 		$lines   = fn( array $items ): array => array_map( fn( $intention ) => $this->line( $intention, false ), $items );
 
 		return array(
-			'urgent'   => $lines( $buckets['urgent'] ),
+			'urgent'   => $lines( array_merge( $buckets['first'], $buckets['urgent'] ) ),
 			'sick'     => $lines( $buckets['health'] ),
 			'studies'  => array_merge( $lines( $buckets['studies'] ), array( __( 'For those who study, sit exams or look for work', 'dfx-prayer-intentions' ) ) ),
 			'economic' => $lines( $buckets['economic'] ),
@@ -433,7 +433,8 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * Sort intentions into the buckets of the messages: urgent ones, then
+	 * Sort intentions into the buckets of the messages: the immediate ones
+	 * (whatever their kind or age), urgent ones, then
 	 * by topic, thanksgivings, and the departed since a day.
 	 *
 	 * @param array[] $intentions Intentions.
@@ -441,10 +442,12 @@ final class DFXPRAY_Index_Composer {
 	 * @return array<string, array[]>
 	 */
 	private function buckets( array $intentions, string $since ): array {
-		$buckets = array_fill_keys( array( 'urgent', 'health', 'studies', 'economic', 'general', 'current', 'thanks', 'departed' ), array() );
+		$buckets = array_fill_keys( array( 'first', 'urgent', 'health', 'studies', 'economic', 'general', 'current', 'thanks', 'departed' ), array() );
 
 		foreach ( $this->sort( $intentions ) as $intention ) {
-			if ( 'deceased' === $intention['type'] ) {
+			if ( 'immediate' === $intention['priority'] ) {
+				$buckets['first'][] = $intention;
+			} elseif ( 'deceased' === $intention['type'] ) {
 				if ( (string) $intention['reference_date'] >= $since ) {
 					$buckets['departed'][] = $intention;
 				}
@@ -554,7 +557,7 @@ final class DFXPRAY_Index_Composer {
 	}
 
 	/**
-	 * High priority first, then by reference date (activation date when none).
+	 * Higher priority first, then by reference date (activation date when none).
 	 *
 	 * @param array[] $intentions Intentions.
 	 * @return array[]
@@ -563,7 +566,7 @@ final class DFXPRAY_Index_Composer {
 		usort(
 			$intentions,
 			static function ( $a, $b ) {
-				$priority = ( 'high' === $b['priority'] ) <=> ( 'high' === $a['priority'] );
+				$priority = DFXPRAY_Intentions::priority_rank( $b ) <=> DFXPRAY_Intentions::priority_rank( $a );
 				if ( 0 !== $priority ) {
 					return $priority;
 				}

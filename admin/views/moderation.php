@@ -52,6 +52,7 @@ foreach ( $dfxpray_pending as $dfxpray_item ) :
 					<select name="priority">
 						<option value="normal"><?php esc_html_e( 'Normal', 'dfx-prayer-intentions' ); ?></option>
 						<option value="high"><?php esc_html_e( 'High', 'dfx-prayer-intentions' ); ?></option>
+						<option value="immediate"><?php esc_html_e( 'Immediate', 'dfx-prayer-intentions' ); ?></option>
 					</select>
 				</label>
 			</p>

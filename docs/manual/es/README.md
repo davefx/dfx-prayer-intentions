@@ -2,13 +2,13 @@
 
 English version: [DFX Prayer Intentions User Manual](../en/README.md)
 
-Versión 1.0.2611211 · noviembre de 2026
+Versión 1.0.2611270 · noviembre de 2026
 
 Este manual también está en el propio panel, en «Intenciones de oración › Manual», con sus capturas.
 
 ## Qué es y para quién
 
-DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611211 del plugin para WordPress y su app para el móvil.
+DFX Prayer Intentions ayuda a los responsables de un grupo de oración a llevar las intenciones que reciben, decidir cómo se nombra a cada persona y compartir cada día un mensaje con el grupo. Este manual cubre la versión 1.0.2611270 del plugin para WordPress y su app para el móvil.
 
 Las capturas de este manual son de una web de pruebas con datos inventados.
 
@@ -193,7 +193,7 @@ La ficha tiene cinco pasos, los mismos que en la app. Los campos que no aplican 
 1. **«Quién lo pide»**: «Nombre completo», «Cómo le llamamos» (un apodo o un nombre compuesto: Toni, Juan Tomás, Javi Cavallé), «WhatsApp», «Es de nuestro grupo», «Cuándo lo pidió» y, si ya está en la lista, «Cuándo entró en la lista». Mientras es nueva, una intención sale en «Especialmente»; para sacarla antes (por ejemplo, tras una operación que ya pasó), pon en «Cuándo entró en la lista» un día anterior. No puede ser posterior a hoy ni anterior a «Cuándo lo pidió».
 2. **«Por quién rezamos»**: «Por sí mismo», o el nombre, cómo le llamamos, «Qué es de quien lo pide» («madre de») y «Es de nuestro grupo».
 3. **«Qué pasa»**: el tipo («Situación», «Algo con fecha», «Fallecimiento», «Acción de gracias»), la fecha y la hora, «Recordarlo cada año» para los difuntos, las «Fechas señaladas» (funeral, misa de mes, cita médica…) y «Lo que nos contó», que nunca se publica.
-4. **«Cómo sale en el mensaje»**: el «Resumen», una vista previa de la línea, el mensaje («Mensaje diario» o «Solo la lista mensual»), el tema (General, Salud, Estudios y trabajo, Económicos o legales, Actualidad), la prioridad («Urgente: abre “Especialmente”») y, plegado, «Discreción y nombres».
+4. **«Cómo sale en el mensaje»**: el «Resumen», una vista previa de la línea, el mensaje («Mensaje diario» o «Solo la lista mensual»), el tema (General, Salud, Estudios y trabajo, Económicos o legales, Actualidad), la prioridad («Urgente: abre “Especialmente”» o «Inmediata: lo primero de “Especialmente”, antes de los cumpleaños») y, plegado, «Discreción y nombres».
 5. **«Seguimiento»**: «Volver a mirarla el» (la próxima revisión), «O rezar solo hasta el» (deja de salir y se cierra sola al día siguiente) y «Pendiente de preguntar», con el botón para preguntar por WhatsApp.
 
 En «Discreción y nombres» se puede poner una descripción en lugar del nombre, como «La hija de N.H. Juan». Sustituye toda la descripción de la persona, no admite apellidos con discreción de nombre de pila y nunca puede revelar más de lo que permite el nivel.
@@ -213,6 +213,7 @@ En el lateral de la ficha:
 | Acción | Qué hace |
 | --- | --- |
 | «Marcar prioridad alta» / «Volver a prioridad normal» | La sube a «Especialmente» o la devuelve a su sitio |
+| «Marcar prioridad inmediata» | La pone lo primero de «Especialmente», junto a los difuntos que son noticia y antes de los cumpleaños, sea del tipo que sea (también un difunto o una acción de gracias) y hasta que le quites la prioridad |
 | «Sigue vigente» | Para una intención en revisión: vuelve a activa con una nueva fecha de revisión |
 | «Posponer la revisión al» | Mueve la revisión a una fecha futura |
 | «Acuse enviado» | Anota que ya se respondió a quien pidió |
@@ -271,7 +272,7 @@ Se elige en «Formato del índice», en los ajustes.
 
 | Sección | Qué entra |
 | --- | --- |
-| «Especialmente» | Los difuntos que son noticia, los aniversarios de fallecimiento, los cumpleaños de los miembros, las novedades graves del último día y las urgentes |
+| «Especialmente» | Las intenciones de prioridad inmediata, los difuntos que son noticia, los aniversarios de fallecimiento, los cumpleaños de los miembros, las novedades graves del último día y las urgentes |
 | «Por la salud de» | El tema Salud: solo los nombres, en una línea por persona, primero los del grupo |
 | «También por» | Temas General, Estudios y Económicos. Las que tienen el mismo resumen se juntan en una línea |
 | «Y también pedimos por» | El tema Actualidad |

@@ -110,11 +110,19 @@ test( 'the list shows the urgent ones first, then the most recent', async ( { pa
 	createIntention( group.id, { beneficiary_name: 'Ana', summary: 'antigua', asked_on: '2026-09-01' } );
 	createIntention( group.id, { beneficiary_name: 'Berta', summary: 'reciente', asked_on: '2026-11-10' } );
 	createIntention( group.id, { beneficiary_name: 'Clara', summary: 'urgente', asked_on: '2026-10-01', priority: 'high' } );
+	createIntention( group.id, { beneficiary_name: 'Dora', summary: 'inmediata', asked_on: '2026-08-01', priority: 'immediate' } );
 	await login( page, 'leader1' );
 	await page.goto( APP );
 	await page.getByRole( 'button', { name: 'Intentions' } ).click();
 
-	await expect( page.locator( '.dfx-item .dfx-summary' ) ).toHaveText( [ 'urgente', 'reciente', 'antigua' ] );
+	await expect( page.locator( '.dfx-item .dfx-summary' ) ).toHaveText( [ 'inmediata', 'urgente', 'reciente', 'antigua' ] );
+	await expect( page.locator( '.dfx-item', { hasText: 'Dora' } ) ).toHaveClass( /is-urgent/ );
+
+	await page.locator( '.dfx-item', { hasText: 'Ana' } ).click();
+	await page.getByRole( 'button', { name: 'Mark as immediate priority' } ).click();
+	await expect( page.getByRole( 'button', { name: 'Back to normal priority' } ) ).toBeVisible();
+	await page.getByRole( 'button', { name: 'Edit' } ).click();
+	await expect( page.getByLabel( 'Priority' ) ).toHaveValue( 'immediate' );
 } );
 
 test( 'daily message and monthly list; the requester can be asked by WhatsApp', async ( { page } ) => {

@@ -917,6 +917,109 @@ class IndexComposerTest extends DFXPRAY_Test_Case {
 	}
 
 	/**
+	 * Immediate priority puts an intention first of all in "Especially",
+	 * with the departed just added and before the birthdays, whatever its
+	 * kind and however old, and nowhere else; in the monthly list too.
+	 */
+	public function test_immediate_priority_goes_first_of_all(): void {
+		DFXPRAY_Settings::get_instance()->save_group(
+			$this->group,
+			array(
+				'index_layout'  => 'proposals',
+				'member_prefix' => 'N.H.',
+				'index_header'  => '*Daily*',
+				'index_footer'  => '',
+			)
+		);
+		DFXPRAY_Members::get_instance()->create(
+			$this->group,
+			array(
+				'name'        => 'Teo Martín',
+				'birth_day'   => '24',
+				'birth_month' => '9',
+			)
+		);
+
+		$this->freeze_time( '2026-09-01 10:00' );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Rosa',
+				'relationship'     => '',
+				'summary'          => 'cáncer',
+				'priority'         => 'immediate',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Juan',
+				'relationship'     => '',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-01',
+				'summary'          => 'descanse en paz',
+				'priority'         => 'immediate',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Lucía',
+				'relationship'     => '',
+				'type'             => 'thanksgiving',
+				'reference_date'   => '2026-09-01',
+				'summary'          => 'ya tiene el alta',
+				'priority'         => 'immediate',
+			)
+		);
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Antonio',
+				'relationship'     => '',
+				'summary'          => 'tumor',
+				'priority'         => 'high',
+			)
+		);
+		$this->freeze_time( '2026-09-23 21:00' );
+		$this->make_active(
+			$this->group,
+			array(
+				'beneficiary_name' => 'Pedro',
+				'relationship'     => '',
+				'type'             => 'deceased',
+				'reference_date'   => '2026-09-23',
+				'summary'          => 'descanse en paz',
+			)
+		);
+		$this->freeze_time( '2026-09-24 05:00' );
+
+		$this->assertSame(
+			implode(
+				"\n",
+				array(
+					'*Daily*',
+					'',
+					'*Especially*',
+					'• Rosa: cáncer',
+					'• Juan: descanse en paz († 01/09)',
+					'• Lucía: ya tiene el alta',
+					'• Pedro: descanse en paz († 23/09)',
+					'',
+					'• N.H. Teo: on his birthday',
+					'',
+					'• Antonio: tumor',
+				)
+			),
+			DFXPRAY_Index_Composer::get_instance()->compose( $this->group )
+		);
+
+		$monthly = DFXPRAY_Index_Composer::get_instance()->compose( $this->group, 'monthly' );
+		$this->assertMatchesRegularExpression( '/Especially\*\n• Rosa: cáncer\n• Juan: descanse en paz \(† 01\/09\)\n• Lucía: ya tiene el alta\n• Antonio: tumor\n/', $monthly );
+		$this->assertSame( 1, substr_count( $monthly, 'Lucía' ) );
+	}
+
+	/**
 	 * Members who would show the same name get their surname: "Juan Carlos
 	 * Cuenca", "Javier López"; the others keep theirs.
 	 */

@@ -4,7 +4,7 @@ Tags: prayer, church, parish, prayer requests, whatsapp
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.2611211
+Stable tag: 1.0.2611270
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -85,6 +85,9 @@ Each request carries an `X-DFXPray-Signature` header: `sha256=` followed by the 
 4. The monthly digest.
 
 == Changelog ==
+
+= 1.0.2611270 =
+* Immediate priority, above high: the intention goes first of all in "Especially", with the departed just added and before the birthdays, whatever its kind (a departed person or a thanksgiving too) and for as long as it has it; in the monthly list too. In the panel ("Mark as immediate priority", the Priority field and the filter) and in the app (its button and a Priority field instead of the urgent box).
 
 = 1.0.2611211 =
 * Moving the day an intention reached the list to today no longer leaves it at a later hour of today: it becomes now, so a thanksgiving moved to today does not appear again in the next message after today's was shared.

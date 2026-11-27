@@ -58,6 +58,7 @@ $dfxpray_rows = DFXPRAY_Intentions::get_instance()->query( $group_id, array_filt
 	</select>
 	<select name="priority" aria-label="<?php esc_attr_e( 'Priority', 'dfx-prayer-intentions' ); ?>">
 		<option value=""><?php esc_html_e( 'Any priority', 'dfx-prayer-intentions' ); ?></option>
+		<option value="immediate" <?php selected( $dfxpray_filters['priority'], 'immediate' ); ?>><?php esc_html_e( 'Immediate', 'dfx-prayer-intentions' ); ?></option>
 		<option value="high" <?php selected( $dfxpray_filters['priority'], 'high' ); ?>><?php esc_html_e( 'High', 'dfx-prayer-intentions' ); ?></option>
 		<option value="normal" <?php selected( $dfxpray_filters['priority'], 'normal' ); ?>><?php esc_html_e( 'Normal', 'dfx-prayer-intentions' ); ?></option>
 	</select>
@@ -85,7 +86,7 @@ $dfxpray_rows = DFXPRAY_Intentions::get_instance()->query( $group_id, array_filt
 		<?php foreach ( $dfxpray_rows as $dfxpray_row ) : ?>
 			<tr>
 				<td>
-					<?php echo 'high' === $dfxpray_row['priority'] ? '❗ ' : ''; ?>
+					<?php echo esc_html( DFXPRAY_Formatter::get_instance()->priority_mark( $dfxpray_row ) ); ?>
 					<a href="
 					<?php
 					echo esc_url(

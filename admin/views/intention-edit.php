@@ -294,8 +294,9 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 						<th scope="row"><label for="dfxpray-priority"><?php esc_html_e( 'Priority', 'dfx-prayer-intentions' ); ?></label></th>
 						<td>
 							<select id="dfxpray-priority" name="intention[priority]">
-								<option value="normal" <?php selected( $dfxpray_v['priority'], 'normal' ); ?>><?php esc_html_e( 'Normal', 'dfx-prayer-intentions' ); ?></option>
-								<option value="high" <?php selected( $dfxpray_v['priority'], 'high' ); ?>><?php esc_html_e( 'Urgent: it opens “Especially”', 'dfx-prayer-intentions' ); ?></option>
+								<?php foreach ( DFXPRAY_Intentions::get_instance()->priority_labels() as $dfxpray_key => $dfxpray_label ) : ?>
+									<option value="<?php echo esc_attr( $dfxpray_key ); ?>" <?php selected( $dfxpray_v['priority'], $dfxpray_key ); ?>><?php echo esc_html( $dfxpray_label ); ?></option>
+								<?php endforeach; ?>
 							</select>
 						</td>
 					</tr>
@@ -463,16 +464,24 @@ $dfxpray_others = array_diff( $dfxpray_perms->group_ids_for_user(), array( $dfxp
 				<h2><?php esc_html_e( 'Quick actions', 'dfx-prayer-intentions' ); ?></h2>
 
 				<?php
-				$dfxpray_admin->form_open(
-					'set_priority',
-					array(
-						'intention_id' => $id,
-						'priority'     => 'high' === $dfxpray_intention['priority'] ? 'normal' : 'high',
-					)
+				$dfxpray_priority_buttons = array(
+					'immediate' => __( 'Mark as immediate priority', 'dfx-prayer-intentions' ),
+					'high'      => __( 'Mark as high priority', 'dfx-prayer-intentions' ),
+					'normal'    => __( 'Back to normal priority', 'dfx-prayer-intentions' ),
 				);
-				?>
-					<button type="submit" class="button"><?php echo 'high' === $dfxpray_intention['priority'] ? esc_html__( 'Back to normal priority', 'dfx-prayer-intentions' ) : esc_html__( 'Mark as high priority', 'dfx-prayer-intentions' ); ?></button>
+				unset( $dfxpray_priority_buttons[ $dfxpray_intention['priority'] ] );
+				foreach ( $dfxpray_priority_buttons as $dfxpray_priority => $dfxpray_label ) :
+					$dfxpray_admin->form_open(
+						'set_priority',
+						array(
+							'intention_id' => $id,
+							'priority'     => $dfxpray_priority,
+						)
+					);
+					?>
+					<button type="submit" class="button"><?php echo esc_html( $dfxpray_label ); ?></button>
 				</form>
+				<?php endforeach; ?>
 
 				<?php if ( 'review' === $dfxpray_intention['status'] ) : ?>
 					<?php $dfxpray_admin->form_open( 'keep_active', array( 'intention_id' => $id ) ); ?>

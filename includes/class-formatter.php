@@ -368,7 +368,7 @@ final class DFXPRAY_Formatter {
 	 * @param array $intention Intention.
 	 */
 	public function priority_mark( array $intention ): string {
-		return 'high' === $intention['priority'] ? '❗ ' : '';
+		return DFXPRAY_Intentions::priority_rank( $intention ) > 0 ? '❗ ' : '';
 	}
 
 	/**

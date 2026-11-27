@@ -94,6 +94,35 @@ final class DFXPRAY_Intentions {
 	}
 
 	/**
+	 * Priorities, from the lowest: high ones open "Especially"; immediate
+	 * ones go first of all in it, with the departed just added and before
+	 * the birthdays, whatever their kind.
+	 */
+	public const PRIORITIES = array( 'normal', 'high', 'immediate' );
+
+	/**
+	 * Names of the priorities, for the forms.
+	 *
+	 * @return array<string, string>
+	 */
+	public function priority_labels(): array {
+		return array(
+			'normal'    => __( 'Normal', 'dfx-prayer-intentions' ),
+			'high'      => __( 'Urgent: it opens “Especially”', 'dfx-prayer-intentions' ),
+			'immediate' => __( 'Immediate: first of all in “Especially”, before the birthdays', 'dfx-prayer-intentions' ),
+		);
+	}
+
+	/**
+	 * How high a priority is: 0 normal, 1 high, 2 immediate.
+	 *
+	 * @param array $intention Intention.
+	 */
+	public static function priority_rank( array $intention ): int {
+		return max( 0, (int) array_search( (string) ( $intention['priority'] ?? 'normal' ), self::PRIORITIES, true ) );
+	}
+
+	/**
 	 * Maximum length of the index summary.
 	 */
 	public const SUMMARY_MAX_LENGTH = 100;
@@ -648,11 +677,11 @@ final class DFXPRAY_Intentions {
 	 * Set the priority.
 	 *
 	 * @param int    $id       Intention ID.
-	 * @param string $priority 'normal' or 'high'.
+	 * @param string $priority 'normal', 'high' or 'immediate'.
 	 * @return true|WP_Error
 	 */
 	public function set_priority( int $id, string $priority ) {
-		if ( ! in_array( $priority, array( 'normal', 'high' ), true ) ) {
+		if ( ! in_array( $priority, self::PRIORITIES, true ) ) {
 			return new WP_Error( 'dfxpray_priority_invalid', __( 'Unknown priority.', 'dfx-prayer-intentions' ) );
 		}
 
@@ -782,7 +811,7 @@ final class DFXPRAY_Intentions {
 		$limit    = isset( $args['limit'] ) ? max( 1, (int) $args['limit'] ) : 500;
 		$values[] = $limit;
 
-		$order = empty( $args['urgent_first'] ) ? 'created_at DESC, id DESC' : "priority = 'high' DESC, created_at DESC, id DESC";
+		$order = empty( $args['urgent_first'] ) ? 'created_at DESC, id DESC' : "FIELD( priority, 'high', 'immediate' ) DESC, created_at DESC, id DESC";
 		$sql   = 'SELECT * FROM %i WHERE ' . implode( ' AND ', $where ) . ' ORDER BY ' . $order . ' LIMIT %d';
 		$rows  = $wpdb->get_results( $wpdb->prepare( $sql, $values ), ARRAY_A ); // phpcs:ignore WordPress.DB, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $sql only holds placeholders.
 
@@ -1055,7 +1084,7 @@ final class DFXPRAY_Intentions {
 			);
 		}
 
-		if ( ! in_array( $r['priority'], array( 'normal', 'high' ), true ) ) {
+		if ( ! in_array( $r['priority'], self::PRIORITIES, true ) ) {
 			return new WP_Error( 'dfxpray_priority_invalid', __( 'Unknown priority.', 'dfx-prayer-intentions' ) );
 		}
 

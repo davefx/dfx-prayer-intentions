@@ -2,13 +2,13 @@
 
 Versión en español: [Manual de DFX Prayer Intentions](../es/README.md)
 
-Version 1.0.2611211 · November 2026
+Version 1.0.2611270 · November 2026
 
 This manual is also in the panel itself, under "Prayer intentions › Manual", with its screenshots.
 
 ## What it is and who it is for
 
-DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611211 of the WordPress plugin and of its app for phones.
+DFX Prayer Intentions helps the leaders of a prayer group keep track of the intentions they receive, decide how each person is named, and share a message with the group every day. This manual covers version 1.0.2611270 of the WordPress plugin and of its app for phones.
 
 The screenshots in this manual come from a test site with made-up data.
 
@@ -193,7 +193,7 @@ The card has five steps, the same as in the app. Fields that do not apply to the
 1. **"Who asks"**: "Full name", "How we call them" (a nickname or a compound name: Toni, Juan Tomás, Javi Cavallé), "WhatsApp", "One of our group", "When they asked" and, once it is on the list, "When it reached the list". While it is new, an intention goes in "Especially"; to take it out sooner (for instance, after an operation that is already over), set "When it reached the list" to an earlier day. It cannot be after today nor before "When they asked".
 2. **"Who we pray for"**: "For themselves", or the name, how we call them, "What they are to the requester" ("mother of") and "One of our group".
 3. **"What is happening"**: the kind ("A situation", "Something with a date", "A death", "A thanksgiving"), the date and the time, "Remember it every year" for the departed, the "Key dates" (funeral, month's mind Mass, medical appointment…) and "What they told us", which is never published.
-4. **"How it appears in the message"**: the "Summary", a preview of the line, the message ("Daily message" or "Only the monthly list"), the topic (General, Health, Studies, exams and work, Economic or legal problems, Current affairs), the priority ("Urgent: it opens “Especially”") and, folded, "Discretion and names".
+4. **"How it appears in the message"**: the "Summary", a preview of the line, the message ("Daily message" or "Only the monthly list"), the topic (General, Health, Studies, exams and work, Economic or legal problems, Current affairs), the priority ("Urgent: it opens “Especially”" or "Immediate: first of all in “Especially”, before the birthdays") and, folded, "Discretion and names".
 5. **"Follow-up"**: "Look at it again on" (the next review), "Or pray for it only until" (it stops appearing and closes by itself the next day) and "Pending to ask", with the button to ask by WhatsApp.
 
 In "Discretion and names" you can write a description instead of the name, such as "Bro. John's daughter". It replaces the whole description of the person, does not accept surnames with first-name discretion, and can never reveal more than the level allows.
@@ -213,6 +213,7 @@ On the side of the card:
 | Action | What it does |
 | --- | --- |
 | "Mark as high priority" / "Back to normal priority" | Moves it up to "Especially" or back to its place |
+| "Mark as immediate priority" | Puts it first of all in "Especially", with the departed who are news and before the birthdays, whatever its kind (a departed person or a thanksgiving too) and until you take the priority away |
 | "Still current" | For an intention in review: it goes back to active with a new review date |
 | "Postpone review to" | Moves the review to a later date |
 | "Acknowledgement sent" | Notes that the person who asked has already been answered |
@@ -271,7 +272,7 @@ It is chosen in "Index layout", in the settings.
 
 | Section | What goes in |
 | --- | --- |
-| "Especially" | The departed who are news, death anniversaries, members' birthdays, serious news from the last day, and urgent intentions |
+| "Especially" | Intentions with immediate priority, the departed who are news, death anniversaries, members' birthdays, serious news from the last day, and urgent intentions |
 | "For the health of" | The Health topic: only the names, in one line for everyone, those of the group first |
 | "Also for" | The General, Studies and Economic topics. Those with the same summary are joined in one line |
 | "We also pray for" | The Current affairs topic |

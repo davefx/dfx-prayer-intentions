@@ -51,8 +51,11 @@ test( 'quick actions: priority, acknowledgement, postponement', async ( { page }
 	await login( page, 'leader1' );
 	await page.goto( groupUrl( group.id, 'intentions', { view: 'edit', id: id } ) );
 
-	await page.getByRole( 'button', { name: 'Mark as high priority' } ).click();
+	await page.getByRole( 'button', { name: 'Mark as immediate priority' } ).click();
 	await expect( page.locator( '.dfxpray-preview code' ) ).toHaveText( '❗ Carmen, madre de Luis: quimioterapia' );
+	await expect( page.getByLabel( 'Priority' ) ).toHaveValue( 'immediate' );
+	await page.getByRole( 'button', { name: 'Mark as high priority' } ).click();
+	await expect( page.getByLabel( 'Priority' ) ).toHaveValue( 'high' );
 
 	await page.getByRole( 'button', { name: 'Acknowledgement sent' } ).click();
 	await expect( page.locator( '.dfxpray-timeline li', { hasText: 'Acknowledgement sent to the requester.' } ) ).toContainText( 'Contact' );

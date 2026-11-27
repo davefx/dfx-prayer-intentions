@@ -780,4 +780,7 @@ T = {
 "Undo": "Deshacer",
 "Mark as sent to the group": "Marcar como enviado al grupo",
 "Once you have shared it: what comes after goes in the next message.": "Púlsalo cuando lo hayas compartido: lo que llegue después irá en el siguiente mensaje.",
+"Immediate: first of all in “Especially”, before the birthdays": "Inmediata: lo primero de «Especialmente», antes de los cumpleaños",
+"Mark as immediate priority": "Marcar prioridad inmediata",
+"Immediate": "Inmediata",
 }

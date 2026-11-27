@@ -942,6 +942,8 @@ class IntentionsTest extends DFXPRAY_Test_Case {
 	public function test_quick_actions(): void {
 		$id = $this->make_active( $this->group );
 
+		$this->assertTrue( $this->intentions->set_priority( $id, 'immediate' ) );
+		$this->assertSame( 'immediate', $this->intentions->get( $id )['priority'] );
 		$this->assertTrue( $this->intentions->set_priority( $id, 'high' ) );
 		$this->assertWPError( $this->intentions->set_priority( $id, 'urgent' ) );
 		$this->assertTrue( $this->intentions->postpone( $id, '2026-12-01' ) );
